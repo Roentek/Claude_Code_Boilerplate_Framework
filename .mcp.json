@@ -50,6 +50,13 @@
         "USER_GOOGLE_EMAIL": "${GOOGLE_USER_EMAIL}"
       }
     },
+    "trigger": {
+      "args": [
+        "trigger.dev@4.4.0",
+        "mcp"
+      ],
+      "command": "npx"
+    },
     "pinecone-mcp": {
       "command": "npx",
       "args": [
