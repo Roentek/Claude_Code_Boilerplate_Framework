@@ -1,0 +1,129 @@
+{
+  "mcpServers": {
+    "supabase-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_API_PAT}"
+      }
+    },
+    "openrouter-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@physics91/openrouter-mcp",
+        "start"
+      ],
+      "env": {
+        "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}"
+      }
+    },
+    "kie-ai": {
+      "command": "npx",
+      "args": ["-y", "@felores/kie-ai-mcp-server"],
+      "env": {
+        "KIE_AI_API_KEY": "${KIE_AI_API_KEY}"
+      }
+    },
+    "tavily-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "tavily-mcp@latest"
+      ],
+      "env": {
+        "TAVILY_API_KEY": "${TAVILY_API_KEY}",
+        "DEFAULT_PARAMETERS": "{\"include_images\": true, \"max_results\": 15, \"search_depth\": \"advanced\"}"
+      }
+    },
+    "google-workspace-mcp": {
+      "command": "uvx",
+      "args": [
+        "workspace-mcp"
+      ],
+      "env": {
+        "GOOGLE_OAUTH_CLIENT_ID": "${GOOGLE_OAUTH_CLIENT_ID}",
+        "GOOGLE_OAUTH_CLIENT_SECRET": "${GOOGLE_OAUTH_CLIENT_SECRET}",
+        "USER_GOOGLE_EMAIL": "${GOOGLE_USER_EMAIL}"
+      }
+    },
+    "pinecone-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@pinecone-database/mcp"
+      ],
+      "env": {
+        "PINECONE_API_KEY": "${PINECONE_API_KEY}"
+      }
+    },
+    "vapi-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@vapi-ai/mcp-server"
+      ],
+      "env": {
+        "VAPI_TOKEN": "${VAPI_API_TOKEN}"
+      }
+    },
+    "alpaca-mcp": {
+      "command": "uvx",
+      "args": [
+        "alpaca-mcp-server",
+        "serve"
+      ],
+      "env": {
+        "ALPACA_API_KEY": "${ALPACA_API_KEY}",
+        "ALPACA_SECRET_KEY": "${ALPACA_SECRET_KEY}",
+        "ALPACA_PAPER_TRADE": "True"
+      }
+    },
+    "n8n-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "n8n-mcp"
+      ],
+      "env": {
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error",
+        "DISABLE_CONSOLE_OUTPUT": "true",
+        "N8N_API_URL": "${N8N_HOST_URL}",
+        "N8N_API_KEY": "${N8N_API_KEY}"
+      }
+    },
+    "apify": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@apify/actors-mcp-server",
+        "--tools",
+        "actors,docs,apify/rag-web-browser"
+      ],
+      "env": {
+        "APIFY_TOKEN": "${APIFY_API_PAT}"
+      }
+    },
+    "zep-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://docs-mcp.getzep.com/mcp"
+      ]
+    },
+    "canva-dev": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@canva/cli@latest",
+        "mcp"
+      ]
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "extraKnownMarketplaces": {},
+  "enabledPlugins": {
+    "agent-sdk-dev@claude-plugins-official": true,
+    "claude-code-setup@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "github@claude-plugins-official": false,
+    "pinecone@claude-plugins-official": false,
+    "playground@claude-plugins-official": true,
+    "plugin-dev@claude-plugins-official": false,
+    "supabase@claude-plugins-official": false
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "n8n-mcp",
+    "vapi-mcp",
+    "tavily-mcp",
+    "zep-mcp",
+    "pinecone-mcp",
+    "apify",
+    "supabase-mcp",
+    "google-workspace-mcp",
+    "openrouter-mcp",
+    "alpaca-mcp",
+    "canva-dev"
+  ],
+  "hooks": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "./hooks/stop.sh"
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "python .claude/scripts/context-monitor.py"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(ren:*)",
+      "Bash(mv:*)",
+      "Bash(grep:*)",
+      "Bash(mkdir:*)",
+      "Bash(exit)",
+      "Bash(claude mcp add:*)",
+      "Bash(claude --version)",
+      "Bash(claude --debug)",
+      "Bash(where npm)",
+      "Bash(npm install:*)",
+      "Bash(npm cache clean:*)",
+      "Bash(npm run:*)",
+      "Bash(where n8n-mcp)",
+      "Bash(npx n8n-mcp:*)",
+      "Bash(git remote set-url:*)",
+      "mcp__claude_ai_Tavily__tavily_search",
+      "mcp__claude_ai_Supabase__supabase_query",
+      "mcp__claude_ai_OpenRouter__openrouter_query",
+      "mcp__claude_ai_Spline__spline_query",
+      "mcp__n8n-mcp__tools_documentation",
+      "mcp__n8n-mcp__search_nodes",
+      "mcp__n8n-mcp__get_node_essentials",
+      "mcp__n8n-mcp__validate_workflow",
+      "mcp__n8n-mcp__validate_workflow_connections",
+      "mcp__n8n-mcp__get_node_documentation",
+      "mcp__n8n-mcp__search_node_properties",
+      "mcp__n8n-mcp__validate_node_operation",
+      "mcp__n8n-mcp__get_node_for_task",
+      "mcp__n8n-mcp__list_tasks",
+      "mcp__zep-docs__search_documentation",
+      "mcp__alpaca-mcp__get_stock_bars",
+      "WebFetch(domain:docs.n8n.io)",
+      "WebFetch(domain:help.getzep.com)"
+    ],
+    "deny": []
+  },
+  "env": {
+    // "ANTHROPIC_BASE_URL": "${OPENROUTER_BASE_URL}",
+    // "ANTHROPIC_AUTH_TOKEN": "${OPENROUTER_API_KEY}",
+    // "ANTHROPIC_API_KEY": "",
+    // "ANTHROPIC_MODEL": "${OPENROUTER_MODEL}"
+  }
+}
