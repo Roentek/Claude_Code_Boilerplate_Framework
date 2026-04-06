@@ -44,7 +44,7 @@ src/trigger/{automation-name}/
 
 - Each automation gets its own folder under `src/trigger/`
 - A single task file is fine for simple automations
-- Split into multiple files when one task detects/polls for new items and another does the heavy work (API calls, LLM, posting output) — see `/trigger-ref` for the orchestrator+processor pattern
+- Split into multiple files when one task detects/polls for new items and another does the heavy work (API calls, LLM, posting output) — see `/trigger-api-reference` for the orchestrator+processor pattern
 
 ## Environment Variables — Security Rules
 
@@ -153,4 +153,4 @@ Trigger.dev bundles `node_modules` automatically on every deploy — no extra co
 
 ## Full Trigger.dev API Reference
 
-Use `/trigger-ref` for complete code examples: task patterns, schedules, waits, triggerAndWait, batch triggers, debounce, and schema tasks with Zod validation.
+Use `/trigger-api-reference` for complete code examples: task patterns, schedules, waits, triggerAndWait, batch triggers, debounce, and schema tasks with Zod validation.
