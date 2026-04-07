@@ -1,6 +1,8 @@
 # Claude-Code Boilerplate Framework
 
-This file is the entry point for every Claude Code session. It defines **how we work**, not what we're building. Keep it short. If a rule doesn't change behavior, it doesn't belong here.
+## Purpose
+
+This is the entry point for every Claude Code session to provide the context and tooling needed to design various frameworks. It defines **how we work**, not what we're building. Keep it short. If a rule doesn't change behavior, it doesn't belong here.
 
 ---
 
