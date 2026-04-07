@@ -51,11 +51,8 @@
       }
     },
     "trigger": {
-      "args": [
-        "trigger.dev@4.4.0",
-        "mcp"
-      ],
-      "command": "npx"
+      "command": "npx",
+      "args": ["trigger.dev@latest", "mcp"]
     },
     "pinecone-mcp": {
       "command": "npx",
