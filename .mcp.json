@@ -77,16 +77,14 @@
         "VAPI_TOKEN": "${VAPI_API_TOKEN}"
       }
     },
-    "alpaca-mcp": {
+    "alpaca": {
       "command": "uvx",
-      "args": [
-        "alpaca-mcp-server",
-        "serve"
-      ],
+      "args": ["alpaca-mcp-server"],
       "env": {
         "ALPACA_API_KEY": "${ALPACA_API_KEY}",
         "ALPACA_SECRET_KEY": "${ALPACA_SECRET_KEY}",
-        "ALPACA_PAPER_TRADE": "True"
+        "ALPACA_PAPER_TRADE": "true",
+        "PYTHONUTF8": "1"
       }
     },
     "n8n-mcp": {

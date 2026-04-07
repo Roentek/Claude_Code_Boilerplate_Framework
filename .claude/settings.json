@@ -30,14 +30,19 @@
   "hooks": {
     "Stop": [
       {
-        "type": "command",
-        "command": "./hooks/stop.sh"
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/stop.sh"
+          }
+        ]
       }
     ]
   },
   "statusLine": {
     "type": "command",
-    "command": "python ./scripts/context-monitor.py"
+    "command": "python -X utf8 .claude/scripts/context-monitor.py"
   },
   "permissions": {
     "allow": [
@@ -72,13 +77,13 @@
       "mcp__n8n-mcp__get_node_for_task",
       "mcp__n8n-mcp__list_tasks",
       "mcp__zep-docs__search_documentation",
-      "mcp__alpaca-mcp__get_stock_bars",
+      "mcp__alpaca__get_stock_bars",
       "WebFetch(domain:docs.n8n.io)",
       "WebFetch(domain:help.getzep.com)"
     ],
-    "deny": [],
-    "env": {
+    "deny": []
+  },
+  "env": {
       
-    }
   }
 }
