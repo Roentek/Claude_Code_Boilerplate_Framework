@@ -21,7 +21,7 @@
     "trigger",
     "pinecone-mcp",
     "vapi-mcp",
-    "alpaca-mcp",
+    "alpaca",
     "n8n-mcp",
     "apify",
     "zep-mcp",
@@ -37,7 +37,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "python .claude/scripts/context-monitor.py"
+    "command": "python ./scripts/context-monitor.py"
   },
   "permissions": {
     "allow": [
@@ -76,12 +76,9 @@
       "WebFetch(domain:docs.n8n.io)",
       "WebFetch(domain:help.getzep.com)"
     ],
-    "deny": []
-  },
-  "env": {
-    // "ANTHROPIC_BASE_URL": "${OPENROUTER_BASE_URL}",
-    // "ANTHROPIC_AUTH_TOKEN": "${OPENROUTER_API_KEY}",
-    // "ANTHROPIC_API_KEY": "",
-    // "ANTHROPIC_MODEL": "${OPENROUTER_MODEL}"
+    "deny": [],
+    "env": {
+      
+    }
   }
 }
