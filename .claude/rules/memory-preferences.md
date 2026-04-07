@@ -1,7 +1,6 @@
 # User Preferences
 
-Stated preferences about how Claude should behave, communicate, and structure work.
-Update this file immediately when the user expresses a preference or corrects an approach.
+Stated preferences about how Claude should behave, communicate, and structure work. Update this file immediately when the user expresses a preference or corrects an approach.
 
 ---
 

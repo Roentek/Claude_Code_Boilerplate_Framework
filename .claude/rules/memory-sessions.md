@@ -1,7 +1,6 @@
 # Session Log
 
-Summary of substantive work completed each session — what was built, what was learned, what changed.
-Add an entry at the end of any session where meaningful work was done.
+Summary of substantive work completed each session — what was built, what was learned, what changed. Add an entry at the end of any session where meaningful work was done.
 
 ---
 

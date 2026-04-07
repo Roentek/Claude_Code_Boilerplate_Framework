@@ -1,7 +1,6 @@
 # Project Decisions
 
-Architectural and technical decisions made during sessions — with date and rationale.
-Update this file whenever a non-trivial decision is made or confirmed.
+Architectural and technical decisions made during sessions — with date and rationale. Update this file whenever a non-trivial decision is made or confirmed.
 
 ---
 
