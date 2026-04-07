@@ -13,6 +13,7 @@
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
+    "memory",
     "supabase-mcp",
     "openrouter-mcp",
     "kie-ai",

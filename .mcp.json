@@ -1,5 +1,12 @@
 {
   "mcpServers": {
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
+    },
     "supabase-mcp": {
       "command": "npx",
       "args": [

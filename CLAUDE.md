@@ -119,6 +119,7 @@ Defined in [`.mcp.json`](.mcp.json), loaded automatically. Add credentials to [`
 
 | Server | Tools Available | Use For |
 | -------- | ---------------- | --------- |
+| `memory` | create/search entities, relations, observations | Persistent knowledge graph memory across sessions |
 | `supabase-mcp` | DB queries, auth, storage, migrations | Postgres database + Supabase platform |
 | `openrouter-mcp` | Chat, compare models, benchmark | Multi-model LLM routing |
 | `tavily-mcp` | Search, extract, crawl, research | Web search and content extraction |
