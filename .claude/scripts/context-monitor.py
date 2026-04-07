@@ -166,7 +166,7 @@ def get_context_display(context_info):
     reset = "\033[0m"
     alert_str = f" {alert}" if alert else ""
 
-    return f"{icon}{color}{bar}{reset} {percent:.0f}%{alert_str}"
+    return f"{icon} {color}{bar}{reset} {percent:.0f}%{alert_str}"
 
 
 def get_directory_display(workspace_data):
@@ -282,7 +282,7 @@ def main():
             f"{model_display} "
             f"\033[93m📁 {directory}\033[0m"
             f"{git_status} "
-            f"🧠 {context_display}"
+            f"\033[90m|\033[0m 🧠 {context_display}"
             f"{session_metrics}"
         )
 
