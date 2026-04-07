@@ -63,6 +63,7 @@
       "Bash(where n8n-mcp)",
       "Bash(npx n8n-mcp:*)",
       "Bash(git remote set-url:*)",
+      "mcp__alpaca__get_stock_latest_trade",
       "mcp__claude_ai_Tavily__tavily_search",
       "mcp__claude_ai_Supabase__supabase_query",
       "mcp__claude_ai_OpenRouter__openrouter_query",
@@ -80,7 +81,8 @@
       "mcp__zep-docs__search_documentation",
       "mcp__alpaca__get_stock_bars",
       "WebFetch(domain:docs.n8n.io)",
-      "WebFetch(domain:help.getzep.com)"
+      "WebFetch(domain:help.getzep.com)",
+      "WebFetch(domain:www.aitmpl.com)"
     ],
     "deny": [],
     "env": {
