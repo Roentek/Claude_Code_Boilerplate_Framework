@@ -81,9 +81,9 @@
       "WebFetch(domain:docs.n8n.io)",
       "WebFetch(domain:help.getzep.com)"
     ],
-    "deny": []
-  },
-  "env": {
-      
+    "deny": [],
+    "env": {
+
+    }
   }
 }
