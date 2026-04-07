@@ -2,6 +2,27 @@
 
 This file is the entry point for every Claude Code session. It defines **how we work**, not what we're building. Keep it short. If a rule doesn't change behavior, it doesn't belong here.
 
+---
+
+## What Are You Building?
+
+Start here — each path routes to the right tools and rules.
+
+| Building | Start With | Key Rules |
+| ---------- | ----------- | ----------- |
+| Trigger.dev automation | `workflows/` → `tools/` | [`trigger-workflow-builder.md`](.claude/rules/trigger-workflow-builder.md), [`trigger-api-reference.md`](.claude/rules/trigger-api-reference.md) |
+| Frontend UI | `/frontend-design` skill first | [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) |
+| Claude AI agent | `agent-sdk-dev` plugin → `.claude/agents/` | [`agent-instructions.md`](.claude/rules/agent-instructions.md) |
+| Slash-command skill | `.claude/skills/` — add a `.md` file | Invoke with `/skill-name`; see existing skills below |
+| MCP server integration | `.mcp.json` + `.env` | Add server config, add credentials, restart Claude Code |
+| Claude API / SDK app | `/claude-api` skill | Scaffolds Anthropic SDK boilerplate |
+| n8n workflow | `n8n-mcp` tools | Search nodes, validate, build via MCP |
+| Voice AI (Vapi) | `vapi-mcp` tools | Create assistants, calls, phone numbers |
+| Web scraping | `apify` MCP | Search actors, fetch details, call actors |
+| Vector search / RAG | `pinecone-mcp` tools | Upsert, search, rerank records |
+
+---
+
 ## Core Philosophy: The WAT Framework
 
 Every task flows through three layers:
@@ -11,22 +32,24 @@ Workflows  →  Agents (Claude)  →  Tools
 (what to do)  (how to decide)   (how to execute)
 ```
 
-- **Workflows** are Markdown SOPs in `workflows/` — plain-language instructions for recurring tasks
-- **Agents** (you) handle reasoning, coordination, and recovery from failures
-- **Tools** are Python scripts in `tools/` that execute deterministically
+- **Workflows** — Markdown SOPs in `workflows/` defining what to do and in what order
+- **Agents** — You (Claude): reasoning, coordination, and recovery from failures
+- **Tools** — Python scripts in `tools/` that execute deterministically
 
 **Why this matters:** AI chained through 5 steps at 90% accuracy = 59% success. Offload execution to deterministic scripts; keep Claude focused on orchestration.
 
-> Full architecture: [`.claude/rules/agent-instructions.md`](.claude/rules/agent-instructions.md)
+> Full architecture details: [`agent-instructions.md`](.claude/rules/agent-instructions.md)
+
+---
 
 ## Project Structure
 
 ```txt
-CLAUDE.md                    ← You are here (philosophy only)
+CLAUDE.md                    ← You are here (philosophy + routing only)
 .claude/
-  rules/                     ← Auto-loaded instructions per domain
+  rules/                     ← Auto-loaded instructions (all .md files loaded every session)
   agents/                    ← Custom sub-agent definitions
-  skills/                    ← Reusable slash-command skills
+  skills/                    ← Reusable slash-command skills (add .md → get /skill-name)
   hooks/                     ← Lifecycle shell scripts (Stop, PreToolUse, etc.)
   scripts/                   ← Utility scripts (status line, context monitor)
   docs/                      ← Reference PDFs and guides
@@ -40,7 +63,74 @@ brand_assets/                ← Logos, color guides, design tokens
 .tmp/                        ← Scratch space — disposable, regenerable
 ```
 
-**Deliverables always go to cloud services** (Google Sheets, Slides, etc.) where they're accessible. Local files are for processing only.
+---
+
+## Plugins (Enabled)
+
+Plugins extend Claude Code with specialized modes and skills. Invoke via `/plugin-skill-name`.
+
+| Plugin | Provides | Use When |
+| -------- | ---------- | --------- |
+| `frontend-design` | `/frontend-design` skill | Building any UI — **always invoke before writing frontend code** |
+| `agent-sdk-dev` | Agent scaffolding tools | Creating custom Claude sub-agents |
+| `claude-code-setup` | Project setup automation | Bootstrapping a new Claude Code project |
+| `claude-md-management` | CLAUDE.md creation/editing | Refactoring or generating instruction files |
+| `playground` | Sandboxed experimentation | Testing prompts and tool chains without side effects |
+
+> Disabled: `github`, `pinecone`, `supabase`, `plugin-dev` — enable in [`.claude/settings.json`](.claude/settings.json) → `enabledPlugins`.
+
+---
+
+## Skills (Built-In Slash Commands)
+
+Always available regardless of plugins. Invoke with `/skill-name`.
+
+| Skill | Invoke | Use When |
+| ------- | -------- | --------- |
+| `frontend-design` | `/frontend-design` | Starting any frontend task (mandatory first step) |
+| `claude-api` | `/claude-api` | Scaffolding an app with the Anthropic SDK or Claude Agent SDK |
+| `simplify` | `/simplify` | Reviewing changed code for quality, reuse, and efficiency |
+| `schedule` | `/schedule` | Creating cron-scheduled remote agents |
+| `loop` | `/loop 5m /command` | Running a prompt or command on a recurring interval |
+| `update-config` | `/update-config` | Configuring hooks, permissions, and automated behaviors in `settings.json` |
+| `keybindings-help` | `/keybindings-help` | Customizing keyboard shortcuts in `keybindings.json` |
+
+> Add project-specific skills: create `.md` files in `.claude/skills/` — they become `/skill-name` commands automatically.
+
+---
+
+## Agents
+
+Custom sub-agents live in `.claude/agents/`. Each agent is a `.md` file defining a specialized role, tool access, and behavior constraints.
+
+- Use the `agent-sdk-dev` plugin to scaffold new agent definitions
+- Agents can be invoked as sub-processes within the WAT framework for parallel or specialized work
+- See [`agent-instructions.md`](.claude/rules/agent-instructions.md) for orchestration patterns
+
+> `.claude/agents/` is currently empty — add your own as the project grows.
+
+---
+
+## MCP Servers
+
+Defined in [`.mcp.json`](.mcp.json), loaded automatically. Add credentials to [`.env`](.env.example).
+
+| Server | Tools Available | Use For |
+| -------- | ---------------- | --------- |
+| `supabase-mcp` | DB queries, auth, storage, migrations | Postgres database + Supabase platform |
+| `openrouter-mcp` | Chat, compare models, benchmark | Multi-model LLM routing |
+| `tavily-mcp` | Search, extract, crawl, research | Web search and content extraction |
+| `google-workspace-mcp` | Gmail, Drive, Sheets, Docs, Calendar, Forms | Google productivity suite |
+| `pinecone-mcp` | Upsert, search, rerank, describe indexes | Vector search / RAG |
+| `n8n-mcp` | Search nodes, validate, get templates | n8n workflow automation |
+| `vapi-mcp` | Create assistants, calls, phone numbers, tools | Voice AI (Vapi) |
+| `apify` | Search actors, call actors, get output | Web scraping (Apify marketplace) |
+| `zep-mcp` | Search Zep documentation | Long-term memory research |
+| `alpaca-mcp` | Stock bars, trading operations | Algorithmic trading (paper mode) |
+| `canva-dev` | Canva app SDK, UI kit, CLI docs | Canva app development |
+| `kie-ai` | Image, video, audio, lip-sync generation | AI media generation |
+
+---
 
 ## Rules (Auto-Loaded)
 
@@ -48,15 +138,17 @@ All `.md` files in `.claude/rules/` are loaded automatically every session.
 
 | File | Purpose |
 | ------ | --------- |
-| [`agent-instructions.md`](.claude/rules/agent-instructions.md) | WAT framework — how to coordinate workflows, tools, and error recovery |
+| [`agent-instructions.md`](.claude/rules/agent-instructions.md) | WAT framework — orchestration, tool use, error recovery |
 | [`trigger-workflow-builder.md`](.claude/rules/trigger-workflow-builder.md) | Step-by-step guide for building Trigger.dev automations |
 | [`trigger-api-reference.md`](.claude/rules/trigger-api-reference.md) | Full Trigger.dev SDK v4 code patterns and examples |
-| [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) | Frontend design standards, screenshot workflow, anti-generic guardrails |
-| [`memory-guidelines.md`](.claude/rules/memory-guidelines.md) | When and what to save to memory — auto-update trigger rules |
-| [`memory-profile.md`](.claude/rules/memory-profile.md) | Facts about the user — role, background, domain knowledge |
+| [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) | Frontend standards, screenshot workflow, anti-generic guardrails |
+| [`memory-guidelines.md`](.claude/rules/memory-guidelines.md) | When and what to save — auto-update trigger rules |
+| [`memory-profile.md`](.claude/rules/memory-profile.md) | User role, background, domain knowledge |
 | [`memory-preferences.md`](.claude/rules/memory-preferences.md) | How the user likes Claude to behave and communicate |
 | [`memory-decisions.md`](.claude/rules/memory-decisions.md) | Architectural decisions with dates and rationale |
 | [`memory-sessions.md`](.claude/rules/memory-sessions.md) | Log of substantive work completed each session |
+
+---
 
 ## Memory: Auto-Update (MANDATORY)
 
@@ -71,26 +163,9 @@ All `.md` files in `.claude/rules/` are loaded automatically every session.
 
 **Do not ask. Just update.**
 
-> Full rules: [`.claude/rules/memory-guidelines.md`](.claude/rules/memory-guidelines.md)
+> Full rules: [`memory-guidelines.md`](.claude/rules/memory-guidelines.md)
 
-## MCP Servers
-
-Defined in [`.mcp.json`](.mcp.json), loaded automatically. Credentials live in [`.env`](.env.example).
-
-| Server | Use for |
-| -------- | --------- |
-| `supabase-mcp` | Database queries, auth, storage |
-| `openrouter-mcp` | Multi-model LLM routing |
-| `tavily-mcp` | Web search and research |
-| `google-workspace-mcp` | Gmail, Drive, Sheets, Docs, Calendar |
-| `pinecone-mcp` | Vector search / RAG |
-| `n8n-mcp` | n8n workflow automation |
-| `vapi-mcp` | Voice AI |
-| `apify` | Web scraping |
-| `zep-mcp` | Long-term memory (Zep docs) |
-| `alpaca-mcp` | Algorithmic trading |
-| `canva-dev` | Canva app development |
-| `kie-ai` | AI media generation |
+---
 
 ## Hooks
 
@@ -100,39 +175,38 @@ Defined in [`.mcp.json`](.mcp.json), loaded automatically. Credentials live in [
 
 > Add new hooks in [`.claude/settings.json`](.claude/settings.json) under `"hooks"`.
 
-## Agents & Skills
-
-- **Agents** — custom sub-agents in `.claude/agents/` (definitions for specialized roles)
-- **Skills** — reusable slash-commands in `.claude/skills/` (invoke with `/skill-name`)
-
-These directories are currently empty placeholders — add your own as the project grows.
+---
 
 ## Environment Variables
 
-All secrets live in `.env` (gitignored). Copy `.env.example` to `.env` and fill in only what you need.
+All secrets live in `.env` (gitignored). Copy `.env.example` → `.env` and fill in only what you need.
 
-**Security rules:**
+- Never log secret values — never hardcode credentials, even temporarily
+- Validate at task start: `if (!apiKey) throw new Error("KEY not set")`
+- Before deploying: add ALL env vars to the Trigger.dev dashboard — local `.env` is not enough
 
-- Never log secret values
-- Never hardcode credentials — not even temporarily
-- Validate at the top of every task: `if (!apiKey) throw new Error("KEY not set")`
-- Before deploying: add ALL env vars to the Trigger.dev dashboard (local `.env` alone is not enough)
+---
 
 ## Working Principles
 
 1. **Look before you build** — check `tools/` for existing scripts before writing new ones
-2. **Fail forward** — read errors fully, fix root causes, update the relevant workflow so it doesn't happen again
-3. **Workflows evolve** — update `workflows/` when you find better methods or hit new constraints; don't overwrite without asking
-4. **No speculation** — only build what the task requires; no extra features, fallbacks, or abstractions for hypothetical needs
-5. **Cloud = truth** — final outputs always go to cloud services; local `.tmp/` is scratch space only
-6. **Never deploy without approval** — always confirm the automation works locally before pushing to production
+2. **Fail forward** — read errors fully, fix root causes, update the workflow so it doesn't recur
+3. **Workflows evolve** — update `workflows/` when you find better methods; don't overwrite without asking
+4. **No speculation** — only build what the task requires; no extra features or hypothetical abstractions
+5. **Cloud = truth** — final outputs go to cloud services; `.tmp/` is scratch space only
+6. **Never deploy without approval** — confirm automation works locally before pushing to production
+
+---
 
 ## Quick Reference
 
 ```txt
-New automation?      → Read workflows/ → Check tools/ → Follow agent-instructions.md
-Trigger.dev task?    → Follow trigger-workflow-builder.md + trigger-api-reference.md
-Frontend work?       → Invoke frontend-design skill first → Follow frontend-instructions.md
-Something broke?     → Read error → Fix tool → Verify → Update workflow
-End of session?      → Update memory-sessions.md if substantive work was done
+Trigger.dev automation  → trigger-workflow-builder.md + trigger-api-reference.md
+Frontend UI             → /frontend-design skill → frontend-instructions.md
+Claude agent            → agent-sdk-dev plugin → .claude/agents/
+Custom skill            → .claude/skills/<name>.md → invoke as /name
+MCP integration         → .mcp.json + .env → restart Claude Code
+Claude API app          → /claude-api skill
+Something broke         → Read error → Fix tool → Verify → Update workflow
+End of session          → Update memory-sessions.md if substantive work was done
 ```
