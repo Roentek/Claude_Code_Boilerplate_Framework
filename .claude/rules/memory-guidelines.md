@@ -6,10 +6,10 @@
 
 | Trigger | Action |
 |---------|--------|
-| User shares a fact about themselves | → Update `memory-profile.md` |
-| User states a preference | → Update `memory-preferences.md` |
-| A decision is made | → Update `memory-decisions.md` with date |
-| Completing substantive work | → Add to `memory-sessions.md` |
+| User shares a fact about themselves | → Update [`memory-profile.md`](memory-profile.md) |
+| User states a preference | → Update [`memory-preferences.md`](memory-preferences.md) |
+| A decision is made | → Update [`memory-decisions.md`](memory-decisions.md) with date |
+| Completing substantive work | → Add to [`memory-sessions.md`](memory-sessions.md) |
 
 **Skip:** Quick factual questions, trivial tasks with no new info.
 
@@ -48,10 +48,10 @@ Markdown files auto-loaded every session. Best for **human-readable, session-pri
 
 | File | Stores |
 |------|--------|
-| `memory-profile.md` | User role, background, domain knowledge |
-| `memory-preferences.md` | Communication style, workflow preferences |
-| `memory-decisions.md` | Architecture decisions with dates |
-| `memory-sessions.md` | Session log of substantive work |
+| [`memory-profile.md`](memory-profile.md) | User role, background, domain knowledge |
+| [`memory-preferences.md`](memory-preferences.md) | Communication style, workflow preferences |
+| [`memory-decisions.md`](memory-decisions.md) | Architecture decisions with dates |
+| [`memory-sessions.md`](memory-sessions.md) | Session log of substantive work |
 
 **Use for:** Preferences, decisions, user facts, session summaries — anything narrative or contextual.
 
@@ -77,8 +77,8 @@ A persistent graph database of **entities**, **relations**, and **observations**
 
 | Situation | Use |
 |-----------|-----|
-| "User prefers concise responses" | File-based (`memory-preferences.md`) |
-| "We chose Supabase over PlanetScale on 2026-04-07" | File-based (`memory-decisions.md`) |
+| "User prefers concise responses" | File-based ([`memory-preferences.md`](memory-preferences.md)) |
+| "We chose Supabase over PlanetScale on 2026-04-07" | File-based ([`memory-decisions.md`](memory-decisions.md)) |
 | "This project uses the `jobs` table in Supabase" | Knowledge graph (entity + observation) |
 | "The `scraper` service depends on `apify` and outputs to `supabase`" | Knowledge graph (entities + relations) |
 | "Searching for all entities related to a service" | Knowledge graph (`search_nodes`) |
