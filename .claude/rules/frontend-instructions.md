@@ -1,8 +1,13 @@
 # Frontend Instructions
 
+> This file is the top-level reference for all frontend work. Load in order:
+> 1. **This file** — local server, screenshot workflow, output defaults, anti-generic guardrails
+> 2. **[`ui-ux-pro-max-instructions.md`](ui-ux-pro-max-instructions.md)** — design intelligence: styles, palettes, typography, UX rules, pre-delivery checklist
+
 ## Always Do First
 
 - **Invoke the `frontend-design` skill** before writing any frontend code, every session, no exceptions.
+- **Then read [`ui-ux-pro-max-instructions.md`](ui-ux-pro-max-instructions.md)** and run the design system generator before writing any UI code.
 
 ## Reference Images
 
@@ -19,7 +24,6 @@
 
 ## Screenshot Workflow
 
-- Puppeteer is installed at `C:/Users/nateh/AppData/Local/Temp/puppeteer-test/`. Chrome cache is at `C:/Users/nateh/.cache/puppeteer/`.
 - **Always screenshot from localhost:** `node screenshot.mjs http://localhost:3000`
 - Screenshots are saved automatically to `./temporary screenshots/screenshot-N.png` (auto-incremented, never overwritten).
 - Optional label suffix: `node screenshot.mjs http://localhost:3000 label` → saves as `screenshot-N-label.png`

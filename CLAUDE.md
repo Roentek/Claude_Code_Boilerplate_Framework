@@ -13,7 +13,7 @@ Start here — each path routes to the right tools and rules.
 | Building | Start With | Key Rules |
 | ---------- | ----------- | ----------- |
 | Trigger.dev automation | `workflows/` → `tools/` | [`trigger-workflow-builder.md`](.claude/rules/trigger-workflow-builder.md), [`trigger-api-reference.md`](.claude/rules/trigger-api-reference.md) |
-| Frontend UI | `/frontend-design` skill first | [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) |
+| Frontend UI | `/frontend-design` skill → `ui-ux-pro-max` design system | [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) → [`ui-ux-pro-max-instructions.md`](.claude/rules/ui-ux-pro-max-instructions.md) |
 | Claude AI agent | `agent-sdk-dev` plugin → `.claude/agents/` | [`agent-instructions.md`](.claude/rules/agent-instructions.md) |
 | Slash-command skill | `.claude/skills/` — add a `.md` file | Invoke with `/skill-name`; see existing skills below |
 | MCP server integration | `.mcp.json` + `.env` | Add server config, add credentials, restart Claude Code |
@@ -22,6 +22,44 @@ Start here — each path routes to the right tools and rules.
 | Voice AI (Vapi) | `vapi-mcp` tools | Create assistants, calls, phone numbers |
 | Web scraping | `apify` MCP | Search actors, fetch details, call actors |
 | Vector search / RAG | `pinecone-mcp` tools | Upsert, search, rerank records |
+
+---
+
+## First-Time Setup (New Users)
+
+When you open this project in Claude Code for the first time, a `Setup` hook runs [`.claude/scripts/setup.sh`](.claude/scripts/setup.sh) automatically. It handles:
+
+1. **Makes hooks executable** — `chmod +x` on `.claude/hooks/stop.sh` (Unix/macOS only)
+2. **Verifies Python** — checks `python3` / `python` is available in PATH (required for the context monitor)
+3. **Creates `.env`** — copies `.env.example` → `.env` if no `.env` exists yet
+4. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
+
+> If setup doesn't run automatically, run it manually: `bash .claude/scripts/setup.sh`
+
+### Context Monitor Statusline
+
+The statusline is pre-configured in [`.claude/settings.json`](.claude/settings.json). It shows real-time context usage, git branch, session cost, and duration inside Claude Code.
+
+```txt
+[claude-sonnet-4-6] 📁 project | 🌿 main | 🧠 🟢 ████▁▁▁▁ 42% | 💰 $0.012 ⏱ 8m
+```
+
+**Requirements:**
+
+- Python 3.8+ in PATH (`python3` or `python`)
+- No pip installs needed — uses only the standard library
+
+**If the statusline shows an error**, run the install command to re-apply it:
+
+```bash
+npx claude-code-templates@latest --setting statusline/context-monitor
+```
+
+**To re-run setup** on a machine (e.g. after a fresh clone):
+
+```bash
+rm -f .claude/.setup-complete && bash .claude/scripts/setup.sh
+```
 
 ---
 
@@ -74,6 +112,7 @@ Plugins extend Claude Code with specialized modes and skills. Invoke via `/plugi
 | Plugin | Provides | Use When |
 | -------- | ---------- | --------- |
 | `frontend-design` | `/frontend-design` skill | Building any UI — **always invoke before writing frontend code** |
+| `ui-ux-pro-max` | Design intelligence — 67 styles, 161 palettes, 57 fonts, 99 UX rules | Every frontend task — run `--design-system` before writing any UI code |
 | `agent-sdk-dev` | Agent scaffolding tools | Creating custom Claude sub-agents |
 | `claude-code-setup` | Project setup automation | Bootstrapping a new Claude Code project |
 | `claude-md-management` | CLAUDE.md creation/editing | Refactoring or generating instruction files |
@@ -163,7 +202,8 @@ All `.md` files in `.claude/rules/` are loaded automatically every session.
 | [`agent-instructions.md`](.claude/rules/agent-instructions.md) | WAT framework — orchestration, tool use, error recovery |
 | [`trigger-workflow-builder.md`](.claude/rules/trigger-workflow-builder.md) | Step-by-step guide for building Trigger.dev automations |
 | [`trigger-api-reference.md`](.claude/rules/trigger-api-reference.md) | Full Trigger.dev SDK v4 code patterns and examples |
-| [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) | Frontend standards, screenshot workflow, anti-generic guardrails |
+| [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) | Frontend standards, screenshot workflow, anti-generic guardrails — loads `ui-ux-pro-max-instructions.md` |
+| [`ui-ux-pro-max-instructions.md`](.claude/rules/ui-ux-pro-max-instructions.md) | Design intelligence — 67 styles, 161 palettes, 57 fonts, 99 UX rules, pre-delivery checklist |
 | [`memory-guidelines.md`](.claude/rules/memory-guidelines.md) | When and what to save — auto-update trigger rules |
 | [`memory-profile.md`](.claude/rules/memory-profile.md) | User role, background, domain knowledge |
 | [`memory-preferences.md`](.claude/rules/memory-preferences.md) | How the user likes Claude to behave and communicate |

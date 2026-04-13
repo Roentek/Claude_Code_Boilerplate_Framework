@@ -96,13 +96,20 @@
     "playground@claude-plugins-official": true,
     "plugin-dev@claude-plugins-official": false,
     "supabase@claude-plugins-official": false,
-    "superpowers@claude-plugins-official": true
+    "superpowers@claude-plugins-official": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
       "source": {
         "source": "git",
         "url": "https://github.com/anthropics/claude-code.git"
+      }
+    },
+    "ui-ux-pro-max-skill": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git"
       }
     }
   }
