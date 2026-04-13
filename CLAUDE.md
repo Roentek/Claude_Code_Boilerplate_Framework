@@ -25,44 +25,6 @@ Start here — each path routes to the right tools and rules.
 
 ---
 
-## First-Time Setup (New Users)
-
-When you open this project in Claude Code for the first time, a `Setup` hook runs [`.claude/scripts/setup.sh`](.claude/scripts/setup.sh) automatically. It handles:
-
-1. **Makes hooks executable** — `chmod +x` on `.claude/hooks/stop.sh` (Unix/macOS only)
-2. **Verifies Python** — checks `python3` / `python` is available in PATH (required for the context monitor)
-3. **Creates `.env`** — copies `.env.example` → `.env` if no `.env` exists yet
-4. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
-
-> If setup doesn't run automatically, run it manually: `bash .claude/scripts/setup.sh`
-
-### Context Monitor Statusline
-
-The statusline is pre-configured in [`.claude/settings.json`](.claude/settings.json). It shows real-time context usage, git branch, session cost, and duration inside Claude Code.
-
-```txt
-[claude-sonnet-4-6] 📁 project | 🌿 main | 🧠 🟢 ████▁▁▁▁ 42% | 💰 $0.012 ⏱ 8m
-```
-
-**Requirements:**
-
-- Python 3.8+ in PATH (`python3` or `python`)
-- No pip installs needed — uses only the standard library
-
-**If the statusline shows an error**, run the install command to re-apply it:
-
-```bash
-npx claude-code-templates@latest --setting statusline/context-monitor
-```
-
-**To re-run setup** on a machine (e.g. after a fresh clone):
-
-```bash
-rm -f .claude/.setup-complete && bash .claude/scripts/setup.sh
-```
-
----
-
 ## Core Philosophy: The WAT Framework
 
 Every task flows through three layers:
