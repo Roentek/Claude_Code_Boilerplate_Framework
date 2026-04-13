@@ -25,6 +25,24 @@ Start here — each path routes to the right tools and rules.
 
 ---
 
+## Key Commands
+
+```bash
+# Open this project in Claude Code
+claude .
+
+# Trigger.dev — start local dev runner
+npx trigger.dev@latest dev
+
+# Re-run first-time setup (e.g. fresh clone)
+rm -f .claude/.setup-complete && bash .claude/scripts/setup.sh
+
+# Reinstall context-monitor statusline
+npx claude-code-templates@latest --setting statusline/context-monitor
+```
+
+---
+
 ## Core Philosophy: The WAT Framework
 
 Every task flows through three layers:
@@ -80,6 +98,7 @@ Plugins extend Claude Code with specialized modes and skills. Invoke via `/plugi
 | `claude-md-management` | CLAUDE.md creation/editing | Refactoring or generating instruction files |
 | `playground` | Sandboxed experimentation | Testing prompts and tool chains without side effects |
 | `superpowers` | Full dev workflow — TDD, planning, subagents, debugging, code review | Any non-trivial feature or fix — triggers automatically based on context |
+| `skill-creator` | Create, edit, test, and benchmark skills | When building or refining slash-command skills |
 
 > Disabled: `github`, `pinecone`, `supabase`, `plugin-dev` — enable in [`.claude/settings.json`](.claude/settings.json) → `enabledPlugins`.
 
@@ -89,33 +108,33 @@ Plugins extend Claude Code with specialized modes and skills. Invoke via `/plugi
 
 Always available regardless of plugins. Invoke with `/skill-name`.
 
-| Skill | Invoke | Use When |
-| ------- | -------- | --------- |
-| `frontend-design` | `/frontend-design` | Starting any frontend task (mandatory first step) |
-| `claude-api` | `/claude-api` | Scaffolding an app with the Anthropic SDK or Claude Agent SDK |
-| `simplify` | `/simplify` | Reviewing changed code for quality, reuse, and efficiency |
-| `schedule` | `/schedule` | Creating cron-scheduled remote agents |
-| `loop` | `/loop 5m /command` | Running a prompt or command on a recurring interval |
-| `update-config` | `/update-config` | Configuring hooks, permissions, and automated behaviors in `settings.json` |
-| `keybindings-help` | `/keybindings-help` | Customizing keyboard shortcuts in `keybindings.json` |
+| Slash Command | Use When |
+| -------------- | --------- |
+| `/frontend-design` | Starting any frontend task (mandatory first step) |
+| `/claude-api` | Scaffolding an app with the Anthropic SDK or Claude Agent SDK |
+| `/simplify` | Reviewing changed code for quality, reuse, and efficiency |
+| `/schedule` | Creating cron-scheduled remote agents |
+| `/loop 5m /command` | Running a prompt or command on a recurring interval |
+| `/update-config` | Configuring hooks, permissions, and automated behaviors in `settings.json` |
+| `/keybindings-help` | Customizing keyboard shortcuts in `keybindings.json` |
 
 **Superpowers skills** (auto-trigger based on context — no manual invoke needed):
 
-| Skill | Invoke | Use When |
-| ------- | -------- | --------- |
-| `brainstorming` | `/brainstorming` | Before writing any code — refines rough ideas, explores alternatives, saves design doc |
-| `writing-plans` | `/writing-plans` | After design approval — breaks work into 2–5 min tasks with file paths and verification steps |
-| `subagent-driven-development` | `/subagent-driven-development` | Executing a plan — dispatches subagents per task with two-stage review |
-| `executing-plans` | `/executing-plans` | Alternative to subagent-dev — batch execution with human checkpoints |
-| `test-driven-development` | `/test-driven-development` | During implementation — enforces RED-GREEN-REFACTOR cycle |
-| `systematic-debugging` | `/systematic-debugging` | Diagnosing a bug — 4-phase root cause process |
-| `verification-before-completion` | `/verification-before-completion` | Before marking anything done — confirms the fix actually works |
-| `requesting-code-review` | `/requesting-code-review` | Between tasks — reviews against plan, blocks on critical issues |
-| `receiving-code-review` | `/receiving-code-review` | After getting review feedback — structured response workflow |
-| `dispatching-parallel-agents` | `/dispatching-parallel-agents` | When tasks are independent — concurrent subagent execution |
-| `using-git-worktrees` | `/using-git-worktrees` | After design approval — isolates work on a new branch with clean test baseline |
-| `finishing-a-development-branch` | `/finishing-a-development-branch` | When tasks complete — verifies tests, presents merge/PR/discard options |
-| `writing-skills` | `/writing-skills` | Creating a new reusable skill — follows best practices with adversarial testing |
+| Slash Command | When It Fires |
+| -------------- | -------------- |
+| `/brainstorming` | Before writing any code — refines rough ideas, explores alternatives, saves design doc |
+| `/writing-plans` | After design approval — breaks work into 2–5 min tasks with file paths and verification steps |
+| `/subagent-driven-development` | Executing a plan — dispatches subagents per task with two-stage review |
+| `/executing-plans` | Alternative to subagent-dev — batch execution with human checkpoints |
+| `/test-driven-development` | During implementation — enforces RED-GREEN-REFACTOR cycle |
+| `/systematic-debugging` | Diagnosing a bug — 4-phase root cause process |
+| `/verification-before-completion` | Before marking anything done — confirms the fix actually works |
+| `/requesting-code-review` | Between tasks — reviews against plan, blocks on critical issues |
+| `/receiving-code-review` | After getting review feedback — structured response workflow |
+| `/dispatching-parallel-agents` | When tasks are independent — concurrent subagent execution |
+| `/using-git-worktrees` | After design approval — isolates work on a new branch with clean test baseline |
+| `/finishing-a-development-branch` | When tasks complete — verifies tests, presents merge/PR/discard options |
+| `/writing-skills` | Creating a new reusable skill — follows best practices with adversarial testing |
 
 > Add project-specific skills: create `.md` files in `.claude/skills/` — they become `/skill-name` commands automatically.
 
@@ -129,13 +148,13 @@ Custom sub-agents live in `.claude/agents/`. Each agent is a `.md` file defining
 - Agents can be invoked as sub-processes within the WAT framework for parallel or specialized work
 - See [`agent-instructions.md`](.claude/rules/agent-instructions.md) for orchestration patterns
 
-> `.claude/agents/` is currently empty — add your own as the project grows.
-
 ---
 
 ## MCP Servers
 
 Defined in [`.mcp.json`](.mcp.json), loaded automatically. Add credentials to [`.env`](.env.example).
+
+> **Requires `uvx`:** `google-workspace-mcp` and `alpaca` use `uvx` (not `npx`). Install with: `curl -LsSf https://astral.sh/uv/install.sh | sh`
 
 | Server | Tools Available | Use For |
 | -------- | ---------------- | --------- |
@@ -206,7 +225,12 @@ All `.md` files in `.claude/rules/` are loaded automatically every session.
 All secrets live in `.env` (gitignored). Copy `.env.example` → `.env` and fill in only what you need.
 
 - Never log secret values — never hardcode credentials, even temporarily
-- Validate at task start: `if (!apiKey) throw new Error("KEY not set")`
+- Validate at task start:
+
+```ts
+if (!apiKey) throw new Error("KEY not set");
+```
+
 - Before deploying: add ALL env vars to the Trigger.dev dashboard — local `.env` is not enough
 
 ---
@@ -219,18 +243,3 @@ All secrets live in `.env` (gitignored). Copy `.env.example` → `.env` and fill
 4. **No speculation** — only build what the task requires; no extra features or hypothetical abstractions
 5. **Cloud = truth** — final outputs go to cloud services; `.tmp/` is scratch space only
 6. **Never deploy without approval** — confirm automation works locally before pushing to production
-
----
-
-## Quick Reference
-
-```txt
-Trigger.dev automation  → trigger-workflow-builder.md + trigger-api-reference.md
-Frontend UI             → /frontend-design skill → frontend-instructions.md
-Claude agent            → agent-sdk-dev plugin → .claude/agents/
-Custom skill            → .claude/skills/<name>.md → invoke as /name
-MCP integration         → .mcp.json + .env → restart Claude Code
-Claude API app          → /claude-api skill
-Something broke         → Read error → Fix tool → Verify → Update workflow
-End of session          → Update memory-sessions.md if substantive work was done
-```
