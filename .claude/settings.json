@@ -59,6 +59,17 @@
     "canva-dev"
   ],
   "hooks": {
+    "Setup": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/scripts/setup.sh",
+            "statusMessage": "Running first-time project setup..."
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "matcher": "",
