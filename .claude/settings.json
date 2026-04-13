@@ -88,6 +88,11 @@
     "superpowers@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
-
+    "claude-code-plugins": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/anthropics/claude-code.git"
+      }
+    }
   }
 }
