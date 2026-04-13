@@ -78,6 +78,7 @@ Plugins extend Claude Code with specialized modes and skills. Invoke via `/plugi
 | `claude-code-setup` | Project setup automation | Bootstrapping a new Claude Code project |
 | `claude-md-management` | CLAUDE.md creation/editing | Refactoring or generating instruction files |
 | `playground` | Sandboxed experimentation | Testing prompts and tool chains without side effects |
+| `superpowers` | Full dev workflow — TDD, planning, subagents, debugging, code review | Any non-trivial feature or fix — triggers automatically based on context |
 
 > Disabled: `github`, `pinecone`, `supabase`, `plugin-dev` — enable in [`.claude/settings.json`](.claude/settings.json) → `enabledPlugins`.
 
@@ -96,6 +97,24 @@ Always available regardless of plugins. Invoke with `/skill-name`.
 | `loop` | `/loop 5m /command` | Running a prompt or command on a recurring interval |
 | `update-config` | `/update-config` | Configuring hooks, permissions, and automated behaviors in `settings.json` |
 | `keybindings-help` | `/keybindings-help` | Customizing keyboard shortcuts in `keybindings.json` |
+
+**Superpowers skills** (auto-trigger based on context — no manual invoke needed):
+
+| Skill | Invoke | Use When |
+| ------- | -------- | --------- |
+| `brainstorming` | `/brainstorming` | Before writing any code — refines rough ideas, explores alternatives, saves design doc |
+| `writing-plans` | `/writing-plans` | After design approval — breaks work into 2–5 min tasks with file paths and verification steps |
+| `subagent-driven-development` | `/subagent-driven-development` | Executing a plan — dispatches subagents per task with two-stage review |
+| `executing-plans` | `/executing-plans` | Alternative to subagent-dev — batch execution with human checkpoints |
+| `test-driven-development` | `/test-driven-development` | During implementation — enforces RED-GREEN-REFACTOR cycle |
+| `systematic-debugging` | `/systematic-debugging` | Diagnosing a bug — 4-phase root cause process |
+| `verification-before-completion` | `/verification-before-completion` | Before marking anything done — confirms the fix actually works |
+| `requesting-code-review` | `/requesting-code-review` | Between tasks — reviews against plan, blocks on critical issues |
+| `receiving-code-review` | `/receiving-code-review` | After getting review feedback — structured response workflow |
+| `dispatching-parallel-agents` | `/dispatching-parallel-agents` | When tasks are independent — concurrent subagent execution |
+| `using-git-worktrees` | `/using-git-worktrees` | After design approval — isolates work on a new branch with clean test baseline |
+| `finishing-a-development-branch` | `/finishing-a-development-branch` | When tasks complete — verifies tests, presents merge/PR/discard options |
+| `writing-skills` | `/writing-skills` | Creating a new reusable skill — follows best practices with adversarial testing |
 
 > Add project-specific skills: create `.md` files in `.claude/skills/` — they become `/skill-name` commands automatically.
 
