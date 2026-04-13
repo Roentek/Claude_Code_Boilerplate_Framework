@@ -17,6 +17,7 @@
       "Bash(where n8n-mcp)",
       "Bash(npx n8n-mcp:*)",
       "Bash(git remote set-url:*)",
+      "Bash(npx markdownlint-cli:*)",
       "mcp__alpaca__get_stock_latest_trade",
       "mcp__claude_ai_Tavily__tavily_search",
       "mcp__claude_ai_Supabase__supabase_query",
