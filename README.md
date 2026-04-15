@@ -9,6 +9,7 @@ A ready-to-clone starting point for Claude Code as an agentic AI workspace. Ship
 ## Table of Contents
 
 - [What This Is](#what-this-is)
+- [How to Use This Boilerplate](#how-to-use-this-boilerplate)
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
 - [Project Structure](#project-structure)
@@ -36,6 +37,89 @@ This framework wires together every layer of a Claude Code project:
 - **Hooks** — Lifecycle shell scripts that run on session start, stop, and tool events
 - **Scripts** — A context monitor statusline and a first-time setup bootstrapper
 - **WAT Framework** — Architecture pattern: Workflows → Agents → Tools
+
+---
+
+## How to Use This Boilerplate
+
+This repo ships with everything enabled so you can see what's possible. **You are not expected to use all of it.** The right approach is to clone it, then immediately strip out anything you don't need. Fewer active MCP servers, rules, and plugins = less context consumed every session = faster, cheaper, more focused responses.
+
+### Step 1 — Clone and open
+
+```bash
+git clone https://github.com/your-org/claude-code-boilerplate-framework.git my-project
+cd my-project
+cp .env.example .env
+claude .
+```
+
+### Step 2 — Remove what you don't need
+
+Work through each layer and delete or disable anything irrelevant to your project:
+
+#### MCP Servers (`.mcp.json` + `.claude/settings.json`)
+
+Each server adds tools to every session. Remove any you won't use:
+
+1. Delete the server block from `.mcp.json`
+2. Remove its entry from `enabledMcpjsonServers` in `.claude/settings.json`
+3. Remove its `ENV_VAR` lines from `.env.example` (and `.env`)
+
+**Keep:** Only servers whose tools you expect to call within the next week.
+**Remove everything else.** You can add them back in 30 seconds when needed.
+
+#### Plugins (`.claude/settings.json → enabledPlugins`)
+
+Set any plugin to `false` to disable it:
+
+```json
+"enabledPlugins": {
+  "superpowers": true,
+  "frontend-design": false,
+  "ui-ux-pro-max": false,
+  "agent-sdk-dev": false
+}
+```
+
+**Keep:** `superpowers` is recommended for all projects — it provides planning, debugging, and code review workflows that apply universally.
+
+#### Rules (`.claude/rules/`)
+
+Every `.md` file here is injected into every session. Remove files that don't apply to your work:
+
+| Remove if... | Files to delete |
+| --- | --- |
+| Not building frontend UI | `frontend-instructions.md`, `ui-ux-pro-max-instructions.md` |
+| Not using Trigger.dev | `trigger-workflow-builder.md`, `trigger-api-reference.md` |
+| Not using the WAT agent pattern | `agent-instructions.md` |
+
+The four `memory-*.md` files are always worth keeping — they hold your project's accumulated context.
+
+#### Skills (`.claude/skills/`)
+
+Delete any `.md` skill files you didn't create and don't plan to use. Skills only fire when invoked, so unused skills don't hurt performance — but removing them keeps the project clean.
+
+### Step 3 — Add what your project needs
+
+Once trimmed, add only the tools you actually need:
+
+- **New MCP server**: add a block to `.mcp.json`, enable it in `settings.json`, add credentials to `.env`
+- **New rule**: create a `.md` file in `.claude/rules/` — it auto-loads next session
+- **New skill**: create a `.md` file in `.claude/skills/` — it becomes `/skill-name` instantly
+- **New plugin**: `claude plugins install <plugin-name>` then enable in `settings.json`
+
+### What's tested and ready out of the box
+
+Everything in this repo has been validated:
+
+| Layer | Tested |
+| ----- | ------ |
+| All MCP servers | Connection verified, `.env` keys documented |
+| All plugins | Installed and configured via `settings.json` |
+| Context monitor statusline | Works on macOS, Linux, Windows |
+| Setup hook | Runs on first `claude .` open |
+| Stop hook | Fires after every response |
+| Memory system | Both file-based and knowledge graph tiers |
 
 ---
 
@@ -221,6 +305,8 @@ All secrets live here. `.env` is gitignored. Copy `.env.example` → `.env` and 
 
 Plugins extend Claude Code with specialized modes and skills. Managed in `.claude/settings.json` → `enabledPlugins`.
 
+> **Trim this list.** Disable plugins you won't use by setting them to `false` in `settings.json`. `superpowers` is recommended for all projects. The rest are optional — enable only what your project actively uses.
+
 ### Plugin Marketplaces
 
 Two registries are configured in `extraKnownMarketplaces`:
@@ -299,6 +385,8 @@ Skills are Markdown files that expand into full instructions when invoked. Proje
 
 All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. Add the required keys to `.env` for each server you use.
 
+> **Trim this list.** Every enabled server adds tools to your session context. Only keep servers you actively use — remove the rest from `.mcp.json` and `settings.json`.
+
 | Server | Transport | `.env` Keys Required | Purpose |
 | -------- | ----------- | --------------------- | --------- |
 | **memory** | `npx @modelcontextprotocol/server-memory` | — | Persistent knowledge graph across sessions (entities, relations, observations) |
@@ -335,6 +423,8 @@ Google Workspace uses OAuth — you need a Google Cloud project with the APIs en
 ## Rules (Auto-Loaded Instructions)
 
 Every `.md` file in `.claude/rules/` is injected into every Claude Code session automatically. These shape Claude's behavior without requiring manual prompting.
+
+> **Trim this list.** Each rule file consumes context on every session open. Delete files that don't apply to your project — you can always recreate them from the original repo.
 
 | File | What It Does |
 | ------ | ------------- |
