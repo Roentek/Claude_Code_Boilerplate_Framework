@@ -190,6 +190,7 @@ All `.md` files in `.claude/rules/` are loaded automatically every session.
 | [`memory-preferences.md`](.claude/rules/memory-preferences.md) | How the user likes Claude to behave and communicate |
 | [`memory-decisions.md`](.claude/rules/memory-decisions.md) | Architectural decisions with dates and rationale |
 | [`memory-sessions.md`](.claude/rules/memory-sessions.md) | Log of substantive work completed each session |
+| [`karpathy-guidelines.md`](.claude/rules/karpathy-guidelines.md) | Coding behavior rules: think first, simplicity, surgical edits, goal-driven execution |
 
 ---
 
