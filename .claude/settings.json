@@ -99,7 +99,8 @@
     "supabase@claude-plugins-official": false,
     "superpowers@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
-    "ui-ux-pro-max@ui-ux-pro-max-skill": true
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
+    "andrej-karpathy-skills@karpathy-skills": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -112,7 +113,15 @@
       "source": {
         "source": "git",
         "url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git"
-      }
+      },
+      "autoUpdate": true
+    },
+    "karpathy-skills": {
+      "source": {
+        "source": "github",
+        "repo": "forrestchang/andrej-karpathy-skills"
+      },
+      "autoUpdate": true
     }
   }
 }
