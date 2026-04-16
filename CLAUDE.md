@@ -22,6 +22,7 @@ Start here — each path routes to the right tools and rules.
 | Voice AI (Vapi) | `vapi-mcp` tools | Create assistants, calls, phone numbers |
 | Web scraping | `apify` MCP | Search actors, fetch details, call actors |
 | Vector search / RAG | `pinecone-mcp` tools | Upsert, search, rerank records |
+| UI component search | `monet-mcp` tools | Search landing page components, get React/TS code |
 
 ---
 
@@ -118,6 +119,12 @@ Always available regardless of plugins. Invoke with `/skill-name`.
 | `/update-config` | Configuring hooks, permissions, and automated behaviors in `settings.json` |
 | `/keybindings-help` | Customizing keyboard shortcuts in `keybindings.json` |
 
+**Project skills** (local `.claude/skills/` — invoke with `/skill-name`):
+
+| Slash Command | Use When |
+| -------------- | --------- |
+| `/site-teardown [url]` | Reverse engineering any website into a build blueprint — tech stack, effects, design system, section-by-section build plan |
+
 **Superpowers skills** (auto-trigger based on context — no manual invoke needed):
 
 | Slash Command | When It Fires |
@@ -171,6 +178,7 @@ Defined in [`.mcp.json`](.mcp.json), loaded automatically. Add credentials to [`
 | `alpaca-mcp` | Stock bars, trading operations | Algorithmic trading (paper mode) |
 | `canva-dev` | Canva app SDK, UI kit, CLI docs | Canva app development |
 | `kie-ai` | Image, video, audio, lip-sync generation | AI media generation |
+| `monet-mcp` | `search_components`, `get_component_code`, `get_component_details`, `list_categories`, `get_registry_stats`, `list_collections`, `get_collection` | Landing page UI component library — search by natural language, retrieve React/TS source code. Categories: hero, stats, testimonial, feature, pricing, cta, contact, faq, how-it-works, showcase, header, footer, gallery, team, logo-cloud, newsletter. Requires `MONET_API_KEY`. |
 
 ---
 
