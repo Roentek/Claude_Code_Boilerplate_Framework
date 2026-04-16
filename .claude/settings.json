@@ -1,4 +1,7 @@
 {
+  "env": {
+
+  },
   "permissions": {
     "allow": [
       "Bash(dir:*)",
@@ -39,8 +42,7 @@
       "WebFetch(domain:help.getzep.com)",
       "WebFetch(domain:www.aitmpl.com)"
     ],
-    "deny": [],
-    "env": {}
+    "deny": []
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
