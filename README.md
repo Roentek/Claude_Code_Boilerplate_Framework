@@ -33,7 +33,7 @@ This framework wires together every layer of a Claude Code project:
 - **Rules** — Markdown instruction files auto-loaded into every session
 - **Plugins** — Extend Claude Code with specialized modes (superpowers, frontend-design, agent-sdk, etc.)
 - **Skills** — Reusable slash commands you invoke with `/skill-name`
-- **MCP Servers** — 13 pre-configured Model Context Protocol integrations (Supabase, Google Workspace, Pinecone, Trigger.dev, n8n, Vapi, Apify, Alpaca, and more)
+- **MCP Servers** — 15 pre-configured Model Context Protocol integrations (Supabase, Google Workspace, Pinecone, Trigger.dev, n8n, Vapi, Apify, Alpaca, Monet, and more)
 - **Hooks** — Lifecycle shell scripts that run on session start, stop, and tool events
 - **Scripts** — A context monitor statusline and a first-time setup bootstrapper
 - **WAT Framework** — Architecture pattern: Workflows → Agents → Tools
@@ -323,14 +323,14 @@ The two third-party plugins below are enabled in `settings.json` but must be ins
 
 **UI UX Pro Max** — design intelligence (67 styles, 161 palettes, 57 font pairings, 99 UX rules):
 
-```
+```bash
 /plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill
 /plugin install ui-ux-pro-max@ui-ux-pro-max-skill
 ```
 
 **Andrej Karpathy Skills** — coding behavior guidelines (think first, simplicity, surgical edits):
 
-```
+```bash
 /plugin marketplace add forrestchang/andrej-karpathy-skills
 /plugin install andrej-karpathy-skills@karpathy-skills
 ```
@@ -400,6 +400,12 @@ Skills are Markdown files that expand into full instructions when invoked. Proje
 | `/finishing-a-development-branch` | When tasks complete — verifies tests, presents merge/PR/discard options |
 | `/writing-skills` | Creating a new skill — follows best practices with adversarial testing |
 
+### Project Skills (`.claude/skills/`)
+
+| Slash Command | What It Does |
+| -------------- | ------------- |
+| `/site-teardown [url]` | Reverse engineers any website into a complete build blueprint — tech stack, every visual effect with implementation details, full design system (colors, typography, spacing), and a section-by-section build plan ready to hand off to a fresh Claude Code session. |
+
 ---
 
 ## MCP Servers
@@ -424,6 +430,7 @@ All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. A
 | **apify** | `npx @apify/actors-mcp-server` | `APIFY_API_PAT` | Web scraping marketplace — search actors, call actors, retrieve results |
 | **zep-mcp** | `npx mcp-remote` (remote) | — | Zep long-term memory documentation search |
 | **canva-dev** | `npx @canva/cli mcp` | — (browser OAuth) | Canva app SDK, UI kit, CLI docs, design operations |
+| **monet-mcp** | SSE remote (`monet.design`) | `MONET_API_KEY` | Landing page UI component library — search by natural language, retrieve full React/TypeScript source code. Tools: `search_components`, `get_component_code`, `get_component_details`, `list_categories`, `get_registry_stats`, `list_collections`, `get_collection`. Categories: hero, pricing, testimonial, feature, cta, faq, footer, gallery, and more. |
 
 ### Google Workspace Setup
 

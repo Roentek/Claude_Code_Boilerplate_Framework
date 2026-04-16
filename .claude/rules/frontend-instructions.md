@@ -39,6 +39,20 @@
 - Placeholder images: `https://placehold.co/WIDTHxHEIGHT`
 - Mobile-first responsive
 
+## Component Library (monet-mcp)
+
+Before building sections from scratch, search the **monet-mcp** component library for ready-made, production-grade React/TS components:
+
+```
+Tools: search_components, get_component_code, get_component_details, list_categories, get_collection
+```
+
+- **Search first** — use `search_components` with natural language before writing any section from scratch (e.g., "dark hero with gradient", "pricing cards with toggle", "testimonial carousel")
+- **Available categories:** hero, stats, testimonial, feature, pricing, cta, contact, faq, how-it-works, showcase, header, footer, gallery, team, logo-cloud, newsletter
+- **Get the code** — use `get_component_code` once you've found a match; adapt colors and copy to the project's brand
+- **Browse collections** — use `list_collections` / `get_collection` to explore curated component sets
+- Requires `MONET_API_KEY` in `.env`
+
 ## Brand Assets
 
 - Always check the `brand_assets/` folder before designing. It may contain logos, color guides, style guides, or images.
