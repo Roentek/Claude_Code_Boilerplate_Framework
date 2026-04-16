@@ -72,7 +72,52 @@ else
   echo "✓ .env already exists"
 fi
 
-# ── 5. Summary ─────────────────────────────────────────────
+# ── 5. Install marketplace plugins ─────────────────────────
+echo ""
+echo "── Marketplace Plugins ──────────────────────────────────"
+
+if command -v claude &>/dev/null; then
+  echo "  Attempting to install third-party plugins via CLI..."
+  echo ""
+
+  # ui-ux-pro-max — design intelligence (67 styles, 161 palettes, 57 fonts)
+  # Source: https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
+  if claude plugins install ui-ux-pro-max@ui-ux-pro-max-skill 2>/dev/null; then
+    echo "  ✓ ui-ux-pro-max installed"
+  else
+    echo "  ⚠ ui-ux-pro-max auto-install failed — run these inside Claude Code:"
+    echo "      /plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill"
+    echo "      /plugin install ui-ux-pro-max@ui-ux-pro-max-skill"
+  fi
+
+  # andrej-karpathy-skills — coding behavior guidelines
+  # Source: https://github.com/forrestchang/andrej-karpathy-skills
+  if claude plugins install andrej-karpathy-skills@karpathy-skills 2>/dev/null; then
+    echo "  ✓ andrej-karpathy-skills installed"
+  else
+    echo "  ⚠ andrej-karpathy-skills auto-install failed — run these inside Claude Code:"
+    echo "      /plugin marketplace add forrestchang/andrej-karpathy-skills"
+    echo "      /plugin install andrej-karpathy-skills@karpathy-skills"
+  fi
+else
+  echo "  claude CLI not found — install third-party plugins manually."
+  echo "  Run these slash commands inside a Claude Code chat session:"
+  echo ""
+  echo "  UI UX Pro Max (design system + 67 styles, 161 palettes, 57 fonts):"
+  echo "    /plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill"
+  echo "    /plugin install ui-ux-pro-max@ui-ux-pro-max-skill"
+  echo ""
+  echo "  Andrej Karpathy Skills (coding behavior guidelines):"
+  echo "    /plugin marketplace add forrestchang/andrej-karpathy-skills"
+  echo "    /plugin install andrej-karpathy-skills@karpathy-skills"
+fi
+
+echo ""
+echo "  Marketplace sources are pre-configured in .claude/settings.json"
+echo "  under extraKnownMarketplaces — no manual marketplace registration"
+echo "  is needed if using the slash commands above."
+
+# ── 6. Summary ─────────────────────────────────────────────
 echo ""
 if [ $ERRORS -eq 0 ]; then
   echo "✓ Setup complete. Context monitor statusline is ready."

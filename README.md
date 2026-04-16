@@ -133,7 +133,7 @@ All of the below must be on your `PATH` before setup runs.
 | ------ | ----- | --------- |
 | **Node.js 18+** | Runs `npx` for all MCP servers | `https://nodejs.org` or `nvm install --lts` |
 | **npm** | Bundled with Node.js | — |
-| **Python 3.8+** | Context monitor statusline | `https://python.org` or see below |
+| **Python 3.8+** | Context monitor statusline + `ui-ux-pro-max` design search scripts | `https://python.org` or see below |
 | **Git** | Clone the repo | `https://git-scm.com` |
 | **Claude Code CLI** | The AI assistant itself | `npm install -g @anthropic-ai/claude-code` |
 
@@ -315,8 +315,29 @@ Two registries are configured in `extraKnownMarketplaces`:
 | --- | --- |
 | `claude-code-plugins` | `github.com/anthropics/claude-code` (official) |
 | `ui-ux-pro-max-skill` | `github.com/nextlevelbuilder/ui-ux-pro-max-skill` |
+| `karpathy-skills` | `github.com/forrestchang/andrej-karpathy-skills` |
 
-Install or update plugins via the Claude Code UI or CLI:
+### Installing Third-Party Marketplace Plugins
+
+The two third-party plugins below are enabled in `settings.json` but must be installed before they activate. `setup.sh` attempts to install them automatically via the CLI — if that fails, run these slash commands inside a Claude Code chat session:
+
+**UI UX Pro Max** — design intelligence (67 styles, 161 palettes, 57 font pairings, 99 UX rules):
+
+```
+/plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill
+/plugin install ui-ux-pro-max@ui-ux-pro-max-skill
+```
+
+**Andrej Karpathy Skills** — coding behavior guidelines (think first, simplicity, surgical edits):
+
+```
+/plugin marketplace add forrestchang/andrej-karpathy-skills
+/plugin install andrej-karpathy-skills@karpathy-skills
+```
+
+> The marketplace sources are already registered in `extraKnownMarketplaces` inside `.claude/settings.json`, so no separate marketplace registration step is needed when using the CLI: `claude plugins install ui-ux-pro-max@ui-ux-pro-max-skill`.
+
+Install or update official plugins via CLI:
 
 ```bash
 claude plugins install <plugin-name>
