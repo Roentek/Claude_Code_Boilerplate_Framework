@@ -133,6 +133,12 @@
         "@canva/cli@latest",
         "mcp"
       ]
+    },
+    "monet-mcp": {
+      "url": "https://www.monet.design/api/remote/mcp",
+      "headers": {
+        "Authorization": "Bearer ${MONET_API_KEY}"
+      }
     }
   }
 }

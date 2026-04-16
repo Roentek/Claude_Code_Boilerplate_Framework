@@ -57,7 +57,8 @@
     "n8n-mcp",
     "apify",
     "zep-mcp",
-    "canva-dev"
+    "canva-dev",
+    "monet-mcp"
   ],
   "hooks": {
     "Setup": [
