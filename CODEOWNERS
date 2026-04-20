@@ -1,0 +1,22 @@
+# CODEOWNERS for Roentek Projects
+# Syntax: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-security/customizing-your-repository/about-code-owners
+# Last matching pattern wins.
+
+* @Roentek
+
+/.claude/ @Roentek
+/CLAUDE.md @Roentek
+/.mcp.json @Roentek
+
+/workflows/ @Roentek
+/tools/ @Roentek
+/brand_assets/ @Roentek
+
+/.github/ @Roentek
+/CODEOWNERS @Roentek
+/LICENSE @Roentek
+/README.md @Roentek
+
+/.env.example @Roentek
+
+/supabase/ @Roentek
