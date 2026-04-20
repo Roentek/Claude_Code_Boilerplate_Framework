@@ -48,7 +48,28 @@
 
 ## Boilerplate sync notes
 
-<!-- Only fill out if this PR was opened by the sync-boilerplate edge function. -->
+<!-- Only fill out if this PR was opened by the weekly sync-boilerplate Supabase edge function. -->
 - Source repo: `Roentek/Claude_Code_Boilerplate_Framework`
 - Branch: `boilerplate-sync/YYYYMMDD`
 - Auto-merged via REST API squash-merge after creation
+
+### SYNC_PATHS — LOCKED (do not modify)
+
+Only these paths are synced from the boilerplate upstream:
+
+| Path | Reason |
+| --- | --- |
+| `.claude/` | Claude Code rules, hooks, skills, agents |
+| `workflows/` | Automation SOPs |
+| `tools/` | Deterministic Python scripts |
+| `brand_assets/` | Shared design tokens |
+| `CLAUDE.md` | Root instruction file |
+| `.mcp.json` | MCP server definitions |
+
+### Never sync — owned by lovable.dev or project-specific
+
+These files are managed by **lovable.dev** or carry per-project customizations. Syncing them would destroy project state:
+
+`README.md` · `LICENSE` · `.env.example` · `.gitignore` · `.gitattributes` · `CODEOWNERS` · `.github/PULL_REQUEST_TEMPLATE.md`
+
+> If any of these appear in a sync PR diff, **reject the PR immediately** and fix the edge function's `SYNC_PATHS` config.

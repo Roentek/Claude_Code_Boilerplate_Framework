@@ -15,3 +15,8 @@ Architectural and technical decisions made during sessions — with date and rat
 - **Why:** OAuth auth, RLS, and real-time subscriptions needed; team already has access
 - **Implication:** All schema changes go through Supabase migrations, not raw SQL
 -->
+
+## 2026-04-20 — Boilerplate sync scope is locked
+- **Decision:** `SYNC_PATHS` is permanently locked to: `.claude/`, `workflows/`, `tools/`, `brand_assets/`, `CLAUDE.md`, `.mcp.json`
+- **Why:** Project-specific files (`README.md`, `LICENSE`, `.env.example`, `.gitignore`, `.gitattributes`, `CODEOWNERS`, `.github/PULL_REQUEST_TEMPLATE.md`) must never be overwritten by upstream boilerplate syncs — they carry per-project customizations
+- **Implication:** Never re-add the excluded files to `SYNC_PATHS` in any sync script, edge function, or workflow config
