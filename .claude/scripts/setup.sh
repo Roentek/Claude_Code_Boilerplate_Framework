@@ -72,7 +72,43 @@ else
   echo "✓ .env already exists"
 fi
 
-# ── 5. Install marketplace plugins ─────────────────────────
+# ── 5. Verify uvx is installed (required for google-workspace-mcp + alpaca) ──
+echo ""
+echo "── uvx (required for google-workspace-mcp and alpaca) ──────"
+if command -v uvx &>/dev/null; then
+  UVX_VERSION=$(uvx --version 2>&1 | head -1)
+  echo "✓ uvx found: $UVX_VERSION"
+else
+  echo "✗ uvx not found — two MCP servers require it:"
+  echo "  • google-workspace-mcp  (Google Gmail, Drive, Sheets, Docs, Calendar)"
+  echo "  • alpaca                (Alpaca trading MCP)"
+  echo ""
+  if [[ "$OSTYPE" != "msys"* && "$OSTYPE" != "cygwin"* && "$OS" != "Windows_NT" ]]; then
+    echo "  Install uv/uvx (macOS / Linux):"
+    echo "    curl -LsSf https://astral.sh/uv/install.sh | sh"
+    echo "  Then restart your terminal and re-open the project."
+  else
+    echo "  Install uv/uvx (Windows — PowerShell):"
+    echo "    powershell -ExecutionPolicy ByPass -c \"irm https://astral.sh/uv/install.ps1 | iex\""
+    echo "  Then restart your terminal and re-open the project."
+  fi
+  ERRORS=$((ERRORS + 1))
+fi
+
+# ── 6. Verify memory MCP server is reachable ───────────────
+echo ""
+echo "── Memory MCP Server (@modelcontextprotocol/server-memory) ─"
+if command -v npx &>/dev/null; then
+  echo "✓ npx found — memory MCP server will be launched via npx on first use"
+  echo "  Config: .mcp.json → \"memory\" → npx @modelcontextprotocol/server-memory"
+  echo "  Reference: https://app.aitmpl.com/component/mcp/integration/memory-integration"
+else
+  echo "✗ npx not found — memory MCP server requires Node.js/npx"
+  echo "  Install Node.js from https://nodejs.org (LTS recommended)"
+  ERRORS=$((ERRORS + 1))
+fi
+
+# ── 7. Install marketplace plugins ─────────────────────────
 echo ""
 echo "── Marketplace Plugins ──────────────────────────────────"
 
@@ -117,7 +153,7 @@ echo "  Marketplace sources are pre-configured in .claude/settings.json"
 echo "  under extraKnownMarketplaces — no manual marketplace registration"
 echo "  is needed if using the slash commands above."
 
-# ── 6. Summary ─────────────────────────────────────────────
+# ── 8. Summary ─────────────────────────────────────────────
 echo ""
 if [ $ERRORS -eq 0 ]; then
   echo "✓ Setup complete. Context monitor statusline is ready."
