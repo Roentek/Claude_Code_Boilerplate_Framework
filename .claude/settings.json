@@ -20,7 +20,7 @@
       "Bash(where n8n-mcp)",
       "Bash(npx n8n-mcp:*)",
       "Bash(git remote set-url:*)",
-      "Bash(npx markdownlint-cli:*)",
+      "Bash(npx markdownlint-cli:*)"
     ],
     "deny": []
   },
