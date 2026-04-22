@@ -119,6 +119,7 @@ Everything in this repo has been validated:
 | Context monitor statusline | Works on macOS, Linux, Windows |
 | Setup hook | Runs on first `claude .` open |
 | Stop hook | Fires after every response |
+| Pre-commit hook | Auto-syncs CLAUDE.md/README.md on tracked-path commits |
 | Memory system | Both file-based and knowledge graph tiers |
 
 ---
@@ -211,11 +212,15 @@ claude .
 
 On first open, a `Setup` hook automatically runs `.claude/scripts/setup.sh`, which:
 
-1. **Makes hooks executable** — `chmod +x` on shell scripts (Unix/macOS only)
+1. **Makes hooks executable** — `chmod +x` on `stop.sh` and `pre-commit.sh` (Unix/macOS only)
 2. **Verifies Python** — checks `python3` / `python` is in PATH
 3. **Verifies context-monitor.py** — confirms the statusline script is present
 4. **Creates `.env`** — copies `.env.example` → `.env` if none exists
-5. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
+5. **Verifies uvx** — required for `google-workspace-mcp` and `alpaca` MCP servers
+6. **Verifies npx** — required for the `memory` MCP server
+7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max` and `andrej-karpathy-skills` via CLI
+8. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
+9. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
 
 **Re-run setup manually** (e.g. fresh clone on a new machine):
 
@@ -252,7 +257,8 @@ bash .claude/scripts/setup.sh
 │   │   ├── Claude_Code_Context_Management_Hacks.md
 │   │   └── The_Shift_to_Agentic_AI_Workflows.md
 │   ├── hooks/
-│   │   └── stop.sh                  # Stop hook: prompts /reflect after fixes or discoveries
+│   │   ├── stop.sh                  # Stop hook: quality scan + doc-sync check at session end
+│   │   └── pre-commit.sh            # Pre-commit hook: auto-updates CLAUDE.md/README.md for tracked-path changes
 │   ├── rules/                       # Auto-loaded Markdown instructions (every session)
 │   │   ├── agent-instructions.md
 │   │   ├── frontend-instructions.md
@@ -486,13 +492,23 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 | Hook | File | Trigger | Behavior |
 | ------ | ------ | --------- | --------- |
 | **Setup** | `setup.sh` | First session open on a new machine | Bootstraps the project (see [Quick Start](#quick-start)) |
-| **Stop** | `stop.sh` | Every time Claude finishes responding | Scans session output for fixes/discoveries; prompts `/reflect` if warranted |
+| **Stop** | `stop.sh` | Every time Claude finishes responding | Scans session output for fixes/discoveries; checks if tracked paths changed and prompts doc update |
+| **pre-commit** (git) | `pre-commit.sh` | Before every `git commit` | Detects staged changes to tracked paths; auto-runs `claude --print` to update CLAUDE.md and README.md, then stages the updated docs alongside the original changes |
 
 **`stop.sh` logic:**
 
 - If the session contains words like `fixed`, `workaround`, `turns out`, `discovered` → suggests running `/reflect` to capture learnings
 - If the session contains softer signals like `error`, `bug`, `issue` → gentle nudge to update docs
+- If any tracked paths (`.claude/rules/`, `.claude/hooks/`, `.claude/scripts/`, `.mcp.json`, `workflows/`, `tools/`, etc.) were modified during the session → reports the count and prompts a manual or commit-triggered doc sync
 - Always approves (never blocks completion)
+
+**`pre-commit.sh` logic:**
+
+- Runs only when tracked paths are staged: `.claude/rules/`, `.claude/agents/`, `.claude/skills/`, `.claude/hooks/`, `.claude/scripts/`, `.mcp.json`, `workflows/`, `tools/`
+- If CLAUDE.md or README.md is already staged, assumes a manual update was done and skips auto-sync
+- Calls `claude --print` with a targeted prompt to update only the sections of CLAUDE.md and README.md that reference the changed files
+- Stages the updated docs automatically so they land in the same commit
+- Fails gracefully (exits 0 with a warning) if the `claude` CLI is not found — never blocks a commit
 
 ### Scripts (`.claude/scripts/`)
 
