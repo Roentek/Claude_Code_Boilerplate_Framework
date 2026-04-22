@@ -246,10 +246,10 @@ bash .claude/scripts/setup.sh
 ├── .claude/
 │   ├── settings.json                # Permissions, enabled plugins, hooks, statusline
 │   ├── agents/                      # Custom sub-agent definitions (.md files)
-│   ├── docs/                        # Reference PDFs loaded with the project
-│   │   ├── Claude_Code_Beginners_Guide.pdf
-│   │   ├── Claude_Code_Context_Management_Hacks.pdf
-│   │   └── The_Shift_to_Agentic_AI_Workflows.pdf
+│   ├── docs/                        # Reference docs loaded with the project
+│   │   ├── Claude_Code_Beginners_Guide.md
+│   │   ├── Claude_Code_Context_Management_Hacks.md
+│   │   └── The_Shift_to_Agentic_AI_Workflows.md
 │   ├── hooks/
 │   │   └── stop.sh                  # Stop hook: prompts /reflect after fixes or discoveries
 │   ├── rules/                       # Auto-loaded Markdown instructions (every session)
@@ -573,13 +573,13 @@ A persistent graph database of entities, relations, and observations — queryab
 
 ## Reference Docs
 
-Three PDFs ship in `.claude/docs/` and are available as context within sessions:
+Reference documents ship in `.claude/docs/` and are available as context within sessions:
 
 | File | Contents |
 | ------ | --------- |
-| `Claude_Code_Beginners_Guide.pdf` | End-to-end walkthrough of Claude Code for new users |
-| `Claude_Code_Context_Management_Hacks.pdf` | Techniques for managing the context window effectively |
-| `The_Shift_to_Agentic_AI_Workflows.pdf` | Conceptual foundation for agentic AI architecture |
+| [`Claude_Code_Beginners_Guide.md`](.claude/docs/Claude_Code_Beginners_Guide.md) | End-to-end walkthrough of Claude Code for new users |
+| [`Claude_Code_Context_Management_Hacks.md`](.claude/docs/Claude_Code_Context_Management_Hacks.md) | Techniques for managing the context window effectively |
+| [`The_Shift_to_Agentic_AI_Workflows.md`](.claude/docs/The_Shift_to_Agentic_AI_Workflows.md) | Conceptual foundation for agentic AI architecture |
 
 ---
 

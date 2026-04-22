@@ -73,7 +73,7 @@ CLAUDE.md                    ← You are here (philosophy + routing only)
   skills/                    ← Reusable slash-command skills (add .md → get /skill-name)
   hooks/                     ← Lifecycle shell scripts (Stop, PreToolUse, etc.)
   scripts/                   ← Utility scripts (status line, context monitor)
-  docs/                      ← Reference PDFs and guides
+  docs/                      ← Reference docs and guides (.md + one legacy PDF)
 .mcp.json                    ← MCP server definitions (version-controlled)
 .env                         ← API keys (gitignored — never commit)
 .env.example                 ← Template for all required keys
