@@ -27,6 +27,10 @@ if [[ "$OSTYPE" != "msys"* && "$OSTYPE" != "cygwin"* && "$OS" != "Windows_NT" ]]
     chmod +x "$ROOT/.claude/hooks/stop.sh"
     echo "✓ stop.sh marked executable"
   fi
+  if [ -f "$ROOT/.claude/hooks/pre-commit.sh" ]; then
+    chmod +x "$ROOT/.claude/hooks/pre-commit.sh"
+    echo "✓ pre-commit.sh marked executable"
+  fi
   if [ -f "$ROOT/.claude/scripts/setup.sh" ]; then
     chmod +x "$ROOT/.claude/scripts/setup.sh"
   fi
@@ -153,7 +157,28 @@ echo "  Marketplace sources are pre-configured in .claude/settings.json"
 echo "  under extraKnownMarketplaces — no manual marketplace registration"
 echo "  is needed if using the slash commands above."
 
-# ── 8. Summary ─────────────────────────────────────────────
+# ── 8. Install pre-commit doc-sync hook ────────────────────
+echo ""
+echo "── Git Pre-Commit Hook (doc-sync) ───────────────────────"
+HOOKS_DIR="$ROOT/.git/hooks"
+PRE_COMMIT_DEST="$HOOKS_DIR/pre-commit"
+
+if [ -f "$PRE_COMMIT_DEST" ] && ! grep -q "pre-commit.sh" "$PRE_COMMIT_DEST" 2>/dev/null; then
+  echo "⚠  A pre-commit hook already exists from another source."
+  echo "   To enable doc-sync, manually append to $PRE_COMMIT_DEST:"
+  echo "     \"$ROOT/.claude/hooks/pre-commit.sh\""
+else
+  mkdir -p "$HOOKS_DIR"
+  # Write a thin wrapper so .git/hooks/pre-commit never needs updating;
+  # the actual hook logic lives in the version-controlled .claude/hooks/ file.
+  printf '#!/bin/bash\nexec "$(git rev-parse --show-toplevel)/.claude/hooks/pre-commit.sh"\n' > "$PRE_COMMIT_DEST"
+  if [[ "$OSTYPE" != "msys"* && "$OSTYPE" != "cygwin"* && "$OS" != "Windows_NT" ]]; then
+    chmod +x "$PRE_COMMIT_DEST"
+  fi
+  echo "✓ pre-commit doc-sync hook installed → .git/hooks/pre-commit"
+fi
+
+# ── 9. Summary ─────────────────────────────────────────────
 echo ""
 if [ $ERRORS -eq 0 ]; then
   echo "✓ Setup complete. Context monitor statusline is ready."

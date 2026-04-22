@@ -224,9 +224,12 @@ All `.md` files in `.claude/rules/` are loaded automatically every session.
 
 | Hook | File | Behavior |
 | ------ | ------ | --------- |
-| `Stop` | [`.claude/hooks/stop.sh`](.claude/hooks/stop.sh) | Scans session for fixes/discoveries; prompts `/reflect` if warranted |
+| `Stop` (Claude Code) | [`.claude/hooks/stop.sh`](.claude/hooks/stop.sh) | Scans session for fixes/discoveries; flags tracked-path changes that may need doc updates |
+| `pre-commit` (git) | [`.claude/hooks/pre-commit.sh`](.claude/hooks/pre-commit.sh) | Detects staged changes to tracked paths; auto-updates CLAUDE.md and README.md before the commit lands |
 
-> Add new hooks in [`.claude/settings.json`](.claude/settings.json) under `"hooks"`.
+The `pre-commit` hook is installed to `.git/hooks/pre-commit` automatically by `setup.sh`. It fires when any of these paths are staged: `.claude/rules/`, `.claude/agents/`, `.claude/skills/`, `.claude/hooks/`, `.claude/scripts/`, `.mcp.json`, `workflows/`, `tools/`.
+
+> Add new Claude Code hooks in [`.claude/settings.json`](.claude/settings.json) under `"hooks"`.
 
 ---
 
