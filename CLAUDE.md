@@ -73,7 +73,7 @@ CLAUDE.md                    ← You are here (philosophy + routing only)
   skills/                    ← Reusable slash-command skills (add .md → get /skill-name)
   hooks/                     ← Lifecycle shell scripts (Stop, PreToolUse, etc.)
   scripts/                   ← Utility scripts (status line, context monitor)
-  docs/                      ← Reference docs and guides (.md + one legacy PDF)
+  docs/                      ← Reference docs and guides (.md files)
 .mcp.json                    ← MCP server definitions (version-controlled)
 .env                         ← API keys (gitignored — never commit)
 .env.example                 ← Template for all required keys
@@ -81,6 +81,7 @@ tools/                       ← Python scripts for deterministic execution
 workflows/                   ← Markdown SOPs defining automation tasks
 src/trigger/                 ← Trigger.dev TypeScript task files
 brand_assets/                ← Logos, color guides, design tokens
+docs/                        ← Project-level documentation (add custom docs here)
 .tmp/                        ← Scratch space — disposable, regenerable
 ```
 

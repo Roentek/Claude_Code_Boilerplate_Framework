@@ -245,6 +245,7 @@ bash .claude/scripts/setup.sh
 │
 ├── .claude/
 │   ├── settings.json                # Permissions, enabled plugins, hooks, statusline
+│   ├── settings.local.json          # Machine-local permissions (gitignored)
 │   ├── agents/                      # Custom sub-agent definitions (.md files)
 │   ├── docs/                        # Reference docs loaded with the project
 │   │   ├── Claude_Code_Beginners_Guide.md
@@ -262,13 +263,15 @@ bash .claude/scripts/setup.sh
 │   │   ├── memory-profile.md
 │   │   ├── memory-preferences.md
 │   │   ├── memory-decisions.md
-│   │   └── memory-sessions.md
+│   │   ├── memory-sessions.md
+│   │   └── karpathy-guidelines.md
 │   ├── scripts/
 │   │   ├── setup.sh                 # First-time machine setup bootstrapper
 │   │   └── context-monitor.py       # Statusline: context %, cost, git branch, duration
 │   └── skills/                      # Project-local slash-command skills (.md files)
 │
 ├── brand_assets/                    # Logos, color guides, design tokens
+├── docs/                            # Project-level documentation
 ├── src/
 │   └── trigger/                     # Trigger.dev TypeScript task files
 ├── tools/                           # Python scripts for deterministic execution
@@ -290,6 +293,10 @@ Controls all Claude Code behavior for this project:
 - **`statusLine`** — Command that renders the statusline bar
 - **`enabledPlugins`** — Which marketplace plugins are active (set to `false` to disable)
 - **`extraKnownMarketplaces`** — Additional plugin registries beyond the official Claude Code marketplace
+
+### `.claude/settings.local.json`
+
+Machine-local permissions and overrides — gitignored. Add tool call pre-approvals specific to your local environment (e.g., local MCP server tools) without committing them to the repo. Keeps project-wide `settings.json` clean of machine-specific noise.
 
 ### `.mcp.json`
 
@@ -466,6 +473,7 @@ Every `.md` file in `.claude/rules/` is injected into every Claude Code session 
 | [`memory-preferences.md`](.claude/rules/memory-preferences.md) | Communication style and workflow preferences (filled in as you work) |
 | [`memory-decisions.md`](.claude/rules/memory-decisions.md) | Architectural decisions with dates and rationale |
 | [`memory-sessions.md`](.claude/rules/memory-sessions.md) | Log of substantive work completed per session |
+| [`karpathy-guidelines.md`](.claude/rules/karpathy-guidelines.md) | Coding behavior rules: think first, simplicity, surgical edits, goal-driven execution |
 
 ---
 
