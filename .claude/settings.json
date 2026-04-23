@@ -40,7 +40,8 @@
     "apify",
     "zep-mcp",
     "canva-dev",
-    "monet-mcp"
+    "monet-mcp",
+    "stitch"
   ],
   "hooks": {
     "Setup": [

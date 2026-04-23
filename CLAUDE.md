@@ -180,6 +180,7 @@ Defined in [`.mcp.json`](.mcp.json), loaded automatically. Add credentials to [`
 | `canva-dev` | Canva app SDK, UI kit, CLI docs | Canva app development |
 | `kie-ai` | Image, video, audio, lip-sync generation | AI media generation |
 | `monet-mcp` | `search_components`, `get_component_code`, `get_component_details`, `list_categories`, `get_registry_stats`, `list_collections`, `get_collection` | Landing page UI component library — search by natural language, retrieve React/TS source code. Categories: hero, stats, testimonial, feature, pricing, cta, contact, faq, how-it-works, showcase, header, footer, gallery, team, logo-cloud, newsletter. Requires `MONET_API_KEY`. |
+| `stitch` | `extract_design_context`, `fetch_screen_code`, `fetch_screen_image` | Google Stitch — extract design DNA (fonts, colors, layouts) from screens, fetch screen HTML/code and images. Requires `STITCH_API_KEY`. |
 
 ---
 
