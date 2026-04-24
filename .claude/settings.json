@@ -1,7 +1,5 @@
 {
-  "env": {
-
-  },
+  "env": {},
   "permissions": {
     "allow": [
       "Bash(dir:*)",
@@ -84,7 +82,8 @@
     "superpowers@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
     "ui-ux-pro-max@ui-ux-pro-max-skill": true,
-    "andrej-karpathy-skills@karpathy-skills": true
+    "andrej-karpathy-skills@karpathy-skills": true,
+    "codex@openai-codex": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -104,6 +103,13 @@
       "source": {
         "source": "github",
         "repo": "forrestchang/andrej-karpathy-skills"
+      },
+      "autoUpdate": true
+    },
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
       },
       "autoUpdate": true
     }

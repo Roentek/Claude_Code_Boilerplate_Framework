@@ -135,16 +135,10 @@
       ]
     },
     "monet-mcp": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "mcp-remote",
-        "https://www.monet.design/api/remote/mcp",
-        "--header",
-        "Authorization: Bearer ${MONET_API_KEY}"
-      ],
-      "env": {
-        "MONET_API_KEY": "${MONET_API_KEY}"
+      "type": "http",
+      "url": "https://www.monet.design/api/remote/mcp",
+      "headers": {
+        "Authorization": "Bearer ${MONET_API_KEY}"
       }
     },
     "stitch": {
