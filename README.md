@@ -441,9 +441,11 @@ Skills are Markdown files that expand into full instructions when invoked. Proje
 
 All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. Credentials are injected at runtime from the `env` block in `.claude/settings.local.json`.
 
+---
 > **Quick setup:** Copy `.claude/settings.local.json.example` → `.claude/settings.local.json`. The `__activation_guide` inside it lists exactly where to get each key and which servers need no key at all.
-
+---
 > **Trim this list.** Every enabled server adds tools to your session context. Only keep servers you actively use — remove the rest from `.mcp.json` and `settings.json`.
+---
 
 | Server | Transport | `.env` Keys Required | Purpose |
 | -------- | ----------- | --------------------- | --------- |
