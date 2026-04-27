@@ -16,7 +16,7 @@ Start here — each path routes to the right tools and rules.
 | Frontend UI | `/frontend-design` skill → `ui-ux-pro-max` design system | [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) → [`ui-ux-pro-max-instructions.md`](.claude/rules/ui-ux-pro-max-instructions.md) |
 | Claude AI agent | `agent-sdk-dev` plugin → `.claude/agents/` | [`agent-instructions.md`](.claude/rules/agent-instructions.md) |
 | Slash-command skill | `.claude/skills/` — add a `.md` file | Invoke with `/skill-name`; see existing skills below |
-| MCP server integration | `.mcp.json` + `.env` | Add server config, add credentials, restart Claude Code |
+| MCP server integration | `.mcp.json` + `.claude/settings.local.json` | Copy `.claude/settings.local.json.example` → `settings.local.json`, fill in keys, restart |
 | Claude API / SDK app | `/claude-api` skill | Scaffolds Anthropic SDK boilerplate |
 | n8n workflow | `n8n-mcp` tools | Search nodes, validate, build via MCP |
 | Voice AI (Vapi) | `vapi-mcp` tools | Create assistants, calls, phone numbers |
@@ -77,6 +77,9 @@ CLAUDE.md                    ← You are here (philosophy + routing only)
 .mcp.json                    ← MCP server definitions (version-controlled)
 .env                         ← API keys (gitignored — never commit)
 .env.example                 ← Template for all required keys
+.claude/
+  settings.local.json        ← Your machine-local credentials + permissions (gitignored)
+  settings.local.json.example ← Template: all keys cleared + activation guide per MCP server
 tools/                       ← Python scripts for deterministic execution
 workflows/                   ← Markdown SOPs defining automation tasks
 src/trigger/                 ← Trigger.dev TypeScript task files
@@ -181,6 +184,8 @@ Defined in [`.mcp.json`](.mcp.json), loaded automatically. Add credentials to [`
 | `kie-ai` | Image, video, audio, lip-sync generation | AI media generation |
 | `monet-mcp` | `search_components`, `get_component_code`, `get_component_details`, `list_categories`, `get_registry_stats`, `list_collections`, `get_collection` | Landing page UI component library — search by natural language, retrieve React/TS source code. Categories: hero, stats, testimonial, feature, pricing, cta, contact, faq, how-it-works, showcase, header, footer, gallery, team, logo-cloud, newsletter. Requires `MONET_API_KEY`. |
 | `stitch` | `extract_design_context`, `fetch_screen_code`, `fetch_screen_image` | Google Stitch — extract design DNA (fonts, colors, layouts) from screens, fetch screen HTML/code and images. Requires `STITCH_API_KEY`. |
+
+> **Setup:** Copy [`.claude/settings.local.json.example`](.claude/settings.local.json.example) → `.claude/settings.local.json`. The embedded `__activation_guide` lists exactly where to obtain each credential and which servers (memory, trigger, zep, canva) need no key at all.
 
 ---
 

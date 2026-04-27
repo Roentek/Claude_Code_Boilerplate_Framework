@@ -250,7 +250,8 @@ bash .claude/scripts/setup.sh
 │
 ├── .claude/
 │   ├── settings.json                # Permissions, enabled plugins, hooks, statusline
-│   ├── settings.local.json          # Machine-local permissions (gitignored)
+│   ├── settings.local.json          # Machine-local credentials + permissions (gitignored)
+│   ├── settings.local.json.example  # Template: all MCP credential keys cleared + activation guide
 │   ├── agents/                      # Custom sub-agent definitions (.md files)
 │   ├── docs/                        # Reference docs loaded with the project
 │   │   ├── Claude_Code_Beginners_Guide.md
@@ -302,7 +303,22 @@ Controls all Claude Code behavior for this project:
 
 ### `.claude/settings.local.json`
 
-Machine-local permissions and overrides — gitignored. Add tool call pre-approvals specific to your local environment (e.g., local MCP server tools) without committing them to the repo. Keeps project-wide `settings.json` clean of machine-specific noise.
+Machine-local credentials and permissions — gitignored. Holds the API keys injected into MCP servers at runtime (via the `env` block) and any tool-call pre-approvals specific to your machine. Never committed.
+
+### `.claude/settings.local.json.example`
+
+A checked-in template for `settings.local.json`. All credential fields are cleared. Copy it to `settings.local.json` and fill in only the keys for the MCP servers you plan to use.
+
+The file contains three sections:
+
+| Section | Purpose |
+| ------- | ------- |
+| `__readme` | One-line copy instruction |
+| `__activation_guide` | Per-server notes: where to get each key, which servers need no key (memory, trigger, zep, canva), and which require a one-time CLI auth step |
+| `env` | All 16 credential env vars pre-listed with empty values, ready to fill in |
+| `permissions.allow` | Pre-built allowlist of read/query MCP tool calls across all servers — paste into your `settings.local.json` to eliminate repeated permission prompts |
+
+> `settings.local.json` is already in `.gitignore`. The `.example` file is version-controlled and safe to commit.
 
 ### `.mcp.json`
 
@@ -423,7 +439,9 @@ Skills are Markdown files that expand into full instructions when invoked. Proje
 
 ## MCP Servers
 
-All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. Add the required keys to `.env` for each server you use.
+All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. Credentials are injected at runtime from the `env` block in `.claude/settings.local.json`.
+
+> **Quick setup:** Copy `.claude/settings.local.json.example` → `.claude/settings.local.json`. The `__activation_guide` inside it lists exactly where to get each key and which servers need no key at all.
 
 > **Trim this list.** Every enabled server adds tools to your session context. Only keep servers you actively use — remove the rest from `.mcp.json` and `settings.json`.
 
