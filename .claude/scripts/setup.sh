@@ -139,6 +139,16 @@ if command -v claude &>/dev/null; then
     echo "      /plugin marketplace add forrestchang/andrej-karpathy-skills"
     echo "      /plugin install andrej-karpathy-skills@karpathy-skills"
   fi
+
+  # impeccable — frontend design skill (23 commands + anti-pattern detection)
+  # Source: https://github.com/pbakaus/impeccable
+  if claude plugins install impeccable@impeccable 2>/dev/null; then
+    echo "  ✓ impeccable installed"
+  else
+    echo "  ⚠ impeccable auto-install failed — run these inside Claude Code:"
+    echo "      /plugin marketplace add pbakaus/impeccable"
+    echo "      /plugin install impeccable@impeccable"
+  fi
 else
   echo "  claude CLI not found — install third-party plugins manually."
   echo "  Run these slash commands inside a Claude Code chat session:"
@@ -150,6 +160,10 @@ else
   echo "  Andrej Karpathy Skills (coding behavior guidelines):"
   echo "    /plugin marketplace add forrestchang/andrej-karpathy-skills"
   echo "    /plugin install andrej-karpathy-skills@karpathy-skills"
+  echo ""
+  echo "  Impeccable (frontend design skill — 23 commands + anti-pattern detection):"
+  echo "    /plugin marketplace add pbakaus/impeccable"
+  echo "    /plugin install impeccable@impeccable"
 fi
 
 echo ""
@@ -157,7 +171,35 @@ echo "  Marketplace sources are pre-configured in .claude/settings.json"
 echo "  under extraKnownMarketplaces — no manual marketplace registration"
 echo "  is needed if using the slash commands above."
 
-# ── 8. Install pre-commit doc-sync hook ────────────────────
+# ── 8. Install project skills to ~/.claude/skills/ ─────────
+echo ""
+echo "── Project Skills (~/.claude/skills/) ──────────────────"
+SKILLS_SRC="$ROOT/.claude/skills"
+SKILLS_DEST="$HOME/.claude/skills"
+SKILLS_INSTALLED=0
+
+if [ -d "$SKILLS_SRC" ]; then
+  for skill_dir in "$SKILLS_SRC"/*/; do
+    skill_name=$(basename "$skill_dir")
+    skill_file="$skill_dir/SKILL.md"
+    if [ -f "$skill_file" ]; then
+      dest_dir="$SKILLS_DEST/$skill_name"
+      mkdir -p "$dest_dir"
+      cp "$skill_file" "$dest_dir/SKILL.md"
+      echo "  ✓ $skill_name → ~/.claude/skills/$skill_name/SKILL.md"
+      SKILLS_INSTALLED=$((SKILLS_INSTALLED + 1))
+    fi
+  done
+  if [ $SKILLS_INSTALLED -eq 0 ]; then
+    echo "  (no skills found in .claude/skills/)"
+  else
+    echo "  $SKILLS_INSTALLED skill(s) installed. Restart Claude Code to activate."
+  fi
+else
+  echo "  .claude/skills/ not found — skipping"
+fi
+
+# ── 9. Install pre-commit doc-sync hook ────────────────────
 echo ""
 echo "── Git Pre-Commit Hook (doc-sync) ───────────────────────"
 HOOKS_DIR="$ROOT/.git/hooks"
@@ -178,7 +220,7 @@ else
   echo "✓ pre-commit doc-sync hook installed → .git/hooks/pre-commit"
 fi
 
-# ── 9. Summary ─────────────────────────────────────────────
+# ── 10. Summary ────────────────────────────────────────────
 echo ""
 if [ $ERRORS -eq 0 ]; then
   echo "✓ Setup complete. Context monitor statusline is ready."
