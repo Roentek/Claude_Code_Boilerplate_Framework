@@ -137,6 +137,8 @@
       "mcp__canva-dev__read-canva-cli-documentation",
       "mcp__canva-dev__read-canva-connect-documentation-index",
 
+      "Skill(update-config)",
+
       "WebFetch(domain:docs.n8n.io)",
       "WebFetch(domain:docs.trigger.dev)",
       "WebFetch(domain:docs.pinecone.io)",
@@ -147,8 +149,7 @@
       "WebFetch(domain:www.aitmpl.com)",
       "WebFetch(domain:stitch.withgoogle.com)",
       "WebFetch(domain:impeccable.style)",
-      
-      "Skill(update-config)"
+      "WebFetch(domain:github.com)"
     ]
   }
 }
