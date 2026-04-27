@@ -18,7 +18,8 @@
       "Bash(where n8n-mcp)",
       "Bash(npx n8n-mcp:*)",
       "Bash(git remote set-url:*)",
-      "Bash(npx markdownlint-cli:*)"
+      "Bash(npx markdownlint-cli:*)",
+      "Bash(python3 *)"
     ],
     "deny": []
   },
@@ -83,7 +84,8 @@
     "skill-creator@claude-plugins-official": true,
     "ui-ux-pro-max@ui-ux-pro-max-skill": true,
     "andrej-karpathy-skills@karpathy-skills": true,
-    "codex@openai-codex": true
+    "codex@openai-codex": true,
+    "impeccable@impeccable": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -110,6 +112,13 @@
       "source": {
         "source": "github",
         "repo": "openai/codex-plugin-cc"
+      },
+      "autoUpdate": true
+    },
+    "impeccable": {
+      "source": {
+        "source": "github",
+        "repo": "pbakaus/impeccable"
       },
       "autoUpdate": true
     }

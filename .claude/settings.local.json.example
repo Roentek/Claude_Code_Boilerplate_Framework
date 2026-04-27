@@ -146,7 +146,9 @@
       "WebFetch(domain:help.getzep.com)",
       "WebFetch(domain:www.aitmpl.com)",
       "WebFetch(domain:stitch.withgoogle.com)",
-      "Bash(python3 *)"
+      "WebFetch(domain:impeccable.style)",
+      
+      "Skill(update-config)"
     ]
   }
 }
