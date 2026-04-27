@@ -15,7 +15,7 @@ Start here — each path routes to the right tools and rules.
 | Trigger.dev automation | `workflows/` → `tools/` | [`trigger-workflow-builder.md`](.claude/rules/trigger-workflow-builder.md), [`trigger-api-reference.md`](.claude/rules/trigger-api-reference.md) |
 | Frontend UI | `/frontend-design` skill → `ui-ux-pro-max` design system | [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) → [`ui-ux-pro-max-instructions.md`](.claude/rules/ui-ux-pro-max-instructions.md) |
 | Claude AI agent | `agent-sdk-dev` plugin → `.claude/agents/` | [`agent-instructions.md`](.claude/rules/agent-instructions.md) |
-| Slash-command skill | `.claude/skills/` — add a `.md` file | Invoke with `/skill-name`; see existing skills below |
+| Slash-command skill | `~/.claude/skills/<name>/SKILL.md` | Skills must be in subdirectory + `SKILL.md` format; `setup.sh` auto-installs from `.claude/skills/` |
 | MCP server integration | `.mcp.json` + `.claude/settings.local.json` | Copy `.claude/settings.local.json.example` → `settings.local.json`, fill in keys, restart |
 | Claude API / SDK app | `/claude-api` skill | Scaffolds Anthropic SDK boilerplate |
 | n8n workflow | `n8n-mcp` tools | Search nodes, validate, build via MCP |
@@ -70,7 +70,7 @@ CLAUDE.md                    ← You are here (philosophy + routing only)
 .claude/
   rules/                     ← Auto-loaded instructions (all .md files loaded every session)
   agents/                    ← Custom sub-agent definitions
-  skills/                    ← Reusable slash-command skills (add .md → get /skill-name)
+  skills/                    ← Project skill sources (<name>/SKILL.md) — setup.sh installs to ~/.claude/skills/
   hooks/                     ← Lifecycle shell scripts (Stop, PreToolUse, etc.)
   scripts/                   ← Utility scripts (status line, context monitor)
   docs/                      ← Reference docs and guides (.md files)
@@ -104,6 +104,7 @@ Plugins extend Claude Code with specialized modes and skills. Invoke via `/plugi
 | `playground` | Sandboxed experimentation | Testing prompts and tool chains without side effects |
 | `superpowers` | Full dev workflow — TDD, planning, subagents, debugging, code review | Any non-trivial feature or fix — triggers automatically based on context |
 | `skill-creator` | Create, edit, test, and benchmark skills | When building or refining slash-command skills |
+| `impeccable` | Frontend design skill — 23 commands (`/impeccable polish`, `/impeccable audit`, etc.) + anti-pattern detection | Any frontend design work; also use `npx impeccable detect` for standalone anti-pattern checking |
 
 > Disabled: `github`, `pinecone`, `supabase`, `plugin-dev` — enable in [`.claude/settings.json`](.claude/settings.json) → `enabledPlugins`.
 
@@ -123,11 +124,12 @@ Always available regardless of plugins. Invoke with `/skill-name`.
 | `/update-config` | Configuring hooks, permissions, and automated behaviors in `settings.json` |
 | `/keybindings-help` | Customizing keyboard shortcuts in `keybindings.json` |
 
-**Project skills** (local `.claude/skills/` — invoke with `/skill-name`):
+**Project skills** (source: `.claude/skills/` — installed to `~/.claude/skills/` by `setup.sh`):
 
 | Slash Command | Use When |
 | -------------- | --------- |
 | `/site-teardown [url]` | Reverse engineering any website into a build blueprint — tech stack, effects, design system, section-by-section build plan |
+| `/skillui` | Extract a complete design system from any website, local dir, or GitHub repo via `skillui` CLI — outputs `SKILL.md`, `DESIGN.md`, and token JSON ready for Claude |
 
 **Superpowers skills** (auto-trigger based on context — no manual invoke needed):
 
@@ -147,7 +149,7 @@ Always available regardless of plugins. Invoke with `/skill-name`.
 | `/finishing-a-development-branch` | When tasks complete — verifies tests, presents merge/PR/discard options |
 | `/writing-skills` | Creating a new reusable skill — follows best practices with adversarial testing |
 
-> Add project-specific skills: create `.md` files in `.claude/skills/` — they become `/skill-name` commands automatically.
+> Add project-specific skills: create `<name>/SKILL.md` inside `.claude/skills/` — `setup.sh` copies them to `~/.claude/skills/` where Claude Code reads them. Restart Claude Code after adding a new skill.
 
 ---
 

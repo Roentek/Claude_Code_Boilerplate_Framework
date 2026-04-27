@@ -22,7 +22,8 @@
       "Bash(python3 *)",
       "Bash(gh api *)",
       "Bash(npx skillui *)",
-      "Bash(skillui *)"
+      "Bash(skillui *)",
+      "Bash(python -m json.tool)"
     ],
     "deny": []
   },

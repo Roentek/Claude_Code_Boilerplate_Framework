@@ -105,7 +105,7 @@ Once trimmed, add only the tools you actually need:
 
 - **New MCP server**: add a block to `.mcp.json`, enable it in `settings.json`, add credentials to `.env`
 - **New rule**: create a `.md` file in `.claude/rules/` — it auto-loads next session
-- **New skill**: create a `.md` file in `.claude/skills/` — it becomes `/skill-name` instantly
+- **New skill**: create `<name>/SKILL.md` in `.claude/skills/`, then re-run `bash .claude/scripts/setup.sh` to install it to `~/.claude/skills/`
 - **New plugin**: `claude plugins install <plugin-name>` then enable in `settings.json`
 
 ### What's tested and ready out of the box
@@ -218,9 +218,10 @@ On first open, a `Setup` hook automatically runs `.claude/scripts/setup.sh`, whi
 4. **Creates `.env`** — copies `.env.example` → `.env` if none exists
 5. **Verifies uvx** — required for `google-workspace-mcp` and `alpaca` MCP servers
 6. **Verifies npx** — required for the `memory` MCP server
-7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max` and `andrej-karpathy-skills` via CLI
-8. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
-9. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
+7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max`, `andrej-karpathy-skills`, and `impeccable` via CLI
+8. **Installs project skills** — copies `.claude/skills/*/SKILL.md` to `~/.claude/skills/` where Claude Code reads them
+9. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
+10. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
 
 **Re-run setup manually** (e.g. fresh clone on a new machine):
 
@@ -345,10 +346,11 @@ Two registries are configured in `extraKnownMarketplaces`:
 | `claude-code-plugins` | `github.com/anthropics/claude-code` (official) |
 | `ui-ux-pro-max-skill` | `github.com/nextlevelbuilder/ui-ux-pro-max-skill` |
 | `karpathy-skills` | `github.com/forrestchang/andrej-karpathy-skills` |
+| `impeccable` | `github.com/pbakaus/impeccable` |
 
 ### Installing Third-Party Marketplace Plugins
 
-The two third-party plugins below are enabled in `settings.json` but must be installed before they activate. `setup.sh` attempts to install them automatically via the CLI — if that fails, run these slash commands inside a Claude Code chat session:
+The three third-party plugins below are enabled in `settings.json` but must be installed before they activate. `setup.sh` attempts to install them automatically via the CLI — if that fails, run these slash commands inside a Claude Code chat session:
 
 **UI UX Pro Max** — design intelligence (67 styles, 161 palettes, 57 font pairings, 99 UX rules):
 
@@ -362,6 +364,13 @@ The two third-party plugins below are enabled in `settings.json` but must be ins
 ```bash
 /plugin marketplace add forrestchang/andrej-karpathy-skills
 /plugin install andrej-karpathy-skills@karpathy-skills
+```
+
+**Impeccable** — frontend design skill with 23 commands (`/impeccable polish`, `/impeccable audit`, `/impeccable critique`, etc.) and 24-issue anti-pattern detection. Also available standalone: `npx impeccable detect [file/URL/dir]`:
+
+```bash
+/plugin marketplace add pbakaus/impeccable
+/plugin install impeccable@impeccable
 ```
 
 > The marketplace sources are already registered in `extraKnownMarketplaces` inside `.claude/settings.json`, so no separate marketplace registration step is needed when using the CLI: `claude plugins install ui-ux-pro-max@ui-ux-pro-max-skill`.
@@ -379,6 +388,7 @@ claude plugins install <plugin-name>
 | **superpowers** | `superpowers@claude-plugins-official` | Full dev workflow: TDD, planning, subagents, debugging, code review, git worktrees, skill authoring |
 | **frontend-design** | `frontend-design@claude-plugins-official` | `/frontend-design` skill — distinctive, production-grade UI generation |
 | **ui-ux-pro-max** | `ui-ux-pro-max@ui-ux-pro-max-skill` | Design intelligence: 67 styles, 161 palettes, 57 font pairings, 99 UX rules, 25 chart types |
+| **impeccable** | `impeccable@impeccable` | Frontend design skill: 23 commands (`/impeccable polish`, `/impeccable audit`, etc.) + 24-issue anti-pattern detection. Standalone: `npx impeccable detect` |
 | **agent-sdk-dev** | `agent-sdk-dev@claude-plugins-official` | Agent scaffolding — creates Claude sub-agent definitions |
 | **claude-code-setup** | `claude-code-setup@claude-plugins-official` | Project bootstrapping and Claude Code automation recommendations |
 | **claude-md-management** | `claude-md-management@claude-plugins-official` | CLAUDE.md creation, auditing, and improvement |
@@ -397,7 +407,7 @@ claude plugins install <plugin-name>
 
 ## Skills (Slash Commands)
 
-Skills are Markdown files that expand into full instructions when invoked. Project-local skills live in `.claude/skills/` — any `.md` file you add there becomes a `/skill-name` command automatically.
+Skills are Markdown files that expand into full instructions when invoked. Project skills live in `.claude/skills/<name>/SKILL.md` — `setup.sh` installs them to `~/.claude/skills/` where Claude Code picks them up. Restart Claude Code after adding a new skill.
 
 ### Core Skills (always available)
 
@@ -431,9 +441,12 @@ Skills are Markdown files that expand into full instructions when invoked. Proje
 
 ### Project Skills (`.claude/skills/`)
 
+Source files live in `.claude/skills/<name>/SKILL.md`. `setup.sh` installs them to `~/.claude/skills/` automatically.
+
 | Slash Command | What It Does |
 | -------------- | ------------- |
 | `/site-teardown [url]` | Reverse engineers any website into a complete build blueprint — tech stack, every visual effect with implementation details, full design system (colors, typography, spacing), and a section-by-section build plan ready to hand off to a fresh Claude Code session. |
+| `/skillui` | Runs the `skillui` CLI to extract a design system from any website, local project, or GitHub repo. Outputs `SKILL.md`, `DESIGN.md`, and token JSON (colors, spacing, typography) — auto-loaded by Claude Code. Install: `npm install -g skillui`. |
 
 ---
 

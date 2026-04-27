@@ -8,6 +8,8 @@
 
 - **Invoke the `frontend-design` skill** before writing any frontend code, every session, no exceptions.
 - **Then read [`ui-ux-pro-max-instructions.md`](ui-ux-pro-max-instructions.md)** and run the design system generator before writing any UI code.
+- **If matching an existing site's visual language:** run `/skillui` first — it extracts the design system (colors, typography, spacing, animations) into `SKILL.md`/`DESIGN.md` token files that auto-load into the session. Usage: `skillui --url <url>`, `skillui --dir ./my-app`, or `skillui --repo <github-url>`. Add `--mode ultra` for full visual extraction with screenshots.
+- **For critique, polish, or audit passes:** use `impeccable` commands — `/impeccable audit [section]`, `/impeccable polish [section]`, `/impeccable critique`. These enforce design laws (OKLCH color space, no side-stripe borders, no gradient text, no identical card grids) and run 24-issue anti-pattern detection. Standalone: `npx impeccable detect [file/URL/dir]`.
 
 ## Reference Images
 

@@ -27,6 +27,15 @@ Summary of substantive work completed each session — what was built, what was 
 - Updated `CLAUDE.md`: routing table now points MCP integration to the example file; project structure tree documents `settings.local.json` and `settings.local.json.example`; added callout below MCP Servers table linking to the example file.
 - Updated `README.md`: project structure tree shows the new example file; Configuration Files section gains a full `settings.local.json.example` subsection with table of its three parts; MCP Servers section gains a Quick Setup callout.
 
+## 2026-04-27 (session 2)
+- **Diagnosed skill loading failure:** `.claude/skills/*.md` flat files were silently ignored by Claude Code. Root cause: Claude Code requires `~/.claude/skills/<name>/SKILL.md` subdirectory format, not flat project-level `.md` files.
+- **Restructured project skills:** moved `site-teardown.md` → `site-teardown/SKILL.md` and `skillui.md` → `skillui/SKILL.md` within `.claude/skills/`. Also copied both to `~/.claude/skills/` for immediate activation.
+- **Added `setup.sh` step 8:** auto-installs all `.claude/skills/*/SKILL.md` to `~/.claude/skills/` on fresh clone. Skills are now activated on `setup.sh` run without manual copying.
+- **Added impeccable plugin:** `impeccable@impeccable` (github.com/pbakaus/impeccable) — 23 frontend design commands + 24-issue anti-pattern detection. Added to `setup.sh` step 7, `README.md` plugins section, and `CLAUDE.md` plugins table.
+- **Added skillui CLI integration:** documented `skillui` (npm install -g skillui) for design system extraction from sites/repos/local dirs. `/skillui` skill fully documented.
+- **Updated `frontend-instructions.md`:** added skillui and impeccable to "Always Do First" workflow — skillui for matching existing sites, impeccable for critique/polish/audit passes.
+- **Updated `memory-decisions.md`:** recorded skill format decision, impeccable decision, and skillui decision with rationale.
+
 <!-- Example entry format:
 ## 2026-04-06
 - Built YouTube monitoring task in Trigger.dev (`src/trigger/youtube/`)
