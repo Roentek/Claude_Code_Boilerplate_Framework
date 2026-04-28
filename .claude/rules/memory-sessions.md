@@ -4,6 +4,14 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-04-28 (session 2)
+- **Added `/design-md` skill** from [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md) — 73 brand DESIGN.md files (Linear, Stripe, Vercel, Notion, Figma, Spotify, Tesla, Supabase, BMW, Coinbase, etc.) fetched on demand via `npx getdesign@latest add <brand>`.
+- Created `.claude/skills/design-md/SKILL.md` and installed to `~/.claude/skills/design-md/` for immediate activation.
+- Updated `frontend-instructions.md` — added `/design-md` as first step for brand-named references, clarifying `/skillui` is for sites not in the 73-brand collection.
+- Updated `CLAUDE.md` project skills table with `/design-md` row linking to the GitHub repo.
+- Updated `README.md` project structure tree and project skills table with the new skill.
+- Updated `memory-decisions.md` with decision rationale and implications.
+
 ## 2026-04-28
 - **Integrated webgpu-threejs-tsl skill** from [dgreenheck/webgpu-claude-skill](https://github.com/dgreenheck/webgpu-claude-skill) — 855-star community skill for WebGPU + Three.js TSL development.
 - Downloaded all 16 files into `.claude/skills/webgpu-threejs-tsl/` (SKILL.md, REFERENCE.md, 7 docs, 5 examples, 2 templates) and copied to `~/.claude/skills/webgpu-threejs-tsl/` for immediate activation.

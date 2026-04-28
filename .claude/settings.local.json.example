@@ -150,7 +150,8 @@
       "WebFetch(domain:stitch.withgoogle.com)",
       "WebFetch(domain:impeccable.style)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:getdesign.md)"
     ]
   }
 }

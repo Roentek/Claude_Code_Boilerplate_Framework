@@ -132,6 +132,7 @@ Always available regardless of plugins. Invoke with `/skill-name`.
 | `/site-teardown [url]` | Reverse engineering any website into a build blueprint — tech stack, effects, design system, section-by-section build plan |
 | `/skillui` | Extract a complete design system from any website, local dir, or GitHub repo via `skillui` CLI — outputs `SKILL.md`, `DESIGN.md`, and token JSON ready for Claude |
 | `/webgpu-threejs-tsl` | Building WebGPU-enabled Three.js apps with TSL — renderer setup, node materials, compute shaders, post-processing, WGSL integration, device loss handling |
+| `/design-md` | Load a ready-made brand `DESIGN.md` for any of 73 brands (Linear, Stripe, Vercel, Notion, Figma, Spotify, Tesla, Supabase, etc.) via `npx getdesign@latest add <brand>`. Source: [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md) |
 
 **Superpowers skills** (auto-trigger based on context — no manual invoke needed):
 
