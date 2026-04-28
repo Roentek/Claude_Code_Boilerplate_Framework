@@ -320,7 +320,7 @@ The file contains three sections:
 | ------- | ------- |
 | `__readme` | One-line copy instruction |
 | `__activation_guide` | Per-server notes: where to get each key, which servers need no key (memory, trigger, zep, canva), and which require a one-time CLI auth step |
-| `env` | All 16 credential env vars pre-listed with empty values, ready to fill in |
+| `env` | All 18 credential env vars pre-listed with empty values, ready to fill in |
 | `permissions.allow` | Pre-built allowlist of read/query MCP tool calls across all servers — paste into your `settings.local.json` to eliminate repeated permission prompts |
 
 > `settings.local.json` is already in `.gitignore`. The `.example` file is version-controlled and safe to commit.
@@ -393,6 +393,7 @@ claude plugins install <plugin-name>
 | **frontend-design** | `frontend-design@claude-plugins-official` | `/frontend-design` skill — distinctive, production-grade UI generation |
 | **ui-ux-pro-max** | `ui-ux-pro-max@ui-ux-pro-max-skill` | Design intelligence: 67 styles, 161 palettes, 57 font pairings, 99 UX rules, 25 chart types |
 | **impeccable** | `impeccable@impeccable` | Frontend design skill: 23 commands (`/impeccable polish`, `/impeccable audit`, etc.) + 24-issue anti-pattern detection. Standalone: `npx impeccable detect` |
+| **github** | `github@claude-plugins-official` | GitHub operations — read/write repos, PRs, issues, branches, file contents, code search. Requires `GITHUB_PERSONAL_ACCESS_TOKEN` in `settings.local.json` |
 | **agent-sdk-dev** | `agent-sdk-dev@claude-plugins-official` | Agent scaffolding — creates Claude sub-agent definitions |
 | **claude-code-setup** | `claude-code-setup@claude-plugins-official` | Project bootstrapping and Claude Code automation recommendations |
 | **claude-md-management** | `claude-md-management@claude-plugins-official` | CLAUDE.md creation, auditing, and improvement |
@@ -402,7 +403,6 @@ claude plugins install <plugin-name>
 
 | Plugin | Why disabled by default |
 | --- | --- |
-| `github@claude-plugins-official` | Only needed if using GitHub-specific workflows |
 | `pinecone@claude-plugins-official` | Pinecone is already available via MCP server |
 | `supabase@claude-plugins-official` | Supabase is already available via MCP server |
 | `plugin-dev@claude-plugins-official` | Only needed when authoring new plugins |

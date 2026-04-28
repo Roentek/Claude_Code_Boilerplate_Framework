@@ -82,7 +82,7 @@
     "claude-code-setup@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
-    "github@claude-plugins-official": false,
+    "github@claude-plugins-official": true,
     "pinecone@claude-plugins-official": false,
     "playground@claude-plugins-official": true,
     "plugin-dev@claude-plugins-official": false,

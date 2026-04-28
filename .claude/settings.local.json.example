@@ -18,7 +18,8 @@
     "canva-dev":            "NO KEY NEEDED — browser OAuth via @canva/cli. A browser window opens automatically on first use.",
     "monet-mcp":            "MONET_API_KEY — monet.design/mcp → Get API Key.",
     "stitch":               "STITCH_API_KEY — stitch.withgoogle.com → Settings → API Key.",
-    "@21st-dev-magic":      "TWENTYFIRST_DEV_API_KEY — 21st.dev/magic/console → API Keys. Free tier includes Inspiration Search + SVG Icon Search. Magic Generate requires Pro ($20/mo)."
+    "21st-dev-magic":       "TWENTYFIRST_DEV_API_KEY — 21st.dev/magic/console → API Keys. Free tier includes Inspiration Search + SVG Icon Search. Magic Generate requires Pro ($20/mo).",
+    "github@claude-plugins-official": "GITHUB_PERSONAL_ACCESS_TOKEN — github.com → Settings → Developer settings → Personal access tokens → Fine-grained or classic token with 'repo' and 'read:org' scopes."
   },
 
   "env": {
@@ -38,7 +39,8 @@
     "APIFY_API_PAT":              "",
     "MONET_API_KEY":              "",
     "STITCH_API_KEY":             "",
-    "TWENTYFIRST_DEV_API_KEY":    ""
+    "TWENTYFIRST_DEV_API_KEY":    "",
+    "GITHUB_PERSONAL_ACCESS_TOKEN": ""
   },
 
   "permissions": {
@@ -142,10 +144,27 @@
       "mcp__21st-dev-magic__inspiration_search",
       "mcp__21st-dev-magic__svg_logo_search",
       "mcp__21st-dev-magic__21st_magic_component_refiner",
+      "mcp__21st-dev-magic__21st_magic_component_inspiration",
 
       "mcp__google-workspace-mcp__start_google_auth",
       "mcp__google-workspace-mcp__search_gmail_messages",
       "mcp__google-workspace-mcp__get_gmail_message_content",
+
+      "mcp__plugin_github_github__get_me",
+      "mcp__plugin_github_github__get_file_contents",
+      "mcp__plugin_github_github__get_commit",
+      "mcp__plugin_github_github__list_branches",
+      "mcp__plugin_github_github__list_commits",
+      "mcp__plugin_github_github__list_issues",
+      "mcp__plugin_github_github__list_pull_requests",
+      "mcp__plugin_github_github__list_releases",
+      "mcp__plugin_github_github__search_code",
+      "mcp__plugin_github_github__search_repositories",
+      "mcp__plugin_github_github__search_issues",
+      "mcp__plugin_github_github__search_pull_requests",
+      "mcp__plugin_github_github__search_users",
+      "mcp__plugin_github_github__issue_read",
+      "mcp__plugin_github_github__pull_request_read",
 
       "Skill(update-config)",
 

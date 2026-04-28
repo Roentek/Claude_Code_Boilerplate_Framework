@@ -107,8 +107,9 @@ Plugins extend Claude Code with specialized modes and skills. Invoke via `/plugi
 | `superpowers` | Full dev workflow — TDD, planning, subagents, debugging, code review | Any non-trivial feature or fix — triggers automatically based on context |
 | `skill-creator` | Create, edit, test, and benchmark skills | When building or refining slash-command skills |
 | `impeccable` | Frontend design skill — 23 commands (`/impeccable polish`, `/impeccable audit`, etc.) + anti-pattern detection | Any frontend design work; also use `npx impeccable detect` for standalone anti-pattern checking |
+| `github` | GitHub plugin — repos, PRs, issues, branches, file contents, code search | Reading private repos, reviewing PRs, exploring codebases — requires `GITHUB_PERSONAL_ACCESS_TOKEN` in `settings.local.json` |
 
-> Disabled: `github`, `pinecone`, `supabase`, `plugin-dev` — enable in [`.claude/settings.json`](.claude/settings.json) → `enabledPlugins`.
+> Disabled: `pinecone`, `supabase`, `plugin-dev` — enable in [`.claude/settings.json`](.claude/settings.json) → `enabledPlugins`.
 
 ---
 

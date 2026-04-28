@@ -4,6 +4,14 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-04-28 (session 4)
+- **Cleaned up GitHub plugin configuration** — removed duplicate `GITHUB_TOKEN` from `settings.local.json`; confirmed `GITHUB_PERSONAL_ACCESS_TOKEN` is the env var the `github@claude-plugins-official` plugin actually requires.
+- Added GitHub read-only permissions (`mcp__plugin_github_github__*`) to `settings.local.json` allow list.
+- Updated `settings.local.json.example`: added `github@claude-plugins-official` entry in `__activation_guide`, `GITHUB_PERSONAL_ACCESS_TOKEN` in env block, and GitHub read permissions in `permissions.allow`.
+- Updated `CLAUDE.md`: added GitHub row to plugins table; removed `github` from the Disabled list.
+- Updated `README.md`: moved GitHub from Disabled to Enabled plugins table; corrected env var count to 18.
+- Updated `memory-decisions.md` with decision rationale for correct env var name.
+
 ## 2026-04-28 (session 3)
 - **Updated 21st-dev-magic MCP docs** in `CLAUDE.md` and `README.md`: corrected server name from `21st-dev-mcp` → `21st-dev-magic` (matching `.mcp.json`); updated tool names to current: `21st_magic_component_inspiration`, `21st_magic_component_builder`, `21st_magic_component_refiner`, `logo_search`; bumped server count from 16 → 17; added routing table row in `CLAUDE.md` for UI component inspiration / SVG logos.
 
