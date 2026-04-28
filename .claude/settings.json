@@ -24,7 +24,8 @@
       "Bash(npx skillui *)",
       "Bash(skillui *)",
       "Bash(python -m json.tool)",
-      "Bash(gh repo *)"
+      "Bash(gh repo *)",
+      "Bash(start *)"
     ],
     "deny": []
   },

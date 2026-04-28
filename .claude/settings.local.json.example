@@ -143,6 +143,10 @@
       "mcp__21st-dev-magic__svg_logo_search",
       "mcp__21st-dev-magic__21st_magic_component_refiner",
 
+      "mcp__google-workspace-mcp__start_google_auth",
+      "mcp__google-workspace-mcp__search_gmail_messages",
+      "mcp__google-workspace-mcp__get_gmail_message_content",
+
       "Skill(update-config)",
 
       "WebFetch(domain:docs.n8n.io)",
