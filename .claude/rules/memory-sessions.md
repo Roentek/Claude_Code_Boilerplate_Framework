@@ -4,6 +4,13 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-04-28
+- **Integrated webgpu-threejs-tsl skill** from [dgreenheck/webgpu-claude-skill](https://github.com/dgreenheck/webgpu-claude-skill) — 855-star community skill for WebGPU + Three.js TSL development.
+- Downloaded all 16 files into `.claude/skills/webgpu-threejs-tsl/` (SKILL.md, REFERENCE.md, 7 docs, 5 examples, 2 templates) and copied to `~/.claude/skills/webgpu-threejs-tsl/` for immediate activation.
+- Updated `setup.sh` step 8 to copy entire skill directory (not just SKILL.md) — ensures supporting docs/examples/templates survive fresh clones.
+- Updated `CLAUDE.md`: added WebGPU/Three.js row to routing table, added `/webgpu-threejs-tsl` to project skills table.
+- Updated `README.md`: added skill to project skills table, expanded project structure tree to show skill subdirectories.
+
 ## 2026-04-22
 - Converted `.claude/docs/Claude_Code_Beginners_Guide.pdf` → `Claude_Code_Beginners_Guide.md`
 - Converted `.claude/docs/The_Shift_to_Agentic_AI_Workflows.pdf` → `The_Shift_to_Agentic_AI_Workflows.md`

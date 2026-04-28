@@ -14,6 +14,7 @@ Start here — each path routes to the right tools and rules.
 | ---------- | ----------- | ----------- |
 | Trigger.dev automation | `workflows/` → `tools/` | [`trigger-workflow-builder.md`](.claude/rules/trigger-workflow-builder.md), [`trigger-api-reference.md`](.claude/rules/trigger-api-reference.md) |
 | Frontend UI | `/frontend-design` skill → `ui-ux-pro-max` design system | [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) → [`ui-ux-pro-max-instructions.md`](.claude/rules/ui-ux-pro-max-instructions.md) |
+| WebGPU / Three.js app | `/webgpu-threejs-tsl` skill | Three.js r171+ with WebGPU renderer, TSL shaders, compute, post-processing |
 | Claude AI agent | `agent-sdk-dev` plugin → `.claude/agents/` | [`agent-instructions.md`](.claude/rules/agent-instructions.md) |
 | Slash-command skill | `~/.claude/skills/<name>/SKILL.md` | Skills must be in subdirectory + `SKILL.md` format; `setup.sh` auto-installs from `.claude/skills/` |
 | MCP server integration | `.mcp.json` + `.claude/settings.local.json` | Copy `.claude/settings.local.json.example` → `settings.local.json`, fill in keys, restart |
@@ -130,6 +131,7 @@ Always available regardless of plugins. Invoke with `/skill-name`.
 | -------------- | --------- |
 | `/site-teardown [url]` | Reverse engineering any website into a build blueprint — tech stack, effects, design system, section-by-section build plan |
 | `/skillui` | Extract a complete design system from any website, local dir, or GitHub repo via `skillui` CLI — outputs `SKILL.md`, `DESIGN.md`, and token JSON ready for Claude |
+| `/webgpu-threejs-tsl` | Building WebGPU-enabled Three.js apps with TSL — renderer setup, node materials, compute shaders, post-processing, WGSL integration, device loss handling |
 
 **Superpowers skills** (auto-trigger based on context — no manual invoke needed):
 

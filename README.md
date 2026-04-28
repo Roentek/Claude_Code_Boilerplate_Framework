@@ -276,7 +276,10 @@ bash .claude/scripts/setup.sh
 │   ├── scripts/
 │   │   ├── setup.sh                 # First-time machine setup bootstrapper
 │   │   └── context-monitor.py       # Statusline: context %, cost, git branch, duration
-│   └── skills/                      # Project-local slash-command skills (.md files)
+│   └── skills/                      # Project-local slash-command skills (<name>/SKILL.md)
+│       ├── site-teardown/SKILL.md   # Reverse-engineer any website into a build blueprint
+│       ├── skillui/SKILL.md         # Extract design system from site/repo via skillui CLI
+│       └── webgpu-threejs-tsl/      # WebGPU + Three.js TSL skill (SKILL.md + docs/ + examples/ + templates/)
 │
 ├── brand_assets/                    # Logos, color guides, design tokens
 ├── docs/                            # Project-level documentation
@@ -447,6 +450,7 @@ Source files live in `.claude/skills/<name>/SKILL.md`. `setup.sh` installs them 
 | -------------- | ------------- |
 | `/site-teardown [url]` | Reverse engineers any website into a complete build blueprint — tech stack, every visual effect with implementation details, full design system (colors, typography, spacing), and a section-by-section build plan ready to hand off to a fresh Claude Code session. |
 | `/skillui` | Runs the `skillui` CLI to extract a design system from any website, local project, or GitHub repo. Outputs `SKILL.md`, `DESIGN.md`, and token JSON (colors, spacing, typography) — auto-loaded by Claude Code. Install: `npm install -g skillui`. |
+| `/webgpu-threejs-tsl` | Comprehensive guide for developing WebGPU-enabled Three.js applications using TSL (Three.js Shading Language). Covers renderer setup, node materials, compute shaders, post-processing, WGSL integration, and GPU device loss handling. Source: [dgreenheck/webgpu-claude-skill](https://github.com/dgreenheck/webgpu-claude-skill). |
 
 ---
 

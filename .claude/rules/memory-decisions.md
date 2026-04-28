@@ -16,6 +16,11 @@ Architectural and technical decisions made during sessions — with date and rat
 - **Implication:** All schema changes go through Supabase migrations, not raw SQL
 -->
 
+## 2026-04-28 — webgpu-threejs-tsl skill integrated; setup.sh copies full skill dirs
+- **Decision:** Added `dgreenheck/webgpu-claude-skill` as a project skill at `.claude/skills/webgpu-threejs-tsl/`. setup.sh step 8 now uses `cp -r` to copy the entire skill directory instead of just `SKILL.md`.
+- **Why:** The webgpu skill ships with 7 reference docs, 5 JS examples, and 2 templates that SKILL.md references by relative path. Copying only SKILL.md would leave broken relative-path references on fresh clones. The `cp -r` approach is backward-compatible — existing skills (site-teardown, skillui) have only SKILL.md and are unaffected.
+- **Implication:** Any future skill with supporting files will be fully preserved by setup.sh without extra config. Skills can now ship with any directory structure.
+
 ## 2026-04-22 — Reference docs converted from PDF to Markdown
 - **Decision:** All three PDFs in `.claude/docs/` converted to `.md`. `Claude_Code_Context_Management_Hacks.pdf` (23MB) required `pdftotext` (bundled with Git for Windows) since it exceeded Claude's 20MB read limit.
 - **Why:** `.md` files are directly readable as session context; PDFs require external tooling and consume more context overhead.

@@ -184,9 +184,10 @@ if [ -d "$SKILLS_SRC" ]; then
     skill_file="$skill_dir/SKILL.md"
     if [ -f "$skill_file" ]; then
       dest_dir="$SKILLS_DEST/$skill_name"
-      mkdir -p "$dest_dir"
-      cp "$skill_file" "$dest_dir/SKILL.md"
-      echo "  ✓ $skill_name → ~/.claude/skills/$skill_name/SKILL.md"
+      # Copy the entire skill directory (SKILL.md + any docs/, examples/, templates/)
+      rm -rf "$dest_dir"
+      cp -r "$skill_dir" "$dest_dir"
+      echo "  ✓ $skill_name → ~/.claude/skills/$skill_name/"
       SKILLS_INSTALLED=$((SKILLS_INSTALLED + 1))
     fi
   done
