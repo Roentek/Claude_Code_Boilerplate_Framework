@@ -4,6 +4,9 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-04-28 (session 3)
+- **Updated 21st-dev-magic MCP docs** in `CLAUDE.md` and `README.md`: corrected server name from `21st-dev-mcp` → `21st-dev-magic` (matching `.mcp.json`); updated tool names to current: `21st_magic_component_inspiration`, `21st_magic_component_builder`, `21st_magic_component_refiner`, `logo_search`; bumped server count from 16 → 17; added routing table row in `CLAUDE.md` for UI component inspiration / SVG logos.
+
 ## 2026-04-28 (session 2)
 - **Added `/design-md` skill** from [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md) — 73 brand DESIGN.md files (Linear, Stripe, Vercel, Notion, Figma, Spotify, Tesla, Supabase, BMW, Coinbase, etc.) fetched on demand via `npx getdesign@latest add <brand>`.
 - Created `.claude/skills/design-md/SKILL.md` and installed to `~/.claude/skills/design-md/` for immediate activation.

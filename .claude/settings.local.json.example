@@ -17,7 +17,8 @@
     "zep-mcp":              "NO KEY NEEDED — connects to the public Zep docs endpoint. Activates automatically.",
     "canva-dev":            "NO KEY NEEDED — browser OAuth via @canva/cli. A browser window opens automatically on first use.",
     "monet-mcp":            "MONET_API_KEY — monet.design/mcp → Get API Key.",
-    "stitch":               "STITCH_API_KEY — stitch.withgoogle.com → Settings → API Key."
+    "stitch":               "STITCH_API_KEY — stitch.withgoogle.com → Settings → API Key.",
+    "@21st-dev-magic":      "TWENTYFIRST_DEV_API_KEY — 21st.dev/magic/console → API Keys. Free tier includes Inspiration Search + SVG Icon Search. Magic Generate requires Pro ($20/mo)."
   },
 
   "env": {
@@ -36,7 +37,8 @@
     "N8N_API_KEY":                "",
     "APIFY_API_PAT":              "",
     "MONET_API_KEY":              "",
-    "STITCH_API_KEY":             ""
+    "STITCH_API_KEY":             "",
+    "TWENTYFIRST_DEV_API_KEY":    ""
   },
 
   "permissions": {
@@ -136,6 +138,10 @@
       "mcp__canva-dev__read-canva-apps-sdk-design-guidelines",
       "mcp__canva-dev__read-canva-cli-documentation",
       "mcp__canva-dev__read-canva-connect-documentation-index",
+      
+      "mcp__21st-dev-magic__inspiration_search",
+      "mcp__21st-dev-magic__svg_logo_search",
+      "mcp__21st-dev-magic__21st_magic_component_refiner",
 
       "Skill(update-config)",
 
@@ -151,7 +157,8 @@
       "WebFetch(domain:impeccable.style)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:getdesign.md)"
+      "WebFetch(domain:getdesign.md)",
+      "WebFetch(domain:21st.dev)"
     ]
   }
 }

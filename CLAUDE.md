@@ -24,6 +24,7 @@ Start here — each path routes to the right tools and rules.
 | Web scraping | `apify` MCP | Search actors, fetch details, call actors |
 | Vector search / RAG | `pinecone-mcp` tools | Upsert, search, rerank records |
 | UI component search | `monet-mcp` tools | Search landing page components, get React/TS code |
+| UI component inspiration / SVG logos | `21st-dev-magic` tools | Search thousands of UI components, search SVG brand logos, generate UI variants |
 
 ---
 
@@ -189,6 +190,7 @@ Defined in [`.mcp.json`](.mcp.json), loaded automatically. Add credentials to [`
 | `kie-ai` | Image, video, audio, lip-sync generation | AI media generation |
 | `monet-mcp` | `search_components`, `get_component_code`, `get_component_details`, `list_categories`, `get_registry_stats`, `list_collections`, `get_collection` | Landing page UI component library — search by natural language, retrieve React/TS source code. Categories: hero, stats, testimonial, feature, pricing, cta, contact, faq, how-it-works, showcase, header, footer, gallery, team, logo-cloud, newsletter. Requires `MONET_API_KEY`. |
 | `stitch` | `extract_design_context`, `fetch_screen_code`, `fetch_screen_image` | Google Stitch — extract design DNA (fonts, colors, layouts) from screens, fetch screen HTML/code and images. Requires `STITCH_API_KEY`. |
+| `21st-dev-magic` | `21st_magic_component_inspiration`, `21st_magic_component_builder`, `21st_magic_component_refiner`, `logo_search` | 21st.dev Magic — semantic search across thousands of UI components + SVG brand logos via SVGL (free); build and refine polished UI variants (Pro). Requires `TWENTYFIRST_DEV_API_KEY`. |
 
 > **Setup:** Copy [`.claude/settings.local.json.example`](.claude/settings.local.json.example) → `.claude/settings.local.json`. The embedded `__activation_guide` lists exactly where to obtain each credential and which servers (memory, trigger, zep, canva) need no key at all.
 

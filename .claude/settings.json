@@ -45,7 +45,8 @@
     "zep-mcp",
     "canva-dev",
     "monet-mcp",
-    "stitch"
+    "stitch",
+    "21st-dev-magic"
   ],
   "hooks": {
     "Setup": [
