@@ -260,7 +260,9 @@ bash .claude/scripts/setup.sh
 │   │   └── The_Shift_to_Agentic_AI_Workflows.md
 │   ├── hooks/
 │   │   ├── stop.sh                  # Stop hook: quality scan + doc-sync check at session end
-│   │   └── pre-commit.sh            # Pre-commit hook: auto-updates CLAUDE.md/README.md for tracked-path changes
+│   │   ├── pre-commit.sh            # Pre-commit hook: auto-updates CLAUDE.md/README.md for tracked-path changes
+│   │   ├── autosync-docs.sh         # PostToolUse hook: detects tracked-path edits, injects doc-sync reminder
+│   │   └── autosync-docs.py         # Python logic for autosync-docs.sh (path matching + additionalContext JSON)
 │   ├── rules/                       # Auto-loaded Markdown instructions (every session)
 │   │   ├── agent-instructions.md
 │   │   ├── frontend-instructions.md
@@ -483,6 +485,7 @@ All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. C
 | **zep-mcp** | `npx mcp-remote` (remote) | — | Zep long-term memory documentation search |
 | **canva-dev** | `npx @canva/cli mcp` | — (browser OAuth) | Canva app SDK, UI kit, CLI docs, design operations |
 | **monet-mcp** | SSE remote (`monet.design`) | `MONET_API_KEY` | Landing page UI component library — search by natural language, retrieve full React/TypeScript source code. Tools: `search_components`, `get_component_code`, `get_component_details`, `list_categories`, `get_registry_stats`, `list_collections`, `get_collection`. Categories: hero, pricing, testimonial, feature, cta, faq, footer, gallery, and more. |
+| **stitch** | HTTP remote (`stitch.googleapis.com`) | `STITCH_API_KEY` | Google Stitch — extract design DNA (fonts, colors, layouts) from screens; fetch screen HTML/code and images. Tools: `generate_screen_from_text`, `edit_screens`, `get_screen`, `list_screens`, `list_projects`. |
 | **21st-dev-magic** | `npx @21st-dev/magic@latest` | `TWENTYFIRST_DEV_API_KEY` | 21st.dev Magic — semantic search across thousands of UI components + SVG brand logos via SVGL (free); build and refine polished UI variants (Pro). Tools: `21st_magic_component_inspiration`, `21st_magic_component_builder`, `21st_magic_component_refiner`, `logo_search`. |
 
 ### Google Workspace Setup
@@ -533,6 +536,7 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 | ------ | ------ | --------- | --------- |
 | **Setup** | `setup.sh` | First session open on a new machine | Bootstraps the project (see [Quick Start](#quick-start)) |
 | **Stop** | `stop.sh` | Every time Claude finishes responding | Scans session output for fixes/discoveries; checks if tracked paths changed and prompts doc update |
+| **PostToolUse** | `autosync-docs.sh` | After every Write/Edit tool call | Checks if the edited file is in a tracked path; if so, injects `additionalContext` telling Claude to update CLAUDE.md/README.md immediately. CLAUDE.md and README.md are excluded to prevent update loops. Logic in `autosync-docs.py`. |
 | **pre-commit** (git) | `pre-commit.sh` | Before every `git commit` | Detects staged changes to tracked paths; auto-runs `claude --print` to update CLAUDE.md and README.md, then stages the updated docs alongside the original changes |
 
 **`stop.sh` logic:**
