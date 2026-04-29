@@ -200,7 +200,22 @@ else
   echo "  .claude/skills/ not found — skipping"
 fi
 
-# ── 9. Install pre-commit doc-sync hook ────────────────────
+# ── 9. Install npm dependencies (playwright package) ───────
+echo ""
+echo "── npm Dependencies (Playwright) ───────────────────────"
+if [ -f "$ROOT/package.json" ]; then
+  if command -v npm &>/dev/null; then
+    (cd "$ROOT" && npm install --silent 2>/dev/null) && echo "✓ npm install complete" || echo "✗ npm install failed — run: npm install"
+    echo "  Note: tools/playwright.js uses your system Chrome/Edge — no browser download needed."
+  else
+    echo "  ✗ npm not found — install Node.js first, then run: npm install"
+    ERRORS=$((ERRORS + 1))
+  fi
+else
+  echo "  (no package.json found — skipping)"
+fi
+
+# ── 10. Install pre-commit doc-sync hook ────────────────────
 echo ""
 echo "── Git Pre-Commit Hook (doc-sync) ───────────────────────"
 HOOKS_DIR="$ROOT/.git/hooks"
@@ -221,7 +236,7 @@ else
   echo "✓ pre-commit doc-sync hook installed → .git/hooks/pre-commit"
 fi
 
-# ── 10. Summary ────────────────────────────────────────────
+# ── 11. Summary ────────────────────────────────────────────
 echo ""
 if [ $ERRORS -eq 0 ]; then
   echo "✓ Setup complete. Context monitor statusline is ready."

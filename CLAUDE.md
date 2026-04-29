@@ -21,7 +21,8 @@ Start here — each path routes to the right tools and rules.
 | Claude API / SDK app | `/claude-api` skill | Scaffolds Anthropic SDK boilerplate |
 | n8n workflow | `n8n-mcp` tools | Search nodes, validate, build via MCP |
 | Voice AI (Vapi) | `vapi-mcp` tools | Create assistants, calls, phone numbers |
-| Web scraping | `apify` MCP | Search actors, fetch details, call actors |
+| Browser automation (screenshot / scrape / PDF) | `/playwright` skill → `tools/playwright.js` | `workflows/browser-automation.md` — direct Bash execution, no MCP overhead |
+| Web scraping (large-scale) | `apify` MCP | Search actors, fetch details, call actors |
 | Vector search / RAG | `pinecone-mcp` tools | Upsert, search, rerank records |
 | UI component search | `monet-mcp` tools | Search landing page components, get React/TS code |
 | UI component inspiration / SVG logos | `21st-dev-magic` tools | Search thousands of UI components, search SVG brand logos, generate UI variants |

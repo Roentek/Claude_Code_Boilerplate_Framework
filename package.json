@@ -1,0 +1,12 @@
+{
+  "name": "claude-code-boilerplate-framework",
+  "version": "1.0.0",
+  "description": "Claude Code boilerplate with Playwright browser automation",
+  "type": "module",
+  "scripts": {
+    "playwright:install": "playwright install chromium"
+  },
+  "devDependencies": {
+    "playwright": "^1.52.0"
+  }
+}

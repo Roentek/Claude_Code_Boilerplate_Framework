@@ -220,8 +220,9 @@ On first open, a `Setup` hook automatically runs `.claude/scripts/setup.sh`, whi
 6. **Verifies npx** — required for the `memory` MCP server
 7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max`, `andrej-karpathy-skills`, and `impeccable` via CLI
 8. **Installs project skills** — copies `.claude/skills/*/SKILL.md` to `~/.claude/skills/` where Claude Code reads them
-9. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
-10. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
+9. **Installs npm dependencies** — runs `npm install` to install `playwright` package; uses system Chrome/Edge at runtime (no browser download needed)
+10. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
+11. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
 
 **Re-run setup manually** (e.g. fresh clone on a new machine):
 
@@ -243,6 +244,7 @@ bash .claude/scripts/setup.sh
 .
 ├── CLAUDE.md                        # Session rules: philosophy, routing table, memory triggers
 ├── README.md                        # This file
+├── package.json                     # Node.js dependencies (playwright browser automation)
 ├── .env                             # Your API keys (gitignored — never commit)
 ├── .env.example                     # Template for all required keys
 ├── .mcp.json                        # MCP server definitions (version-controlled)
@@ -283,14 +285,17 @@ bash .claude/scripts/setup.sh
 │       ├── skillui/SKILL.md         # Extract design system from site/repo via skillui CLI
 │       ├── webgpu-threejs-tsl/      # WebGPU + Three.js TSL skill (SKILL.md + docs/ + examples/ + templates/)
 │       ├── design-md/SKILL.md       # Load brand DESIGN.md for 73 brands via getdesign CLI
-│       └── taste-skill/SKILL.md    # Anti-slop frontend enforcement: design dials, banned patterns, Bento 2.0
+│       ├── taste-skill/SKILL.md     # Anti-slop frontend enforcement: design dials, banned patterns, Bento 2.0
+│       └── playwright/SKILL.md      # Browser automation: screenshot, scrape, pdf, links via tools/playwright.js
 │
 ├── brand_assets/                    # Logos, color guides, design tokens
 ├── docs/                            # Project-level documentation
 ├── src/
 │   └── trigger/                     # Trigger.dev TypeScript task files
-├── tools/                           # Python scripts for deterministic execution
-├── workflows/                       # Markdown SOPs defining automation tasks
+├── tools/
+│   └── playwright.js                # Browser automation: screenshot, scrape, pdf, links (node tools/playwright.js)
+├── workflows/
+│   └── browser-automation.md        # WAT SOP for Playwright-based automation tasks
 └── .tmp/                            # Scratch space (disposable, not committed)
 ```
 
@@ -457,6 +462,7 @@ Source files live in `.claude/skills/<name>/SKILL.md`. `setup.sh` installs them 
 | `/webgpu-threejs-tsl` | Comprehensive guide for developing WebGPU-enabled Three.js applications using TSL (Three.js Shading Language). Covers renderer setup, node materials, compute shaders, post-processing, WGSL integration, and GPU device loss handling. Source: [dgreenheck/webgpu-claude-skill](https://github.com/dgreenheck/webgpu-claude-skill). |
 | `/design-md` | Fetches a ready-made `DESIGN.md` for any of 73 brands (Linear, Stripe, Vercel, Notion, Figma, Spotify, Tesla, Supabase, BMW, Coinbase, and more) via `npx getdesign@latest add <brand>`. Each file contains the full color palette, typography, component styles, spacing system, and pre-written AI agent prompts. Source: [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md). |
 | `/taste-skill` | Anti-slop frontend design enforcement. Overrides LLM biases with three configurable dials (DESIGN_VARIANCE, MOTION_INTENSITY, VISUAL_DENSITY) and 10 sections of strict rules: bans Inter font, AI purple, centered heroes, 3-column cards, pure black, and emoji-as-icons. Enforces Framer Motion spring physics, Bento 2.0 paradigm, magnetic micro-physics, full interaction states (loading/empty/error), and a pre-flight checklist. Source: [leonxlnx/taste-skill](https://github.com/leonxlnx/taste-skill). |
+| `/playwright` | Browser automation via Playwright CLI — screenshots, JS-rendered page scraping, PDF generation, link extraction. Runs `node tools/playwright.js` directly via Bash with no MCP server overhead. Requires `npm install && npx playwright install chromium` on first use. Source: [microsoft/playwright-cli](https://github.com/microsoft/playwright-cli). |
 
 ---
 
@@ -560,7 +566,7 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 
 | Script | Purpose |
 | -------- | --------- |
-| [`setup.sh`](.claude/scripts/setup.sh) | First-time machine setup: chmod hooks, verify Python, check context-monitor, create `.env` |
+| [`setup.sh`](.claude/scripts/setup.sh) | First-time machine setup: chmod hooks, verify Python, check context-monitor, create `.env`, install Playwright + Chromium, install project skills, install pre-commit hook |
 | [`context-monitor.py`](.claude/scripts/context-monitor.py) | Powers the statusline — reads session transcript, parses token usage, renders colored bar |
 
 ---

@@ -26,7 +26,10 @@
       "Bash(python -m json.tool)",
       "Bash(gh repo *)",
       "Bash(start *)",
-      "Bash(python *)"
+      "Bash(python *)",
+      "Bash(node tools/playwright.js:*)",
+      "Bash(npx playwright:*)",
+      "Bash(npm run playwright:*)"
     ],
     "deny": []
   },

@@ -30,6 +30,16 @@ Summary of substantive work completed each session — what was built, what was 
 - Updated `CLAUDE.md`: added WebGPU/Three.js row to routing table, added `/webgpu-threejs-tsl` to project skills table.
 - Updated `README.md`: added skill to project skills table, expanded project structure tree to show skill subdirectories.
 
+## 2026-04-29 (session 2)
+- **Integrated Playwright CLI** as a direct Bash tool replacing any future MCP server approach for browser automation.
+- Created `package.json` with `playwright` devDependency; created `tools/playwright.js` (ESM, Node 18+) with four commands: `screenshot`, `scrape`, `pdf`, `links` — all output JSON to stdout.
+- Created `.claude/skills/playwright/SKILL.md` — immediately visible as `/playwright` skill; documents commands, flags, error table, and tool-selection decision matrix.
+- Created `workflows/browser-automation.md` — WAT SOP covering tool selection, install verification, error handling, and output storage rules.
+- Added `setup.sh` step 9: runs `npm install && npx playwright install chromium` on fresh clones.
+- Added Bash permissions to `settings.json`: `node tools/playwright.js:*`, `npx playwright:*`, `npm run playwright:*`.
+- Updated CLAUDE.md routing table, README project structure tree, project skills table, setup steps list, and scripts table.
+- Updated `memory-decisions.md` with rationale: direct Bash execution avoids MCP protocol token overhead; Apify MCP still handles large-scale scraping (1000+ pages).
+
 ## 2026-04-29
 - Diagnosed Alpaca MCP 401: `${VAR}` substitution in `.mcp.json` reads from OS process env, not `.env` or `settings.local.json`. Fix: `setx ALPACA_API_KEY "..."` + `setx ALPACA_SECRET_KEY "..."` in terminal, then restart Claude Code.
 - Built `PostToolUse` autosync hook — `.claude/hooks/autosync-docs.sh` + `autosync-docs.py`: fires after Write/Edit on tracked paths, injects `additionalContext` telling Claude to update CLAUDE.md/README.md immediately. CLAUDE.md/README.md excluded to prevent loops.
