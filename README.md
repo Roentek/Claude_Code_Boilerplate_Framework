@@ -495,6 +495,7 @@ All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. C
 | **monet-mcp** | SSE remote (`monet.design`) | `MONET_API_KEY` | Landing page UI component library — search by natural language, retrieve full React/TypeScript source code. Tools: `search_components`, `get_component_code`, `get_component_details`, `list_categories`, `get_registry_stats`, `list_collections`, `get_collection`. Categories: hero, pricing, testimonial, feature, cta, faq, footer, gallery, and more. |
 | **stitch** | HTTP remote (`stitch.googleapis.com`) | `STITCH_API_KEY` | Google Stitch — extract design DNA (fonts, colors, layouts) from screens; fetch screen HTML/code and images. Tools: `generate_screen_from_text`, `edit_screens`, `get_screen`, `list_screens`, `list_projects`. |
 | **21st-dev-magic** | `npx @21st-dev/magic@latest` | `TWENTYFIRST_DEV_API_KEY` | 21st.dev Magic — semantic search across thousands of UI components + SVG brand logos via SVGL (free); build and refine polished UI variants (Pro). Tools: `21st_magic_component_inspiration`, `21st_magic_component_builder`, `21st_magic_component_refiner`, `logo_search`. |
+| **playwright-mcp** | `npx @playwright/mcp@latest` | — | Microsoft Playwright MCP — backup for interactive browser sessions (`browser_navigate`, `browser_screenshot`, `browser_snapshot`, `browser_click`, `browser_type`, `browser_pdf_save`). **CLI (`node tools/playwright.js`) is always the primary tool.** Use MCP only when interactive control or JS evaluation is needed. |
 
 ### Google Workspace Setup
 

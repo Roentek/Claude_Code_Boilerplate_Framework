@@ -51,7 +51,8 @@
     "canva-dev",
     "monet-mcp",
     "stitch",
-    "21st-dev-magic"
+    "21st-dev-magic",
+    "playwright-mcp"
   ],
   "hooks": {
     "Setup": [

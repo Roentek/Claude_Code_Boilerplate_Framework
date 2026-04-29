@@ -19,7 +19,8 @@
     "monet-mcp":            "MONET_API_KEY — monet.design/mcp → Get API Key.",
     "stitch":               "STITCH_API_KEY — stitch.withgoogle.com → Settings → API Key.",
     "21st-dev-magic":       "TWENTYFIRST_DEV_API_KEY — 21st.dev/magic/console → API Keys. Free tier includes Inspiration Search + SVG Icon Search. Magic Generate requires Pro ($20/mo).",
-    "github@claude-plugins-official": "GITHUB_PERSONAL_ACCESS_TOKEN — github.com → Settings → Developer settings → Personal access tokens → Fine-grained or classic token with 'repo' and 'read:org' scopes."
+    "github@claude-plugins-official": "GITHUB_PERSONAL_ACCESS_TOKEN — github.com → Settings → Developer settings → Personal access tokens → Fine-grained or classic token with 'repo' and 'read:org' scopes.",
+    "playwright-mcp":                "NO KEY NEEDED — activates automatically. CLI (node tools/playwright.js) is always the primary tool; use this MCP only for interactive/multi-step sessions."
   },
 
   "env": {
@@ -146,6 +147,13 @@
       "mcp__21st-dev-magic__svg_logo_search",
       "mcp__21st-dev-magic__21st_magic_component_refiner",
       "mcp__21st-dev-magic__21st_magic_component_inspiration",
+
+      "mcp__playwright-mcp__browser_navigate",
+      "mcp__playwright-mcp__browser_screenshot",
+      "mcp__playwright-mcp__browser_snapshot",
+      "mcp__playwright-mcp__browser_network_requests",
+      "mcp__playwright-mcp__browser_console_messages",
+      "mcp__playwright-mcp__browser_tab_list",
 
       "mcp__google-workspace-mcp__start_google_auth",
       "mcp__google-workspace-mcp__search_gmail_messages",

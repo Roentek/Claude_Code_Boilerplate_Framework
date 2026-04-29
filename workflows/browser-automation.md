@@ -6,15 +6,29 @@ Automate browser interactions using Playwright: screenshots, scraping JS-rendere
 
 ## Tool Selection
 
+**Priority order: CLI first, MCP as backup.**
+
 | Need | Tool |
 | ------ | ------ |
-| Screenshot any URL | `node tools/playwright.js screenshot` |
-| Scrape JS-rendered page | `node tools/playwright.js scrape` |
-| Generate PDF from URL | `node tools/playwright.js pdf` |
-| Extract all page links | `node tools/playwright.js links` |
+| Screenshot any URL | `node tools/playwright.js screenshot` *(CLI — primary)* |
+| Scrape JS-rendered page | `node tools/playwright.js scrape` *(CLI — primary)* |
+| Generate PDF from URL | `node tools/playwright.js pdf` *(CLI — primary)* |
+| Extract all page links | `node tools/playwright.js links` *(CLI — primary)* |
+| Interactive control / JS evaluation | `playwright-mcp` tools *(MCP — backup only)* |
 | Large-scale scraping (1000+ pages) | Apify MCP |
 | Static HTML or REST API content | Tavily MCP or `curl` |
 | localhost screenshots (frontend dev) | `node screenshot.mjs` |
+
+### When to use playwright-mcp instead of CLI
+
+Use the `playwright-mcp` MCP server only when the CLI cannot do the job:
+
+- Multi-step interactive flows (login → navigate → fill form → submit)
+- Extracting the accessibility tree (`browser_snapshot`)
+- Evaluating JavaScript mid-session (`browser_evaluate`)
+- Keeping a browser session alive across multiple tool calls
+
+In all other cases — single-URL screenshots, scraping, PDFs — the CLI is faster, token-free, and preferred.
 
 ## Steps
 

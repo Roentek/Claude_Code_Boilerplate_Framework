@@ -21,7 +21,7 @@ Start here — each path routes to the right tools and rules.
 | Claude API / SDK app | `/claude-api` skill | Scaffolds Anthropic SDK boilerplate |
 | n8n workflow | `n8n-mcp` tools | Search nodes, validate, build via MCP |
 | Voice AI (Vapi) | `vapi-mcp` tools | Create assistants, calls, phone numbers |
-| Browser automation (screenshot / scrape / PDF) | `/playwright` skill → `tools/playwright.js` | `workflows/browser-automation.md` — direct Bash execution, no MCP overhead |
+| Browser automation (screenshot / scrape / PDF) | `/playwright` skill → `tools/playwright.js` | `workflows/browser-automation.md` — CLI first; `playwright-mcp` available as backup |
 | Web scraping (large-scale) | `apify` MCP | Search actors, fetch details, call actors |
 | Vector search / RAG | `pinecone-mcp` tools | Upsert, search, rerank records |
 | UI component search | `monet-mcp` tools | Search landing page components, get React/TS code |
@@ -194,6 +194,7 @@ Defined in [`.mcp.json`](.mcp.json), loaded automatically. Add credentials to [`
 | `monet-mcp` | `search_components`, `get_component_code`, `get_component_details`, `list_categories`, `get_registry_stats`, `list_collections`, `get_collection` | Landing page UI component library — search by natural language, retrieve React/TS source code. Categories: hero, stats, testimonial, feature, pricing, cta, contact, faq, how-it-works, showcase, header, footer, gallery, team, logo-cloud, newsletter. Requires `MONET_API_KEY`. |
 | `stitch` | `extract_design_context`, `fetch_screen_code`, `fetch_screen_image` | Google Stitch — extract design DNA (fonts, colors, layouts) from screens, fetch screen HTML/code and images. Requires `STITCH_API_KEY`. |
 | `21st-dev-magic` | `21st_magic_component_inspiration`, `21st_magic_component_builder`, `21st_magic_component_refiner`, `logo_search` | 21st.dev Magic — semantic search across thousands of UI components + SVG brand logos via SVGL (free); build and refine polished UI variants (Pro). Requires `TWENTYFIRST_DEV_API_KEY`. |
+| `playwright-mcp` | `browser_navigate`, `browser_screenshot`, `browser_snapshot`, `browser_click`, `browser_type`, `browser_pdf_save` | Microsoft Playwright MCP — backup for interactive browser sessions. **Always prefer `node tools/playwright.js` (CLI) first.** Use MCP only when interactive control or JS evaluation is needed. No API key required. |
 
 > **Setup:** Copy [`.claude/settings.local.json.example`](.claude/settings.local.json.example) → `.claude/settings.local.json`. The embedded `__activation_guide` lists exactly where to obtain each credential and which servers (memory, trigger, zep, canva) need no key at all.
 
