@@ -46,7 +46,7 @@ elif command -v python &>/dev/null; then
   PYTHON_CMD="python"
 else
   echo "✗ Python not found — install Python 3.8+ and add it to PATH"
-  echo "  The context-monitor statusline will not work without Python."
+  echo "  Required by: context-monitor statusline, ui-ux-pro-max design search scripts"
   ERRORS=$((ERRORS + 1))
 fi
 
@@ -76,38 +76,40 @@ else
   echo "✓ .env already exists"
 fi
 
-# ── 5. Verify uvx is installed (required for google-workspace-mcp + alpaca) ──
+# ── 5. Verify uvx (google-workspace-mcp + alpaca) ──────────
 echo ""
-echo "── uvx (required for google-workspace-mcp and alpaca) ──────"
+echo "── uvx ──────────────────────────────────────────────────"
+echo "   Required by: google-workspace-mcp, alpaca"
 if command -v uvx &>/dev/null; then
   UVX_VERSION=$(uvx --version 2>&1 | head -1)
   echo "✓ uvx found: $UVX_VERSION"
 else
   echo "✗ uvx not found — two MCP servers require it:"
-  echo "  • google-workspace-mcp  (Google Gmail, Drive, Sheets, Docs, Calendar)"
-  echo "  • alpaca                (Alpaca trading MCP)"
+  echo "  • google-workspace-mcp  (Gmail, Drive, Sheets, Docs, Calendar)"
+  echo "  • alpaca                (Alpaca trading)"
   echo ""
   if [[ "$OSTYPE" != "msys"* && "$OSTYPE" != "cygwin"* && "$OS" != "Windows_NT" ]]; then
-    echo "  Install uv/uvx (macOS / Linux):"
+    echo "  Install (macOS / Linux):"
     echo "    curl -LsSf https://astral.sh/uv/install.sh | sh"
-    echo "  Then restart your terminal and re-open the project."
   else
-    echo "  Install uv/uvx (Windows — PowerShell):"
+    echo "  Install (Windows — PowerShell):"
     echo "    powershell -ExecutionPolicy ByPass -c \"irm https://astral.sh/uv/install.ps1 | iex\""
-    echo "  Then restart your terminal and re-open the project."
   fi
+  echo "  Then restart your terminal and re-open the project."
   ERRORS=$((ERRORS + 1))
 fi
 
-# ── 6. Verify memory MCP server is reachable ───────────────
+# ── 6. Verify Node.js / npx (15 npx-based MCP servers) ────
 echo ""
-echo "── Memory MCP Server (@modelcontextprotocol/server-memory) ─"
+echo "── Node.js / npx ────────────────────────────────────────"
+echo "   Required by: memory, supabase-mcp, openrouter-mcp, kie-ai, tavily-mcp,"
+echo "   trigger, pinecone-mcp, vapi-mcp, n8n-mcp, apify, zep-mcp, canva-dev,"
+echo "   21st-dev-magic, playwright-mcp, firecrawl-mcp"
 if command -v npx &>/dev/null; then
-  echo "✓ npx found — memory MCP server will be launched via npx on first use"
-  echo "  Config: .mcp.json → \"memory\" → npx @modelcontextprotocol/server-memory"
-  echo "  Reference: https://app.aitmpl.com/component/mcp/integration/memory-integration"
+  NODE_VERSION=$(node --version 2>&1)
+  echo "✓ npx found — Node.js $NODE_VERSION"
 else
-  echo "✗ npx not found — memory MCP server requires Node.js/npx"
+  echo "✗ npx not found — 15 MCP servers require Node.js/npx"
   echo "  Install Node.js from https://nodejs.org (LTS recommended)"
   ERRORS=$((ERRORS + 1))
 fi
@@ -153,7 +155,7 @@ else
   echo "  claude CLI not found — install third-party plugins manually."
   echo "  Run these slash commands inside a Claude Code chat session:"
   echo ""
-  echo "  UI UX Pro Max (design system + 67 styles, 161 palettes, 57 fonts):"
+  echo "  UI UX Pro Max (design system — 67 styles, 161 palettes, 57 fonts):"
   echo "    /plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill"
   echo "    /plugin install ui-ux-pro-max@ui-ux-pro-max-skill"
   echo ""
@@ -161,7 +163,7 @@ else
   echo "    /plugin marketplace add forrestchang/andrej-karpathy-skills"
   echo "    /plugin install andrej-karpathy-skills@karpathy-skills"
   echo ""
-  echo "  Impeccable (frontend design skill — 23 commands + anti-pattern detection):"
+  echo "  Impeccable (frontend design — 23 commands + anti-pattern detection):"
   echo "    /plugin marketplace add pbakaus/impeccable"
   echo "    /plugin install impeccable@impeccable"
 fi
@@ -200,22 +202,94 @@ else
   echo "  .claude/skills/ not found — skipping"
 fi
 
-# ── 9. Install npm dependencies (playwright package) ───────
+# ── 9. Install npm dependencies + Playwright browser ───────
 echo ""
-echo "── npm Dependencies (Playwright) ───────────────────────"
+echo "── npm Dependencies + Playwright Browser ────────────────"
 if [ -f "$ROOT/package.json" ]; then
   if command -v npm &>/dev/null; then
-    (cd "$ROOT" && npm install --silent 2>/dev/null) && echo "✓ npm install complete" || echo "✗ npm install failed — run: npm install"
-    echo "  Note: tools/playwright.js uses your system Chrome/Edge — no browser download needed."
+    if (cd "$ROOT" && npm install --silent 2>/dev/null); then
+      echo "✓ npm install complete"
+    else
+      echo "✗ npm install failed — run: npm install"
+      ERRORS=$((ERRORS + 1))
+    fi
+    # Install Playwright Chromium browser for tools/playwright.js
+    if (cd "$ROOT" && npx playwright install chromium 2>/dev/null); then
+      echo "✓ Playwright Chromium browser installed"
+    else
+      echo "⚠ Playwright Chromium install failed — run: npx playwright install chromium"
+    fi
   else
-    echo "  ✗ npm not found — install Node.js first, then run: npm install"
+    echo "✗ npm not found — install Node.js first, then run: npm install"
     ERRORS=$((ERRORS + 1))
   fi
 else
   echo "  (no package.json found — skipping)"
 fi
 
-# ── 10. Install pre-commit doc-sync hook ────────────────────
+# ── 10. Install global CLI tools ────────────────────────────
+echo ""
+echo "── Global CLI Tools ─────────────────────────────────────"
+
+# skillui — design system extractor for /skillui skill
+# Source: https://github.com/amaancoderx/npxskillui
+if command -v skillui &>/dev/null; then
+  echo "✓ skillui already installed"
+elif command -v npm &>/dev/null; then
+  echo "  Installing skillui globally..."
+  if npm install -g skillui --silent 2>/dev/null; then
+    echo "✓ skillui installed (usage: skillui --url <url> | --dir <path> | --repo <github-url>)"
+  else
+    echo "⚠ skillui install failed — run manually: npm install -g skillui"
+  fi
+else
+  echo "⚠ npm not found — cannot install skillui (optional: npm install -g skillui)"
+fi
+
+# firecrawl-cli — web scraping CLI for /firecrawl skill + workflows/web-scraping.md
+# Also pairs with firecrawl-mcp as backup. Source: https://github.com/firecrawl/cli
+if command -v firecrawl &>/dev/null; then
+  FC_VERSION=$(firecrawl --version 2>&1 | head -1)
+  echo "✓ firecrawl already installed: $FC_VERSION"
+elif command -v npm &>/dev/null; then
+  echo "  Installing firecrawl-cli globally..."
+  if npm install -g firecrawl-cli --silent 2>/dev/null; then
+    echo "✓ firecrawl-cli installed"
+    echo "  ⚠ Add FIRECRAWL_API_KEY to .env — get it at: https://www.firecrawl.dev/app/api-keys"
+  else
+    echo "✗ firecrawl-cli install failed — run manually: npm install -g firecrawl-cli"
+    ERRORS=$((ERRORS + 1))
+  fi
+else
+  echo "✗ npm not found — install Node.js, then run: npm install -g firecrawl-cli"
+  ERRORS=$((ERRORS + 1))
+fi
+
+# ── 11. Authentication reminders (interactive — cannot automate) ──
+echo ""
+echo "── Authentication Reminders ─────────────────────────────"
+echo "  These require a one-time manual step before first use:"
+echo ""
+echo "  Trigger.dev MCP"
+echo "    Run: npx trigger.dev@latest login"
+echo "    (opens browser — authenticates the trigger MCP server)"
+echo ""
+echo "  Google Workspace MCP"
+echo "    Set GOOGLE_OAUTH_CLIENT_ID + GOOGLE_OAUTH_CLIENT_SECRET in"
+echo "    .claude/settings.local.json, then open Claude Code — a browser"
+echo "    OAuth consent window opens automatically on first tool call."
+echo ""
+echo "  Canva MCP"
+echo "    No keys needed. A browser OAuth window opens automatically"
+echo "    on first use of the canva-dev MCP server."
+echo ""
+echo "  All other MCP servers (supabase, openrouter, kie-ai, tavily,"
+echo "  pinecone, vapi, n8n, apify, monet, stitch, 21st-dev, firecrawl)"
+echo "  require API keys in .claude/settings.local.json → env block."
+echo "  See .claude/settings.local.json.example → __activation_guide"
+echo "  for where to obtain each key."
+
+# ── 12. Install pre-commit doc-sync hook ────────────────────
 echo ""
 echo "── Git Pre-Commit Hook (doc-sync) ───────────────────────"
 HOOKS_DIR="$ROOT/.git/hooks"
@@ -236,7 +310,7 @@ else
   echo "✓ pre-commit doc-sync hook installed → .git/hooks/pre-commit"
 fi
 
-# ── 11. Summary ────────────────────────────────────────────
+# ── 13. Summary ────────────────────────────────────────────
 echo ""
 if [ $ERRORS -eq 0 ]; then
   echo "✓ Setup complete. Context monitor statusline is ready."

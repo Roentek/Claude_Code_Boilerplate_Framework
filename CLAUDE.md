@@ -22,7 +22,8 @@ Start here — each path routes to the right tools and rules.
 | n8n workflow | `n8n-mcp` tools | Search nodes, validate, build via MCP |
 | Voice AI (Vapi) | `vapi-mcp` tools | Create assistants, calls, phone numbers |
 | Browser automation (screenshot / scrape / PDF) | `/playwright` skill → `tools/playwright.js` | `workflows/browser-automation.md` — CLI first; `playwright-mcp` available as backup |
-| Web scraping (large-scale) | `apify` MCP | Search actors, fetch details, call actors |
+| Web scraping (single page / crawl / search) | `/firecrawl` skill → `firecrawl` CLI | `workflows/web-scraping.md` — CLI first (`firecrawl`); `firecrawl-mcp` backup for batch/schema |
+| Web scraping (large-scale / specialized actors) | `apify` MCP | Search actors, fetch details, call actors |
 | Vector search / RAG | `pinecone-mcp` tools | Upsert, search, rerank records |
 | UI component search | `monet-mcp` tools | Search landing page components, get React/TS code |
 | UI component inspiration / SVG logos | `21st-dev-magic` tools | Search thousands of UI components, search SVG brand logos, generate UI variants |
@@ -137,6 +138,7 @@ Always available regardless of plugins. Invoke with `/skill-name`.
 | `/webgpu-threejs-tsl` | Building WebGPU-enabled Three.js apps with TSL — renderer setup, node materials, compute shaders, post-processing, WGSL integration, device loss handling |
 | `/design-md` | Load a ready-made brand `DESIGN.md` for any of 73 brands (Linear, Stripe, Vercel, Notion, Figma, Spotify, Tesla, Supabase, etc.) via `npx getdesign@latest add <brand>`. Source: [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md) |
 | `/taste-skill` | Anti-slop frontend design enforcement — overrides LLM biases with metric-driven rules (DESIGN_VARIANCE, MOTION_INTENSITY, VISUAL_DENSITY), bans generic patterns (Inter, AI purple, centered heroes, 3-col cards), enforces Framer Motion spring physics, Bento 2.0 paradigm, and 10-section pre-flight checklist. Source: [leonxlnx/taste-skill](https://github.com/leonxlnx/taste-skill) |
+| `/firecrawl` | Web scraping via Firecrawl CLI — scrape single pages to Markdown, web search, full-site crawls, URL mapping, and AI-powered agent extraction. CLI primary (`firecrawl`); `firecrawl-mcp` backup for batch/schema tasks. `workflows/web-scraping.md`. Requires `npm install -g firecrawl-cli` and `FIRECRAWL_API_KEY`. |
 
 **Superpowers skills** (auto-trigger based on context — no manual invoke needed):
 
@@ -195,6 +197,7 @@ Defined in [`.mcp.json`](.mcp.json), loaded automatically. Add credentials to [`
 | `stitch` | `extract_design_context`, `fetch_screen_code`, `fetch_screen_image` | Google Stitch — extract design DNA (fonts, colors, layouts) from screens, fetch screen HTML/code and images. Requires `STITCH_API_KEY`. |
 | `21st-dev-magic` | `21st_magic_component_inspiration`, `21st_magic_component_builder`, `21st_magic_component_refiner`, `logo_search` | 21st.dev Magic — semantic search across thousands of UI components + SVG brand logos via SVGL (free); build and refine polished UI variants (Pro). Requires `TWENTYFIRST_DEV_API_KEY`. |
 | `playwright-mcp` | `browser_navigate`, `browser_screenshot`, `browser_snapshot`, `browser_click`, `browser_type`, `browser_pdf_save` | Microsoft Playwright MCP — backup for interactive browser sessions. **Always prefer `node tools/playwright.js` (CLI) first.** Use MCP only when interactive control or JS evaluation is needed. No API key required. |
+| `firecrawl-mcp` | `firecrawl_scrape`, `firecrawl_batch_scrape`, `firecrawl_search`, `firecrawl_crawl`, `firecrawl_map`, `firecrawl_agent`, `firecrawl_extract`, `firecrawl_check_crawl_status` | Firecrawl MCP — backup for batch scraping or schema-driven LLM extraction. **Always prefer `firecrawl` CLI first** (`/firecrawl` skill, `workflows/web-scraping.md`). Requires `FIRECRAWL_API_KEY`. |
 
 > **Setup:** Copy [`.claude/settings.local.json.example`](.claude/settings.local.json.example) → `.claude/settings.local.json`. The embedded `__activation_guide` lists exactly where to obtain each credential and which servers (memory, trigger, zep, canva) need no key at all.
 

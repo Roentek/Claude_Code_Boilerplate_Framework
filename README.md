@@ -33,7 +33,7 @@ This framework wires together every layer of a Claude Code project:
 - **Rules** — Markdown instruction files auto-loaded into every session
 - **Plugins** — Extend Claude Code with specialized modes (superpowers, frontend-design, agent-sdk, etc.)
 - **Skills** — Reusable slash commands you invoke with `/skill-name`
-- **MCP Servers** — 17 pre-configured Model Context Protocol integrations (Supabase, Google Workspace, Pinecone, Trigger.dev, n8n, Vapi, Apify, Alpaca, Monet, 21st.dev Magic, and more)
+- **MCP Servers** — 18 pre-configured Model Context Protocol integrations (Supabase, Google Workspace, Pinecone, Trigger.dev, n8n, Vapi, Apify, Alpaca, Firecrawl, Monet, 21st.dev Magic, and more)
 - **Hooks** — Lifecycle shell scripts that run on session start, stop, and tool events
 - **Scripts** — A context monitor statusline and a first-time setup bootstrapper
 - **WAT Framework** — Architecture pattern: Workflows → Agents → Tools
@@ -213,16 +213,18 @@ claude .
 On first open, a `Setup` hook automatically runs `.claude/scripts/setup.sh`, which:
 
 1. **Makes hooks executable** — `chmod +x` on `stop.sh` and `pre-commit.sh` (Unix/macOS only)
-2. **Verifies Python** — checks `python3` / `python` is in PATH
+2. **Verifies Python** — checks `python3` / `python` is in PATH; required by the context-monitor statusline and `ui-ux-pro-max` design search scripts
 3. **Verifies context-monitor.py** — confirms the statusline script is present
 4. **Creates `.env`** — copies `.env.example` → `.env` if none exists
 5. **Verifies uvx** — required for `google-workspace-mcp` and `alpaca` MCP servers
-6. **Verifies npx** — required for the `memory` MCP server
+6. **Verifies Node.js / npx** — required by all 15 npx-based MCP servers (memory, supabase, openrouter, kie-ai, tavily, trigger, pinecone, vapi, n8n, apify, zep, canva, 21st-dev, playwright-mcp, firecrawl-mcp)
 7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max`, `andrej-karpathy-skills`, and `impeccable` via CLI
-8. **Installs project skills** — copies `.claude/skills/*/SKILL.md` to `~/.claude/skills/` where Claude Code reads them
-9. **Installs npm dependencies** — runs `npm install` to install `playwright` package; uses system Chrome/Edge at runtime (no browser download needed)
-10. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
-11. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
+8. **Installs project skills** — copies `.claude/skills/*/` to `~/.claude/skills/` where Claude Code reads them (full directory, not just SKILL.md — preserves supporting docs and examples)
+9. **Installs npm dependencies + Playwright browser** — runs `npm install` for the `playwright` package, then `npx playwright install chromium` for the browser binary used by `tools/playwright.js`
+10. **Installs global CLI tools** — `skillui` (design system extractor for `/skillui` skill) and `firecrawl-cli` (web scraping CLI for `/firecrawl` skill and `workflows/web-scraping.md`); both via `npm install -g`
+11. **Prints authentication reminders** — lists the three integrations that require a manual one-time auth step: Trigger.dev (`npx trigger.dev@latest login`), Google Workspace (browser OAuth on first MCP call), and Canva (browser OAuth on first MCP call)
+12. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
+13. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
 
 **Re-run setup manually** (e.g. fresh clone on a new machine):
 
@@ -286,7 +288,8 @@ bash .claude/scripts/setup.sh
 │       ├── webgpu-threejs-tsl/      # WebGPU + Three.js TSL skill (SKILL.md + docs/ + examples/ + templates/)
 │       ├── design-md/SKILL.md       # Load brand DESIGN.md for 73 brands via getdesign CLI
 │       ├── taste-skill/SKILL.md     # Anti-slop frontend enforcement: design dials, banned patterns, Bento 2.0
-│       └── playwright/SKILL.md      # Browser automation: screenshot, scrape, pdf, links via tools/playwright.js
+│       ├── playwright/SKILL.md      # Browser automation: screenshot, scrape, pdf, links via tools/playwright.js
+│       └── firecrawl/SKILL.md       # Web scraping: single-page, crawl, search, map, AI agent via firecrawl CLI
 │
 ├── brand_assets/                    # Logos, color guides, design tokens
 ├── docs/                            # Project-level documentation
@@ -295,7 +298,8 @@ bash .claude/scripts/setup.sh
 ├── tools/
 │   └── playwright.js                # Browser automation: screenshot, scrape, pdf, links (node tools/playwright.js)
 ├── workflows/
-│   └── browser-automation.md        # WAT SOP for Playwright-based automation tasks
+│   ├── browser-automation.md        # WAT SOP for Playwright-based automation tasks
+│   └── web-scraping.md              # WAT SOP for Firecrawl-based web scraping tasks
 └── .tmp/                            # Scratch space (disposable, not committed)
 ```
 
@@ -463,6 +467,7 @@ Source files live in `.claude/skills/<name>/SKILL.md`. `setup.sh` installs them 
 | `/design-md` | Fetches a ready-made `DESIGN.md` for any of 73 brands (Linear, Stripe, Vercel, Notion, Figma, Spotify, Tesla, Supabase, BMW, Coinbase, and more) via `npx getdesign@latest add <brand>`. Each file contains the full color palette, typography, component styles, spacing system, and pre-written AI agent prompts. Source: [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md). |
 | `/taste-skill` | Anti-slop frontend design enforcement. Overrides LLM biases with three configurable dials (DESIGN_VARIANCE, MOTION_INTENSITY, VISUAL_DENSITY) and 10 sections of strict rules: bans Inter font, AI purple, centered heroes, 3-column cards, pure black, and emoji-as-icons. Enforces Framer Motion spring physics, Bento 2.0 paradigm, magnetic micro-physics, full interaction states (loading/empty/error), and a pre-flight checklist. Source: [leonxlnx/taste-skill](https://github.com/leonxlnx/taste-skill). |
 | `/playwright` | Browser automation via Playwright CLI — screenshots, JS-rendered page scraping, PDF generation, link extraction. Runs `node tools/playwright.js` directly via Bash with no MCP server overhead. Requires `npm install && npx playwright install chromium` on first use. Source: [microsoft/playwright-cli](https://github.com/microsoft/playwright-cli). |
+| `/firecrawl` | Web scraping via Firecrawl CLI — scrape single pages to Markdown, web search with optional result scraping, full-site crawls with depth limits, URL mapping, and AI-powered agent extraction. CLI primary (`firecrawl`); `firecrawl-mcp` backup for batch or schema-driven tasks. Requires `npm install -g firecrawl-cli` and `FIRECRAWL_API_KEY`. Source: [firecrawl/cli](https://github.com/firecrawl/cli). |
 
 ---
 
@@ -496,6 +501,7 @@ All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. C
 | **stitch** | HTTP remote (`stitch.googleapis.com`) | `STITCH_API_KEY` | Google Stitch — extract design DNA (fonts, colors, layouts) from screens; fetch screen HTML/code and images. Tools: `generate_screen_from_text`, `edit_screens`, `get_screen`, `list_screens`, `list_projects`. |
 | **21st-dev-magic** | `npx @21st-dev/magic@latest` | `TWENTYFIRST_DEV_API_KEY` | 21st.dev Magic — semantic search across thousands of UI components + SVG brand logos via SVGL (free); build and refine polished UI variants (Pro). Tools: `21st_magic_component_inspiration`, `21st_magic_component_builder`, `21st_magic_component_refiner`, `logo_search`. |
 | **playwright-mcp** | `npx @playwright/mcp@latest` | — | Microsoft Playwright MCP — backup for interactive browser sessions (`browser_navigate`, `browser_screenshot`, `browser_snapshot`, `browser_click`, `browser_type`, `browser_pdf_save`). **CLI (`node tools/playwright.js`) is always the primary tool.** Use MCP only when interactive control or JS evaluation is needed. |
+| **firecrawl-mcp** | `npx firecrawl-mcp` | `FIRECRAWL_API_KEY` | Firecrawl MCP — backup for batch scraping and schema-driven LLM extraction (`firecrawl_scrape`, `firecrawl_batch_scrape`, `firecrawl_search`, `firecrawl_crawl`, `firecrawl_map`, `firecrawl_agent`, `firecrawl_extract`). **CLI (`firecrawl`) is always the primary tool** — see `/firecrawl` skill and `workflows/web-scraping.md`. |
 
 ### Google Workspace Setup
 

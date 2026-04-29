@@ -29,7 +29,9 @@
       "Bash(python *)",
       "Bash(node tools/playwright.js:*)",
       "Bash(npx playwright:*)",
-      "Bash(npm run playwright:*)"
+      "Bash(npm run playwright:*)",
+      "Bash(firecrawl:*)",
+      "Bash(npx firecrawl-cli:*)"
     ],
     "deny": []
   },
@@ -52,7 +54,8 @@
     "monet-mcp",
     "stitch",
     "21st-dev-magic",
-    "playwright-mcp"
+    "playwright-mcp",
+    "firecrawl-mcp"
   ],
   "hooks": {
     "Setup": [
