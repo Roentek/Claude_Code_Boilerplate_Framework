@@ -135,6 +135,7 @@ Always available regardless of plugins. Invoke with `/skill-name`.
 | `/skillui` | Extract a complete design system from any website, local dir, or GitHub repo via `skillui` CLI — outputs `SKILL.md`, `DESIGN.md`, and token JSON ready for Claude |
 | `/webgpu-threejs-tsl` | Building WebGPU-enabled Three.js apps with TSL — renderer setup, node materials, compute shaders, post-processing, WGSL integration, device loss handling |
 | `/design-md` | Load a ready-made brand `DESIGN.md` for any of 73 brands (Linear, Stripe, Vercel, Notion, Figma, Spotify, Tesla, Supabase, etc.) via `npx getdesign@latest add <brand>`. Source: [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md) |
+| `/taste-skill` | Anti-slop frontend design enforcement — overrides LLM biases with metric-driven rules (DESIGN_VARIANCE, MOTION_INTENSITY, VISUAL_DENSITY), bans generic patterns (Inter, AI purple, centered heroes, 3-col cards), enforces Framer Motion spring physics, Bento 2.0 paradigm, and 10-section pre-flight checklist. Source: [leonxlnx/taste-skill](https://github.com/leonxlnx/taste-skill) |
 
 **Superpowers skills** (auto-trigger based on context — no manual invoke needed):
 

@@ -50,6 +50,7 @@
       "mcp__claude_ai_OpenRouter__openrouter_query",
       "mcp__claude_ai_Spline__spline_query",
       "mcp__claude_ai_Tavily__tavily_extract",
+      "mcp__claude_ai_Apify__apify--rag-web-browser",
 
       "mcp__memory__search_nodes",
       "mcp__memory__open_nodes",

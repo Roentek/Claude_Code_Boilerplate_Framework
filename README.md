@@ -282,7 +282,8 @@ bash .claude/scripts/setup.sh
 │       ├── site-teardown/SKILL.md   # Reverse-engineer any website into a build blueprint
 │       ├── skillui/SKILL.md         # Extract design system from site/repo via skillui CLI
 │       ├── webgpu-threejs-tsl/      # WebGPU + Three.js TSL skill (SKILL.md + docs/ + examples/ + templates/)
-│       └── design-md/SKILL.md       # Load brand DESIGN.md for 73 brands via getdesign CLI
+│       ├── design-md/SKILL.md       # Load brand DESIGN.md for 73 brands via getdesign CLI
+│       └── taste-skill/SKILL.md    # Anti-slop frontend enforcement: design dials, banned patterns, Bento 2.0
 │
 ├── brand_assets/                    # Logos, color guides, design tokens
 ├── docs/                            # Project-level documentation
@@ -455,6 +456,7 @@ Source files live in `.claude/skills/<name>/SKILL.md`. `setup.sh` installs them 
 | `/skillui` | Runs the `skillui` CLI to extract a design system from any website, local project, or GitHub repo. Outputs `SKILL.md`, `DESIGN.md`, and token JSON (colors, spacing, typography) — auto-loaded by Claude Code. Install: `npm install -g skillui`. |
 | `/webgpu-threejs-tsl` | Comprehensive guide for developing WebGPU-enabled Three.js applications using TSL (Three.js Shading Language). Covers renderer setup, node materials, compute shaders, post-processing, WGSL integration, and GPU device loss handling. Source: [dgreenheck/webgpu-claude-skill](https://github.com/dgreenheck/webgpu-claude-skill). |
 | `/design-md` | Fetches a ready-made `DESIGN.md` for any of 73 brands (Linear, Stripe, Vercel, Notion, Figma, Spotify, Tesla, Supabase, BMW, Coinbase, and more) via `npx getdesign@latest add <brand>`. Each file contains the full color palette, typography, component styles, spacing system, and pre-written AI agent prompts. Source: [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md). |
+| `/taste-skill` | Anti-slop frontend design enforcement. Overrides LLM biases with three configurable dials (DESIGN_VARIANCE, MOTION_INTENSITY, VISUAL_DENSITY) and 10 sections of strict rules: bans Inter font, AI purple, centered heroes, 3-column cards, pure black, and emoji-as-icons. Enforces Framer Motion spring physics, Bento 2.0 paradigm, magnetic micro-physics, full interaction states (loading/empty/error), and a pre-flight checklist. Source: [leonxlnx/taste-skill](https://github.com/leonxlnx/taste-skill). |
 
 ---
 
