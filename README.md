@@ -515,8 +515,8 @@ Every `.md` file in `.claude/rules/` is injected into every Claude Code session 
 | File | What It Does |
 | ------ | ------------- |
 | [`agent-instructions.md`](.claude/rules/agent-instructions.md) | WAT framework — how to orchestrate tools, recover from errors, and keep workflows current |
-| [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) | Frontend standards: local server, screenshot workflow, anti-generic guardrails |
-| [`ui-ux-pro-max-instructions.md`](.claude/rules/ui-ux-pro-max-instructions.md) | Design intelligence database: 67 styles, 161 palettes, 57 fonts, 99 UX rules, 25 chart types |
+| [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) | Frontend standards: local server, screenshot workflow, anti-generic guardrails, Google Fonts embed guide ['google fonts'](https://fonts.google.com/) |
+| [`ui-ux-pro-max-instructions.md`](.claude/rules/ui-ux-pro-max-instructions.md) | Design intelligence database: 67 styles, 161 palettes, 57 font pairings (Google Fonts), 99 UX rules, 25 chart types |
 | [`trigger-workflow-builder.md`](.claude/rules/trigger-workflow-builder.md) | Step-by-step guide for building Trigger.dev TypeScript automations |
 | [`trigger-api-reference.md`](.claude/rules/trigger-api-reference.md) | Full Trigger.dev SDK v4 code patterns, examples, and critical rules |
 | [`memory-guidelines.md`](.claude/rules/memory-guidelines.md) | When and what to save — auto-update trigger rules for both memory tiers |

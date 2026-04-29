@@ -42,6 +42,19 @@
 - Placeholder images: `https://placehold.co/WIDTHxHEIGHT`
 - Mobile-first responsive
 
+## Typography Resources
+
+- **Google Fonts** — https://fonts.google.com/ — browse and select font pairings before writing any frontend code
+- Embed via `<link>` in `<head>` (never `@import` inside CSS — it blocks rendering):
+  ```html
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  ```
+- Always add `display=swap` to the embed URL to prevent invisible text (FOIT)
+- Use `--domain google-fonts` in ui-ux-pro-max to get AI-curated pairing recommendations before visiting the catalog
+- Do not default to Inter or Roboto — they read as placeholder choices. Choose a deliberate pairing that matches the product's personality
+
 ## Component Library (monet-mcp)
 
 Before building sections from scratch, search the **monet-mcp** component library for ready-made, production-grade React/TS components:
@@ -66,7 +79,7 @@ Tools: search_components, get_component_code, get_component_details, list_catego
 
 - **Colors:** Never use default Tailwind palette (indigo-500, blue-600, etc.). Pick a custom brand color and derive from it.
 - **Shadows:** Never use flat `shadow-md`. Use layered, color-tinted shadows with low opacity.
-- **Typography:** Never use the same font for headings and body. Pair a display/serif with a clean sans. Apply tight tracking (`-0.03em`) on large headings, generous line-height (`1.7`) on body.
+- **Typography:** Never use the same font for headings and body. Pair a display/serif with a clean sans (browse at https://fonts.google.com/). Apply tight tracking (`-0.03em`) on large headings, generous line-height (`1.7`) on body.
 - **Gradients:** Layer multiple radial gradients. Add grain/texture via SVG noise filter for depth.
 - **Animations:** Only animate `transform` and `opacity`. Never `transition-all`. Use spring-style easing.
 - **Interactive states:** Every clickable element needs hover, focus-visible, and active states. No exceptions.

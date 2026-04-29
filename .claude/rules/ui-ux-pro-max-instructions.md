@@ -130,7 +130,7 @@ python3 skills/ui-ux-pro-max/scripts/search.py "<keyword>" --domain <domain> [-n
 | Font pairings | `typography` | `--domain typography "playful modern"` |
 | Chart recommendations | `chart` | `--domain chart "real-time dashboard"` |
 | UX best practices | `ux` | `--domain ux "animation accessibility"` |
-| Google Fonts lookup | `google-fonts` | `--domain google-fonts "sans serif variable"` |
+| Google Fonts lookup | `google-fonts` | `--domain google-fonts "sans serif variable"` — browse catalog at https://fonts.google.com/ |
 | Landing page structure | `landing` | `--domain landing "hero social-proof"` |
 | React/Next.js perf | `react` | `--domain react "rerender memo list"` |
 | App interface a11y | `web` | `--domain web "accessibilityLabel touch safe-areas"` |
