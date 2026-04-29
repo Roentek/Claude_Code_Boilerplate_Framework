@@ -135,6 +135,7 @@ Always available regardless of plugins. Invoke with `/skill-name`.
 | `/skillui` | Extract a complete design system from any website, local dir, or GitHub repo via `skillui` CLI — outputs `SKILL.md`, `DESIGN.md`, and token JSON ready for Claude |
 | `/webgpu-threejs-tsl` | Building WebGPU-enabled Three.js apps with TSL — renderer setup, node materials, compute shaders, post-processing, WGSL integration, device loss handling |
 | `/design-md` | Load a ready-made brand `DESIGN.md` for any of 73 brands (Linear, Stripe, Vercel, Notion, Figma, Spotify, Tesla, Supabase, etc.) via `npx getdesign@latest add <brand>`. Source: [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md) |
+| `/taste-skill` | Anti-slop frontend design enforcement — overrides LLM biases with metric-driven rules (DESIGN_VARIANCE, MOTION_INTENSITY, VISUAL_DENSITY), bans generic patterns (Inter, AI purple, centered heroes, 3-col cards), enforces Framer Motion spring physics, Bento 2.0 paradigm, and 10-section pre-flight checklist. Source: [leonxlnx/taste-skill](https://github.com/leonxlnx/taste-skill) |
 
 **Superpowers skills** (auto-trigger based on context — no manual invoke needed):
 
@@ -239,6 +240,7 @@ All `.md` files in `.claude/rules/` are loaded automatically every session.
 | Hook | File | Behavior |
 | ------ | ------ | --------- |
 | `Stop` (Claude Code) | [`.claude/hooks/stop.sh`](.claude/hooks/stop.sh) | Scans session for fixes/discoveries; flags tracked-path changes that may need doc updates |
+| `PostToolUse` (Claude Code) | [`.claude/hooks/autosync-docs.sh`](.claude/hooks/autosync-docs.sh) | Fires after every Write/Edit to a tracked path; injects `additionalContext` telling Claude to update CLAUDE.md/README.md immediately (CLAUDE.md and README.md themselves are excluded to prevent loops) |
 | `pre-commit` (git) | [`.claude/hooks/pre-commit.sh`](.claude/hooks/pre-commit.sh) | Detects staged changes to tracked paths; auto-updates CLAUDE.md and README.md before the commit lands |
 
 The `pre-commit` hook is installed to `.git/hooks/pre-commit` automatically by `setup.sh`. It fires when any of these paths are staged: `.claude/rules/`, `.claude/agents/`, `.claude/skills/`, `.claude/hooks/`, `.claude/scripts/`, `.mcp.json`, `workflows/`, `tools/`.

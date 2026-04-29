@@ -62,6 +62,18 @@
         ]
       }
     ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/autosync-docs.sh",
+            "statusMessage": "Checking if docs need updating..."
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "matcher": "",

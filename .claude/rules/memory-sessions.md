@@ -30,6 +30,11 @@ Summary of substantive work completed each session — what was built, what was 
 - Updated `CLAUDE.md`: added WebGPU/Three.js row to routing table, added `/webgpu-threejs-tsl` to project skills table.
 - Updated `README.md`: added skill to project skills table, expanded project structure tree to show skill subdirectories.
 
+## 2026-04-29
+- Diagnosed Alpaca MCP 401: `${VAR}` substitution in `.mcp.json` reads from OS process env, not `.env` or `settings.local.json`. Fix: `setx ALPACA_API_KEY "..."` + `setx ALPACA_SECRET_KEY "..."` in terminal, then restart Claude Code.
+- Built `PostToolUse` autosync hook — `.claude/hooks/autosync-docs.sh` + `autosync-docs.py`: fires after Write/Edit on tracked paths, injects `additionalContext` telling Claude to update CLAUDE.md/README.md immediately. CLAUDE.md/README.md excluded to prevent loops.
+- Updated CLAUDE.md and README.md: added autosync hook to Hooks tables; added hook files to README project structure; added missing `stitch` MCP entry to README MCP table.
+
 ## 2026-04-22
 - Converted `.claude/docs/Claude_Code_Beginners_Guide.pdf` → `Claude_Code_Beginners_Guide.md`
 - Converted `.claude/docs/The_Shift_to_Agentic_AI_Workflows.pdf` → `The_Shift_to_Agentic_AI_Workflows.md`
