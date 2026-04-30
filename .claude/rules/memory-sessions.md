@@ -128,3 +128,28 @@ Summary of substantive work completed each session — what was built, what was 
 ## 2026-04-30 (auto-drafted — review before next session)
 - `./CLAUDE.md`\n\n**Score: 88/100 (Grade: B+)**\n\n| Criterion | Before | After | Notes |\n|-----------|--------|-------|-------|\n| Commands/workflows | 14/20 | 16/20 | Playwright example added; gotcha note makes setup actionable |\n| Architecture clarity | 18/20 | 18/20 | Unchanged â€” routing table remains excellent |\n| Non-obvious patterns | 11/15 | 13/15 | OS env var gotcha now documented |\n| Conciseness | 13/15 | 13/15 | Addition is earned weight, not padding |\n| Currency | 14/15 | 14/15 | All links correct |\n| Actionability | 13/15 | 14/15 | Concrete tool command improves developer flow |\n\n---\n\n### 2.
 - `./README.md`\n\n**Score: 84/100 (Grade: B)**\n\n| Criterion | Before | After | Notes |\n|-----------|--------|-------|-------|\n| Commands/workflows | 18/20 | 18/20 | Unchanged |\n| Architecture clarity | 19/20 | 19/20 | Tree now accurate â€” `trigger-api-reference.md` in `docs/` |\n| Non-obvious patterns | 10/15 | 11/15 | Trim table now clarifies which dir each file lives in |\n| Conciseness | 8/15 | 8/15 | Length appropriate for a README |\n| Currency | 9/15 | 14/15 | All 4 stale paths fixed; server count updated 18â†’20; Reference Docs table now complete |\n| Actionability | 14/15 | 14/15 | Unchanged |\n\n**Changes applied:**\n- `trigger-api-reference.md` removed from rules/ tree â†’ added to docs/ tree\n- All 3 stale `.claude/rules/trigger-api-reference.md` links â†’ `.claude/docs/`\n- `trigger-api-reference.md` removed from auto-loaded Rules table (it's not auto-loaded anymore)\n- `trigger-api-reference.md` added to Reference Docs table with correct path\n- \"18 pre-configured\" â†’ \"20 pre-configured\" MCP integrations\n- Trim guidance clarified to show which directory each Trigger.dev file lives in\n\n---\n\n**No further issues found.** Both files are consistent with each other and with the current repo state."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-04-30 (auto-drafted — review before next session)
+- You set it in `settings.local.json` under `\"env\": { \"CONTEXT7_API_KEY\": \"your-key-here\" }`.\n\n### Servers that need NO key\n\n`memory`, `trigger`, `zep-mcp`, `canva-dev`, `higgsfield`, `playwright-mcp` â€” these activate automatically with no credentials needed.\n\n### The critical gotcha\n\n**`.env` is NOT read by Claude Code / `.mcp.json` at all.** `.env` is only for your own code (Trigger.dev tasks, Python tools, etc.) that explicitly loads it via `dotenv`.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-04-30 (auto-drafted — review before next session)
+- Added `SUPABASE_PROJECT_URL`, `SUPABASE_PROJECT_KEY`, `CONTEXT7_API_KEY`, and `GITHUB_PERSONAL_ACCESS_TOKEN` which were previously missing.\n\n**`settings.local.json.example`** â€” two additions:\n- `context7` entry added to `__activation_guide` (was in `env` block but had no guide entry)\n- 6 previously missing vars added to both `__activation_guide` (with a `__note_app_code_vars` section divider explaining they're app-code vars) and the `env` block: `SUPABASE_PROJECT_URL`, `SUPABASE_PROJECT_KEY`, `OPENROUTER_BASE_URL`, `OPENROUTER_MODEL`, `VAPI_SDK_KEY`, `ALPACA_BASE_URL`"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-04-30 (auto-drafted — review before next session)
+- Added all 6 new vars to `settings.local.json` with their actual values from context:\n\n| Var | Value |\n|-----|-------|\n| `SUPABASE_PROJECT_URL` | `https://pyztdrdxegvyqsbcqfiy.supabase.co` |\n| `SUPABASE_PROJECT_KEY` | Supabase service-role JWT |\n| `OPENROUTER_BASE_URL` | `https://openrouter.ai/api/v1` |\n| `OPENROUTER_MODEL` | `openrouter/auto` |\n| `VAPI_SDK_KEY` | Vapi client SDK key |\n| `ALPACA_BASE_URL` | `https://paper-api.alpaca.markets/v2` |"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-04-30 (auto-drafted — review before next session)
+- Here's what was added to `settings.local.json.example`:\n\n- **`__note_model_switching`** section in `__activation_guide` â€” explains the OpenRouter routing pattern, all 10 ANTHROPIC/`CLAUDE_CODE_*` vars, and the full list of model slugs (`openrouter/auto`, `anthropic/claude-opus-4`, `openai/gpt-4o`, `deepseek/deepseek-chat`, etc.)\n- **10 new keys** in the `env` block â€” all blank by default, ready to fill when you want to switch models or route through OpenRouter\n\nThe `.env.example` comment block (lines 40â€“54) can now be removed or left as-is â€” `settings.local.json.example` is the authoritative reference since these vars must go in the `env` block there, not in `.env`."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-04-30 (auto-drafted — review before next session)
+- Header now redirects new users to `settings.local.json.example` for the full credential setup.\n\n**`settings.local.json.example`** â€” added the missing `OPENROUTER_API_KEY` to the `env` block (it was in the activation guide but absent from the block, so new users copying the template would have skipped it).\n\nThe comment at the top of the old `.env` (\"Keys shared with MCP servers must be set in BOTH files\") is now obsolete â€” `settings.local.json` is the single source of truth for all credentials."}

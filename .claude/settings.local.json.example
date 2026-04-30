@@ -23,12 +23,33 @@
     "playwright-mcp":       "NO KEY NEEDED — activates automatically. CLI (node tools/playwright.js) is always the primary tool; use this MCP only for interactive/multi-step sessions.",
     "firecrawl-mcp":        "FIRECRAWL_API_KEY — firecrawl.dev/app/api-keys → Create API Key (free tier available). CLI (firecrawl) is always the primary tool; use this MCP only for batch scraping or schema extraction.",
     "github@claude-plugins-official": "GITHUB_PERSONAL_ACCESS_TOKEN — github.com → Settings → Developer settings → Personal access tokens → Fine-grained or classic token with 'repo' and 'read:org' scopes.",
-    "cc-gemini-plugin@cc-gemini-plugin": "GEMINI_API_KEY — aistudio.google.com → Get API Key → Create API key in new project. Free tier available."
+    "cc-gemini-plugin@cc-gemini-plugin": "GEMINI_API_KEY — aistudio.google.com → Get API Key → Create API key in new project. Free tier available.",
+    "context7":                          "CONTEXT7_API_KEY — context7.com → Account → API Keys. Used for live SDK/library documentation lookups via the context7 MCP server.",
+
+    "__note_app_code_vars": "The keys below are used by YOUR application code (Trigger.dev tasks, Python tools) via dotenv — not by MCP servers directly. Set them here if you want Claude Code subprocesses to inherit them; otherwise setting them in .env only is sufficient.",
+    "SUPABASE_PROJECT_URL": "SUPABASE_PROJECT_URL — Supabase dashboard → Project Settings → API → Project URL (e.g. https://xyzabc.supabase.co). Used by Supabase JS SDK in app code.",
+    "SUPABASE_PROJECT_KEY": "SUPABASE_PROJECT_KEY — Supabase dashboard → Project Settings → API → anon/public or service_role key. Used by Supabase JS SDK in app code.",  
+    "VAPI_SDK_KEY":         "VAPI_SDK_KEY — dashboard.vapi.ai → Account → Developer → Public Key. Client-facing SDK key used by app code; distinct from VAPI_API_TOKEN used by vapi-mcp.",
+    "ALPACA_BASE_URL":      "ALPACA_BASE_URL — paper: https://paper-api.alpaca.markets/v2 · live: https://api.alpaca.markets. NOTE: The alpaca MCP has paper mode hardcoded in .mcp.json — this var is for app code only.",
+    "OPENROUTER_BASE_URL":  "OPENROUTER_BASE_URL — always https://openrouter.ai/api/v1. Needed by app code that calls OpenRouter directly.",
+    "OPENROUTER_MODEL":     "OPENROUTER_MODEL — model slug from openrouter.ai/models (e.g. openrouter/auto, openai/gpt-4o, anthropic/claude-sonnet-4). Used by app code for model selection.",
+    "OPENROUTER_MODEL":     "e.g. openrouter/auto" — Openrouter Auto (model select)           
+    "OPENROUTER_MODEL":     "e.g. openrouter/free" — OpenRouter Free (free tier)    
+
+    "__note_model_switching": "OPTIONAL — Route Claude Code itself through a different model or provider. Leave all blank to use native Anthropic (default). To activate: set ANTHROPIC_BASE_URL + ANTHROPIC_AUTH_TOKEN + ANTHROPIC_API_KEY='' and choose an ANTHROPIC_MODEL slug below.",
+    "ANTHROPIC_BASE_URL":               "Set to https://openrouter.ai/api/v1 to route Claude Code through OpenRouter. Leave blank for native Anthropic.",
+    "ANTHROPIC_AUTH_TOKEN":             "Your OpenRouter API key (same value as OPENROUTER_API_KEY). Claude Code uses this instead of ANTHROPIC_API_KEY when ANTHROPIC_BASE_URL is set to OpenRouter.",
+    "ANTHROPIC_API_KEY":                "Set to empty string '' when routing through OpenRouter — this prevents Claude Code from using a native Anthropic key at the same time.",
+    "ANTHROPIC_MODEL":                  "Primary model slug for Claude Code. Available options: openrouter/auto (default, picks best) · openrouter/free (free tier) · openai/gpt-4o · openai/gpt-4o-mini · anthropic/claude-opus-4 · anthropic/claude-opus-4-5 · anthropic/claude-sonnet-4 · anthropic/claude-sonnet-4-5 · google/gemini-2.0-flash-thinking-exp:free · meta-llama/llama-3.3-70b-instruct · deepseek/deepseek-chat",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL":   "Override the model used when skills/subagents request a Sonnet-class model. Set to any model slug above.",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL":     "Override the model used when skills/subagents request an Opus-class model. Set to any model slug above.",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL":    "Override the model used for fast/cheap Haiku-class tasks. Set to any model slug above.",
+    "ANTHROPIC_SMALL_FAST_MODEL":       "Override model for internal quick-turnaround sub-tasks (e.g. tool-call routing). Set to any model slug above.",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "Set to '1' to enable experimental multi-agent team support in Claude Code (parallel subagent spawning).",
+    "CLAUDE_CODE_SUBAGENT_MODEL":       "Override the model used for Claude Code subagents / parallel agent dispatches. Set to any model slug above."
   },
 
   "env": {
-    "SUPABASE_API_PAT":           "",
-    "OPENROUTER_API_KEY":         "",
     "KIE_AI_API_KEY":             "",
     "TAVILY_API_KEY":             "",
     "GOOGLE_OAUTH_CLIENT_ID":     "",
@@ -46,7 +67,27 @@
     "TWENTYFIRST_DEV_API_KEY":    "",
     "GITHUB_PERSONAL_ACCESS_TOKEN": "",
     "FIRECRAWL_API_KEY":          "",
-    "GEMINI_API_KEY":             ""
+    "GEMINI_API_KEY":             "",
+    "CONTEXT7_API_KEY":           "",
+    "SUPABASE_PROJECT_URL":       "",
+    "SUPABASE_PROJECT_KEY":       "",
+    "SUPABASE_API_PAT":           "",
+    "OPENROUTER_API_KEY":         "",
+    "OPENROUTER_BASE_URL":        "",
+    "OPENROUTER_MODEL":           "",
+    "VAPI_SDK_KEY":               "",
+    "ALPACA_BASE_URL":            "",
+
+    "ANTHROPIC_BASE_URL":               "",
+    "ANTHROPIC_AUTH_TOKEN":             "",
+    "ANTHROPIC_API_KEY":                "",
+    "ANTHROPIC_MODEL":                  "",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL":   "",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL":     "",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL":    "",
+    "ANTHROPIC_SMALL_FAST_MODEL":       "",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "",
+    "CLAUDE_CODE_SUBAGENT_MODEL":       ""
   },
 
   "permissions": {
