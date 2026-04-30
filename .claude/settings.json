@@ -63,7 +63,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/scripts/setup.sh",
+            "command": "bash .claude/hooks/setup.sh",
             "statusMessage": "Running first-time project setup..."
           }
         ]

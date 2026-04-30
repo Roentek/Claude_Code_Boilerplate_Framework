@@ -40,7 +40,7 @@ claude .
 npx trigger.dev@latest dev
 
 # Re-run first-time setup (e.g. fresh clone)
-rm -f .claude/.setup-complete && bash .claude/scripts/setup.sh
+rm -f .claude/.setup-complete && bash .claude/hooks/setup.sh
 
 # Reinstall context-monitor statusline
 npx claude-code-templates@latest --setting statusline/context-monitor

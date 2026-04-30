@@ -4,7 +4,7 @@
 # Detects staged changes to tracked paths and automatically
 # updates CLAUDE.md and README.md before the commit lands.
 #
-# Installed to .git/hooks/pre-commit by .claude/scripts/setup.sh.
+# Installed to .git/hooks/pre-commit by .claude/hooks/setup.sh.
 # The wrapper in .git/hooks/ calls this file so updates here
 # take effect immediately on the next commit.
 # ============================================================

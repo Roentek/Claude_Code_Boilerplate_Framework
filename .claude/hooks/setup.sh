@@ -31,8 +31,8 @@ if [[ "$OSTYPE" != "msys"* && "$OSTYPE" != "cygwin"* && "$OS" != "Windows_NT" ]]
     chmod +x "$ROOT/.claude/hooks/pre-commit.sh"
     echo "✓ pre-commit.sh marked executable"
   fi
-  if [ -f "$ROOT/.claude/scripts/setup.sh" ]; then
-    chmod +x "$ROOT/.claude/scripts/setup.sh"
+  if [ -f "$ROOT/.claude/hooks/setup.sh" ]; then
+    chmod +x "$ROOT/.claude/hooks/setup.sh"
   fi
 else
   echo "✓ Windows detected — skipping chmod"

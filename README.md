@@ -105,7 +105,7 @@ Once trimmed, add only the tools you actually need:
 
 - **New MCP server**: add a block to `.mcp.json`, enable it in `settings.json`, add credentials to `.env`
 - **New rule**: create a `.md` file in `.claude/rules/` — it auto-loads next session
-- **New skill**: create `<name>/SKILL.md` in `.claude/skills/`, then re-run `bash .claude/scripts/setup.sh` to install it to `~/.claude/skills/`
+- **New skill**: create `<name>/SKILL.md` in `.claude/skills/`, then re-run `bash .claude/hooks/setup.sh` to install it to `~/.claude/skills/`
 - **New plugin**: `claude plugins install <plugin-name>` then enable in `settings.json`
 
 ### What's tested and ready out of the box
@@ -210,7 +210,7 @@ cp .env.example .env
 claude .
 ```
 
-On first open, a `Setup` hook automatically runs `.claude/scripts/setup.sh`, which:
+On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which:
 
 1. **Makes hooks executable** — `chmod +x` on `stop.sh` and `pre-commit.sh` (Unix/macOS only)
 2. **Verifies Python** — checks `python3` / `python` is in PATH; required by the context-monitor statusline and `ui-ux-pro-max` design search scripts
@@ -229,13 +229,13 @@ On first open, a `Setup` hook automatically runs `.claude/scripts/setup.sh`, whi
 **Re-run setup manually** (e.g. fresh clone on a new machine):
 
 ```bash
-rm -f .claude/.setup-complete && bash .claude/scripts/setup.sh
+rm -f .claude/.setup-complete && bash .claude/hooks/setup.sh
 ```
 
 **If setup never ran automatically**, run it directly:
 
 ```bash
-bash .claude/scripts/setup.sh
+bash .claude/hooks/setup.sh
 ```
 
 ---
@@ -263,10 +263,10 @@ bash .claude/scripts/setup.sh
 │   │   ├── Claude_Code_Context_Management_Hacks.md
 │   │   └── The_Shift_to_Agentic_AI_Workflows.md
 │   ├── hooks/
+│   │   ├── setup.sh                 # Setup hook: first-time machine bootstrapper
 │   │   ├── stop.sh                  # Stop hook: quality scan + doc-sync check at session end
 │   │   ├── pre-commit.sh            # Pre-commit hook: auto-updates CLAUDE.md/README.md for tracked-path changes
-│   │   ├── autosync-docs.sh         # PostToolUse hook: detects tracked-path edits, injects doc-sync reminder
-│   │   └── autosync-docs.py         # Python logic for autosync-docs.sh (path matching + additionalContext JSON)
+│   │   └── autosync-docs.sh         # PostToolUse hook: detects tracked-path edits, injects doc-sync reminder
 │   ├── rules/                       # Auto-loaded Markdown instructions (every session)
 │   │   ├── agent-instructions.md
 │   │   ├── frontend-instructions.md
@@ -280,7 +280,7 @@ bash .claude/scripts/setup.sh
 │   │   ├── memory-sessions.md
 │   │   └── karpathy-guidelines.md
 │   ├── scripts/
-│   │   ├── setup.sh                 # First-time machine setup bootstrapper
+│   │   ├── autosync-docs.py         # Python logic for autosync-docs.sh (path matching + additionalContext JSON)
 │   │   └── context-monitor.py       # Statusline: context %, cost, git branch, duration
 │   └── skills/                      # Project-local slash-command skills (<name>/SKILL.md)
 │       ├── site-teardown/SKILL.md   # Reverse-engineer any website into a build blueprint
@@ -549,7 +549,7 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 
 | Hook | File | Trigger | Behavior |
 | ------ | ------ | --------- | --------- |
-| **Setup** | `setup.sh` | First session open on a new machine | Bootstraps the project (see [Quick Start](#quick-start)) |
+| **Setup** | [`setup.sh`](.claude/hooks/setup.sh) | First session open on a new machine | Bootstraps the project (see [Quick Start](#quick-start)) |
 | **Stop** | `stop.sh` | Every time Claude finishes responding | Scans session output for fixes/discoveries; checks if tracked paths changed and prompts doc update |
 | **PostToolUse** | `autosync-docs.sh` | After every Write/Edit tool call | Checks if the edited file is in a tracked path; if so, injects `additionalContext` telling Claude to update CLAUDE.md/README.md immediately. CLAUDE.md and README.md are excluded to prevent update loops. Logic in `autosync-docs.py`. |
 | **pre-commit** (git) | `pre-commit.sh` | Before every `git commit` | Detects staged changes to tracked paths; auto-runs `claude --print` to update CLAUDE.md and README.md, then stages the updated docs alongside the original changes |
@@ -573,7 +573,7 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 
 | Script | Purpose |
 | -------- | --------- |
-| [`setup.sh`](.claude/scripts/setup.sh) | First-time machine setup: chmod hooks, verify Python, check context-monitor, create `.env`, install Playwright + Chromium, install project skills, install pre-commit hook |
+| [`autosync-docs.py`](.claude/scripts/autosync-docs.py) | Python logic for `autosync-docs.sh` — path matching and `additionalContext` JSON output |
 | [`context-monitor.py`](.claude/scripts/context-monitor.py) | Powers the statusline — reads session transcript, parses token usage, renders colored bar |
 
 ---
