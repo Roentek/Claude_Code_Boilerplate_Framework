@@ -31,7 +31,9 @@
       "Bash(npx playwright:*)",
       "Bash(npm run playwright:*)",
       "Bash(firecrawl:*)",
-      "Bash(npx firecrawl-cli:*)"
+      "Bash(npx firecrawl-cli:*)",
+      "Bash(bash .claude/hooks/setup.sh)",
+      "Bash(echo \"exit: $?\")"
     ],
     "deny": []
   },
@@ -77,7 +79,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python .claude/hooks/read-guard.py",
+            "command": "bash .claude/hooks/read-guard.sh",
             "statusMessage": "Checking read scope..."
           }
         ]

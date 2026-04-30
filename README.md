@@ -33,7 +33,7 @@ This framework wires together every layer of a Claude Code project:
 - **Rules** — Markdown instruction files auto-loaded into every session
 - **Plugins** — Extend Claude Code with specialized modes (superpowers, frontend-design, agent-sdk, etc.)
 - **Skills** — Reusable slash commands you invoke with `/skill-name`
-- **MCP Servers** — 18 pre-configured Model Context Protocol integrations (Supabase, Google Workspace, Pinecone, Trigger.dev, n8n, Vapi, Apify, Alpaca, Firecrawl, Monet, 21st.dev Magic, and more)
+- **MCP Servers** — 20 pre-configured Model Context Protocol integrations (Supabase, Google Workspace, Pinecone, Trigger.dev, n8n, Vapi, Apify, Alpaca, Firecrawl, Monet, 21st.dev Magic, and more)
 - **Hooks** — Lifecycle shell scripts that run on session start, stop, and tool events
 - **Scripts** — A context monitor statusline and a first-time setup bootstrapper
 - **WAT Framework** — Architecture pattern: Workflows → Agents → Tools
@@ -90,7 +90,7 @@ Every `.md` file here is injected into every session. Remove files that don't ap
 | Remove if... | Files to delete |
 | --- | --- |
 | Not building frontend UI | `frontend-instructions.md`, `ui-ux-pro-max-instructions.md` |
-| Not using Trigger.dev | `trigger-workflow-builder.md`, `trigger-api-reference.md` |
+| Not using Trigger.dev | `trigger-workflow-builder.md` (in `rules/`); `trigger-api-reference.md` (in `docs/`) |
 | Not using the WAT agent pattern | `agent-instructions.md` |
 
 The four `memory-*.md` files are always worth keeping — they hold your project's accumulated context.
@@ -262,7 +262,8 @@ bash .claude/hooks/setup.sh
 │   ├── docs/                        # Reference docs loaded with the project
 │   │   ├── Claude_Code_Beginners_Guide.md
 │   │   ├── Claude_Code_Context_Management_Hacks.md
-│   │   └── The_Shift_to_Agentic_AI_Workflows.md
+│   │   ├── The_Shift_to_Agentic_AI_Workflows.md
+│   │   └── trigger-api-reference.md
 │   ├── hooks/
 │   │   ├── setup.sh                 # Setup hook: first-time machine bootstrapper
 │   │   ├── stop.sh                  # Stop hook: quality scan + doc-sync check at session end
@@ -274,7 +275,6 @@ bash .claude/hooks/setup.sh
 │   │   ├── frontend-instructions.md
 │   │   ├── ui-ux-pro-max-instructions.md
 │   │   ├── trigger-workflow-builder.md
-│   │   ├── trigger-api-reference.md
 │   │   ├── memory-guidelines.md
 │   │   ├── memory-profile.md
 │   │   ├── memory-preferences.md
@@ -534,7 +534,6 @@ Every `.md` file in `.claude/rules/` is injected into every Claude Code session 
 | [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) | Frontend standards: local server, screenshot workflow, anti-generic guardrails, Google Fonts embed guide ['google fonts'](https://fonts.google.com/) |
 | [`ui-ux-pro-max-instructions.md`](.claude/rules/ui-ux-pro-max-instructions.md) | Design intelligence database: 67 styles, 161 palettes, 57 font pairings (Google Fonts), 99 UX rules, 25 chart types |
 | [`trigger-workflow-builder.md`](.claude/rules/trigger-workflow-builder.md) | Step-by-step guide for building Trigger.dev TypeScript automations |
-| [`trigger-api-reference.md`](.claude/rules/trigger-api-reference.md) | Full Trigger.dev SDK v4 code patterns, examples, and critical rules |
 | [`memory-guidelines.md`](.claude/rules/memory-guidelines.md) | When and what to save — auto-update trigger rules for both memory tiers |
 | [`memory-profile.md`](.claude/rules/memory-profile.md) | User role, background, domain knowledge (filled in as you work) |
 | [`memory-preferences.md`](.claude/rules/memory-preferences.md) | Communication style and workflow preferences (filled in as you work) |
@@ -624,7 +623,7 @@ Workflows  →  Agents (Claude)  →  Tools
 
 **Why it matters:** AI chained through 5 steps at 90% accuracy = 59% end-to-end success. Offloading execution to deterministic scripts keeps Claude focused on orchestration where it excels.
 
-**Trigger.dev** (`src/trigger/`) — TypeScript tasks extend the Tools layer for cloud-based, scheduled, and event-driven execution. See [`trigger-workflow-builder.md`](.claude/rules/trigger-workflow-builder.md) and [`trigger-api-reference.md`](.claude/rules/trigger-api-reference.md).
+**Trigger.dev** (`src/trigger/`) — TypeScript tasks extend the Tools layer for cloud-based, scheduled, and event-driven execution. See [`trigger-workflow-builder.md`](.claude/rules/trigger-workflow-builder.md) and [`trigger-api-reference.md`](.claude/docs/trigger-api-reference.md).
 
 ---
 
@@ -667,6 +666,7 @@ Reference documents ship in `.claude/docs/` and are available as context within 
 | [`Claude_Code_Beginners_Guide.md`](.claude/docs/Claude_Code_Beginners_Guide.md) | End-to-end walkthrough of Claude Code for new users |
 | [`Claude_Code_Context_Management_Hacks.md`](.claude/docs/Claude_Code_Context_Management_Hacks.md) | Techniques for managing the context window effectively |
 | [`The_Shift_to_Agentic_AI_Workflows.md`](.claude/docs/The_Shift_to_Agentic_AI_Workflows.md) | Conceptual foundation for agentic AI architecture |
+| [`trigger-api-reference.md`](.claude/docs/trigger-api-reference.md) | Full Trigger.dev SDK v4 code patterns, task definitions, schedules, waits, and critical rules |
 
 ---
 

@@ -39,7 +39,12 @@ rm -f .claude/.setup-complete && bash .claude/hooks/setup.sh
 
 # Reinstall context-monitor statusline
 npx claude-code-templates@latest --setting statusline/context-monitor
+
+# Browser automation (WAT Tools layer example)
+node tools/playwright.js screenshot https://example.com
 ```
+
+> **MCP credential gotcha:** `.mcp.json` `${VAR}` substitution reads from the **OS process environment**, not `.env`. On a fresh machine, run `setx VAR_NAME "value"` (Windows) or `export VAR_NAME=value` (Unix) in your terminal before starting Claude Code.
 
 ---
 
