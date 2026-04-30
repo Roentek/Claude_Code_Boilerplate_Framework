@@ -33,7 +33,8 @@
       "Bash(firecrawl:*)",
       "Bash(npx firecrawl-cli:*)",
       "Bash(bash .claude/hooks/setup.sh)",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(git *)"
     ],
     "deny": []
   },

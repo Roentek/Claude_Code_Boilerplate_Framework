@@ -147,6 +147,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `openrouter-mcp` | Multi-model LLM routing, benchmarking |
 | `tavily-mcp` | Web search and content extraction |
 | `google-workspace-mcp` | Gmail, Drive, Sheets, Docs, Calendar, Forms |
+| `trigger` | Deploy, trigger, and monitor Trigger.dev tasks |
 | `pinecone-mcp` | Vector search / RAG |
 | `n8n-mcp` | n8n workflow automation |
 | `vapi-mcp` | Voice AI — assistants, calls, phone numbers |
