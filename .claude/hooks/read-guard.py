@@ -20,7 +20,7 @@ LARGE_FILES = {
     "trigger-api-reference.md": "Large code-example file. Use offset+limit or search for the specific pattern you need.",
 }
 
-MIN_LINES_WARNING = 80  # only warn if file actually exceeds this (checked live)
+MIN_LINES_WARNING = 200  # only warn if file actually exceeds this (checked live)
 
 
 def file_line_count(path: str) -> int:
@@ -56,10 +56,7 @@ def main() -> None:
         # Verify file is actually large before warning
         line_count = file_line_count(file_path)
         if line_count >= MIN_LINES_WARNING:
-            msg = (
-                f"[read-guard] {basename} is {line_count} lines. "
-                f"Reading in full costs tokens. {hint}"
-            )
+            msg = f"[read-guard] {basename} ({line_count} lines) — consider offset+limit. {hint}"
             print(json.dumps({"decision": "approve", "systemMessage": msg}))
             return
 

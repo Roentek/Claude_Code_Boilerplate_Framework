@@ -217,14 +217,15 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 3. **Verifies context-monitor.py** — confirms the statusline script is present
 4. **Creates `.env`** — copies `.env.example` → `.env` if none exists
 5. **Verifies uvx** — required for `google-workspace-mcp` and `alpaca` MCP servers
-6. **Verifies Node.js / npx** — required by all 15 npx-based MCP servers (memory, supabase, openrouter, kie-ai, tavily, trigger, pinecone, vapi, n8n, apify, zep, canva, 21st-dev, playwright-mcp, firecrawl-mcp)
-7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max`, `andrej-karpathy-skills`, and `impeccable` via CLI
+6. **Verifies Node.js / npx** — required by all 17 npx-based MCP servers (memory, supabase, openrouter, kie-ai, tavily, trigger, pinecone, vapi, n8n, apify, zep, canva, 21st-dev, playwright-mcp, firecrawl-mcp, higgsfield, context7)
+7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max`, `andrej-karpathy-skills`, `impeccable`, `codex`, and `cc-gemini-plugin` via CLI
 8. **Installs project skills** — copies `.claude/skills/*/` to `~/.claude/skills/` where Claude Code reads them (full directory, not just SKILL.md — preserves supporting docs and examples)
 9. **Installs npm dependencies + Playwright browser** — runs `npm install` for the `playwright` package, then `npx playwright install chromium` for the browser binary used by `tools/playwright.js`
-10. **Installs global CLI tools** — `skillui` (design system extractor for `/skillui` skill) and `firecrawl-cli` (web scraping CLI for `/firecrawl` skill and `workflows/web-scraping.md`); both via `npm install -g`
-11. **Prints authentication reminders** — lists the three integrations that require a manual one-time auth step: Trigger.dev (`npx trigger.dev@latest login`), Google Workspace (browser OAuth on first MCP call), and Canva (browser OAuth on first MCP call)
-12. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
-13. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
+10. **Verifies GitHub CLI** — checks `gh` is installed; required by `github@claude-plugins-official` for `Bash(gh ...)` tool calls; prints platform-specific install instructions if missing
+11. **Installs global CLI tools** — `skillui` (design system extractor for `/skillui` skill) and `firecrawl-cli` (web scraping CLI for `/firecrawl` skill and `workflows/web-scraping.md`); both via `npm install -g`
+12. **Prints authentication reminders** — lists integrations requiring a manual one-time auth step: Trigger.dev (`npx trigger.dev@latest login`), Google Workspace (browser OAuth), Canva (browser OAuth), Higgsfield (browser OAuth via `npx mcp-remote`), GitHub CLI (`gh auth login`), Gemini plugin (`GEMINI_API_KEY` at aistudio.google.com), and Codex plugin (`npm install -g @openai/codex`)
+13. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
+14. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
 
 **Re-run setup manually** (e.g. fresh clone on a new machine):
 
@@ -266,7 +267,8 @@ bash .claude/hooks/setup.sh
 │   │   ├── setup.sh                 # Setup hook: first-time machine bootstrapper
 │   │   ├── stop.sh                  # Stop hook: quality scan + doc-sync check at session end
 │   │   ├── pre-commit.sh            # Pre-commit hook: auto-updates CLAUDE.md/README.md for tracked-path changes
-│   │   └── autosync-docs.sh         # PostToolUse hook: detects tracked-path edits, injects doc-sync reminder
+│   │   ├── autosync-docs.sh         # PostToolUse hook: detects tracked-path edits, injects doc-sync reminder
+│   │   └── read-guard.py            # PreToolUse hook: warns on unscoped reads of known-large files
 │   ├── rules/                       # Auto-loaded Markdown instructions (every session)
 │   │   ├── agent-instructions.md
 │   │   ├── frontend-instructions.md
@@ -552,6 +554,7 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 | ------ | ------ | --------- | --------- |
 | **Setup** | [`setup.sh`](.claude/hooks/setup.sh) | First session open on a new machine | Bootstraps the project (see [Quick Start](#quick-start)) |
 | **Stop** | `stop.sh` | Every time Claude finishes responding | Scans session output for fixes/discoveries; checks if tracked paths changed and prompts doc update |
+| **PreToolUse** (Read) | [`read-guard.py`](.claude/hooks/read-guard.py) | Before every Read tool call | Warns when known-large files are read without `offset`+`limit`; always approves — advisory only |
 | **PostToolUse** | `autosync-docs.sh` | After every Write/Edit tool call | Checks if the edited file is in a tracked path; if so, injects `additionalContext` telling Claude to update CLAUDE.md/README.md immediately. CLAUDE.md and README.md are excluded to prevent update loops. Logic in `autosync-docs.py`. |
 | **pre-commit** (git) | `pre-commit.sh` | Before every `git commit` | Detects staged changes to tracked paths; auto-runs `claude --print` to update CLAUDE.md and README.md, then stages the updated docs alongside the original changes |
 

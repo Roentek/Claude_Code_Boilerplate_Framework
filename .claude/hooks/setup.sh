@@ -31,6 +31,10 @@ if [[ "$OSTYPE" != "msys"* && "$OSTYPE" != "cygwin"* && "$OS" != "Windows_NT" ]]
     chmod +x "$ROOT/.claude/hooks/pre-commit.sh"
     echo "✓ pre-commit.sh marked executable"
   fi
+  if [ -f "$ROOT/.claude/hooks/autosync-docs.sh" ]; then
+    chmod +x "$ROOT/.claude/hooks/autosync-docs.sh"
+    echo "✓ autosync-docs.sh marked executable"
+  fi
   if [ -f "$ROOT/.claude/hooks/setup.sh" ]; then
     chmod +x "$ROOT/.claude/hooks/setup.sh"
   fi
@@ -39,20 +43,23 @@ else
 fi
 
 # ── 2. Verify Python is available ──────────────────────────
+# Use actual execution test — Windows has a fake python3.exe Store alias
+# (exit 9009/49) that fools command -v but isn't real Python.
 PYTHON_CMD=""
-if command -v python3 &>/dev/null; then
-  PYTHON_CMD="python3"
-elif command -v python &>/dev/null; then
-  PYTHON_CMD="python"
+for _py in python3 python py; do
+  if _ver=$("$_py" --version 2>&1) && echo "$_ver" | grep -qiE '^python [0-9]'; then
+    PYTHON_CMD="$_py"
+    PY_VERSION=$(echo "$_ver" | grep -oE '[0-9]+\.[0-9]+' | head -1)
+    break
+  fi
+done
+
+if [ -n "$PYTHON_CMD" ]; then
+  echo "✓ Python found: $PYTHON_CMD ($PY_VERSION)"
 else
   echo "✗ Python not found — install Python 3.8+ and add it to PATH"
   echo "  Required by: context-monitor statusline, ui-ux-pro-max design search scripts"
   ERRORS=$((ERRORS + 1))
-fi
-
-if [ -n "$PYTHON_CMD" ]; then
-  PY_VERSION=$("$PYTHON_CMD" --version 2>&1 | grep -oP '\d+\.\d+')
-  echo "✓ Python found: $PYTHON_CMD ($PY_VERSION)"
 fi
 
 # ── 3. Verify context-monitor.py is present ────────────────
@@ -99,17 +106,17 @@ else
   ERRORS=$((ERRORS + 1))
 fi
 
-# ── 6. Verify Node.js / npx (15 npx-based MCP servers) ────
+# ── 6. Verify Node.js / npx (17 npx-based MCP servers) ────
 echo ""
 echo "── Node.js / npx ────────────────────────────────────────"
 echo "   Required by: memory, supabase-mcp, openrouter-mcp, kie-ai, tavily-mcp,"
 echo "   trigger, pinecone-mcp, vapi-mcp, n8n-mcp, apify, zep-mcp, canva-dev,"
-echo "   21st-dev-magic, playwright-mcp, firecrawl-mcp"
+echo "   21st-dev-magic, playwright-mcp, firecrawl-mcp, higgsfield, context7"
 if command -v npx &>/dev/null; then
   NODE_VERSION=$(node --version 2>&1)
   echo "✓ npx found — Node.js $NODE_VERSION"
 else
-  echo "✗ npx not found — 15 MCP servers require Node.js/npx"
+  echo "✗ npx not found — 17 MCP servers require Node.js/npx"
   echo "  Install Node.js from https://nodejs.org (LTS recommended)"
   ERRORS=$((ERRORS + 1))
 fi
@@ -151,6 +158,27 @@ if command -v claude &>/dev/null; then
     echo "      /plugin marketplace add pbakaus/impeccable"
     echo "      /plugin install impeccable@impeccable"
   fi
+
+  # codex — OpenAI Codex plugin (rescue + diagnosis subagent via Codex CLI)
+  # Source: https://github.com/openai/codex-plugin-cc
+  if claude plugins install codex@openai-codex 2>/dev/null; then
+    echo "  ✓ codex installed"
+  else
+    echo "  ⚠ codex auto-install failed — run these inside Claude Code:"
+    echo "      /plugin marketplace add openai/codex-plugin-cc"
+    echo "      /plugin install codex@openai-codex"
+  fi
+
+  # cc-gemini-plugin — Gemini bridge for large-context codebase exploration
+  # Source: https://github.com/thepushkarp/cc-gemini-plugin
+  # Requires: GEMINI_API_KEY in .claude/settings.local.json (get at aistudio.google.com/apikey)
+  if claude plugins install cc-gemini-plugin@cc-gemini-plugin 2>/dev/null; then
+    echo "  ✓ cc-gemini-plugin installed"
+  else
+    echo "  ⚠ cc-gemini-plugin auto-install failed — run these inside Claude Code:"
+    echo "      /plugin marketplace add thepushkarp/cc-gemini-plugin"
+    echo "      /plugin install cc-gemini-plugin@cc-gemini-plugin"
+  fi
 else
   echo "  claude CLI not found — install third-party plugins manually."
   echo "  Run these slash commands inside a Claude Code chat session:"
@@ -166,6 +194,14 @@ else
   echo "  Impeccable (frontend design — 23 commands + anti-pattern detection):"
   echo "    /plugin marketplace add pbakaus/impeccable"
   echo "    /plugin install impeccable@impeccable"
+  echo ""
+  echo "  Codex (OpenAI Codex rescue + diagnosis subagent):"
+  echo "    /plugin marketplace add openai/codex-plugin-cc"
+  echo "    /plugin install codex@openai-codex"
+  echo ""
+  echo "  Gemini Plugin (large-context codebase exploration via Gemini):"
+  echo "    /plugin marketplace add thepushkarp/cc-gemini-plugin"
+  echo "    /plugin install cc-gemini-plugin@cc-gemini-plugin"
 fi
 
 echo ""
@@ -227,7 +263,28 @@ else
   echo "  (no package.json found — skipping)"
 fi
 
-# ── 10. Install global CLI tools ────────────────────────────
+# ── 10. Verify GitHub CLI (gh) ──────────────────────────────
+echo ""
+echo "── GitHub CLI (gh) ──────────────────────────────────────"
+echo "   Required by: github@claude-plugins-official plugin (Bash gh api / gh repo)"
+if command -v gh &>/dev/null; then
+  GH_VERSION=$(gh --version 2>&1 | head -1)
+  echo "✓ gh found: $GH_VERSION"
+else
+  echo "⚠ gh not found — the GitHub plugin won't be able to use Bash(gh ...) tools"
+  echo "  Install GitHub CLI:"
+  if [[ "$OSTYPE" != "msys"* && "$OSTYPE" != "cygwin"* && "$OS" != "Windows_NT" ]]; then
+    echo "    macOS:  brew install gh"
+    echo "    Linux:  https://github.com/cli/cli/blob/trunk/docs/install_linux.md"
+  else
+    echo "    Windows (winget): winget install GitHub.cli"
+    echo "    Windows (scoop):  scoop install gh"
+    echo "    Or download from: https://cli.github.com/"
+  fi
+  echo "  Then authenticate: gh auth login"
+fi
+
+# ── 11. Install global CLI tools ────────────────────────────
 echo ""
 echo "── Global CLI Tools ─────────────────────────────────────"
 
@@ -265,7 +322,7 @@ else
   ERRORS=$((ERRORS + 1))
 fi
 
-# ── 11. Authentication reminders (interactive — cannot automate) ──
+# ── 12. Authentication reminders (interactive — cannot automate) ──
 echo ""
 echo "── Authentication Reminders ─────────────────────────────"
 echo "  These require a one-time manual step before first use:"
@@ -289,13 +346,26 @@ echo "      npx mcp-remote https://mcp.higgsfield.ai/mcp"
 echo "    A browser OAuth window opens — sign in to your Higgsfield account."
 echo "    After authenticating once, mcp-remote caches the token automatically."
 echo ""
+echo "  GitHub CLI (gh)"
+echo "    After installing gh (see step 10 above), authenticate once:"
+echo "      gh auth login"
+echo "    Required by: github@claude-plugins-official plugin."
+echo ""
+echo "  Gemini Plugin (cc-gemini-plugin)"
+echo "    Add GEMINI_API_KEY to .claude/settings.local.json → env block."
+echo "    Get a free key at: https://aistudio.google.com/apikey"
+echo ""
+echo "  Codex Plugin (codex@openai-codex)"
+echo "    The plugin dispatches work to the Codex CLI. Check readiness with /codex:setup."
+echo "    Codex CLI install: npm install -g @openai/codex (requires OpenAI API key)"
+echo ""
 echo "  All other MCP servers (supabase, openrouter, kie-ai, tavily,"
 echo "  pinecone, vapi, n8n, apify, monet, stitch, 21st-dev, firecrawl)"
 echo "  require API keys in .claude/settings.local.json → env block."
 echo "  See .claude/settings.local.json.example → __activation_guide"
 echo "  for where to obtain each key."
 
-# ── 12. Install pre-commit doc-sync hook ────────────────────
+# ── 13. Install pre-commit doc-sync hook ────────────────────
 echo ""
 echo "── Git Pre-Commit Hook (doc-sync) ───────────────────────"
 HOOKS_DIR="$ROOT/.git/hooks"
@@ -316,7 +386,7 @@ else
   echo "✓ pre-commit doc-sync hook installed → .git/hooks/pre-commit"
 fi
 
-# ── 13. Summary ────────────────────────────────────────────
+# ── 14. Summary ────────────────────────────────────────────
 echo ""
 if [ $ERRORS -eq 0 ]; then
   echo "✓ Setup complete. Context monitor statusline is ready."
