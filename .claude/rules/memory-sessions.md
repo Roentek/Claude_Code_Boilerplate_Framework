@@ -4,6 +4,17 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-04-30 — Context & memory optimization
+- **CLAUDE.md refactor** — cut from 283 → ~155 lines (45%). Removed redundant sections already in auto-loaded rule files.
+- **context7 MCP** — added to `.mcp.json` + `enabledMcpjsonServers` for on-demand live SDK docs.
+- **trigger-api-reference.md moved** — `.claude/rules/` → `.claude/docs/` (stops auto-loading). References in `trigger-workflow-builder.md` updated.
+- **memory-distiller agent** — `.claude/agents/memory-distiller.md` — compresses sessions >30 days old into archive block.
+- **compact-memory skill** — `.claude/skills/compact-memory/SKILL.md` — full hygiene cycle: compress, prune, sync to memory MCP.
+- **memory-drafter.py** — Stop hook helper auto-drafts memory entries from session transcript signals.
+- **read-guard.py** — PreToolUse hook warns when large files are read without offset+limit.
+- **stop.sh** — enhanced to call memory-drafter.py and merge output into session-end message.
+- **settings.json** — PreToolUse hook wired to read-guard.py for all Read calls.
+
 ## 2026-04-28 (session 4)
 - **Cleaned up GitHub plugin configuration** — removed duplicate `GITHUB_TOKEN` from `settings.local.json`; confirmed `GITHUB_PERSONAL_ACCESS_TOKEN` is the env var the `github@claude-plugins-official` plugin actually requires.
 - Added GitHub read-only permissions (`mcp__plugin_github_github__*`) to `settings.local.json` allow list.
@@ -88,3 +99,8 @@ Summary of substantive work completed each session — what was built, what was 
 - Deployed to production; first run succeeded
 - Updated `workflow-builder-instructions.md` with rate limit note
 -->
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-04-30 (auto-drafted — review before next session)
+- All 5 optimizations are complete.\n\n---\n\nHere's what was implemented:\n\n| # | Optimization | Files Changed |\n|---|---|---|\n| 1 | **context7 MCP** â€” live SDK docs on demand | `.mcp.json`, `settings.json` |\n| 2 | **trigger-api-reference.md moved** â€” stops auto-loading every session (~200 lines saved) | `.claude/docs/`, `trigger-workflow-builder.md`, `CLAUDE.md` |\n| 3 | **memory-distiller agent** â€” compresses sessions >30 days into archive | `.claude/agents/memory-distiller.md` |\n| 4 | **`/compact-memory` skill** â€” full hygiene: compress, prune, sync to MCP graph | `.claude/skills/compact-memory/SKILL.md`, `~/.claude/skills/` |\n| 5 | **read-guard PreToolUse hook** â€” warns on unscoped reads of large files | `.claude/hooks/read-guard.py`, `settings.json` |\n| + | **Stop hook enhanced** â€” auto-drafts memory entries from session transcript | `.claude/scripts/memory-drafter.py`, `.claude/hooks/stop.sh` |\n\n**To activate context7:** Restart Claude Code â€” it will pick up the new MCP server from `.mcp.json` automatically.\n\n**Immediate token savings:** `trigger-api-reference.md` no longer loads every session (~200 lines).

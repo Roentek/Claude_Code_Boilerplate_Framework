@@ -8,6 +8,9 @@
 
 CONTEXT=$(cat)
 
+# ── Auto-draft memory entries ───────────────────────────────
+DRAFT_MSG=$(echo "$CONTEXT" | python "$(dirname "$0")/../scripts/memory-drafter.py" 2>/dev/null || true)
+
 # ── Session quality scan ────────────────────────────────────
 STRONG_PATTERNS="fixed|workaround|gotcha|that's wrong|check again|we already|should have|discovered|realized|turns out"
 WEAK_PATTERNS="error|bug|issue|problem|fail"
@@ -32,16 +35,17 @@ if [ -n "$CHANGED_TRACKED" ]; then
 fi
 
 # ── Combine and output ──────────────────────────────────────
-if [ -n "$SESSION_MSG" ] && [ -n "$DOC_MSG" ]; then
-    FINAL="${SESSION_MSG} | ${DOC_MSG}"
-elif [ -n "$SESSION_MSG" ]; then
-    FINAL="$SESSION_MSG"
-elif [ -n "$DOC_MSG" ]; then
-    FINAL="$DOC_MSG"
-else
+PARTS=()
+[ -n "$SESSION_MSG" ] && PARTS+=("$SESSION_MSG")
+[ -n "$DOC_MSG" ]     && PARTS+=("$DOC_MSG")
+[ -n "$DRAFT_MSG" ]   && PARTS+=("$DRAFT_MSG")
+
+if [ ${#PARTS[@]} -eq 0 ]; then
     echo '{"decision": "approve"}'
     exit 0
 fi
+
+FINAL=$(IFS=" | "; echo "${PARTS[*]}")
 
 # Escape double-quotes for JSON safety
 SAFE=$(echo "$FINAL" | sed 's/"/\\"/g')
