@@ -113,7 +113,8 @@
     "ui-ux-pro-max@ui-ux-pro-max-skill": true,
     "andrej-karpathy-skills@karpathy-skills": true,
     "codex@openai-codex": true,
-    "impeccable@impeccable": true
+    "impeccable@impeccable": true,
+    "cc-gemini-plugin@cc-gemini-plugin": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -147,6 +148,13 @@
       "source": {
         "source": "github",
         "repo": "pbakaus/impeccable"
+      },
+      "autoUpdate": true
+    },
+    "cc-gemini-plugin": {
+      "source": {
+        "source": "github",
+        "repo": "thepushkarp/cc-gemini-plugin"
       },
       "autoUpdate": true
     }
