@@ -30,6 +30,9 @@ Summary of substantive work completed each session — what was built, what was 
 - Updated `CLAUDE.md`: added WebGPU/Three.js row to routing table, added `/webgpu-threejs-tsl` to project skills table.
 - Updated `README.md`: added skill to project skills table, expanded project structure tree to show skill subdirectories.
 
+## 2026-04-29 (session 3)
+- **Clarified kie-ai vs Higgsfield routing** in `CLAUDE.md`: added two explicit rows to the "What Are You Building?" routing table distinguishing the two; expanded MCP Servers table entries with full tool lists and bold decisional descriptions ("Multi-provider AI media aggregator" vs "Single-platform cinematic AI") so the correct tool is unambiguous based on the user's inquiry.
+
 ## 2026-04-29 (session 2)
 - **Integrated Playwright CLI** as a direct Bash tool replacing any future MCP server approach for browser automation.
 - Created `package.json` with `playwright` devDependency; created `tools/playwright.js` (ESM, Node 18+) with four commands: `screenshot`, `scrape`, `pdf`, `links` — all output JSON to stdout.

@@ -55,7 +55,8 @@
     "stitch",
     "21st-dev-magic",
     "playwright-mcp",
-    "firecrawl-mcp"
+    "firecrawl-mcp",
+    "higgsfield"
   ],
   "hooks": {
     "Setup": [

@@ -487,6 +487,7 @@ All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. C
 | **supabase-mcp** | `npx @supabase/mcp-server-supabase` | `SUPABASE_API_PAT` | Postgres queries, auth, storage, migrations via Supabase |
 | **openrouter-mcp** | `npx @physics91/openrouter-mcp` | `OPENROUTER_API_KEY` | Multi-model LLM routing — chat, compare, benchmark 200+ models |
 | **kie-ai** | `npx @felores/kie-ai-mcp-server` | `KIE_AI_API_KEY` | AI media generation: images (Flux, Midjourney, DALL-E), video (Kling, Sora), audio (ElevenLabs) |
+| **higgsfield** | `npx mcp-remote https://mcp.higgsfield.ai/mcp` | None (browser OAuth) | AI image & video generation — cinematic video, model exploration, media management |
 | **tavily-mcp** | `npx tavily-mcp` | `TAVILY_API_KEY` | Web search, extract, crawl, and deep research |
 | **google-workspace-mcp** | `uvx workspace-mcp` | `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_USER_EMAIL` | Gmail, Drive, Sheets, Docs, Calendar, Forms, Chat, Tasks, Contacts |
 | **trigger** | `npx trigger.dev mcp` | — (uses Trigger.dev CLI auth) | Deploy, trigger, and monitor Trigger.dev tasks |

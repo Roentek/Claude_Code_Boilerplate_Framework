@@ -27,6 +27,8 @@ Start here — each path routes to the right tools and rules.
 | Vector search / RAG | `pinecone-mcp` tools | Upsert, search, rerank records |
 | UI component search | `monet-mcp` tools | Search landing page components, get React/TS code |
 | UI component inspiration / SVG logos | `21st-dev-magic` tools | Search thousands of UI components, search SVG brand logos, generate UI variants |
+| AI image/video (cinematic quality, managed workspace) | `higgsfield` MCP | No API key — browser OAuth; use for cinematic video, media library, model browsing |
+| AI image/video/audio (specific model, multi-provider) | `kie-ai` MCP | Requires API key; use when you need Midjourney, Sora, ElevenLabs, Kling, Suno, etc. |
 
 ---
 
@@ -192,7 +194,8 @@ Defined in [`.mcp.json`](.mcp.json), loaded automatically. Add credentials to [`
 | `zep-mcp` | Search Zep documentation | Long-term memory research |
 | `alpaca-mcp` | Stock bars, trading operations | Algorithmic trading (paper mode) |
 | `canva-dev` | Canva app SDK, UI kit, CLI docs | Canva app development |
-| `kie-ai` | Image, video, audio, lip-sync generation | AI media generation |
+| `kie-ai` | `midjourney_generate`, `sora_video`, `kling_video`, `kling_avatar`, `flux2_image`, `flux_kontext_image`, `openai_4o_image`, `grok_imagine`, `qwen_image`, `bytedance_seedream_image`, `bytedance_seedance_video`, `hailuo_video`, `wan_video`, `wan_animate`, `runway_aleph_video`, `veo3_generate_video`, `elevenlabs_tts`, `elevenlabs_ttsfx`, `suno_generate_music`, `infinitalk_lip_sync`, `recraft_remove_background`, `topaz_upscale_image`, `get_task_status`, `list_tasks` | **Multi-provider AI media aggregator.** Use when: you need a specific model (Midjourney, Sora, ElevenLabs, Suno, Kling, etc.), audio/music/TTS, lip-sync, image upscaling, or want to compare across providers. Requires API key (`KIE_AI_API_KEY`). |
+| `higgsfield` | `generate_image`, `generate_video`, `job_status`, `job_display`, `show_generations`, `show_medias`, `models_explore`, `balance`, `list_workspaces`, `select_workspace`, `show_marketing_studio`, `media_upload`, `media_confirm`, `transactions` | **Single-platform cinematic AI.** Use when: you want high-quality cinematic video/images from Higgsfield's own models, need to browse/manage a media library, or want zero API key setup (browser OAuth on first use). No audio, no multi-provider routing. |
 | `monet-mcp` | `search_components`, `get_component_code`, `get_component_details`, `list_categories`, `get_registry_stats`, `list_collections`, `get_collection` | Landing page UI component library — search by natural language, retrieve React/TS source code. Categories: hero, stats, testimonial, feature, pricing, cta, contact, faq, how-it-works, showcase, header, footer, gallery, team, logo-cloud, newsletter. Requires `MONET_API_KEY`. |
 | `stitch` | `extract_design_context`, `fetch_screen_code`, `fetch_screen_image` | Google Stitch — extract design DNA (fonts, colors, layouts) from screens, fetch screen HTML/code and images. Requires `STITCH_API_KEY`. |
 | `21st-dev-magic` | `21st_magic_component_inspiration`, `21st_magic_component_builder`, `21st_magic_component_refiner`, `logo_search` | 21st.dev Magic — semantic search across thousands of UI components + SVG brand logos via SVGL (free); build and refine polished UI variants (Pro). Requires `TWENTYFIRST_DEV_API_KEY`. |

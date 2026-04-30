@@ -166,6 +166,10 @@
       "env": {
         "FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"
       }
+    },
+    "higgsfield": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.higgsfield.ai/mcp"]
     }
   }
 }
