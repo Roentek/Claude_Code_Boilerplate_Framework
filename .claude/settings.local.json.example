@@ -50,6 +50,8 @@
   },
 
   "env": {
+    "SUPABASE_API_PAT":             "",
+    "OPENROUTER_API_KEY":           "",
     "KIE_AI_API_KEY":             "",
     "TAVILY_API_KEY":             "",
     "GOOGLE_OAUTH_CLIENT_ID":     "",
@@ -71,8 +73,6 @@
     "CONTEXT7_API_KEY":           "",
     "SUPABASE_PROJECT_URL":       "",
     "SUPABASE_PROJECT_KEY":       "",
-    "SUPABASE_API_PAT":           "",
-    "OPENROUTER_API_KEY":         "",
     "OPENROUTER_BASE_URL":        "",
     "OPENROUTER_MODEL":           "",
     "VAPI_SDK_KEY":               "",
