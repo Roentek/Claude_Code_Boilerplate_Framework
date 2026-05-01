@@ -4,10 +4,10 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
-## 2026-04-30 — codex-cli and gemini-cli added to setup.sh global CLI installations
-- **Decision:** Added `codex-cli` (`@openai/codex`) and `gemini-cli` (`@google/gemini-cli`) to setup.sh step 11 — both install globally via npm alongside skillui and firecrawl-cli. Added `OPENAI_API_KEY` and `GEMINI_API_KEY` to all credential files with clear CLI vs MCP usage documentation.
-- **Why:** Required by the `/three-brain` skill (auto-router for Codex review/rescue and Gemini multimodal/long-context routes). Codex startup check expects v0.125+, Gemini expects v0.39+. Installing during setup ensures the skill works out of the box on fresh clones.
-- **Implication:** First-time setup now installs 4 global CLI tools: skillui, firecrawl-cli, codex-cli, gemini-cli. API keys added to `.env.example` (with CLI tools section header), `.env` (same), `settings.local.json.example` (with `__note_cli_tools` guide entry), and `settings.local.json` (empty placeholder). Documentation updated in CLAUDE.md (First-Time Setup section, Skills table) and README.md (setup.sh step 11, Project Skills table).
+## 2026-05-01 — codex-cli and gemini-cli added to setup.sh global CLI installations
+- **Decision:** Added `codex-cli` (`@openai/codex@latest`) and `gemini-cli` (`@google/gemini-cli@latest`) to setup.sh step 11 — both install globally via npm with `@latest` tag to ensure newest versions. Added `OPENAI_API_KEY` and `GEMINI_API_KEY` to all credential files with clear CLI vs MCP usage documentation.
+- **Why:** Required by the `/three-brain` skill (auto-router for Codex review/rescue and Gemini multimodal/long-context routes). Codex startup check expects v0.125+, Gemini expects v0.39+. The `@latest` tag ensures fresh installs always get the newest versions (codex v0.128.0, gemini v0.40.1 as of 2026-05-01).
+- **Implication:** First-time setup now installs 4 global CLI tools with `@latest` tag: skillui, firecrawl-cli, codex-cli, gemini-cli. API keys added to `.env.example` (with CLI tools section header), `.env` (with actual keys filled in), `settings.local.json.example` (with `__note_cli_tools` guide entry), and `settings.local.json` (OPENAI_API_KEY added). Documentation updated in CLAUDE.md (First-Time Setup section, Skills table) and README.md (setup.sh step 11, Project Skills table).
 
 ## 2026-04-30 — CLAUDE.md improvements: First-Time Setup section & tools/ clarity
 - **Decision:** Added "First-Time Setup" consolidation section to CLAUDE.md. Clarified `tools/` directory as "Deterministic execution scripts (Python/Node)" with `playwright.js` example.

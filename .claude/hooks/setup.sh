@@ -330,14 +330,14 @@ if command -v codex &>/dev/null; then
   echo "✓ codex-cli already installed: $CODEX_VERSION"
 elif command -v npm &>/dev/null; then
   echo "  Installing codex-cli globally..."
-  if npm install -g @openai/codex --silent 2>/dev/null; then
+  if npm install -g @openai/codex@latest --silent 2>/dev/null; then
     echo "✓ codex-cli installed"
     echo "  ⚠ Requires OpenAI API key — add OPENAI_API_KEY to .env and settings.local.json"
   else
-    echo "⚠ codex-cli install failed — run manually: npm install -g @openai/codex"
+    echo "⚠ codex-cli install failed — run manually: npm install -g @openai/codex@latest"
   fi
 else
-  echo "⚠ npm not found — cannot install codex-cli (run: npm install -g @openai/codex)"
+  echo "⚠ npm not found — cannot install codex-cli (run: npm install -g @openai/codex@latest)"
 fi
 
 # gemini-cli — Google Gemini CLI for /three-brain skill + cc-gemini-plugin
@@ -348,15 +348,15 @@ if command -v gemini &>/dev/null; then
   echo "✓ gemini-cli already installed: $GEMINI_VERSION"
 elif command -v npm &>/dev/null; then
   echo "  Installing gemini-cli globally..."
-  if npm install -g @google/gemini-cli --silent 2>/dev/null; then
+  if npm install -g @google/gemini-cli@latest --silent 2>/dev/null; then
     echo "✓ gemini-cli installed"
     echo "  ⚠ Requires Gemini API key — add GEMINI_API_KEY to .env and settings.local.json"
     echo "  Get a free key at: https://aistudio.google.com/apikey"
   else
-    echo "⚠ gemini-cli install failed — run manually: npm install -g @google/gemini-cli"
+    echo "⚠ gemini-cli install failed — run manually: npm install -g @google/gemini-cli@latest"
   fi
 else
-  echo "⚠ npm not found — cannot install gemini-cli (run: npm install -g @google/gemini-cli)"
+  echo "⚠ npm not found — cannot install gemini-cli (run: npm install -g @google/gemini-cli@latest)"
 fi
 
 # ── 12. Authentication reminders (interactive — cannot automate) ──
