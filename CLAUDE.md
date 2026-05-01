@@ -48,6 +48,34 @@ node tools/playwright.js screenshot https://example.com
 
 ---
 
+## First-Time Setup
+
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Run initial setup (hooks, skills, permissions)
+bash .claude/hooks/setup.sh
+
+# 3. Configure MCP credentials
+cp .claude/settings.local.json.example .claude/settings.local.json
+# Edit settings.local.json and add your API keys (see __activation_guide inside)
+
+# 4. Add API keys to .env
+cp .env.example .env
+# Edit .env and fill in required keys
+
+# 5. Restart Claude Code to activate MCP servers
+```
+
+**First run check:**
+```bash
+# If setup.sh was already run, you'll see:
+cat .claude/.setup-complete
+```
+
+---
+
 ## Core Philosophy: WAT Framework
 
 ```text
@@ -73,7 +101,8 @@ CLAUDE.md                     ← You are here (routing only)
   settings.local.json.example ← Template: all keys cleared + activation guide per MCP server
 .mcp.json                     ← MCP server definitions (version-controlled)
 .env / .env.example           ← API keys (gitignored — never commit)
-tools/                        ← Python scripts for deterministic execution
+tools/                        ← Deterministic execution scripts (Python/Node)
+  playwright.js               ← Browser automation CLI wrapper
 workflows/                    ← Markdown SOPs defining automation tasks
 src/trigger/                  ← Trigger.dev TypeScript task files
 brand_assets/                 ← Logos, color guides, design tokens
@@ -191,5 +220,7 @@ Update memory files **as you go**, not at session end. Do not ask — just updat
 | User states a preference | `memory-preferences.md` |
 | A non-trivial decision is made | `memory-decisions.md` (with date) |
 | Substantive work is completed | `memory-sessions.md` |
+
+**Maintenance:** Run `/compact-memory` monthly (or when `memory-sessions.md` exceeds ~200 lines) to compress old entries, prune obsolete decisions, and sync key facts to the knowledge graph.
 
 Full rules: [`memory-guidelines.md`](.claude/rules/memory-guidelines.md)

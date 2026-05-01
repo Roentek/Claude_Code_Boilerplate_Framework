@@ -4,6 +4,11 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-04-30 — CLAUDE.md improvements: First-Time Setup section & tools/ clarity
+- **Decision:** Added "First-Time Setup" consolidation section to CLAUDE.md. Clarified `tools/` directory as "Deterministic execution scripts (Python/Node)" with `playwright.js` example.
+- **Why:** Quality audit (97/100) identified two minor gaps: (1) `npm install` command was missing, scattered setup steps weren't consolidated; (2) "Python scripts" claim was ambiguous for a boilerplate template that ships with Node scripts and may have Python added per-project.
+- **Implication:** New contributors get a single copy-paste setup flow. tools/ directory description now matches reality (playwright.js exists) and signals flexibility for future scripts.
+
 <!-- Example entry format:
 ## 2026-04-06 — Use Trigger.dev for background jobs
 - **Decision:** All async/scheduled work runs as Trigger.dev tasks, not cron scripts
@@ -15,6 +20,11 @@ Architectural and technical decisions made during sessions — with date and rat
 - **Why:** OAuth auth, RLS, and real-time subscriptions needed; team already has access
 - **Implication:** All schema changes go through Supabase migrations, not raw SQL
 -->
+
+## 2026-04-30 — ui-ux-pro-max-instructions.md moved to docs/ (reference-only)
+- **Decision:** `ui-ux-pro-max-instructions.md` moved from `.claude/rules/` (auto-loaded) to `.claude/docs/` (reference-only). Removed from `read-guard.py` large-file warnings.
+- **Why:** 300-line design reference doc was loading every session (~1500 tokens). Only needed when actively doing frontend work. Similar optimization to `trigger-api-reference.md` move.
+- **Implication:** Frontend work still references it via `frontend-instructions.md` → load on demand. Path updates in README.md, frontend-instructions.md, and read-guard.py. Saves ~1500 tokens per non-frontend session.
 
 ## 2026-04-28 — design-md skill added from awesome-design-md collection
 - **Decision:** Added `/design-md` as a project skill at `.claude/skills/design-md/SKILL.md`. Uses `npx getdesign@latest add <brand>` to fetch any of 73 brand DESIGN.md files on demand.
@@ -70,3 +80,7 @@ Architectural and technical decisions made during sessions — with date and rat
 - **Decision:** `SYNC_PATHS` is permanently locked to: `.claude/`, `workflows/`, `tools/`, `brand_assets/`, `CLAUDE.md`, `.mcp.json`
 - **Why:** Project-specific files (`README.md`, `LICENSE`, `.env.example`, `.gitignore`, `.gitattributes`, `CODEOWNERS`, `.github/PULL_REQUEST_TEMPLATE.md`) must never be overwritten by upstream boilerplate syncs — they carry per-project customizations
 - **Implication:** Never re-add the excluded files to `SYNC_PATHS` in any sync script, edge function, or workflow config
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-04-30 — edit or delete below -->

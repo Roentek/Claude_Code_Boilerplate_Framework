@@ -21,3 +21,8 @@ Stated preferences about how Claude should behave, communicate, and structure wo
 <!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-04-30 — edit or delete below -->
 - Here's a summary of all three changes made:\n\n| File | Change | Reason |\n|------|--------|--------|\n| `setup.sh` | Python detection now tests actual execution (`python3 --version` exit code) instead of `command -v`; also tries `py` as fallback | Windows has a fake `python3.exe` Store alias that fools `command -v` but exits 49 â€” was showing empty version `()` |\n| `setup.sh` | Switched `grep -oP` â†’ `grep -oE` for version extraction | `-P` (Perl regex) not available in Git Bash on Windows |\n| `read-guard.py` | Raised `MIN_LINES_WARNING` from 80 â†’ 200; shortened systemMessage format | 80 lines is too aggressive â€” fires on many normal files; verbose message added tokens every read |"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-04-30 — edit or delete below -->
+- Path Updates\n- âœ“ **README.md** (3 locations) â€” updated paths, added \"(reference-only, not auto-loaded)\" note\n- âœ“ **frontend-instructions.md** (2 locations) â€” fixed relative paths to `../docs/ui-ux-pro-max-instructions.md`\n- âœ“ **read-guard.py** â€” removed ui-ux-pro-max from large-file warnings (no longer auto-loaded)\n\n### 3.

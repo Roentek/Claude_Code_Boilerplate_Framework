@@ -13,7 +13,6 @@ import os
 # Paths matched as suffix so they work regardless of absolute prefix.
 LARGE_FILES = {
     "memory-sessions.md": "Use offset+limit — only read the section you need (e.g. recent entries are at the end).",
-    "ui-ux-pro-max-instructions.md": "This file is ~300 lines. Use offset+limit or grep for a specific section.",
     "Claude_Code_Beginners_Guide.md": "Large reference doc. Use offset+limit to read specific pages/sections.",
     "Claude_Code_Context_Management_Hacks.md": "Large reference doc. Use offset+limit to read specific sections.",
     "The_Shift_to_Agentic_AI_Workflows.md": "Large reference doc. Use offset+limit to read specific sections.",

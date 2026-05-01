@@ -4,6 +4,22 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-04-30 (session 3) — CLAUDE.md quality audit & improvements
+- **claude-md-improver skill invoked** — full quality assessment of project CLAUDE.md
+- **Quality score: 97/100 (Grade A)** — excellent baseline with minor gaps identified
+- **Two improvements applied:**
+  1. Added "First-Time Setup" section consolidating scattered setup commands
+  2. Clarified `tools/` directory purpose (Python/Node scripts, includes playwright.js)
+- **Assessment strengths:** routing table, WAT philosophy, non-obvious gotchas, conciseness, actionability
+- **Minor gaps filled:** npm install was missing, tools/ description was ambiguous for boilerplate users
+
+## 2026-04-30 (session 2) — Memory cleanup & ui-ux-pro-max relocation
+- **ui-ux-pro-max-instructions.md moved** — `.claude/rules/` → `.claude/docs/` (reference-only, not auto-loaded). Duplicate removed from rules.
+- **Path updates** — `README.md`, `frontend-instructions.md`, `read-guard.py` updated to reflect new location.
+- **memory-distiller run** — verified no compression needed (all sessions from last 10 days).
+- **CLAUDE.md maintenance note** — added monthly `/compact-memory` recommendation.
+- **5 entities synced to memory MCP** — WAT Framework, Trigger.dev Integration, CLI-First Pattern, Frontend Toolchain, Two-Tier Memory System.
+
 ## 2026-04-30 — Context & memory optimization
 - **CLAUDE.md refactor** — cut from 283 → ~155 lines (45%). Removed redundant sections already in auto-loaded rule files.
 - **context7 MCP** — added to `.mcp.json` + `enabledMcpjsonServers` for on-demand live SDK docs.
@@ -41,3 +57,15 @@ Summary of substantive work completed each session — what was built, what was 
 - **2026-04-22** — PDFs in `.claude/docs/` converted to `.md` for direct context loading. `pdftotext` (bundled with Git for Windows) used for 23MB file.
 - **2026-04-22 (s2)** — `pre-commit.sh` git hook created: auto-updates CLAUDE.md/README.md before commits touching tracked paths. `stop.sh` enhanced with doc-sync check.
 - **2026-04-22 (s3)** — README.md updated to reflect pre-commit hook, expanded setup steps (5→9), hooks table corrected.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-04-30 (auto-drafted — review before next session)
+- Path Updates\n- âœ“ **README.md** (3 locations) â€” updated paths, added \"(reference-only, not auto-loaded)\" note\n- âœ“ **frontend-instructions.md** (2 locations) â€” fixed relative paths to `../docs/ui-ux-pro-max-instructions.md`\n- âœ“ **read-guard.py** â€” removed ui-ux-pro-max from large-file warnings (no longer auto-loaded)\n\n### 3.
+- Documentation\n- âœ“ **CLAUDE.md** â€” added monthly `/compact-memory` maintenance note\n- âœ“ **memory-sessions.md** â€” recorded this session's work\n- âœ“ **memory-decisions.md** â€” documented ui-ux-pro-max move with rationale\n\n## Token Savings\n- **~1500 tokens saved per non-frontend session** by moving ui-ux-pro-max-instructions.md out of auto-loaded rules\n- Frontend work still has full access via `frontend-instructions.md` â†’ loads on demand\n\nAll docs are now in sync and memory is optimized."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-04-30 (auto-drafted — review before next session)
+- First-Time Setup Section Added**\n- Consolidated 5 scattered setup steps into one copy-paste block\n- Includes: npm install, setup.sh, credentials config, .env setup, restart reminder\n- Added verification command to check if setup already ran\n\n**2.
+- tools/ Directory Clarified**\n- Updated description from \"Python scripts\" to \"Deterministic execution scripts (Python/Node)\"\n- Added `playwright.js` example to show what's actually there\n- Signals flexibility for future per-project scripts\n\n### Files Updated\n- âœ… **CLAUDE.md** - both improvements applied\n- âœ… **memory-decisions.md** - decision documented with rationale\n- âœ… **memory-sessions.md** - session work recorded\n\nAll documentation is now in sync.

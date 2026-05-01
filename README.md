@@ -89,7 +89,7 @@ Every `.md` file here is injected into every session. Remove files that don't ap
 
 | Remove if... | Files to delete |
 | --- | --- |
-| Not building frontend UI | `frontend-instructions.md`, `ui-ux-pro-max-instructions.md` |
+| Not building frontend UI | `frontend-instructions.md`, `.claude/docs/ui-ux-pro-max-instructions.md` |
 | Not using Trigger.dev | `trigger-workflow-builder.md` (in `rules/`); `trigger-api-reference.md` (in `docs/`) |
 | Not using the WAT agent pattern | `agent-instructions.md` |
 
@@ -273,7 +273,6 @@ bash .claude/hooks/setup.sh
 │   ├── rules/                       # Auto-loaded Markdown instructions (every session)
 │   │   ├── agent-instructions.md
 │   │   ├── frontend-instructions.md
-│   │   ├── ui-ux-pro-max-instructions.md
 │   │   ├── trigger-workflow-builder.md
 │   │   ├── memory-guidelines.md
 │   │   ├── memory-profile.md
@@ -533,7 +532,7 @@ Every `.md` file in `.claude/rules/` is injected into every Claude Code session 
 | ------ | ------------- |
 | [`agent-instructions.md`](.claude/rules/agent-instructions.md) | WAT framework — how to orchestrate tools, recover from errors, and keep workflows current |
 | [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) | Frontend standards: local server, screenshot workflow, anti-generic guardrails, Google Fonts embed guide ['google fonts'](https://fonts.google.com/) |
-| [`ui-ux-pro-max-instructions.md`](.claude/rules/ui-ux-pro-max-instructions.md) | Design intelligence database: 67 styles, 161 palettes, 57 font pairings (Google Fonts), 99 UX rules, 25 chart types |
+| [`ui-ux-pro-max-instructions.md`](.claude/docs/ui-ux-pro-max-instructions.md) | Design intelligence database: 67 styles, 161 palettes, 57 font pairings (Google Fonts), 99 UX rules, 25 chart types *(reference-only, not auto-loaded)* |
 | [`trigger-workflow-builder.md`](.claude/rules/trigger-workflow-builder.md) | Step-by-step guide for building Trigger.dev TypeScript automations |
 | [`memory-guidelines.md`](.claude/rules/memory-guidelines.md) | When and what to save — auto-update trigger rules for both memory tiers |
 | [`memory-profile.md`](.claude/rules/memory-profile.md) | User role, background, domain knowledge (filled in as you work) |
