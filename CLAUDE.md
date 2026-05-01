@@ -54,8 +54,10 @@ node tools/playwright.js screenshot https://example.com
 # 1. Install dependencies
 npm install
 
-# 2. Run initial setup (hooks, skills, permissions)
+# 2. Run initial setup (hooks, skills, permissions, CLI tools)
 bash .claude/hooks/setup.sh
+# Installs: marketplace plugins, project skills, npm deps, Playwright browser,
+#           skillui, firecrawl-cli, codex-cli, gemini-cli
 
 # 3. Configure MCP credentials
 cp .claude/settings.local.json.example .claude/settings.local.json
@@ -69,6 +71,7 @@ cp .env.example .env
 ```
 
 **First run check:**
+
 ```bash
 # If setup.sh was already run, you'll see:
 cat .claude/.setup-complete
@@ -156,6 +159,7 @@ docs/                         ← Project-level documentation
 | `/taste-skill` | Anti-slop frontend enforcement — bans generic patterns, enforces Bento 2.0 |
 | `/firecrawl` | Scrape pages, search, crawl sites, map URLs via Firecrawl CLI |
 | `/compact-memory` | Full memory hygiene — compress sessions, prune decisions, sync facts to MCP graph |
+| `/three-brain` | Auto-route work to Codex (review/rescue) or Gemini (multimodal/long-context) — requires codex-cli + gemini-cli |
 
 **Superpowers skills** auto-trigger based on context (brainstorming, TDD, debugging, code review, planning, subagents, git worktrees). No manual invoke needed.
 

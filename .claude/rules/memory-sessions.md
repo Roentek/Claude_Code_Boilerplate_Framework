@@ -4,6 +4,13 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-04-30 (session 4) — three-brain skill integration & CLI tool installations
+- **codex-cli and gemini-cli added to setup.sh** — step 11 now installs 4 global CLI tools: skillui, firecrawl-cli, codex-cli (`@openai/codex`), gemini-cli (`@google/gemini-cli`)
+- **three-brain skill documented** — added to CLAUDE.md Skills table and README.md Project Skills section with full description of auto-routing behavior (Codex for review/rescue, Gemini for multimodal/long-context)
+- **Startup self-check results** — codex-cli v0.124.0 installed (slightly below expected 0.125+, but functional); gemini-cli not found (user corrected package name from `@google/generative-ai-cli` to `@google/gemini-cli`)
+- **Documentation updates** — CLAUDE.md First-Time Setup section updated to mention CLI tool installations; README.md setup.sh step 11 expanded to list all 4 CLI tools with use cases
+- **Decision logged** — memory-decisions.md entry created documenting the CLI installation additions with rationale and implications
+
 ## 2026-04-30 (session 3) — CLAUDE.md quality audit & improvements
 - **claude-md-improver skill invoked** — full quality assessment of project CLAUDE.md
 - **Quality score: 97/100 (Grade A)** — excellent baseline with minor gaps identified
@@ -69,3 +76,13 @@ Summary of substantive work completed each session — what was built, what was 
 ## 2026-04-30 (auto-drafted — review before next session)
 - First-Time Setup Section Added**\n- Consolidated 5 scattered setup steps into one copy-paste block\n- Includes: npm install, setup.sh, credentials config, .env setup, restart reminder\n- Added verification command to check if setup already ran\n\n**2.
 - tools/ Directory Clarified**\n- Updated description from \"Python scripts\" to \"Deterministic execution scripts (Python/Node)\"\n- Added `playwright.js` example to show what's actually there\n- Signals flexibility for future per-project scripts\n\n### Files Updated\n- âœ… **CLAUDE.md** - both improvements applied\n- âœ… **memory-decisions.md** - decision documented with rationale\n- âœ… **memory-sessions.md** - session work recorded\n\nAll documentation is now in sync.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-01 (auto-drafted — review before next session)
+- Here's what was completed:\n\n---\n\n## âœ… Three-Brain CLI Integration Complete\n\n### Files Updated\n\n| File | Changes |\n|------|---------|\n| **setup.sh** | Added codex-cli (`@openai/codex`) and gemini-cli (`@google/gemini-cli`) to step 11 global CLI installations |\n| **CLAUDE.md** | Updated First-Time Setup section; added `/three-brain` to Skills table |\n| **README.md** | Updated setup.sh step 11 description; added `/three-brain` to Project Skills table with full description |\n| **memory-decisions.md** | Logged decision with rationale and implications |\n| **memory-sessions.md** | Recorded session work |\n\n### What Gets Installed\n\nOn fresh clones, `setup.sh` now installs **4 global CLI tools**:\n\n1.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-01 (auto-drafted — review before next session)
+- Here's the complete summary:\n\n---\n\n## âœ… API Keys Added to All Credential Files\n\n### Files Updated\n\n| File | Changes |\n|------|---------|\n| **`.env.example`** | Added CLI tools section header + `OPENAI_API_KEY` and `GEMINI_API_KEY` with usage docs |\n| **`.env`** | Added same CLI tools section + both keys (empty placeholders) |\n| **`settings.local.json.example`** | Added `__note_cli_tools` activation guide entry + `OPENAI_API_KEY` to env block |\n| **`settings.local.json`** | Added `OPENAI_API_KEY=\"\"` to env block (GEMINI_API_KEY already present) |\n| **`memory-decisions.md`** | Updated decision entry to document credential file changes |\n\n---\n\n## Clear Separation: CLI vs MCP\n\n### In `.env` and `.env.example`\n\n```env\n# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n# CLI TOOLS (local execution, not MCP)\n# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n# OpenAI API Key â€” platform.openai.com â†’ API Keys â†’ Create new secret key\n# Used by: codex-cli (three-brain skill review/rescue routes, codex plugin)\nOPENAI_API_KEY=\n\n# Gemini API Key â€” aistudio.google.com/apikey â†’ Create API key in new project\n# Used by: gemini-cli (three-brain skill multimodal/long-context routes), cc-gemini-plugin\nGEMINI_API_KEY=\n\n# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n# MCP SERVER CREDENTIALS\n# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n```\n\n### In `settings.local.json.example` `__activation_guide`\n\n```json\n\"__note_cli_tools\": \"The keys below are for global CLI tools installed by setup.sh (codex-cli, gemini-cli).

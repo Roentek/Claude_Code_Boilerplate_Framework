@@ -26,6 +26,10 @@
     "cc-gemini-plugin@cc-gemini-plugin": "GEMINI_API_KEY — aistudio.google.com → Get API Key → Create API key in new project. Free tier available.",
     "context7":                          "CONTEXT7_API_KEY — context7.com → Account → API Keys. Used for live SDK/library documentation lookups via the context7 MCP server.",
 
+    "__note_cli_tools": "The keys below are for global CLI tools installed by setup.sh (codex-cli, gemini-cli). These run locally via Bash, not through MCP servers. Set them here AND in .env so both Claude Code and local shell scripts can access them.",
+    "codex-cli (three-brain)":  "OPENAI_API_KEY — platform.openai.com → API Keys → Create new secret key. Required by codex-cli for /three-brain review/rescue routes and codex plugin.",
+    "gemini-cli (three-brain)": "GEMINI_API_KEY — aistudio.google.com/apikey → Create API key in new project. Required by gemini-cli for /three-brain multimodal/long-context routes. Free tier available. NOTE: This is the same key used by cc-gemini-plugin above.",
+
     "__note_app_code_vars": "The keys below are used by YOUR application code (Trigger.dev tasks, Python tools) via dotenv — not by MCP servers directly. Set them here if you want Claude Code subprocesses to inherit them; otherwise setting them in .env only is sufficient.",
     "SUPABASE_PROJECT_URL": "SUPABASE_PROJECT_URL — Supabase dashboard → Project Settings → API → Project URL (e.g. https://xyzabc.supabase.co). Used by Supabase JS SDK in app code.",
     "SUPABASE_PROJECT_KEY": "SUPABASE_PROJECT_KEY — Supabase dashboard → Project Settings → API → anon/public or service_role key. Used by Supabase JS SDK in app code.",  
@@ -69,8 +73,9 @@
     "TWENTYFIRST_DEV_API_KEY":    "",
     "GITHUB_PERSONAL_ACCESS_TOKEN": "",
     "FIRECRAWL_API_KEY":          "",
-    "GEMINI_API_KEY":             "",
     "CONTEXT7_API_KEY":           "",
+    "GEMINI_API_KEY":             "",
+    "OPENAI_API_KEY":             "",
     "SUPABASE_PROJECT_URL":       "",
     "SUPABASE_PROJECT_KEY":       "",
     "OPENROUTER_BASE_URL":        "",
