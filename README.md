@@ -142,7 +142,7 @@ All of the below must be on your `PATH` before setup runs.
 
 | Tool | Why | Install |
 | ------ | ----- | --------- |
-| **uv / uvx** | Google Workspace MCP and Alpaca MCP use `uvx` | See below |
+| **uv / uvx** | Google Workspace MCP, Alpaca MCP, and NotebookLM MCP use `uvx` | See below |
 
 ### Install Python
 
@@ -216,14 +216,14 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 2. **Verifies Python** — checks `python3` / `python` is in PATH; required by the context-monitor statusline and `ui-ux-pro-max` design search scripts
 3. **Verifies context-monitor.py** — confirms the statusline script is present
 4. **Creates `.env`** — copies `.env.example` → `.env` if none exists
-5. **Verifies uvx** — required for `google-workspace-mcp` and `alpaca` MCP servers
+5. **Verifies uvx** — required for `google-workspace-mcp`, `alpaca`, and `notebooklm-mcp` MCP servers
 6. **Verifies Node.js / npx** — required by all 17 npx-based MCP servers (memory, supabase, openrouter, kie-ai, tavily, trigger, pinecone, vapi, n8n, apify, zep, canva, 21st-dev, playwright-mcp, firecrawl-mcp, higgsfield, context7)
 7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max`, `andrej-karpathy-skills`, `impeccable`, `codex`, and `cc-gemini-plugin` via CLI
 8. **Installs project skills** — copies `.claude/skills/*/` to `~/.claude/skills/` where Claude Code reads them (full directory, not just SKILL.md — preserves supporting docs and examples)
 9. **Installs npm dependencies + Playwright browser** — runs `npm install` for the `playwright` package, then `npx playwright install chromium` for the browser binary used by `tools/playwright.js`
 10. **Verifies GitHub CLI** — checks `gh` is installed; required by `github@claude-plugins-official` for `Bash(gh ...)` tool calls; prints platform-specific install instructions if missing
-11. **Installs global CLI tools** — `skillui` (design system extractor for `/skillui` skill), `firecrawl-cli` (web scraping CLI for `/firecrawl` skill), `codex-cli` (OpenAI Codex CLI for `/three-brain` auto-router and `codex` plugin), and `gemini-cli` (Google Gemini CLI for `/three-brain` multimodal routes and `cc-gemini-plugin`); all via `npm install -g`
-12. **Prints authentication reminders** — lists integrations requiring a manual one-time auth step: Trigger.dev (`npx trigger.dev@latest login`), Google Workspace (browser OAuth), Canva (browser OAuth), Higgsfield (browser OAuth via `npx mcp-remote`), GitHub CLI (`gh auth login`), Gemini plugin (`GEMINI_API_KEY` at aistudio.google.com), and Codex plugin (`npm install -g @openai/codex`)
+11. **Installs global CLI tools** — `skillui` (design system extractor for `/skillui` skill), `firecrawl-cli` (web scraping CLI for `/firecrawl` skill), `codex-cli` (OpenAI Codex CLI for `/three-brain` auto-router and `codex` plugin), `gemini-cli` (Google Gemini CLI for `/three-brain` multimodal routes and `cc-gemini-plugin`), and `notebooklm-mcp-cli` (Google NotebookLM CLI + MCP for `/notebooklm` skill via `uv tool install`)
+12. **Prints authentication reminders** — lists integrations requiring a manual one-time auth step: NotebookLM (`nlm login`), Trigger.dev (`npx trigger.dev@latest login`), Google Workspace (browser OAuth), Canva (browser OAuth), Higgsfield (browser OAuth via `npx mcp-remote`), GitHub CLI (`gh auth login`), Gemini plugin (`GEMINI_API_KEY` at aistudio.google.com), and Codex plugin (`npm install -g @openai/codex`)
 13. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
 14. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
 
@@ -469,6 +469,7 @@ Source files live in `.claude/skills/<name>/SKILL.md`. `setup.sh` installs them 
 | `/taste-skill` | Anti-slop frontend design enforcement. Overrides LLM biases with three configurable dials (DESIGN_VARIANCE, MOTION_INTENSITY, VISUAL_DENSITY) and 10 sections of strict rules: bans Inter font, AI purple, centered heroes, 3-column cards, pure black, and emoji-as-icons. Enforces Framer Motion spring physics, Bento 2.0 paradigm, magnetic micro-physics, full interaction states (loading/empty/error), and a pre-flight checklist. Source: [leonxlnx/taste-skill](https://github.com/leonxlnx/taste-skill). |
 | `/playwright` | Browser automation via Playwright CLI — screenshots, JS-rendered page scraping, PDF generation, link extraction. Runs `node tools/playwright.js` directly via Bash with no MCP server overhead. Requires `npm install && npx playwright install chromium` on first use. Source: [microsoft/playwright-cli](https://github.com/microsoft/playwright-cli). |
 | `/firecrawl` | Web scraping via Firecrawl CLI — scrape single pages to Markdown, web search with optional result scraping, full-site crawls with depth limits, URL mapping, and AI-powered agent extraction. CLI primary (`firecrawl`); `firecrawl-mcp` backup for batch or schema-driven tasks. Requires `npm install -g firecrawl-cli` and `FIRECRAWL_API_KEY`. Source: [firecrawl/cli](https://github.com/firecrawl/cli). |
+| `/notebooklm` | Google NotebookLM integration via `nlm` CLI — create notebooks, add sources (URLs, text, Google Drive files), generate AI content (podcasts, videos, briefings, flashcards, infographics, slides), query notebooks with natural language, manage research workflows, share notebooks. CLI primary (`nlm`); `notebooklm-mcp` backup for multi-step interactive flows. Requires `uv tool install notebooklm-mcp-cli` and cookie-based auth via `nlm login`. Source: [jacob-bd/notebooklm-mcp-cli](https://github.com/jacob-bd/notebooklm-mcp-cli). |
 | `/three-brain` | Auto-router for multi-model work coordination. Routes tasks invisibly to Claude (standard dev), Codex/GPT-5.5 (review/rescue after 2× failures, risk-path edits to auth/billing/deploy/migrations), or Gemini 2.5 Pro (multimodal analysis, whole-codebase scans). Forced routes trigger on risk paths or repeated failures with one-line announcement before handoff. Requires `codex-cli` (`npm i -g @openai/codex`) and `gemini-cli` (`npm i -g @google/gemini-cli`). |
 
 ---
@@ -495,6 +496,7 @@ All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. C
 | **trigger** | `npx trigger.dev mcp` | — (uses Trigger.dev CLI auth) | Deploy, trigger, and monitor Trigger.dev tasks |
 | **pinecone-mcp** | `npx @pinecone-database/mcp` | `PINECONE_API_KEY` | Vector search, RAG — upsert, search, rerank, describe indexes |
 | **vapi-mcp** | `npx @vapi-ai/mcp-server` | `VAPI_API_TOKEN` | Voice AI — create assistants, make calls, manage phone numbers and tools |
+| **notebooklm-mcp** | `uvx --from notebooklm-mcp-cli notebooklm-mcp` | — (cookie auth via `nlm login`) | Google NotebookLM — create notebooks, add sources (URLs, text, Google Drive), generate podcasts/videos/briefings, query notebooks. **CLI (`nlm`) is always the primary tool** — use MCP only for multi-step interactive flows. Run `nlm login` before first use to authenticate with Google. |
 | **alpaca** | `uvx alpaca-mcp-server` | `ALPACA_API_KEY`, `ALPACA_SECRET_KEY` | Algorithmic trading via Alpaca (paper mode enabled by default) |
 | **n8n-mcp** | `npx n8n-mcp` | `N8N_HOST_URL`, `N8N_API_KEY` | n8n workflow automation — search nodes, validate, build via MCP |
 | **apify** | `npx @apify/actors-mcp-server` | `APIFY_API_PAT` | Web scraping marketplace — search actors, call actors, retrieve results |

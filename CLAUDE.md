@@ -15,6 +15,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Slash-command skill | `~/.claude/skills/<name>/SKILL.md` | Skills must be subdirectory + `SKILL.md`; `setup.sh` auto-installs |
 | MCP server integration | `.mcp.json` + `.claude/settings.local.json` | Copy `settings.local.json.example` → `settings.local.json`, fill keys, restart |
 | Claude API / SDK app | `/claude-api` skill | Scaffolds Anthropic SDK boilerplate |
+| NotebookLM research / podcasts | `/notebooklm` skill → `nlm` CLI | Create notebooks, add sources, generate podcasts/videos/briefings — CLI first; `notebooklm-mcp` as backup |
 | n8n workflow | `n8n-mcp` tools | Search nodes, validate, build via MCP |
 | Voice AI (Vapi) | `vapi-mcp` tools | Create assistants, calls, phone numbers |
 | Browser automation | `/playwright` skill → `tools/playwright.js` | `workflows/browser-automation.md` — CLI first; `playwright-mcp` as backup |
@@ -42,6 +43,15 @@ npx claude-code-templates@latest --setting statusline/context-monitor
 
 # Browser automation (WAT Tools layer example)
 node tools/playwright.js screenshot https://example.com
+
+# NotebookLM — authenticate and create research notebook
+nlm login
+nlm notebook create "Research Project"
+nlm source add <notebook-id> --url "https://example.com"
+nlm audio create <notebook-id> --confirm
+
+# Upgrade NotebookLM CLI
+uv tool upgrade notebooklm-mcp-cli
 ```
 
 > **MCP credential gotcha:** `.mcp.json` `${VAR}` substitution reads from the **OS process environment**, not `.env`. On a fresh machine, run `setx VAR_NAME "value"` (Windows) or `export VAR_NAME=value` (Unix) in your terminal before starting Claude Code.
@@ -57,7 +67,7 @@ npm install
 # 2. Run initial setup (hooks, skills, permissions, CLI tools)
 bash .claude/hooks/setup.sh
 # Installs: marketplace plugins, project skills, npm deps, Playwright browser,
-#           skillui, firecrawl-cli, codex-cli, gemini-cli
+#           skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli
 
 # 3. Configure MCP credentials
 cp .claude/settings.local.json.example .claude/settings.local.json
@@ -158,6 +168,8 @@ docs/                         ← Project-level documentation
 | `/design-md` | Load a ready-made brand DESIGN.md for 73 brands via `npx getdesign@latest add <brand>` |
 | `/taste-skill` | Anti-slop frontend enforcement — bans generic patterns, enforces Bento 2.0 |
 | `/firecrawl` | Scrape pages, search, crawl sites, map URLs via Firecrawl CLI |
+| `/notebooklm` | Google NotebookLM — create notebooks, add sources, generate podcasts/videos/briefings via `nlm` CLI |
+| `/playwright` | Browser automation — screenshots, scraping, PDFs, link extraction via Playwright CLI |
 | `/compact-memory` | Full memory hygiene — compress sessions, prune decisions, sync facts to MCP graph |
 | `/three-brain` | Auto-route work to Codex (review/rescue) or Gemini (multimodal/long-context) — requires codex-cli + gemini-cli |
 
@@ -171,7 +183,7 @@ docs/                         ← Project-level documentation
 
 Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 
-> **Requires `uvx`:** `google-workspace-mcp` and `alpaca` use `uvx`. Install: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+> **Requires `uvx`:** `google-workspace-mcp`, `alpaca`, and `notebooklm-mcp` use `uvx`. Install: `curl -LsSf https://astral.sh/uv/install.sh | sh`
 
 | Server | Use For |
 | ------ | ------- |
@@ -184,6 +196,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `pinecone-mcp` | Vector search / RAG |
 | `n8n-mcp` | n8n workflow automation |
 | `vapi-mcp` | Voice AI — assistants, calls, phone numbers |
+| `notebooklm-mcp` | Google NotebookLM — notebooks, AI queries, podcasts/videos (backup — prefer `nlm` CLI) |
 | `apify` | Large-scale web scraping via Apify marketplace |
 | `zep-mcp` | Zep long-term memory documentation |
 | `alpaca-mcp` | Algorithmic trading (paper mode) |

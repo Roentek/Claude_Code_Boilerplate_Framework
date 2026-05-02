@@ -32,12 +32,25 @@
       "Bash(npm run playwright:*)",
       "Bash(firecrawl:*)",
       "Bash(npx firecrawl-cli:*)",
+      "Bash(nlm:*)",
+      "Bash(uvx --from notebooklm-mcp-cli nlm:*)",
       "Bash(bash .claude/hooks/setup.sh)",
       "Bash(echo \"exit: $?\")",
       "Bash(git *)",
-      "Bash(codex --version)",
+      "Bash(curl *)",
+      "Bash(codex *)",
+      "Bash(gemini *)",
       "PowerShell(codex *)",
-      "PowerShell(gemini *)"
+      "PowerShell(gemini *)",
+      "PowerShell(skillui *)",
+      "PowerShell(npx skillui *)",
+      "PowerShell(node tools/playwright.js *)",
+      "PowerShell(npx playwright *)",
+      "PowerShell(firecrawl *)",
+      "PowerShell(npx firecrawl-cli *)",
+      "PowerShell(nlm *)",
+      "PowerShell(uvx --from notebooklm-mcp-cli nlm *)",
+      "PowerShell(npm install *)"
     ],
     "deny": []
   },
@@ -63,7 +76,8 @@
     "playwright-mcp",
     "firecrawl-mcp",
     "higgsfield",
-    "context7"
+    "context7",
+    "notebooklm-mcp"
   ],
   "hooks": {
     "Setup": [

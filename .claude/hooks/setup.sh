@@ -359,10 +359,36 @@ else
   echo "⚠ npm not found — cannot install gemini-cli (run: npm install -g @google/gemini-cli@latest)"
 fi
 
+# notebooklm-mcp-cli — Google NotebookLM CLI + MCP server
+# Source: https://github.com/jacob-bd/notebooklm-mcp-cli
+# Used by: /notebooklm skill — notebook management, AI queries, podcast/video generation
+# Requires: uv or uvx for installation, cookie-based authentication (nlm login)
+if command -v nlm &>/dev/null; then
+  NLM_VERSION=$(nlm --version 2>&1 | head -1 || echo "unknown")
+  echo "✓ notebooklm-mcp-cli already installed: $NLM_VERSION"
+elif command -v uv &>/dev/null; then
+  echo "  Installing notebooklm-mcp-cli via uv tool..."
+  if uv tool install notebooklm-mcp-cli 2>/dev/null; then
+    echo "✓ notebooklm-mcp-cli installed (CLI: nlm, MCP: notebooklm-mcp)"
+    echo "  ⚠ Run 'nlm login' to authenticate with Google NotebookLM before first use"
+  else
+    echo "⚠ notebooklm-mcp-cli install failed — run manually: uv tool install notebooklm-mcp-cli"
+  fi
+else
+  echo "⚠ uv not found — cannot install notebooklm-mcp-cli"
+  echo "  Install uv first (see step 5 above), then run: uv tool install notebooklm-mcp-cli"
+fi
+
 # ── 12. Authentication reminders (interactive — cannot automate) ──
 echo ""
 echo "── Authentication Reminders ─────────────────────────────"
 echo "  These require a one-time manual step before first use:"
+echo ""
+echo "  NotebookLM CLI + MCP"
+echo "    Run: nlm login"
+echo "    (launches browser — you log in to Google, cookies extracted automatically)"
+echo "    OR run: nlm login --manual (import cookies from file)"
+echo "    Required by: /notebooklm skill and notebooklm-mcp MCP server"
 echo ""
 echo "  Trigger.dev MCP"
 echo "    Run: npx trigger.dev@latest login"

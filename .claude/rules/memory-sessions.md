@@ -4,6 +4,37 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-05-01 (session 6) — CLI permissions audit & completion
+- **Audited CLI tool permissions** across `settings.json` and `settings.local.json.example`
+- **Consolidated all CLI permissions in main `settings.json`** (version-controlled, available to all users):
+  - Fixed `Bash(codex --version)` → `Bash(codex *)` (general pattern)
+  - Fixed `bash(gemini --version)` (lowercase) → `Bash(gemini *)` (correct casing + general pattern)
+  - Added all missing PowerShell variants for: skillui, playwright, firecrawl, nlm, codex, gemini
+- **Removed CLI permissions from `settings.local.json.example`** — they're project-level config, not machine-specific
+- **Final permission coverage in settings.json:**
+  - skillui: Bash + PowerShell (npx variants)
+  - playwright: Bash + PowerShell (node tools/playwright.js + npx variants)
+  - firecrawl: Bash + PowerShell (firecrawl + npx firecrawl-cli variants)
+  - nlm: Bash + PowerShell (nlm + uvx variants)
+  - codex: Bash + PowerShell (general pattern)
+  - gemini: Bash + PowerShell (general pattern)
+- All 6 CLI tools installed by `setup.sh` now have complete cross-platform permission coverage in the main project settings file
+
+## 2026-05-01 (session 5) — NotebookLM MCP CLI integration complete
+- **Tool integrated:** `notebooklm-mcp-cli` — Python package providing both `nlm` CLI and `notebooklm-mcp` MCP server
+- **Files created:** `.claude/skills/notebooklm/SKILL.md` (usage guide with CLI-first pattern)
+- **Files updated:**
+  - `setup.sh` — added step 11 installation (`uv tool install notebooklm-mcp-cli`), authentication reminder (`nlm login`)
+  - `settings.json` — added `nlm` CLI permissions (Bash/PowerShell), enabled `notebooklm-mcp` in `enabledMcpjsonServers`
+  - `.mcp.json` — already present (line 181-184)
+  - `CLAUDE.md` — routing table, Skills section, MCP Servers section, First-Time Setup, uvx requirement note
+  - `README.md` — setup.sh steps 11-12, Prerequisites table, Project Skills table, MCP Servers table, uvx verification step
+  - `memory-decisions.md` — decision logged with rationale
+- **Architecture pattern:** CLI-first (like Playwright and Firecrawl) — `nlm` CLI is primary, `notebooklm-mcp` MCP server is backup for interactive flows only
+- **Authentication:** Cookie-based via `nlm login` (auto mode launches browser, extracts cookies, persists 2-4 weeks)
+- **Use cases:** Research workflows (create notebooks, add sources from URLs/Drive), AI queries, content generation (podcasts, videos, briefings, flashcards, infographics, slides), sharing
+- **Source:** https://github.com/jacob-bd/notebooklm-mcp-cli
+
 ## 2026-04-30 (session 4) — three-brain skill integration & CLI tool installations
 - **codex-cli and gemini-cli added to setup.sh** — step 11 now installs 4 global CLI tools: skillui, firecrawl-cli, codex-cli (`@openai/codex`), gemini-cli (`@google/gemini-cli`)
 - **three-brain skill documented** — added to CLAUDE.md Skills table and README.md Project Skills section with full description of auto-routing behavior (Codex for review/rescue, Gemini for multimodal/long-context)
@@ -86,3 +117,13 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-01 (auto-drafted — review before next session)
 - Here's the complete summary:\n\n---\n\n## âœ… API Keys Added to All Credential Files\n\n### Files Updated\n\n| File | Changes |\n|------|---------|\n| **`.env.example`** | Added CLI tools section header + `OPENAI_API_KEY` and `GEMINI_API_KEY` with usage docs |\n| **`.env`** | Added same CLI tools section + both keys (empty placeholders) |\n| **`settings.local.json.example`** | Added `__note_cli_tools` activation guide entry + `OPENAI_API_KEY` to env block |\n| **`settings.local.json`** | Added `OPENAI_API_KEY=\"\"` to env block (GEMINI_API_KEY already present) |\n| **`memory-decisions.md`** | Updated decision entry to document credential file changes |\n\n---\n\n## Clear Separation: CLI vs MCP\n\n### In `.env` and `.env.example`\n\n```env\n# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n# CLI TOOLS (local execution, not MCP)\n# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n# OpenAI API Key â€” platform.openai.com â†’ API Keys â†’ Create new secret key\n# Used by: codex-cli (three-brain skill review/rescue routes, codex plugin)\nOPENAI_API_KEY=\n\n# Gemini API Key â€” aistudio.google.com/apikey â†’ Create API key in new project\n# Used by: gemini-cli (three-brain skill multimodal/long-context routes), cc-gemini-plugin\nGEMINI_API_KEY=\n\n# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n# MCP SERVER CREDENTIALS\n# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n```\n\n### In `settings.local.json.example` `__activation_guide`\n\n```json\n\"__note_cli_tools\": \"The keys below are for global CLI tools installed by setup.sh (codex-cli, gemini-cli).
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-01 (auto-drafted — review before next session)
+- Here's what was implemented:\n\n---\n\n## âœ… Integration Complete\n\n### What Was Added\n\n**CLI Tool** â€” `notebooklm-mcp-cli` (Python package)\n- **Primary interface:** `nlm` CLI command\n- **Backup:** `notebooklm-mcp` MCP server (35 tools)\n- **Pattern:** CLI-first (matches Playwright and Firecrawl)\n\n### Files Created\n\n| File | Purpose |\n|------|---------|\n| `.claude/skills/notebooklm/SKILL.md` | Complete usage guide â€” CLI commands, MCP tools, authentication, workflows, decision matrix |\n\n### Files Updated\n\n| File | Changes |\n|------|---------|\n| `setup.sh` | Step 11: `uv tool install notebooklm-mcp-cli`; Step 12: authentication reminder (`nlm login`) |\n| `settings.json` | Added CLI permissions (`Bash(nlm:*)`, `PowerShell(nlm *)`); enabled `notebooklm-mcp` in `enabledMcpjsonServers` |\n| `.mcp.json` | Already present (line 181-184) â€” uses `uvx --from notebooklm-mcp-cli notebooklm-mcp` |\n| `CLAUDE.md` | Routing table, Skills section, MCP Servers section, First-Time Setup, uvx requirement note |\n| `README.md` | setup.sh steps 11-12, Prerequisites table, Project Skills table, MCP Servers table, uvx verification |\n| `memory-decisions.md` | Decision logged with rationale and implications |\n| `memory-sessions.md` | Session work recorded |\n\n### How to Use\n\n**On fresh clone:**\n```bash\nbash .claude/hooks/setup.sh  # Installs notebooklm-mcp-cli via uv\nnlm login                     # Authenticate (launches browser, extracts cookies)\n```\n\n**CLI commands** (primary):\n```bash\nnlm notebook list\nnlm notebook create \"Research Project\"\nnlm source add <notebook> --url \"https://...\"\nnlm audio create <notebook> --confirm\nnlm download audio <notebook> <artifact-id>\n```\n\n**MCP tools** (backup only) â€” for multi-step interactive flows\n\n### Architecture\n\nFollows the established **CLI-first pattern**:\n- Direct CLI execution via Bash = token-free\n- MCP server = backup for interactive flows only\n- Minimizes context window consumption while preserving full functionality\n\n### Authentication\n\n- **Method:** Cookie-based via `nlm login`\n- **Duration:** 2-4 weeks (auto-refreshes)\n- **Modes:** Auto (launches browser) or manual (import file)\n- **Profiles:** Supports multiple Google accounts\n\n### Source\n\nhttps://github.com/jacob-bd/notebooklm-mcp-cli\n\n---\n\nAll documentation is updated and the skill is ready to use.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-01 (auto-drafted — review before next session)
+- {"session_id":"e89d0044-abb6-4cb0-a6ca-aeb85fe5bee1","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\e89d0044-abb6-4cb0-a6ca-aeb85fe5bee1.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"acceptEdits","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ… CLI Permissions Audit Complete\n\nAll CLI tool permissions are now properly configured in both files:\n\n### Fixed in `settings.json`:\n- âœ… **codex** - changed `Bash(codex --version)` â†’ `Bash(codex *)` (general pattern)\n- âœ… **gemini** - changed `bash(gemini --version)` â†’ `Bash(gemini *)` (fixed casing + general pattern)\n- âœ… Added missing PowerShell permissions for: skillui, playwright, firecrawl\n\n### Added to `settings.local.json.example`:\nComplete CLI permission block (20 permissions total) for all 6 CLI tools:\n\n| Tool | Bash Patterns | PowerShell Patterns |\n|------|---------------|-------------------|\n| **skillui** | `skillui *`, `npx skillui *` | `skillui *`, `npx skillui *` |\n| **playwright** | `node tools/playwright.js:*`, `npx playwright:*` | `node tools/playwright.js *`, `npx playwright *` |\n| **firecrawl** | `firecrawl:*`, `npx firecrawl-cli:*` | `firecrawl *`, `npx firecrawl-cli *` |\n| **nlm** | `nlm:*`, `uvx --from notebooklm-mcp-cli nlm:*` | `nlm *`, `uvx --from notebooklm-mcp-cli nlm *` |\n| **codex** | `codex *` | `codex *` |\n| **gemini** | `gemini *` | `gemini *` |\n\nAll CLI tools installed by `setup.sh` now have complete cross-platform permission coverage in both the project settings and the example template file."}
