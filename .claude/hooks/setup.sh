@@ -111,12 +111,12 @@ echo ""
 echo "── Node.js / npx ────────────────────────────────────────"
 echo "   Required by: memory, supabase-mcp, openrouter-mcp, kie-ai, tavily-mcp,"
 echo "   trigger, pinecone-mcp, vapi-mcp, n8n-mcp, apify, zep-mcp, canva-dev,"
-echo "   21st-dev-magic, playwright-mcp, firecrawl-mcp, higgsfield, context7"
+echo "   monet-mcp, stitch, 21st-dev-magic, playwright-mcp, firecrawl-mcp, higgsfield, context7"
 if command -v npx &>/dev/null; then
   NODE_VERSION=$(node --version 2>&1)
   echo "✓ npx found — Node.js $NODE_VERSION"
 else
-  echo "✗ npx not found — 17 MCP servers require Node.js/npx"
+  echo "✗ npx not found — 18 MCP servers require Node.js/npx"
   echo "  Install Node.js from https://nodejs.org (LTS recommended)"
   ERRORS=$((ERRORS + 1))
 fi
