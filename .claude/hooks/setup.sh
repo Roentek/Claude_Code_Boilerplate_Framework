@@ -179,6 +179,17 @@ if command -v claude &>/dev/null; then
     echo "      /plugin marketplace add thepushkarp/cc-gemini-plugin"
     echo "      /plugin install cc-gemini-plugin@cc-gemini-plugin"
   fi
+
+  # cli-anything — Generate AI-native CLIs for any software (GIMP, Blender, LibreOffice, etc.)
+  # Source: https://github.com/HKUDS/CLI-Anything
+  # 50+ supported applications, 2,280+ passing tests
+  if claude plugins install cli-anything@cli-anything 2>/dev/null; then
+    echo "  ✓ cli-anything installed"
+  else
+    echo "  ⚠ cli-anything auto-install failed — run these inside Claude Code:"
+    echo "      /plugin marketplace add HKUDS/CLI-Anything"
+    echo "      /plugin install cli-anything@cli-anything"
+  fi
 else
   echo "  claude CLI not found — install third-party plugins manually."
   echo "  Run these slash commands inside a Claude Code chat session:"
@@ -202,6 +213,10 @@ else
   echo "  Gemini Plugin (large-context codebase exploration via Gemini):"
   echo "    /plugin marketplace add thepushkarp/cc-gemini-plugin"
   echo "    /plugin install cc-gemini-plugin@cc-gemini-plugin"
+  echo ""
+  echo "  CLI-Anything (generate AI-native CLIs for any software):"
+  echo "    /plugin marketplace add HKUDS/CLI-Anything"
+  echo "    /plugin install cli-anything@cli-anything"
 fi
 
 echo ""

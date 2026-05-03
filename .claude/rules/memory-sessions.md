@@ -4,6 +4,20 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-05-02 (session 7) — CLI-Anything plugin integration
+- **Plugin integrated:** `cli-anything@cli-anything` from HKUDS/CLI-Anything marketplace — generates AI-native CLIs for existing software (GIMP, Blender, LibreOffice, Audacity, etc.)
+- **Files updated:**
+  - `settings.json` — added `cli-anything` to `extraKnownMarketplaces` and `enabledPlugins`
+  - `setup.sh` — added CLI-Anything to step 7 marketplace plugin installation (both auto-install and manual fallback sections)
+  - `CLAUDE.md` — added "AI-native CLI for existing software" row to routing table, added cli-anything entry to Plugins section, updated First-Time Setup comment to list cli-anything
+  - `README.md` — added cli-anything to marketplace table, installation instructions, Enabled Plugins table, setup.sh step 7 description, intro section
+  - `memory-decisions.md` — decision logged with rationale and implications
+  - `memory-sessions.md` — this session entry
+- **Plugin capabilities:** 5 slash commands — `/cli-anything` (build CLI harness), `/cli-anything:refine` (expand coverage), `/cli-anything:test` (run test suite), `/cli-anything:validate` (standards validation), `/cli-anything:list` (list available tools)
+- **Coverage:** 50+ supported applications, 2,280+ passing tests
+- **Use cases:** Transforms professional software into agent-controllable CLIs through automated source code analysis — enables AI agents to control applications via structured commands instead of fragile GUI automation
+- **Source:** https://github.com/HKUDS/CLI-Anything (33,235 stars)
+
 ## 2026-05-01 (session 6) — CLI permissions audit & completion
 - **Audited CLI tool permissions** across `settings.json` and `settings.local.json.example`
 - **Consolidated all CLI permissions in main `settings.json`** (version-controlled, available to all users):
@@ -132,3 +146,18 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-01 (auto-drafted — review before next session)
 - {"session_id":"11cc1cad-5abf-4678-bf70-a1d30c1f19d7","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\11cc1cad-5abf-4678-bf70-a1d30c1f19d7.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"default","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"---\n\n## âœ… **Audit Complete**\n\n### Summary\n\n**setup.sh is in excellent shape.** All critical installations are properly integrated:\n\nâœ… **5 marketplace plugins** â€” all installed and enabled  \nâœ… **20 MCP servers** â€” all documented with runtime requirements  \nâœ… **5 global CLI tools** â€” all installed with full permissions  \nâœ… **10 project skills** â€” auto-installed via `cp -r` pattern  \nâœ… **npm deps + Playwright** â€” both handled  \nâœ… **Git hooks** â€” safe pre-commit wrapper installed  \nâœ… **Authentication** â€” comprehensive reminders for all interactive auth flows  \n\n### Fixed Issues\n\nâœ… **MCP server count** â€” updated from \"17\" to \"18\" to include monet-mcp and stitch in the list\n\n---\n\n## Recommendations (Optional Improvements)\n\n### 1.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-02 (auto-drafted — review before next session)
+- Here's what was implemented:\n\n---\n\n## âœ… CLI-Anything Integration Complete\n\n### Files Updated\n\n| File | Changes |\n|------|---------|\n| **settings.json** | â€¢ Added `cli-anything` marketplace to `extraKnownMarketplaces`<br>â€¢ Enabled plugin in `enabledPlugins` |\n| **setup.sh** | â€¢ Added CLI-Anything to step 7 auto-install (both automatic and manual fallback instructions) |\n| **CLAUDE.md** | â€¢ Added \"AI-native CLI for existing software\" to routing table<br>â€¢ Added cli-anything to Plugins section<br>â€¢ Updated First-Time Setup to list cli-anything in marketplace plugins |\n| **README.md** | â€¢ Added cli-anything to marketplace table<br>â€¢ Added installation instructions<br>â€¢ Added to Enabled Plugins table with full description<br>â€¢ Updated setup.sh step 7 description<br>â€¢ Updated intro section |\n| **memory-decisions.md** | â€¢ Documented decision with rationale and implications |\n| **memory-sessions.md** | â€¢ Recorded session work |\n\n---\n\n## What CLI-Anything Provides\n\n**Purpose:** Generates AI-native command-line interfaces for existing software through automated source code analysis\n\n**Capabilities:**\n- Transforms professional software (GIMP, Blender, LibreOffice, Audacity, etc.) into agent-controllable CLIs\n- 50+ supported applications\n- 2,280+ passing tests\n- Real software backends for actual rendering (not replacements)\n\n**Slash Commands:**\n- `/cli-anything` â€” Build complete CLI harness\n- `/cli-anything:refine` â€” Expand existing coverage\n- `/cli-anything:test` â€” Run test suite\n- `/cli-anything:validate` â€” Standards validation\n- `/cli-anything:list` â€” List available tools\n\n---\n\n## Installation\n\n**Automatic** (on fresh clone):\n```bash\nbash .claude/hooks/setup.sh\n```\n\n**Manual** (if auto-install fails):\n```bash\n/plugin marketplace add HKUDS/CLI-Anything\n/plugin install cli-anything@cli-anything\n```\n\n---\n\n## Source\n\n**Repository:** https://github.com/HKUDS/CLI-Anything (33,235+ stars)  \n**Website:** https://clianything.cc/\n\n---\n\nAll documentation is updated and the plugin is ready to use after running setup.sh or manual installation."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-02 (auto-drafted — review before next session)
+- I can see:\n\nâœ… **Marketplace added** (lines 195-201):\n```json\n\"cli-anything\": {\n  \"source\": {\n    \"source\": \"github\",\n    \"repo\": \"HKUDS/CLI-Anything\"\n  },\n  \"autoUpdate\": true\n}\n```\n\nâœ… **Plugin enabled** (line 151):\n```json\n\"cli-anything@cli-anything\": true\n```\n\nThis was set up during your most recent session (2026-05-02 session 7), as documented in `memory-sessions.md`.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-02 (auto-drafted — review before next session)
+- {"session_id":"d8a3f6ca-1ccb-473e-8dae-9875c3c2600c","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\d8a3f6ca-1ccb-473e-8dae-9875c3c2600c.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"default","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"**Fixed.** CLI-Anything is now properly configured in `settings.json`:\n\n- âœ… Added to `enabledPlugins`\n- âœ… Added to `extraKnownMarketplaces`\n\n**Next step:** Restart Claude Code.

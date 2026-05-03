@@ -12,6 +12,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Frontend UI | `/frontend-design` skill → `ui-ux-pro-max` design system | [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) |
 | WebGPU / Three.js app | `/webgpu-threejs-tsl` skill | Three.js r171+ with WebGPU renderer, TSL shaders |
 | Claude AI agent | `agent-sdk-dev` plugin → `.claude/agents/` | [`agent-instructions.md`](.claude/rules/agent-instructions.md) |
+| AI-native CLI for existing software | `/cli-anything` plugin | Generate CLIs for GIMP, Blender, LibreOffice, Audacity, etc. — 50+ apps supported |
 | Slash-command skill | `~/.claude/skills/<name>/SKILL.md` | Skills must be subdirectory + `SKILL.md`; `setup.sh` auto-installs |
 | MCP server integration | `.mcp.json` + `.claude/settings.local.json` | Copy `settings.local.json.example` → `settings.local.json`, fill keys, restart |
 | Claude API / SDK app | `/claude-api` skill | Scaffolds Anthropic SDK boilerplate |
@@ -66,7 +67,8 @@ npm install
 
 # 2. Run initial setup (hooks, skills, permissions, CLI tools)
 bash .claude/hooks/setup.sh
-# Installs: marketplace plugins, project skills, npm deps, Playwright browser,
+# Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything),
+#           project skills, npm deps, Playwright browser,
 #           skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli
 
 # 3. Configure MCP credentials
@@ -139,6 +141,7 @@ docs/                         ← Project-level documentation
 | `skill-creator` | Building or refining slash-command skills |
 | `impeccable` | Frontend critique/polish/audit — 23 commands + anti-pattern detection |
 | `github` | Reading private repos, reviewing PRs — requires `GITHUB_PERSONAL_ACCESS_TOKEN` |
+| `cli-anything` | Generating AI-native CLIs for existing software (GIMP, Blender, LibreOffice, etc.) — 50+ apps, 2,280+ tests |
 
 > Disabled: `pinecone`, `supabase`, `plugin-dev` — enable in [`.claude/settings.json`](.claude/settings.json) → `enabledPlugins`.
 

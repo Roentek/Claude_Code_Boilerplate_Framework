@@ -190,6 +190,13 @@
         "repo": "thepushkarp/cc-gemini-plugin"
       },
       "autoUpdate": true
+    },
+    "cli-anything": {
+      "source": {
+        "source": "github",
+        "repo": "HKUDS/CLI-Anything"
+      },
+      "autoUpdate": true
     }
   }
 }

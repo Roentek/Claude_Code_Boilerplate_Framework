@@ -4,6 +4,11 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-05-02 — CLI-Anything plugin integrated for AI-native CLI generation
+- **Decision:** Added `cli-anything@cli-anything` plugin from HKUDS/CLI-Anything marketplace. Added to `extraKnownMarketplaces` and `enabledPlugins` in `settings.json`. Setup.sh step 7 auto-installs the plugin.
+- **Why:** Enables automatic generation of AI-native command-line interfaces for existing software with accessible source code (GIMP, Blender, LibreOffice, Audacity, etc.). Bridges the gap between AI agents and professional applications through structured CLI commands rather than fragile GUI automation or limited APIs. 50+ supported applications with 2,280+ passing tests demonstrating production-grade reliability.
+- **Implication:** Plugin provides 5 slash commands: `/cli-anything` (build CLI harness), `/cli-anything:refine` (expand coverage), `/cli-anything:test` (run test suite), `/cli-anything:validate` (standards validation), `/cli-anything:list` (list available tools). Added to CLAUDE.md routing table ("AI-native CLI for existing software" row) and Plugins section. README.md updated with marketplace entry, installation instructions, and Enabled Plugins table entry. Setup.sh updated to install via `claude plugins install cli-anything@cli-anything` with manual fallback instructions.
+
 ## 2026-05-01 — NotebookLM MCP CLI integrated following CLI-first pattern
 - **Decision:** Added `notebooklm-mcp-cli` as both a CLI tool (`nlm`) and MCP server (`notebooklm-mcp`), with CLI as primary and MCP as backup — matching the pattern established for Playwright and Firecrawl.
 - **Why:** Follows the established CLI-first architecture pattern to minimize token consumption (MCP protocol overhead) while preserving MCP backup for multi-step interactive flows. The tool provides programmatic access to Google NotebookLM for creating notebooks, adding sources, generating AI content (podcasts, videos, briefings), and managing research workflows.

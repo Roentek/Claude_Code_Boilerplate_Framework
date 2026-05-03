@@ -31,7 +31,7 @@ A ready-to-clone starting point for Claude Code as an agentic AI workspace. Ship
 This framework wires together every layer of a Claude Code project:
 
 - **Rules** — Markdown instruction files auto-loaded into every session
-- **Plugins** — Extend Claude Code with specialized modes (superpowers, frontend-design, agent-sdk, etc.)
+- **Plugins** — Extend Claude Code with specialized modes (superpowers, frontend-design, agent-sdk, cli-anything, etc.)
 - **Skills** — Reusable slash commands you invoke with `/skill-name`
 - **MCP Servers** — 21 pre-configured Model Context Protocol integrations (Supabase, Google Workspace, Pinecone, Trigger.dev, n8n, Vapi, Apify, Alpaca, Firecrawl, Monet, 21st.dev Magic, and more)
 - **Hooks** — Lifecycle shell scripts that run on session start, stop, and tool events
@@ -218,7 +218,7 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 4. **Creates `.env`** — copies `.env.example` → `.env` if none exists
 5. **Verifies uvx** — required for `google-workspace-mcp`, `alpaca`, and `notebooklm-mcp` MCP servers
 6. **Verifies Node.js / npx** — required by all 17 npx-based MCP servers (memory, supabase, openrouter, kie-ai, tavily, trigger, pinecone, vapi, n8n, apify, zep, canva, 21st-dev, playwright-mcp, firecrawl-mcp, higgsfield, context7)
-7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max`, `andrej-karpathy-skills`, `impeccable`, `codex`, and `cc-gemini-plugin` via CLI
+7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max`, `andrej-karpathy-skills`, `impeccable`, `codex`, `cc-gemini-plugin`, and `cli-anything` via CLI
 8. **Installs project skills** — copies `.claude/skills/*/` to `~/.claude/skills/` where Claude Code reads them (full directory, not just SKILL.md — preserves supporting docs and examples)
 9. **Installs npm dependencies + Playwright browser** — runs `npm install` for the `playwright` package, then `npx playwright install chromium` for the browser binary used by `tools/playwright.js`
 10. **Verifies GitHub CLI** — checks `gh` is installed; required by `github@claude-plugins-official` for `Bash(gh ...)` tool calls; prints platform-specific install instructions if missing
@@ -364,6 +364,7 @@ Two registries are configured in `extraKnownMarketplaces`:
 | `ui-ux-pro-max-skill` | `github.com/nextlevelbuilder/ui-ux-pro-max-skill` |
 | `karpathy-skills` | `github.com/forrestchang/andrej-karpathy-skills` |
 | `impeccable` | `github.com/pbakaus/impeccable` |
+| `cli-anything` | `github.com/HKUDS/CLI-Anything` |
 
 ### Installing Third-Party Marketplace Plugins
 
@@ -390,6 +391,13 @@ The three third-party plugins below are enabled in `settings.json` but must be i
 /plugin install impeccable@impeccable
 ```
 
+**CLI-Anything** — generates AI-native CLIs for existing software (GIMP, Blender, LibreOffice, Audacity, etc.). Transforms applications into agent-controllable command-line interfaces through automated source code analysis. 50+ supported applications, 2,280+ passing tests:
+
+```bash
+/plugin marketplace add HKUDS/CLI-Anything
+/plugin install cli-anything@cli-anything
+```
+
 > The marketplace sources are already registered in `extraKnownMarketplaces` inside `.claude/settings.json`, so no separate marketplace registration step is needed when using the CLI: `claude plugins install ui-ux-pro-max@ui-ux-pro-max-skill`.
 
 Install or update official plugins via CLI:
@@ -406,6 +414,7 @@ claude plugins install <plugin-name>
 | **frontend-design** | `frontend-design@claude-plugins-official` | `/frontend-design` skill — distinctive, production-grade UI generation |
 | **ui-ux-pro-max** | `ui-ux-pro-max@ui-ux-pro-max-skill` | Design intelligence: 67 styles, 161 palettes, 57 font pairings, 99 UX rules, 25 chart types |
 | **impeccable** | `impeccable@impeccable` | Frontend design skill: 23 commands (`/impeccable polish`, `/impeccable audit`, etc.) + 24-issue anti-pattern detection. Standalone: `npx impeccable detect` |
+| **cli-anything** | `cli-anything@cli-anything` | Generates AI-native CLIs for existing software (GIMP, Blender, LibreOffice, Audacity, etc.). 50+ apps, 2,280+ tests. Commands: `/cli-anything`, `/cli-anything:refine`, `/cli-anything:test`, `/cli-anything:validate`, `/cli-anything:list` |
 | **github** | `github@claude-plugins-official` | GitHub operations — read/write repos, PRs, issues, branches, file contents, code search. Requires `GITHUB_PERSONAL_ACCESS_TOKEN` in `settings.local.json` |
 | **agent-sdk-dev** | `agent-sdk-dev@claude-plugins-official` | Agent scaffolding — creates Claude sub-agent definitions |
 | **claude-code-setup** | `claude-code-setup@claude-plugins-official` | Project bootstrapping and Claude Code automation recommendations |
