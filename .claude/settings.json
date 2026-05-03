@@ -50,7 +50,8 @@
       "PowerShell(npx firecrawl-cli *)",
       "PowerShell(nlm *)",
       "PowerShell(uvx --from notebooklm-mcp-cli nlm *)",
-      "PowerShell(npm install *)"
+      "PowerShell(npm install *)",
+      "Bash(cp *)"
     ],
     "deny": []
   },
@@ -147,7 +148,8 @@
     "andrej-karpathy-skills@karpathy-skills": true,
     "codex@openai-codex": true,
     "impeccable@impeccable": true,
-    "cc-gemini-plugin@cc-gemini-plugin": true
+    "cc-gemini-plugin@cc-gemini-plugin": true,
+    "cli-anything@cli-anything": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {

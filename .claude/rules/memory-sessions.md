@@ -4,6 +4,18 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-05-03 (session 8) — CLI-Anything installation repaired
+- **Issue:** Plugin was configured in `settings.json` but never actually installed — marketplace repo was never cloned, plugin was never installed to cache
+- **Root cause:** Adding entries to `settings.json` doesn't trigger automatic marketplace cloning or plugin installation — those must happen separately
+- **Files repaired:**
+  - Cloned marketplace repo → `~/.claude/plugins/marketplaces/cli-anything/` (1,359 files)
+  - Added marketplace entry → `~/.claude/plugins/known_marketplaces.json`
+  - Installed plugin → `~/.claude/plugins/cache/cli-anything/cli-anything/unknown/`
+  - Updated plugin registry → `~/.claude/plugins/installed_plugins.json` (added cli-anything@cli-anything entry)
+- **Verification:** All 5 commands confirmed available (cli-anything, list, refine, test, validate)
+- **Git commit:** bc03f9bac44a665ddf3a140f3589114e2c813f78
+- **Status:** ✅ Installation complete — restart Claude Code to activate
+
 ## 2026-05-02 (session 7) — CLI-Anything plugin integration
 - **Plugin integrated:** `cli-anything@cli-anything` from HKUDS/CLI-Anything marketplace — generates AI-native CLIs for existing software (GIMP, Blender, LibreOffice, Audacity, etc.)
 - **Files updated:**
@@ -161,3 +173,7 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-02 (auto-drafted — review before next session)
 - {"session_id":"d8a3f6ca-1ccb-473e-8dae-9875c3c2600c","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\d8a3f6ca-1ccb-473e-8dae-9875c3c2600c.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"default","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"**Fixed.** CLI-Anything is now properly configured in `settings.json`:\n\n- âœ… Added to `enabledPlugins`\n- âœ… Added to `extraKnownMarketplaces`\n\n**Next step:** Restart Claude Code.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-03 (auto-drafted — review before next session)
