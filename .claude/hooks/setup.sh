@@ -443,7 +443,52 @@ echo "  require API keys in .claude/settings.local.json → env block."
 echo "  See .claude/settings.local.json.example → __activation_guide"
 echo "  for where to obtain each key."
 
-# ── 13. Install pre-commit doc-sync hook ────────────────────
+# ── 13. Install autoresearch dependencies ──────────────────
+echo ""
+echo "── AutoResearch (Autonomous ML Research) ────────────────"
+AUTORESEARCH_DIR="$ROOT/tools/autoresearch"
+
+if [ -d "$AUTORESEARCH_DIR" ]; then
+  if command -v uv &>/dev/null; then
+    echo "  Installing autoresearch dependencies (PyTorch download may take 5-10 minutes)..."
+
+    # Run uv sync (suppress quiet flag to show progress)
+    if (cd "$AUTORESEARCH_DIR" && uv sync 2>&1 >/dev/null); then
+      echo "✓ autoresearch dependencies installed"
+      echo ""
+      echo "  Verifying installation..."
+
+      # Run verify_setup.py to confirm all dependencies installed correctly
+      if (cd "$AUTORESEARCH_DIR" && uv run python verify_setup.py 2>&1); then
+        echo ""
+        echo "  Next steps:"
+        echo "    1. cd tools/autoresearch"
+        echo "    2. uv run prepare.py  (one-time data prep, ~2 min)"
+        echo "    3. uv run train.py    (test baseline run, ~5 min)"
+        echo "    4. Use /autoresearch skill to start autonomous research"
+      else
+        echo ""
+        echo "⚠ Verification failed — some dependencies may be missing"
+        echo "  Re-run: cd tools/autoresearch && uv sync"
+        echo "  Then verify: uv run python verify_setup.py"
+      fi
+    else
+      echo "⚠ uv sync may need to run — complete it manually:"
+      echo "    cd tools/autoresearch && uv sync"
+      echo "  Then verify:"
+      echo "    uv run python verify_setup.py"
+    fi
+  else
+    echo "⚠ uv not found — autoresearch requires uv to install dependencies"
+    echo "  Install uv (see step 5 above), then run:"
+    echo "    cd tools/autoresearch && uv sync"
+    echo "    uv run python verify_setup.py"
+  fi
+else
+  echo "  (tools/autoresearch/ directory not found — skipping)"
+fi
+
+# ── 14. Install pre-commit doc-sync hook ────────────────────
 echo ""
 echo "── Git Pre-Commit Hook (doc-sync) ───────────────────────"
 HOOKS_DIR="$ROOT/.git/hooks"
@@ -464,7 +509,7 @@ else
   echo "✓ pre-commit doc-sync hook installed → .git/hooks/pre-commit"
 fi
 
-# ── 14. Summary ────────────────────────────────────────────
+# ── 15. Summary ────────────────────────────────────────────
 echo ""
 if [ $ERRORS -eq 0 ]; then
   echo "✓ Setup complete. Context monitor statusline is ready."

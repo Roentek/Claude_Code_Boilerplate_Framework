@@ -8,6 +8,9 @@
 
 CONTEXT=$(cat)
 
+# ── Sync autoresearch with upstream ─────────────────────────
+bash "$(dirname "$0")/autoresearch-sync.sh" 2>/dev/null || true
+
 # ── Auto-draft memory entries ───────────────────────────────
 DRAFT_MSG=$(echo "$CONTEXT" | python "$(dirname "$0")/../scripts/memory-drafter.py" 2>/dev/null || true)
 

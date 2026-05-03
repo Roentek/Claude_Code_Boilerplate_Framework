@@ -12,6 +12,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Frontend UI | `/frontend-design` skill → `ui-ux-pro-max` design system | [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) |
 | WebGPU / Three.js app | `/webgpu-threejs-tsl` skill | Three.js r171+ with WebGPU renderer, TSL shaders |
 | Claude AI agent | `agent-sdk-dev` plugin → `.claude/agents/` | [`agent-instructions.md`](.claude/rules/agent-instructions.md) |
+| Autonomous ML research (overnight experiments) | `/autoresearch` skill → `tools/autoresearch/` | Modify GPT training code, run 5-min experiments, keep improvements — ~100 runs while you sleep |
 | AI-native CLI for existing software | `/cli-anything` plugin | Generate CLIs for GIMP, Blender, LibreOffice, Audacity, etc. — 50+ apps supported |
 | Slash-command skill | `~/.claude/skills/<name>/SKILL.md` | Skills must be subdirectory + `SKILL.md`; `setup.sh` auto-installs |
 | MCP server integration | `.mcp.json` + `.claude/settings.local.json` | Copy `settings.local.json.example` → `settings.local.json`, fill keys, restart |
@@ -53,6 +54,12 @@ nlm audio create <notebook-id> --confirm
 
 # Upgrade NotebookLM CLI
 uv tool upgrade notebooklm-mcp-cli
+
+# AutoResearch — autonomous ML experiments
+cd tools/autoresearch
+uv run prepare.py              # One-time data prep (~2 min)
+uv run train.py                # Test baseline run (~5 min)
+# Then use /autoresearch skill to start autonomous research loop
 ```
 
 > **MCP credential gotcha:** `.mcp.json` `${VAR}` substitution reads from the **OS process environment**, not `.env`. On a fresh machine, run `setx VAR_NAME "value"` (Windows) or `export VAR_NAME=value` (Unix) in your terminal before starting Claude Code.
@@ -69,7 +76,8 @@ npm install
 bash .claude/hooks/setup.sh
 # Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything),
 #           project skills, npm deps, Playwright browser,
-#           skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli
+#           skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli,
+#           autoresearch dependencies in tools/autoresearch/ (via uv sync)
 
 # 3. Configure MCP credentials
 cp .claude/settings.local.json.example .claude/settings.local.json
@@ -118,6 +126,7 @@ CLAUDE.md                     ← You are here (routing only)
 .env / .env.example           ← API keys (gitignored — never commit)
 tools/                        ← Deterministic execution scripts (Python/Node)
   playwright.js               ← Browser automation CLI wrapper
+  autoresearch/               ← Autonomous ML research (prepare.py, train.py, program.md)
 workflows/                    ← Markdown SOPs defining automation tasks
 src/trigger/                  ← Trigger.dev TypeScript task files
 brand_assets/                 ← Logos, color guides, design tokens
@@ -175,6 +184,7 @@ docs/                         ← Project-level documentation
 | `/playwright` | Browser automation — screenshots, scraping, PDFs, link extraction via Playwright CLI |
 | `/compact-memory` | Full memory hygiene — compress sessions, prune decisions, sync facts to MCP graph |
 | `/three-brain` | Auto-route work to Codex (review/rescue) or Gemini (multimodal/long-context) — requires codex-cli + gemini-cli |
+| `/autoresearch` | Autonomous ML research — modify GPT training code, run 5-min experiments, keep improvements (~12 exp/hour, ~100 overnight) |
 
 **Superpowers skills** auto-trigger based on context (brainstorming, TDD, debugging, code review, planning, subagents, git worktrees). No manual invoke needed.
 

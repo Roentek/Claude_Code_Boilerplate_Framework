@@ -224,8 +224,9 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 10. **Verifies GitHub CLI** — checks `gh` is installed; required by `github@claude-plugins-official` for `Bash(gh ...)` tool calls; prints platform-specific install instructions if missing
 11. **Installs global CLI tools** — `skillui` (design system extractor for `/skillui` skill), `firecrawl-cli` (web scraping CLI for `/firecrawl` skill), `codex-cli` (OpenAI Codex CLI for `/three-brain` auto-router and `codex` plugin), `gemini-cli` (Google Gemini CLI for `/three-brain` multimodal routes and `cc-gemini-plugin`), and `notebooklm-mcp-cli` (Google NotebookLM CLI + MCP for `/notebooklm` skill via `uv tool install`)
 12. **Prints authentication reminders** — lists integrations requiring a manual one-time auth step: NotebookLM (`nlm login`), Trigger.dev (`npx trigger.dev@latest login`), Google Workspace (browser OAuth), Canva (browser OAuth), Higgsfield (browser OAuth via `npx mcp-remote`), GitHub CLI (`gh auth login`), Gemini plugin (`GEMINI_API_KEY` at aistudio.google.com), and Codex plugin (`npm install -g @openai/codex`)
-13. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
-14. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
+13. **Installs autoresearch dependencies** — runs `uv sync` in the `tools/autoresearch/` directory to install PyTorch and ML dependencies for autonomous research experiments
+14. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
+15. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
 
 **Re-run setup manually** (e.g. fresh clone on a new machine):
 
@@ -290,14 +291,22 @@ bash .claude/hooks/setup.sh
 │       ├── design-md/SKILL.md       # Load brand DESIGN.md for 73 brands via getdesign CLI
 │       ├── taste-skill/SKILL.md     # Anti-slop frontend enforcement: design dials, banned patterns, Bento 2.0
 │       ├── playwright/SKILL.md      # Browser automation: screenshot, scrape, pdf, links via tools/playwright.js
-│       └── firecrawl/SKILL.md       # Web scraping: single-page, crawl, search, map, AI agent via firecrawl CLI
+│       ├── firecrawl/SKILL.md       # Web scraping: single-page, crawl, search, map, AI agent via firecrawl CLI
+│       └── autoresearch/SKILL.md    # Autonomous ML research: modify GPT code, run 5-min experiments, iterate overnight
 │
 ├── brand_assets/                    # Logos, color guides, design tokens
 ├── docs/                            # Project-level documentation
 ├── src/
 │   └── trigger/                     # Trigger.dev TypeScript task files
 ├── tools/
-│   └── playwright.js                # Browser automation: screenshot, scrape, pdf, links (node tools/playwright.js)
+│   ├── playwright.js                # Browser automation: screenshot, scrape, pdf, links (node tools/playwright.js)
+│   └── autoresearch/                # Autonomous ML research (karpathy/autoresearch)
+│       ├── prepare.py               # Data prep, tokenizer, eval (read-only, agent never modifies)
+│       ├── train.py                 # GPT model, optimizer, training loop (agent modifies this)
+│       ├── program.md               # Agent instructions (human edits to guide research)
+│       ├── pyproject.toml           # Dependencies (PyTorch, etc.)
+│       ├── uv.lock                  # Dependency lockfile
+│       └── README.md                # Full autoresearch documentation
 ├── workflows/
 │   ├── browser-automation.md        # WAT SOP for Playwright-based automation tasks
 │   └── web-scraping.md              # WAT SOP for Firecrawl-based web scraping tasks
@@ -480,6 +489,7 @@ Source files live in `.claude/skills/<name>/SKILL.md`. `setup.sh` installs them 
 | `/firecrawl` | Web scraping via Firecrawl CLI — scrape single pages to Markdown, web search with optional result scraping, full-site crawls with depth limits, URL mapping, and AI-powered agent extraction. CLI primary (`firecrawl`); `firecrawl-mcp` backup for batch or schema-driven tasks. Requires `npm install -g firecrawl-cli` and `FIRECRAWL_API_KEY`. Source: [firecrawl/cli](https://github.com/firecrawl/cli). |
 | `/notebooklm` | Google NotebookLM integration via `nlm` CLI — create notebooks, add sources (URLs, text, Google Drive files), generate AI content (podcasts, videos, briefings, flashcards, infographics, slides), query notebooks with natural language, manage research workflows, share notebooks. CLI primary (`nlm`); `notebooklm-mcp` backup for multi-step interactive flows. Requires `uv tool install notebooklm-mcp-cli` and cookie-based auth via `nlm login`. Source: [jacob-bd/notebooklm-mcp-cli](https://github.com/jacob-bd/notebooklm-mcp-cli). |
 | `/three-brain` | Auto-router for multi-model work coordination. Routes tasks invisibly to Claude (standard dev), Codex/GPT-5.5 (review/rescue after 2× failures, risk-path edits to auth/billing/deploy/migrations), or Gemini 2.5 Pro (multimodal analysis, whole-codebase scans). Forced routes trigger on risk paths or repeated failures with one-line announcement before handoff. Requires `codex-cli` (`npm i -g @openai/codex`) and `gemini-cli` (`npm i -g @google/gemini-cli`). |
+| `/autoresearch` | Autonomous ML research (karpathy/autoresearch). Agent modifies GPT training code (`train.py`), runs 5-minute experiments on a single GPU, evaluates improvements (lower `val_bpb` = better), keeps successful changes, discards failures, and repeats indefinitely until stopped (~12 experiments/hour, ~100 overnight while you sleep). Requires single NVIDIA GPU (H100 tested; see [tools/autoresearch/README.md](tools/autoresearch/README.md) for other platforms), Python 3.10+, and `uv` package manager. Source: [karpathy/autoresearch](https://github.com/karpathy/autoresearch) (33K+ stars). |
 
 ---
 

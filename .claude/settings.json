@@ -40,8 +40,11 @@
       "Bash(curl *)",
       "Bash(codex *)",
       "Bash(gemini *)",
+      "Bash(uv *)",
+      "Bash(cp *)",      
       "PowerShell(codex *)",
       "PowerShell(gemini *)",
+      "PowerShell(uv *)",
       "PowerShell(skillui *)",
       "PowerShell(npx skillui *)",
       "PowerShell(node tools/playwright.js *)",
@@ -51,7 +54,10 @@
       "PowerShell(nlm *)",
       "PowerShell(uvx --from notebooklm-mcp-cli nlm *)",
       "PowerShell(npm install *)",
-      "Bash(cp *)"
+      "PowerShell(Get-Process *)",
+      "PowerShell(uv sync *)",
+      "PowerShell(Move-Item *)",
+      "PowerShell(Compare-Object *)"
     ],
     "deny": []
   },

@@ -4,6 +4,29 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-05-03 — AutoResearch setup automation & upstream autosync
+- **Decision:** Enhanced setup.sh step 13 to automatically run `verify_setup.py` after `uv sync` completes, showing immediate dependency verification. Created `.claude/hooks/autoresearch-sync.sh` to automatically sync `tools/autoresearch/` with upstream karpathy/autoresearch repo via Stop hook every session.
+- **Why:** Eliminates manual verification step — users get instant confirmation that PyTorch and all 7 dependencies installed correctly (or specific error messages if something failed). Autosync ensures local copy stays current with upstream improvements/fixes without requiring manual `git pull` commands.
+- **Implication:** 
+  - setup.sh now runs full dependency check automatically after PyTorch installation (shows [OK]/[FAIL] status for each package)
+  - New hook: `.claude/hooks/autoresearch-sync.sh` (runs silently if no changes; pulls updates if available; skips if local uncommitted changes exist)
+  - Stop hook updated to call autoresearch-sync.sh every session
+  - Consolidated SETUP_NOTES.md and verify_setup.py to `tools/autoresearch/` root level (removed nested `tools/autoresearch/tools/` subdirectory that had duplicate files)
+  - All documentation paths now reference correct locations
+
+## 2026-05-03 — AutoResearch integrated for autonomous ML experiments
+- **Decision:** Integrated karpathy/autoresearch (33K+ stars) in `tools/autoresearch/` directory. Agent modifies GPT training code, runs 5-minute experiments, evaluates improvements autonomously.
+- **Why:** Enables overnight autonomous machine learning research. Agent can run ~100 experiments while user sleeps, automatically keeping improvements and discarding failures based on validation bits-per-byte metric. Located in tools/ since it's a reusable utility for any project created in this framework.
+- **Implication:** 
+  - New directory: `tools/autoresearch/` with prepare.py (data prep, read-only), train.py (agent edits this), program.md (agent instructions), pyproject.toml (dependencies)
+  - New skill: `/autoresearch` at `.claude/skills/autoresearch/SKILL.md`
+  - setup.sh step 13: runs `uv sync` to install PyTorch and ML dependencies in tools/autoresearch/
+  - settings.json: added `Bash(uv *)` and `PowerShell(uv *)` permissions
+  - CLAUDE.md: added to routing table, Skills section, Project Structure, Key Commands
+  - README.md: added to setup.sh steps, Project Structure, Project Skills table
+  - Requires: single NVIDIA GPU (H100 tested), Python 3.10+, `uv` package manager (auto-installed by setup.sh)
+  - Platform support: Windows/MacOS/AMD via community forks documented in tools/autoresearch/README.md
+
 ## 2026-05-02 — CLI-Anything plugin integrated for AI-native CLI generation
 - **Decision:** Added `cli-anything@cli-anything` plugin from HKUDS/CLI-Anything marketplace. Added to `extraKnownMarketplaces` and `enabledPlugins` in `settings.json`. Setup.sh step 7 auto-installs the plugin.
 - **Why:** Enables automatic generation of AI-native command-line interfaces for existing software with accessible source code (GIMP, Blender, LibreOffice, Audacity, etc.). Bridges the gap between AI agents and professional applications through structured CLI commands rather than fragile GUI automation or limited APIs. 50+ supported applications with 2,280+ passing tests demonstrating production-grade reliability.

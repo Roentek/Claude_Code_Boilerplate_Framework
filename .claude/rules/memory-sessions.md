@@ -4,6 +4,44 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-05-03 (session 10) — AutoResearch setup automation & upstream autosync hook
+- **Enhanced setup.sh step 13** — now automatically runs `verify_setup.py` after `uv sync` completes, showing immediate [OK]/[FAIL] status for all 7 Python dependencies (PyTorch, NumPy, Pandas, Matplotlib, PyArrow, Requests, TikToken)
+- **Created autosync hook** — `.claude/hooks/autoresearch-sync.sh` automatically syncs `tools/autoresearch/` with upstream karpathy/autoresearch every session via Stop hook
+- **Hook behavior:**
+  - Runs silently if no changes exist
+  - Fetches from upstream and pulls updates if available
+  - Skips if local uncommitted changes exist (shows warning message)
+  - Initializes as git repo with upstream remote if not already initialized
+- **File cleanup:**
+  - Moved `SETUP_NOTES.md` from nested `tools/autoresearch/tools/` to `tools/autoresearch/` root
+  - Removed duplicate `verify_setup.py` from nested tools/ subdirectory
+  - Removed empty `tools/autoresearch/tools/` directory
+- **Files updated:**
+  - `setup.sh` — integrated verify_setup.py execution after dependency installation (shows full verification output)
+  - `stop.sh` — added autoresearch-sync.sh call before memory-drafter
+  - `memory-decisions.md` — logged setup automation & autosync decision
+  - `memory-sessions.md` — this entry
+- **Result:** First-time setup now provides automatic verification feedback; tools/autoresearch stays current with upstream improvements without manual intervention
+
+## 2026-05-03 (session 9) — AutoResearch integration complete + relocated to tools/
+- **Integrated:** karpathy/autoresearch (33K+ stars) — autonomous ML research framework for overnight GPT training experiments
+- **Files created:**
+  - `tools/autoresearch/` directory — copied all files from upstream repo (prepare.py, train.py, program.md, pyproject.toml, uv.lock, analysis.ipynb, .gitignore, .python-version)
+  - `tools/autoresearch/README.md` — comprehensive documentation: what it does, quick start, file structure, platform support, tuning for smaller compute
+  - `.claude/skills/autoresearch/SKILL.md` — complete skill with setup workflow, autonomous loop steps, commands, platform support, usage examples
+- **Files updated:**
+  - `setup.sh` — added step 13 (autoresearch dependencies via `uv sync` in tools/autoresearch/), renumbered pre-commit hook to step 14, summary to step 15
+  - `settings.json` — added `Bash(uv *)` and `PowerShell(uv *)` permissions for uv package manager
+  - `CLAUDE.md` — added to routing table ("Autonomous ML research (overnight experiments)"), Key Commands section (cd tools/autoresearch), First-Time Setup, Skills section (/autoresearch entry), Project Structure (tools/autoresearch/ under tools/ section)
+  - `README.md` — updated setup.sh step 13 description, added tools/autoresearch/ to Project Structure under tools/ with full file listing, added /autoresearch to Project Skills table with complete description
+  - `memory-decisions.md` — logged decision with full rationale and implications
+  - `memory-sessions.md` — this entry
+- **Location rationale:** Moved to tools/ instead of project root since autoresearch is a reusable utility for any project created in this framework
+- **How it works:** Agent modifies `train.py` (GPT model, optimizer, training loop), runs 5-min experiments, evaluates `val_bpb` (lower = better), keeps improvements, discards failures, repeats indefinitely (~12 exp/hour, ~100 overnight)
+- **Requirements:** Single NVIDIA GPU (H100 tested), Python 3.10+, `uv` package manager (auto-installed by setup.sh step 5)
+- **Platform support:** Community forks for MacOS, Windows, AMD documented in tools/autoresearch/README.md
+- **Source:** https://github.com/karpathy/autoresearch
+
 ## 2026-05-03 (session 8) — CLI-Anything installation repaired
 - **Issue:** Plugin was configured in `settings.json` but never actually installed — marketplace repo was never cloned, plugin was never installed to cache
 - **Root cause:** Adding entries to `settings.json` doesn't trigger automatic marketplace cloning or plugin installation — those must happen separately
@@ -177,3 +215,9 @@ Summary of substantive work completed each session — what was built, what was 
 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-03 (auto-drafted — review before next session)
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-03 (auto-drafted — review before next session)
+- Let me create a summary of everything that was set up:\n\n---\n\n## âœ… AutoResearch Integration Complete\n\n**What was integrated:** karpathy/autoresearch (33K+ stars) â€” autonomous ML research framework\n\n### Files Created\n\n| File | Purpose |\n|------|---------|\n| `autoresearch/` directory | Complete autoresearch codebase from upstream |\n| `autoresearch/README.md` | Full documentation: quick start, platform support, tuning guides |\n| `.claude/skills/autoresearch/SKILL.md` | Complete skill guide with setup, autonomous loop, commands |\n\n### Files Updated\n\n| File | Changes |\n|------|---------|\n| `setup.sh` | Step 13: `uv sync` in autoresearch/ to install PyTorch deps |\n| `settings.json` | Added `Bash(uv *)` and `PowerShell(uv *)` permissions |\n| `CLAUDE.md` | Routing table, Skills section, Project Structure, Key Commands |\n| `README.md` | Setup steps, Project Structure, Project Skills table |\n| `memory-decisions.md` | Decision logged with rationale |\n| `memory-sessions.md` | Session work recorded |\n\n### How It Works\n\n1.
+- **Runs 5-min experiments** with fixed time budget\n3.
