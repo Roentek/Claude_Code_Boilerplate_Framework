@@ -128,7 +128,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/stop.sh"
+            "command": "bash .claude/hooks/stop.sh"
           }
         ]
       }
