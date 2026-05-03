@@ -2,6 +2,18 @@
 
 Architectural and technical decisions made during sessions — with date and rationale. Update this file whenever a non-trivial decision is made or confirmed.
 
+<!-- Example entry format:
+## 2026-04-06 — Use Trigger.dev for background jobs
+- **Decision:** All async/scheduled work runs as Trigger.dev tasks, not cron scripts
+- **Why:** Checkpointing, retry logic, and observability built-in; no infra to manage
+- **Implication:** New background tasks must follow the orchestrator+processor pattern
+
+## 2026-04-06 — Supabase as primary database
+- **Decision:** Postgres via Supabase for all persistent storage
+- **Why:** OAuth auth, RLS, and real-time subscriptions needed; team already has access
+- **Implication:** All schema changes go through Supabase migrations, not raw SQL
+-->
+
 ---
 
 ## 2026-05-03 — AutoResearch setup automation & upstream autosync
@@ -46,18 +58,6 @@ Architectural and technical decisions made during sessions — with date and rat
 - **Decision:** Added "First-Time Setup" consolidation section to CLAUDE.md. Clarified `tools/` directory as "Deterministic execution scripts (Python/Node)" with `playwright.js` example.
 - **Why:** Quality audit (97/100) identified two minor gaps: (1) `npm install` command was missing, scattered setup steps weren't consolidated; (2) "Python scripts" claim was ambiguous for a boilerplate template that ships with Node scripts and may have Python added per-project.
 - **Implication:** New contributors get a single copy-paste setup flow. tools/ directory description now matches reality (playwright.js exists) and signals flexibility for future scripts.
-
-<!-- Example entry format:
-## 2026-04-06 — Use Trigger.dev for background jobs
-- **Decision:** All async/scheduled work runs as Trigger.dev tasks, not cron scripts
-- **Why:** Checkpointing, retry logic, and observability built-in; no infra to manage
-- **Implication:** New background tasks must follow the orchestrator+processor pattern
-
-## 2026-04-06 — Supabase as primary database
-- **Decision:** Postgres via Supabase for all persistent storage
-- **Why:** OAuth auth, RLS, and real-time subscriptions needed; team already has access
-- **Implication:** All schema changes go through Supabase migrations, not raw SQL
--->
 
 ## 2026-04-30 — ui-ux-pro-max-instructions.md moved to docs/ (reference-only)
 - **Decision:** `ui-ux-pro-max-instructions.md` moved from `.claude/rules/` (auto-loaded) to `.claude/docs/` (reference-only). Removed from `read-guard.py` large-file warnings.
@@ -121,14 +121,6 @@ Architectural and technical decisions made during sessions — with date and rat
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-04-30 — edit or delete below -->
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-05-01 — edit or delete below -->
-- Here's what was implemented:\n\n---\n\n## âœ… Integration Complete\n\n### What Was Added\n\n**CLI Tool** â€” `notebooklm-mcp-cli` (Python package)\n- **Primary interface:** `nlm` CLI command\n- **Backup:** `notebooklm-mcp` MCP server (35 tools)\n- **Pattern:** CLI-first (matches Playwright and Firecrawl)\n\n### Files Created\n\n| File | Purpose |\n|------|---------|\n| `.claude/skills/notebooklm/SKILL.md` | Complete usage guide â€” CLI commands, MCP tools, authentication, workflows, decision matrix |\n\n### Files Updated\n\n| File | Changes |\n|------|---------|\n| `setup.sh` | Step 11: `uv tool install notebooklm-mcp-cli`; Step 12: authentication reminder (`nlm login`) |\n| `settings.json` | Added CLI permissions (`Bash(nlm:*)`, `PowerShell(nlm *)`); enabled `notebooklm-mcp` in `enabledMcpjsonServers` |\n| `.mcp.json` | Already present (line 181-184) â€” uses `uvx --from notebooklm-mcp-cli notebooklm-mcp` |\n| `CLAUDE.md` | Routing table, Skills section, MCP Servers section, First-Time Setup, uvx requirement note |\n| `README.md` | setup.sh steps 11-12, Prerequisites table, Project Skills table, MCP Servers table, uvx verification |\n| `memory-decisions.md` | Decision logged with rationale and implications |\n| `memory-sessions.md` | Session work recorded |\n\n### How to Use\n\n**On fresh clone:**\n```bash\nbash .claude/hooks/setup.sh  # Installs notebooklm-mcp-cli via uv\nnlm login                     # Authenticate (launches browser, extracts cookies)\n```\n\n**CLI commands** (primary):\n```bash\nnlm notebook list\nnlm notebook create \"Research Project\"\nnlm source add <notebook> --url \"https://...\"\nnlm audio create <notebook> --confirm\nnlm download audio <notebook> <artifact-id>\n```\n\n**MCP tools** (backup only) â€” for multi-step interactive flows\n\n### Architecture\n\nFollows the established **CLI-first pattern**:\n- Direct CLI execution via Bash = token-free\n- MCP server = backup for interactive flows only\n- Minimizes context window consumption while preserving full functionality\n\n### Authentication\n\n- **Method:** Cookie-based via `nlm login`\n- **Duration:** 2-4 weeks (auto-refreshes)\n- **Modes:** Auto (launches browser) or manual (import file)\n- **Profiles:** Supports multiple Google accounts\n\n### Source\n\nhttps://github.com/jacob-bd/notebooklm-mcp-cli\n\n---\n\nAll documentation is updated and the skill is ready to use.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-05-03 — edit or delete below -->
-- {"session_id":"e3c32a9b-8036-4cec-b5ad-2338570e0b28","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\e3c32a9b-8036-4cec-b5ad-2338570e0b28.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"default","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## How It All Works Together\n\nHere's the complete architecture:\n\n### 1.
+- /compact-memory Results\n\n| Metric | Result |\n|--------|--------|\n| **memory-sessions.md** | 237 â†’ 96 lines (59% reduction, 141 lines saved) |\n| **memory-decisions.md** | 135 â†’ 120 lines (11% reduction, 15 lines saved) |\n| **Knowledge graph entities** | 5 new entities synced (AutoResearch Integration, CLI-First Architecture Pattern, Context Token Optimization Stack, Setup Flow Architecture, MCP and Plugin Ecosystem) |\n| **Total token savings** | ~780 tokens per session (~156 lines Ã— 5 tokens/line) |\n\n**What was cleaned:**\n- Compressed 14 older sessions (May 1, Apr 30, Apr 29, Apr 28, Apr 27, Apr 22, Apr 20) into Archive block\n- Removed 73 lines of auto-drafted session entries\n- Removed 15 lines of draft decision entries\n- All 17 current decisions validated (no obsolete entries)\n\n---\n\n### 2.
+- **NEW: Context Optimization Features section** â€” Comprehensive table documenting all token-saving strategies with savings estimates\n\n**New section added:**\n- **Context Optimization Features** â€” Documents 6 token-saving strategies: reference docs on demand, read-guard hook, memory compression, knowledge graph memory, auto-drafted cleanup, CLI-first architecture\n\n---\n\n### 3.

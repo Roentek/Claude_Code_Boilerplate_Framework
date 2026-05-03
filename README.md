@@ -33,9 +33,9 @@ This framework wires together every layer of a Claude Code project:
 - **Rules** — Markdown instruction files auto-loaded into every session
 - **Plugins** — Extend Claude Code with specialized modes (superpowers, frontend-design, agent-sdk, cli-anything, etc.)
 - **Skills** — Reusable slash commands you invoke with `/skill-name`
-- **MCP Servers** — 21 pre-configured Model Context Protocol integrations (Supabase, Google Workspace, Pinecone, Trigger.dev, n8n, Vapi, Apify, Alpaca, Firecrawl, Monet, 21st.dev Magic, and more)
+- **MCP Servers** — 20 pre-configured Model Context Protocol integrations (Supabase, Google Workspace, Pinecone, Trigger.dev, n8n, Vapi, Apify, Alpaca, Firecrawl, NotebookLM, Monet, 21st.dev Magic, and more)
 - **Hooks** — Lifecycle shell scripts that run on session start, stop, and tool events
-- **Scripts** — A context monitor statusline and a first-time setup bootstrapper
+- **Scripts** — A context monitor statusline, first-time setup bootstrapper, and memory management tools
 - **WAT Framework** — Architecture pattern: Workflows → Agents → Tools
 
 ---
@@ -264,13 +264,15 @@ bash .claude/hooks/setup.sh
 │   │   ├── Claude_Code_Beginners_Guide.md
 │   │   ├── Claude_Code_Context_Management_Hacks.md
 │   │   ├── The_Shift_to_Agentic_AI_Workflows.md
-│   │   └── trigger-api-reference.md
+│   │   ├── trigger-api-reference.md
+│   │   └── ui-ux-pro-max-instructions.md
 │   ├── hooks/
 │   │   ├── setup.sh                 # Setup hook: first-time machine bootstrapper
-│   │   ├── stop.sh                  # Stop hook: quality scan + doc-sync check at session end
+│   │   ├── stop.sh                  # Stop hook: auto-drafts memory, syncs autoresearch, checks doc updates
 │   │   ├── pre-commit.sh            # Pre-commit hook: auto-updates CLAUDE.md/README.md for tracked-path changes
 │   │   ├── autosync-docs.sh         # PostToolUse hook: detects tracked-path edits, injects doc-sync reminder
-│   │   └── read-guard.py            # PreToolUse hook: warns on unscoped reads of known-large files
+│   │   ├── autoresearch-sync.sh     # Autoresearch upstream sync (called by stop.sh every session)
+│   │   └── read-guard.py            # PreToolUse hook: warns on unscoped reads of large files (>200 lines)
 │   ├── rules/                       # Auto-loaded Markdown instructions (every session)
 │   │   ├── agent-instructions.md
 │   │   ├── frontend-instructions.md
@@ -283,7 +285,8 @@ bash .claude/hooks/setup.sh
 │   │   └── karpathy-guidelines.md
 │   ├── scripts/
 │   │   ├── autosync-docs.py         # Python logic for autosync-docs.sh (path matching + additionalContext JSON)
-│   │   └── context-monitor.py       # Statusline: context %, cost, git branch, duration
+│   │   ├── context-monitor.py       # Statusline: context %, cost, git branch, duration
+│   │   └── memory-drafter.py        # Auto-drafts memory entries from session transcript (called by stop.sh)
 │   └── skills/                      # Project-local slash-command skills (<name>/SKILL.md)
 │       ├── site-teardown/SKILL.md   # Reverse-engineer any website into a build blueprint
 │       ├── skillui/SKILL.md         # Extract design system from site/repo via skillui CLI
@@ -292,6 +295,9 @@ bash .claude/hooks/setup.sh
 │       ├── taste-skill/SKILL.md     # Anti-slop frontend enforcement: design dials, banned patterns, Bento 2.0
 │       ├── playwright/SKILL.md      # Browser automation: screenshot, scrape, pdf, links via tools/playwright.js
 │       ├── firecrawl/SKILL.md       # Web scraping: single-page, crawl, search, map, AI agent via firecrawl CLI
+│       ├── notebooklm/SKILL.md      # Google NotebookLM: create notebooks, add sources, generate podcasts/videos/briefings
+│       ├── three-brain/SKILL.md     # Multi-model router: Claude (standard), Codex (review/rescue), Gemini (multimodal)
+│       ├── compact-memory/SKILL.md  # Memory hygiene: compress sessions, prune decisions, sync to knowledge graph
 │       └── autoresearch/SKILL.md    # Autonomous ML research: modify GPT code, run 5-min experiments, iterate overnight
 │
 ├── brand_assets/                    # Logos, color guides, design tokens
@@ -451,6 +457,7 @@ Skills are Markdown files that expand into full instructions when invoked. Proje
 | `/frontend-design` | Mandatory first step before writing any frontend code. Activates design system generation. |
 | `/claude-api` | Scaffolds an app using the Anthropic SDK or Claude Agent SDK with prompt caching. |
 | `/simplify` | Reviews recently changed code for reuse, quality, and efficiency — then fixes issues found. |
+| `/compact-memory` | Full memory hygiene — compresses old sessions, prunes obsolete decisions, syncs facts to knowledge graph. Run monthly or when memory files exceed ~200 lines. |
 | `/schedule` | Creates cron-scheduled remote agents via Trigger.dev. |
 | `/loop [interval] [command]` | Runs a prompt or command on a recurring interval (e.g. `/loop 5m /command`). |
 | `/update-config` | Configures hooks, permissions, and automated behaviors in `settings.json`. |
@@ -489,7 +496,8 @@ Source files live in `.claude/skills/<name>/SKILL.md`. `setup.sh` installs them 
 | `/firecrawl` | Web scraping via Firecrawl CLI — scrape single pages to Markdown, web search with optional result scraping, full-site crawls with depth limits, URL mapping, and AI-powered agent extraction. CLI primary (`firecrawl`); `firecrawl-mcp` backup for batch or schema-driven tasks. Requires `npm install -g firecrawl-cli` and `FIRECRAWL_API_KEY`. Source: [firecrawl/cli](https://github.com/firecrawl/cli). |
 | `/notebooklm` | Google NotebookLM integration via `nlm` CLI — create notebooks, add sources (URLs, text, Google Drive files), generate AI content (podcasts, videos, briefings, flashcards, infographics, slides), query notebooks with natural language, manage research workflows, share notebooks. CLI primary (`nlm`); `notebooklm-mcp` backup for multi-step interactive flows. Requires `uv tool install notebooklm-mcp-cli` and cookie-based auth via `nlm login`. Source: [jacob-bd/notebooklm-mcp-cli](https://github.com/jacob-bd/notebooklm-mcp-cli). |
 | `/three-brain` | Auto-router for multi-model work coordination. Routes tasks invisibly to Claude (standard dev), Codex/GPT-5.5 (review/rescue after 2× failures, risk-path edits to auth/billing/deploy/migrations), or Gemini 2.5 Pro (multimodal analysis, whole-codebase scans). Forced routes trigger on risk paths or repeated failures with one-line announcement before handoff. Requires `codex-cli` (`npm i -g @openai/codex`) and `gemini-cli` (`npm i -g @google/gemini-cli`). |
-| `/autoresearch` | Autonomous ML research (karpathy/autoresearch). Agent modifies GPT training code (`train.py`), runs 5-minute experiments on a single GPU, evaluates improvements (lower `val_bpb` = better), keeps successful changes, discards failures, and repeats indefinitely until stopped (~12 experiments/hour, ~100 overnight while you sleep). Requires single NVIDIA GPU (H100 tested; see [tools/autoresearch/README.md](tools/autoresearch/README.md) for other platforms), Python 3.10+, and `uv` package manager. Source: [karpathy/autoresearch](https://github.com/karpathy/autoresearch) (33K+ stars). |
+| `/compact-memory` | Full memory hygiene cycle — compresses `memory-sessions.md` (entries >30 days → archive block), prunes obsolete decisions from `memory-decisions.md`, and syncs 3-5 key project facts to the knowledge graph (memory MCP) for queryable access without loading full files. Run monthly or when memory files exceed ~200 lines. Saves ~100-200 lines per run (~500-1000 tokens/session). |
+| `/autoresearch` | Autonomous ML research (karpathy/autoresearch). Agent modifies GPT training code (`train.py`), runs 5-minute experiments on a single GPU, evaluates improvements (lower `val_bpb` = better), keeps successful changes, discards failures, and repeats indefinitely until stopped (~12 experiments/hour, ~100 overnight while you sleep). Requires single NVIDIA GPU (H100 tested; see [tools/autoresearch/README.md](tools/autoresearch/README.md) for other platforms), Python 3.10+, and `uv` package manager. Auto-syncs with upstream karpathy/autoresearch every session via stop hook. Source: [karpathy/autoresearch](https://github.com/karpathy/autoresearch) (33K+ stars). |
 
 ---
 
@@ -573,18 +581,19 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 
 | Hook | File | Trigger | Behavior |
 | ------ | ------ | --------- | --------- |
-| **Setup** | [`setup.sh`](.claude/hooks/setup.sh) | First session open on a new machine | Bootstraps the project (see [Quick Start](#quick-start)) |
-| **Stop** | `stop.sh` | Every time Claude finishes responding | Scans session output for fixes/discoveries; checks if tracked paths changed and prompts doc update |
-| **PreToolUse** (Read) | [`read-guard.py`](.claude/hooks/read-guard.py) | Before every Read tool call | Warns when known-large files are read without `offset`+`limit`; always approves — advisory only |
-| **PostToolUse** | `autosync-docs.sh` | After every Write/Edit tool call | Checks if the edited file is in a tracked path; if so, injects `additionalContext` telling Claude to update CLAUDE.md/README.md immediately. CLAUDE.md and README.md are excluded to prevent update loops. Logic in `autosync-docs.py`. |
-| **pre-commit** (git) | `pre-commit.sh` | Before every `git commit` | Detects staged changes to tracked paths; auto-runs `claude --print` to update CLAUDE.md and README.md, then stages the updated docs alongside the original changes |
+| **Setup** | [`setup.sh`](.claude/hooks/setup.sh) | First session open on a new machine | Bootstraps the project (see [Quick Start](#quick-start)) — 15 steps: dependencies, plugins, skills, CLI tools, autoresearch setup |
+| **Stop** | [`stop.sh`](.claude/hooks/stop.sh) | Every time Claude finishes responding | (1) Auto-syncs `tools/autoresearch/` with upstream via `autoresearch-sync.sh`, (2) auto-drafts memory entries via `memory-drafter.py`, (3) checks if tracked paths changed and prompts doc update |
+| **PreToolUse** (Read) | [`read-guard.py`](.claude/hooks/read-guard.py) | Before every Read tool call | Warns when large files (>200 lines) are read without `offset`+`limit` to save tokens; always approves — advisory only |
+| **PostToolUse** | [`autosync-docs.sh`](.claude/hooks/autosync-docs.sh) | After every Write/Edit tool call | Checks if the edited file is in a tracked path; if so, injects `additionalContext` telling Claude to update CLAUDE.md/README.md immediately. CLAUDE.md and README.md are excluded to prevent update loops. Logic in `autosync-docs.py`. |
+| **pre-commit** (git) | [`pre-commit.sh`](.claude/hooks/pre-commit.sh) | Before every `git commit` | Detects staged changes to tracked paths; auto-runs `claude --print` to update CLAUDE.md and README.md, then stages the updated docs alongside the original changes |
+| **autoresearch-sync** | [`autoresearch-sync.sh`](.claude/hooks/autoresearch-sync.sh) | Called by stop.sh every session | Syncs `tools/autoresearch/` with upstream karpathy/autoresearch repo; runs silently if no changes; pulls updates if available; skips if local uncommitted changes exist |
 
 **`stop.sh` logic:**
 
-- If the session contains words like `fixed`, `workaround`, `turns out`, `discovered` → suggests running `/reflect` to capture learnings
-- If the session contains softer signals like `error`, `bug`, `issue` → gentle nudge to update docs
-- If any tracked paths (`.claude/rules/`, `.claude/hooks/`, `.claude/scripts/`, `.mcp.json`, `workflows/`, `tools/`, etc.) were modified during the session → reports the count and prompts a manual or commit-triggered doc sync
-- Always approves (never blocks completion)
+1. **Autoresearch sync** — Calls `autoresearch-sync.sh` to pull upstream updates from karpathy/autoresearch if available (silent if no changes)
+2. **Memory auto-draft** — Calls `memory-drafter.py` to scan session transcript for memory signals (decisions, fixes, learnings) and auto-draft memory file updates
+3. **Doc-sync check** — If any tracked paths (`.claude/rules/`, `.claude/hooks/`, `.claude/scripts/`, `.mcp.json`, `workflows/`, `tools/`, etc.) were modified during the session → reports the count and prompts a manual or commit-triggered doc sync
+4. Always approves (never blocks completion)
 
 **`pre-commit.sh` logic:**
 
@@ -600,6 +609,7 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 | -------- | --------- |
 | [`autosync-docs.py`](.claude/scripts/autosync-docs.py) | Python logic for `autosync-docs.sh` — path matching and `additionalContext` JSON output |
 | [`context-monitor.py`](.claude/scripts/context-monitor.py) | Powers the statusline — reads session transcript, parses token usage, renders colored bar |
+| [`memory-drafter.py`](.claude/scripts/memory-drafter.py) | Scans session transcript for memory signals (decisions, fixes, user preferences); auto-drafts memory file updates at session end (called by `stop.sh`) |
 
 ---
 
@@ -676,6 +686,21 @@ A persistent graph database of entities, relations, and observations — queryab
 | "We chose Supabase over PlanetScale on 2026-04-07" | File-based |
 | "This project uses the `jobs` table in Supabase" | Knowledge graph |
 | "The `scraper` service depends on `apify` and outputs to `supabase`" | Knowledge graph |
+
+### Context Optimization Features
+
+The framework includes several automated features to minimize token consumption:
+
+| Feature | How It Works | Token Savings |
+| --------- | ------------- | --------------- |
+| **Reference docs on demand** | `ui-ux-pro-max-instructions.md` and `trigger-api-reference.md` moved to `.claude/docs/` (not auto-loaded). Frontend/Trigger work loads them on demand via rule file references. | ~1700 tokens/session when not doing frontend or Trigger work |
+| **Read-guard hook** | Warns when large files (>200 lines) are read without `offset`+`limit` parameters. Advisory only — never blocks. | Prevents accidental full-file reads |
+| **Memory compression** | `/compact-memory` skill compresses old sessions (>30 days) into archive block, prunes obsolete decisions. Run monthly or when memory files exceed ~200 lines. | ~100-200 lines (~500-1000 tokens) per run |
+| **Knowledge graph memory** | Store structured facts in memory MCP graph instead of narrative files. Query by name/relationship without loading full files. | Queryable facts don't consume session context |
+| **Auto-drafted memory cleanup** | `memory-drafter.py` (Stop hook) auto-drafts memory entries from session transcript. Review and merge/delete at session end to prevent draft accumulation. | Prevents memory file bloat from unreviewed drafts |
+| **CLI-first architecture** | Playwright, Firecrawl, NotebookLM use direct CLI execution (token-free) with MCP as backup for interactive flows only. | Eliminates MCP protocol overhead for single-shot operations |
+
+**Monthly maintenance:** Run `/compact-memory` when `memory-sessions.md` exceeds ~200 lines or after ~30 days.
 
 ---
 
