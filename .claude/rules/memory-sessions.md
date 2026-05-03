@@ -226,3 +226,11 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-03 (auto-drafted — review before next session)
 - {"session_id":"793f566f-9df9-43db-a49a-d9ebf787999a","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\793f566f-9df9-43db-a49a-d9ebf787999a.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"acceptEdits","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ… Fixed\n\n**The problem:** The Stop hook was configured as `.claude/hooks/stop.sh` instead of `bash .claude/hooks/stop.sh`\n\n**Why it failed:**\n- Without the `bash` prefix, the hook executor tried to run the script directly as an executable\n- On Windows, this doesn't work because the shell context isn't established\n- All other hooks (Setup, PreToolUse, PostToolUse) correctly use `bash` as the command\n\n**The fix:** Added `bash` prefix to match the pattern used by all other hooks in your config.\n\nThe hook will now execute correctly on the next session end."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-03 (auto-drafted — review before next session)
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-03 (auto-drafted — review before next session)

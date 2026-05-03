@@ -81,18 +81,20 @@
     "OPENROUTER_BASE_URL":        "",
     "OPENROUTER_MODEL":           "",
     "VAPI_SDK_KEY":               "",
-    "ALPACA_BASE_URL":            "",
+    "ALPACA_BASE_URL": "https://paper-api.alpaca.markets/v2",
+    "OPENROUTER_BASE_URL": "https://openrouter.ai/api/v1",
+    "OPENROUTER_MODEL": "openrouter/auto",
 
-    "ANTHROPIC_BASE_URL":               "",
-    "ANTHROPIC_AUTH_TOKEN":             "",
-    "ANTHROPIC_API_KEY":                "",
-    "ANTHROPIC_MODEL":                  "",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL":   "",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL":     "",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL":    "",
-    "ANTHROPIC_SMALL_FAST_MODEL":       "",
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "",
-    "CLAUDE_CODE_SUBAGENT_MODEL":       ""
+    "ANTHROPIC_BASE_URL": "",
+    "ANTHROPIC_AUTH_TOKEN": "",
+    "ANTHROPIC_API_KEY": "",
+    "ANTHROPIC_MODEL": "claude-sonnet-4-6",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4-6",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-7",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-haiku-4-5-20251001",
+    "ANTHROPIC_SMALL_FAST_MODEL": "claude-haiku-4-5-20251001",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-4-6"
   },
 
   "permissions": {
