@@ -37,6 +37,58 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "python": "${workspaceFolder}/tools/lightrag/.venv/Scripts/python.exe"
+    },
+    {
+      "name": "OpenSpace Backend Server",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "openspace.dashboard_server",
+      "args": [
+        "--host", "127.0.0.1",
+        "--port", "7788"
+      ],
+      "cwd": "${workspaceFolder}/tools/openspace",
+      "env": {
+        "PYTHONIOENCODING": "utf-8"
+      },
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": "Running on",
+        "uriFormat": "http://127.0.0.1:7788",
+        "action": "debugWithChrome"
+      }
+    },
+    {
+      "name": "OpenSpace Frontend",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}/tools/openspace/frontend",
+      "console": "integratedTerminal",
+      "preLaunchTask": "OpenSpace: Check Frontend Dependencies",
+      "serverReadyAction": {
+        "pattern": "Local:.*http://127\\.0\\.0\\.1:(\\d+)",
+        "uriFormat": "http://127.0.0.1:$1",
+        "action": "openExternally"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "OpenSpace Dashboard (Full Stack)",
+      "configurations": [
+        "OpenSpace Backend Server",
+        "OpenSpace Frontend"
+      ],
+      "preLaunchTask": "OpenSpace: Check Frontend Dependencies",
+      "presentation": {
+        "hidden": false,
+        "group": "openspace",
+        "order": 1
+      },
+      "stopAll": true
     }
   ]
 }

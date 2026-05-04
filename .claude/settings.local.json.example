@@ -22,6 +22,8 @@
     "higgsfield":           "NO KEY NEEDED — browser OAuth on first use at higgsfield.ai. The MCP server connects to https://mcp.higgsfield.ai/mcp automatically.",
     "playwright-mcp":       "NO KEY NEEDED — activates automatically. CLI (node tools/playwright.js) is always the primary tool; use this MCP only for interactive/multi-step sessions.",
     "firecrawl-mcp":        "FIRECRAWL_API_KEY — firecrawl.dev/app/api-keys → Create API Key (free tier available). CLI (firecrawl) is always the primary tool; use this MCP only for batch scraping or schema extraction.",
+    "notebooklm-mcp":       "NO KEY NEEDED (uses cookie auth via nlm login). CLI (nlm) is always the primary tool; use this MCP only for complex multi-source research workflows.",
+    "openspace":            "OPENSPACE_API_KEY (optional) — open-space.cloud → Register → Get API Key. Local features (task execution, evolution, local skill search) work without it. Cloud features (skill upload/download, cloud search) require the key. Also set OPENSPACE_HOST_SKILL_DIRS (your agent's skill directory, auto-detected from Claude Code) and OPENSPACE_WORKSPACE (path to tools/openspace).",
     "github@claude-plugins-official": "GITHUB_PERSONAL_ACCESS_TOKEN — github.com → Settings → Developer settings → Personal access tokens → Fine-grained or classic token with 'repo' and 'read:org' scopes.",
     "cc-gemini-plugin@cc-gemini-plugin": "GEMINI_API_KEY — aistudio.google.com → Get API Key → Create API key in new project. Free tier available.",
     "context7":                          "CONTEXT7_API_KEY — context7.com → Account → API Keys. Used for live SDK/library documentation lookups via the context7 MCP server.",
@@ -74,6 +76,9 @@
     "GITHUB_PERSONAL_ACCESS_TOKEN": "",
     "FIRECRAWL_API_KEY":          "",
     "CONTEXT7_API_KEY":           "",
+    "OPENSPACE_HOST_SKILL_DIRS":  "",
+    "OPENSPACE_WORKSPACE":        "",
+    "OPENSPACE_API_KEY":          "",
     "GEMINI_API_KEY":             "",
     "OPENAI_API_KEY":             "",
     "SUPABASE_PROJECT_URL":       "",
@@ -560,6 +565,11 @@
       "mcp__plugin_github_github__request_copilot_review",
       "mcp__plugin_github_github__run_secret_scanning",
 
+      "mcp__openspace__execute_task",
+      "mcp__openspace__search_skills",
+      "mcp__openspace__fix_skill",
+      "mcp__openspace__upload_skill",
+
       "Skill(update-config)",
       "Skill(keybindings-help)",
       "Skill(simplify)",
@@ -624,7 +634,8 @@
       "WebFetch(domain:higgsfield.ai)",
       "WebFetch(domain:kie.ai)",
       "WebFetch(domain:docs.anthropic.com)",
-      "WebFetch(domain:anthropic.com)"
+      "WebFetch(domain:anthropic.com)",
+      "WebFetch(domain:open-space.cloud)"
     ]
   }
 }

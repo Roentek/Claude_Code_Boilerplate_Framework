@@ -1,0 +1,26 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "OpenSpace: Check Frontend Dependencies",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "if [ ! -d tools/openspace/frontend/node_modules ]; then echo 'Installing frontend dependencies...' && cd tools/openspace/frontend && npm install; else echo 'Frontend dependencies already installed'; fi"
+      ],
+      "windows": {
+        "command": "cmd",
+        "args": [
+          "/c",
+          "if not exist tools\\openspace\\frontend\\node_modules (echo Installing frontend dependencies... && cd tools\\openspace\\frontend && npm install) else (echo Frontend dependencies already installed)"
+        ]
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

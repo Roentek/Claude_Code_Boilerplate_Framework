@@ -181,6 +181,15 @@
     "notebooklm-mcp": {
       "command": "uvx",
       "args": ["--from", "notebooklm-mcp-cli", "notebooklm-mcp"]
+    },
+    "openspace": {
+      "command": "openspace-mcp",
+      "toolTimeout": 600,
+      "env": {
+        "OPENSPACE_HOST_SKILL_DIRS": "${OPENSPACE_HOST_SKILL_DIRS}",
+        "OPENSPACE_WORKSPACE": "${OPENSPACE_WORKSPACE}",
+        "OPENSPACE_API_KEY": "${OPENSPACE_API_KEY}"
+      }
     }
   }
 }
