@@ -26,3 +26,8 @@ Stated preferences about how Claude should behave, communicate, and structure wo
 <!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-04-30 — edit or delete below -->
 - Path Updates\n- âœ“ **README.md** (3 locations) â€” updated paths, added \"(reference-only, not auto-loaded)\" note\n- âœ“ **frontend-instructions.md** (2 locations) â€” fixed relative paths to `../docs/ui-ux-pro-max-instructions.md`\n- âœ“ **read-guard.py** â€” removed ui-ux-pro-max from large-file warnings (no longer auto-loaded)\n\n### 3.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-03 — edit or delete below -->
+- {"session_id":"9e748c9e-4fc6-4527-8328-8107e87d386a","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\9e748c9e-4fc6-4527-8328-8107e87d386a.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"acceptEdits","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"For this simple setting, you can use the `/config` slash command instead:\n\n```\n/config permissions.defaultMode bypassPermissions\n```\n\nThis is faster than manually editing settings.json for basic settings like permission mode, theme, model, etc.\n\nHowever, if you'd prefer I edit settings.json directly, I can do that too.

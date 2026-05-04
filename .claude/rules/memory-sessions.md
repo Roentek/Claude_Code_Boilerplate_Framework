@@ -4,6 +4,29 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-05-03 (session 11) — LightRAG graph-based RAG integration
+- **Integrated:** HKUDS/LightRAG (13K+ stars, EMNLP 2025) — graph-based Retrieval-Augmented Generation with knowledge extraction
+- **Files created:**
+  - `tools/lightrag/README.md` — comprehensive documentation (what it does, quick start, configuration, storage backends, advanced features, API reference)
+  - `tools/lightrag/pyproject.toml` — dependencies (lightrag-hku)
+  - `.claude/skills/lightrag/SKILL.md` — complete skill with setup workflow, usage patterns (Core Library vs Server Mode), query modes, LLM/embedding configuration, provider examples
+- **Files updated:**
+  - `setup.sh` — added step 14 (LightRAG dependencies via `uv sync` in tools/lightrag/), renumbered steps 14-15 to 15-16
+  - `.env.example` — added ANTHROPIC_API_KEY and OLLAMA_HOST to CLI TOOLS section (alongside OPENAI_API_KEY and GEMINI_API_KEY)
+  - `CLAUDE.md` — added to routing table ("Graph-based RAG / knowledge extraction"), Key Commands section (lightrag server), First-Time Setup (lightrag dependencies line), Project Structure (tools/lightrag/), Skills section (/lightrag entry)
+  - `README.md` — updated setup.sh step 14 description, added tools/lightrag/ to Project Structure with full file listing, added /lightrag to Project Skills table with complete description, updated hooks table (setup.sh now 16 steps)
+  - `memory-decisions.md` — logged integration decision with full rationale and implications
+  - `memory-sessions.md` — this entry
+- **Installation verified:** Successfully installed 59 packages (lightrag-hku 1.4.15 + dependencies) via `uv sync`; import test passed
+- **Use cases:** Document Q&A with knowledge graphs, entity-relationship queries, multimodal RAG (PDFs, images, tables), semantic search with graph context
+- **LLM providers:** OpenAI, Claude (Anthropic), Gemini, Ollama (local)
+- **Storage backends:** default (nano-vectordb), Neo4J, MongoDB, PostgreSQL, OpenSearch
+- **Server mode:** `python -m lightrag.server --port 9621` — Web UI for visualization + REST API for programmatic access (recommended for production)
+- **Location:** tools/lightrag/ (reusable utility for any project created in this framework)
+- **Source:** https://github.com/HKUDS/LightRAG
+
+---
+
 ## 2026-05-03 (session 10) — AutoResearch setup automation & upstream autosync hook
 - **Enhanced setup.sh step 13** — now automatically runs `verify_setup.py` after `uv sync` completes, showing immediate [OK]/[FAIL] status for all 7 Python dependencies (PyTorch, NumPy, Pandas, Matplotlib, PyArrow, Requests, TikToken)
 - **Created autosync hook** — `.claude/hooks/autoresearch-sync.sh` automatically syncs `tools/autoresearch/` with upstream karpathy/autoresearch every session via Stop hook
@@ -101,3 +124,36 @@ Summary of substantive work completed each session — what was built, what was 
 - **Scripts section** â€” Added `memory-drafter.py` to `.claude/scripts/` in Project Structure\n3.
 - **Hooks section** â€” Added `autoresearch-sync.sh` and updated hook descriptions with new behaviors\n4.
 - **Skills list** â€” Added `/compact-memory`, `/notebooklm`, and `/three-brain` to Project Structure\n5.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-03 (auto-drafted — review before next session)
+- {"session_id":"a4c834d2-d0dd-4d38-ada9-d65f35a568a4","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\a4c834d2-d0dd-4d38-ada9-d65f35a568a4.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ“ All Hooks Fixed and Tested\n\n**Issue:** Git Bash on Windows couldn't resolve relative paths when Claude Code executed hook commands.\n\n**Fix:** Updated all hook commands in `settings.json` to use absolute paths via `$(git rev-parse --show-toplevel)`.\n\n| Hook | Status | Command Pattern |\n|------|--------|-----------------|\n| **Setup** | âœ“ Syntax valid | `bash \"$(git rev-parse --show-toplevel)/.claude/hooks/setup.sh\"` |\n| **PreToolUse (Read)** | âœ“ Tested, working | `bash \"$(git rev-parse --show-toplevel)/.claude/hooks/read-guard.sh\"` |\n| **PostToolUse (Write\\|Edit)** | âœ“ Tested, working | `bash \"$(git rev-parse --show-toplevel)/.claude/hooks/autosync-docs.sh\"` |\n| **Stop** | âœ“ Tested, working | `bash \"$(git rev-parse --show-toplevel)/.claude/hooks/stop.sh\"` |\n| **autoresearch-sync** | âœ“ Syntax valid | Called by stop.sh |\n| **pre-commit** | âœ“ Syntax valid | Git pre-commit hook |\n\n**Test results:**\n- read-guard.sh: Returns `{\"decision\": \"approve\"}` âœ“\n- autosync-docs.sh: Executes without errors âœ“\n- stop.sh: Runs autoresearch-sync + memory-drafter + doc-sync check âœ“\n- All scripts pass bash syntax validation (`bash -n`) âœ“\n\n**Cross-platform:** This solution works on Windows (Git Bash), macOS, and Linux.\n\nThe stop hook error is now fixed.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-03 (auto-drafted — review before next session)
+- Here's the breakdown:\n\n### Files Tracked (465KB total):\n- âœ… `.gitignore` â€” excludes build artifacts\n- âœ… `pyproject.toml` (1KB) â€” dependencies\n- âœ… `README.md` (5KB) â€” documentation  \n- âœ… `uv.lock` (456KB) â€” dependency lock file\n\n### Files Gitignored (165MB):\n- ðŸš« `.venv/` (164MB) â€” virtual environment (recreated by `uv sync`)\n- ðŸš« `lightrag_integration.egg-info/` (9KB) â€” build metadata\n- ðŸš« `rag_storage/` â€” working directory (auto-created on first use)\n- ðŸš« `kv_store_*.json`, `vdb_*.json` â€” LLM cache files (auto-created)\n\n### Documentation Updated:\n- âœ… `tools/lightrag/.gitignore` â€” created with Python/build exclusions\n- âœ… `.gitignore` â€” added Python venv patterns\n- âœ… `.claude/skills/lightrag/SKILL.md` â€” updated file structure section\n- âœ… `tools/lightrag/README.md` â€” added file structure section\n- âœ… `CLAUDE.md` â€” updated project structure\n- âœ… `README.md` â€” updated project structure\n\n**Result:** The setup is now clean and follows best practices.
+- The `.venv` directory will be recreated automatically when running `uv sync`, and `rag_storage` will be created on first use."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-03 (auto-drafted — review before next session)
+- LightRAG is Working\n\nHere's your complete guide to running LightRAG on localhost:\n\n### What Just Worked:\n- âœ… Installed dependencies (lightrag-hku, fastapi, uvicorn, openai)\n- âœ… Created and ran a test script\n- âœ… Successfully inserted a document into the knowledge graph\n- âœ… Successfully queried and got results back\n\n### Quick Test (What We Just Ran):\n```bash\ncd tools/lightrag\nuv run python test_lightrag.py\n```\n\n### To Use LightRAG:\n\n**Option 1: Python Script (What the test does)**\n```python\nfrom lightrag import LightRAG, QueryParam\nfrom lightrag.llm.openai import gpt_4o_mini_complete, openai_embed\nimport asyncio\n\nasync def main():\n    # Initialize\n    rag = LightRAG(\n        working_dir=\"./rag_storage\",\n        llm_model_func=gpt_4o_mini_complete,\n        embedding_func=openai_embed\n    )\n    await rag.initialize_storages()\n    \n    # Insert document\n    await rag.ainsert(\"Your document text here...\")\n    \n    # Query\n    result = await rag.aquery(\"Your question?\", param=QueryParam(mode=\"hybrid\"))\n    print(result)\n\nasyncio.run(main())\n```\n\n**Option 2: Web Server + UI (Coming Next)**\n\nThe server needs one more dependency.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-03 (auto-drafted — review before next session)
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-03 (auto-drafted — review before next session)
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-03 (auto-drafted — review before next session)
+- âœ… The browser will now auto-open when the server starts.\n\n## What I Added:\n\n```json\n\"serverReadyAction\": {\n  \"pattern\": \"Uvicorn running on\",\n  \"uriFormat\": \"http://localhost:9621\",\n  \"action\": \"openExternally\"\n}\n```\n\n**How it works:**\n1.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-03 (auto-drafted — review before next session)

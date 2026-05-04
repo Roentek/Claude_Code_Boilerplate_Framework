@@ -225,8 +225,9 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 11. **Installs global CLI tools** — `skillui` (design system extractor for `/skillui` skill), `firecrawl-cli` (web scraping CLI for `/firecrawl` skill), `codex-cli` (OpenAI Codex CLI for `/three-brain` auto-router and `codex` plugin), `gemini-cli` (Google Gemini CLI for `/three-brain` multimodal routes and `cc-gemini-plugin`), and `notebooklm-mcp-cli` (Google NotebookLM CLI + MCP for `/notebooklm` skill via `uv tool install`)
 12. **Prints authentication reminders** — lists integrations requiring a manual one-time auth step: NotebookLM (`nlm login`), Trigger.dev (`npx trigger.dev@latest login`), Google Workspace (browser OAuth), Canva (browser OAuth), Higgsfield (browser OAuth via `npx mcp-remote`), GitHub CLI (`gh auth login`), Gemini plugin (`GEMINI_API_KEY` at aistudio.google.com), and Codex plugin (`npm install -g @openai/codex`)
 13. **Installs autoresearch dependencies** — runs `uv sync` in the `tools/autoresearch/` directory to install PyTorch and ML dependencies for autonomous research experiments
-14. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
-15. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
+14. **Installs LightRAG dependencies** — runs `uv sync` in the `tools/lightrag/` directory to install `lightrag-hku` and dependencies for graph-based RAG
+15. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
+16. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
 
 **Re-run setup manually** (e.g. fresh clone on a new machine):
 
@@ -306,13 +307,24 @@ bash .claude/hooks/setup.sh
 │   └── trigger/                     # Trigger.dev TypeScript task files
 ├── tools/
 │   ├── playwright.js                # Browser automation: screenshot, scrape, pdf, links (node tools/playwright.js)
-│   └── autoresearch/                # Autonomous ML research (karpathy/autoresearch)
-│       ├── prepare.py               # Data prep, tokenizer, eval (read-only, agent never modifies)
-│       ├── train.py                 # GPT model, optimizer, training loop (agent modifies this)
-│       ├── program.md               # Agent instructions (human edits to guide research)
-│       ├── pyproject.toml           # Dependencies (PyTorch, etc.)
+│   ├── autoresearch/                # Autonomous ML research (karpathy/autoresearch)
+│   │   ├── prepare.py               # Data prep, tokenizer, eval (read-only, agent never modifies)
+│   │   ├── train.py                 # GPT model, optimizer, training loop (agent modifies this)
+│   │   ├── program.md               # Agent instructions (human edits to guide research)
+│   │   ├── pyproject.toml           # Dependencies (PyTorch, etc.)
+│   │   ├── uv.lock                  # Dependency lockfile
+│   │   └── README.md                # Full autoresearch documentation
+│   └── lightrag/                    # Graph-based RAG server (HKUDS/LightRAG)
+│       ├── pyproject.toml           # Dependencies (lightrag-hku + server deps)
 │       ├── uv.lock                  # Dependency lockfile
-│       └── README.md                # Full autoresearch documentation
+│       ├── README.md                # Full LightRAG documentation
+│       ├── .env                     # Server config + OPENAI_API_KEY (gitignored)
+│       ├── .env.example             # Configuration template (safe to commit)
+│       ├── .gitignore               # Excludes .env, logs, rag_storage, build artifacts
+│       ├── test_lightrag.py         # Test script: insert/query example
+│       ├── start_server.bat         # Windows quick launcher
+│       ├── .venv/                   # Virtual environment (gitignored, recreated by uv sync)
+│       └── rag_storage/             # Knowledge graph data (gitignored, auto-created on first use)
 ├── workflows/
 │   ├── browser-automation.md        # WAT SOP for Playwright-based automation tasks
 │   └── web-scraping.md              # WAT SOP for Firecrawl-based web scraping tasks
@@ -498,6 +510,7 @@ Source files live in `.claude/skills/<name>/SKILL.md`. `setup.sh` installs them 
 | `/three-brain` | Auto-router for multi-model work coordination. Routes tasks invisibly to Claude (standard dev), Codex/GPT-5.5 (review/rescue after 2× failures, risk-path edits to auth/billing/deploy/migrations), or Gemini 2.5 Pro (multimodal analysis, whole-codebase scans). Forced routes trigger on risk paths or repeated failures with one-line announcement before handoff. Requires `codex-cli` (`npm i -g @openai/codex`) and `gemini-cli` (`npm i -g @google/gemini-cli`). |
 | `/compact-memory` | Full memory hygiene cycle — compresses `memory-sessions.md` (entries >30 days → archive block), prunes obsolete decisions from `memory-decisions.md`, and syncs 3-5 key project facts to the knowledge graph (memory MCP) for queryable access without loading full files. Run monthly or when memory files exceed ~200 lines. Saves ~100-200 lines per run (~500-1000 tokens/session). |
 | `/autoresearch` | Autonomous ML research (karpathy/autoresearch). Agent modifies GPT training code (`train.py`), runs 5-minute experiments on a single GPU, evaluates improvements (lower `val_bpb` = better), keeps successful changes, discards failures, and repeats indefinitely until stopped (~12 experiments/hour, ~100 overnight while you sleep). Requires single NVIDIA GPU (H100 tested; see [tools/autoresearch/README.md](tools/autoresearch/README.md) for other platforms), Python 3.10+, and `uv` package manager. Auto-syncs with upstream karpathy/autoresearch every session via stop hook. Source: [karpathy/autoresearch](https://github.com/karpathy/autoresearch) (33K+ stars). |
+| `/lightrag` | Graph-based Retrieval-Augmented Generation (LightRAG). Extracts knowledge graphs from documents (entities + relationships), performs entity-aware Q&A with 5 query modes (naive, local, global, hybrid, mix with reranker), supports multimodal docs (PDFs, images, tables via RAG-Anything), and includes Web UI + REST API for visualization and programmatic access. Requires Python 3.10+, `uv` package manager, and LLM API key (OpenAI, Claude, Gemini, or Ollama). Storage backends: default (nano-vectordb), Neo4J, MongoDB, PostgreSQL, OpenSearch. Source: [HKUDS/LightRAG](https://github.com/HKUDS/LightRAG) (EMNLP 2025, 13K+ stars). |
 
 ---
 
@@ -581,7 +594,7 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 
 | Hook | File | Trigger | Behavior |
 | ------ | ------ | --------- | --------- |
-| **Setup** | [`setup.sh`](.claude/hooks/setup.sh) | First session open on a new machine | Bootstraps the project (see [Quick Start](#quick-start)) — 15 steps: dependencies, plugins, skills, CLI tools, autoresearch setup |
+| **Setup** | [`setup.sh`](.claude/hooks/setup.sh) | First session open on a new machine | Bootstraps the project (see [Quick Start](#quick-start)) — 16 steps: dependencies, plugins, skills, CLI tools, autoresearch setup, lightrag setup |
 | **Stop** | [`stop.sh`](.claude/hooks/stop.sh) | Every time Claude finishes responding | (1) Auto-syncs `tools/autoresearch/` with upstream via `autoresearch-sync.sh`, (2) auto-drafts memory entries via `memory-drafter.py`, (3) checks if tracked paths changed and prompts doc update |
 | **PreToolUse** (Read) | [`read-guard.py`](.claude/hooks/read-guard.py) | Before every Read tool call | Warns when large files (>200 lines) are read without `offset`+`limit` to save tokens; always approves — advisory only |
 | **PostToolUse** | [`autosync-docs.sh`](.claude/hooks/autosync-docs.sh) | After every Write/Edit tool call | Checks if the edited file is in a tracked path; if so, injects `additionalContext` telling Claude to update CLAUDE.md/README.md immediately. CLAUDE.md and README.md are excluded to prevent update loops. Logic in `autosync-docs.py`. |
@@ -701,6 +714,157 @@ The framework includes several automated features to minimize token consumption:
 | **CLI-first architecture** | Playwright, Firecrawl, NotebookLM use direct CLI execution (token-free) with MCP as backup for interactive flows only. | Eliminates MCP protocol overhead for single-shot operations |
 
 **Monthly maintenance:** Run `/compact-memory` when `memory-sessions.md` exceeds ~200 lines or after ~30 days.
+
+---
+
+## LightRAG Server Setup
+
+**LightRAG** is a graph-based RAG (Retrieval-Augmented Generation) system that extracts knowledge graphs from documents for entity-relationship-aware Q&A. Includes Web UI, REST API, and knowledge graph visualization.
+
+**Source:** [github.com/HKUDS/LightRAG](https://github.com/HKUDS/LightRAG) (EMNLP 2025, 13K+ stars)
+
+### Quick Start
+
+```bash
+# 1. Navigate to LightRAG directory
+cd tools/lightrag
+
+# 2. Install dependencies
+uv sync
+
+# 3. Configure API key
+cp .env.example .env
+# Edit .env and add your OPENAI_API_KEY
+
+# 4. Start server (choose one method below)
+```
+
+### Starting the Server
+
+**Method 1: VSCode Debug (Recommended)**
+1. Press `F5` (or Run → Start Debugging)
+2. Select "**LightRAG Server**" from dropdown
+3. Browser automatically opens at http://localhost:9621
+4. Full debugging support with breakpoints
+
+**Method 2: Quick Start Script (Windows)**
+```bash
+cd tools/lightrag
+./start_server.bat
+```
+
+**Method 3: Command Line**
+```bash
+cd tools/lightrag
+uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_storage
+```
+
+### Access Points
+
+- **Web UI:** http://localhost:9621 (knowledge graph visualization, insert/query forms)
+- **API Documentation:** http://localhost:9621/docs (Swagger UI)
+- **Alternative Docs:** http://localhost:9621/redoc (ReDoc)
+
+### Configuration
+
+The `tools/lightrag/.env` file controls all server settings:
+
+```ini
+# Required
+OPENAI_API_KEY=your-api-key-here
+
+# LLM Configuration
+LLM_BINDING=openai              # Options: openai, anthropic, gemini, ollama
+LLM_MODEL=gpt-4o-mini
+
+# Embedding Configuration
+EMBEDDING_BINDING=openai
+EMBEDDING_MODEL=text-embedding-3-small
+EMBEDDING_DIM=1536
+
+# Server Settings
+HOST=0.0.0.0
+PORT=9621
+```
+
+**Alternative LLM Providers:**
+- **Anthropic Claude:** Set `LLM_BINDING=anthropic` + `ANTHROPIC_API_KEY`
+- **Google Gemini:** Set `LLM_BINDING=gemini` + `GEMINI_API_KEY`
+- **Local Ollama:** Set `LLM_BINDING=ollama` + `OLLAMA_HOST=http://localhost:11434`
+
+### VSCode Debug Configurations
+
+`.vscode/launch.json` includes two debug configs:
+
+1. **LightRAG Server**
+   - Starts web server on port 9621
+   - Auto-opens browser when ready
+   - Loads environment from `tools/lightrag/.env`
+   - UTF-8 encoding enabled (fixes Windows Unicode issues)
+
+2. **LightRAG Test Script**
+   - Runs `test_lightrag.py` (insert/query example)
+   - Uses same `.env` configuration
+   - Good for testing API integration
+
+### Testing the Setup
+
+Run the test script to verify everything works:
+
+```bash
+cd tools/lightrag
+uv run python test_lightrag.py
+```
+
+Expected output:
+```
+[1/4] Initializing LightRAG...
+[2/4] Initializing storage...
+[3/4] Inserting test document...
+      Document inserted successfully!
+[4/4] Querying: 'What is LightRAG?'
+================================================================================
+QUERY RESULT:
+================================================================================
+LightRAG is a graph-based Retrieval-Augmented Generation system...
+```
+
+### Features
+
+- **Knowledge Graph Extraction:** Automatically extracts entities and relationships
+- **Multiple Query Modes:** naive, local, global, hybrid, mix (with reranker)
+- **Storage Backends:** Default (nano-vectordb), Neo4J, MongoDB, PostgreSQL, OpenSearch
+- **Multimodal Support:** Process PDFs, Office docs, images, tables
+- **Web UI:** Visual knowledge graph explorer with filtering and search
+- **REST API:** Programmatic access for integration with other tools
+
+### Dependencies
+
+The following packages are automatically installed by `uv sync`:
+
+- `lightrag-hku>=0.1.0` — Core library
+- `fastapi>=0.115.0` + `uvicorn>=0.32.0` — Web server
+- `openai>=1.0.0` — OpenAI integration
+- `pyjwt>=2.0.0`, `bcrypt>=4.0.0`, `passlib>=1.7.4` — Authentication
+- `python-multipart>=0.0.6` — File upload support
+- `aiofiles>=24.0.0` — Async file operations
+
+### Troubleshooting
+
+**Port already in use:**
+```powershell
+# Stop any process using port 9621
+Get-NetTCPConnection -LocalPort 9621 | Select-Object -ExpandProperty OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force }
+```
+
+**API key not found:**
+- Verify `OPENAI_API_KEY` is set in `tools/lightrag/.env`
+- Check that `.env` file exists (not just `.env.example`)
+- Restart the server after editing `.env`
+
+**Unicode errors on Windows:**
+- The VSCode debug config sets `PYTHONIOENCODING=utf-8` automatically
+- For command line: `$env:PYTHONIOENCODING="utf-8"` before starting server
 
 ---
 

@@ -1,0 +1,20 @@
+[project]
+name = "lightrag-integration"
+version = "0.1.0"
+description = "LightRAG installation for Claude Code Boilerplate Framework"
+requires-python = ">=3.10"
+dependencies = [
+    "lightrag-hku>=0.1.0",
+    "fastapi>=0.115.0",
+    "uvicorn>=0.32.0",
+    "openai>=1.0.0",
+    "pyjwt>=2.0.0",
+    "passlib>=1.7.4",
+    "python-multipart>=0.0.6",
+    "bcrypt>=4.0.0",
+    "aiofiles>=24.0.0"
+]
+
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"

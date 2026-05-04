@@ -16,6 +16,33 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-05-03 — Fixed Windows hook paths to use absolute paths
+- **Decision:** Updated all hook commands in `settings.json` to use `$(git rev-parse --show-toplevel)` for absolute path resolution instead of relative paths.
+- **Why:** Git Bash on Windows cannot resolve relative paths like `.claude/hooks/stop.sh` when invoked from Claude Code's hook system. The relative path works in a terminal but fails when executed as a hook command because the working directory context is different.
+- **Implication:** All four hooks now use: `bash "$(git rev-parse --show-toplevel)/.claude/hooks/<script>.sh"`
+  - Setup: `setup.sh`
+  - PreToolUse (Read): `read-guard.sh`
+  - PostToolUse (Write|Edit): `autosync-docs.sh`
+  - Stop: `stop.sh`
+  - All hooks tested and verified working on Windows
+  - Pattern is cross-platform compatible (works on macOS, Linux, Windows with Git Bash)
+
+## 2026-05-03 — LightRAG integrated for graph-based RAG
+- **Decision:** Integrated HKUDS/LightRAG (13K+ stars, EMNLP 2025) in `tools/lightrag/` directory. Provides graph-based knowledge extraction and entity-relationship Q&A, multimodal document processing, and Web UI + REST API.
+- **Why:** Fills the gap between simple vector search (Pinecone MCP) and full graph-based RAG with knowledge extraction. LightRAG extracts entities and relationships from documents, stores them in a queryable graph, and supports 5 query modes (naive, local, global, hybrid, mix with reranker). Includes Web UI for visualization and REST API for programmatic access — recommended for production use over embedded Python library.
+- **Implication:** 
+  - New directory: `tools/lightrag/` with pyproject.toml (lightrag-hku dependency) and README.md (full documentation)
+  - New skill: `/lightrag` at `.claude/skills/lightrag/SKILL.md`
+  - setup.sh step 14: runs `uv sync` in tools/lightrag/ to install dependencies
+  - .env.example: added ANTHROPIC_API_KEY and OLLAMA_HOST (alongside existing OPENAI_API_KEY and GEMINI_API_KEY)
+  - CLAUDE.md: added to routing table ("Graph-based RAG / knowledge extraction"), Key Commands section (lightrag server command), First-Time Setup (lightrag dependencies), Project Structure (tools/lightrag/), Skills section (/lightrag entry)
+  - README.md: updated setup.sh step 14 description, added tools/lightrag/ to Project Structure with file listing, added /lightrag to Project Skills table with complete description, updated hooks table (setup.sh now 16 steps)
+  - Requirements: Python 3.10+, `uv` package manager (auto-installed by setup.sh step 5), LLM API key (OpenAI/Claude/Gemini/Ollama)
+  - Storage backends: default nano-vectordb (no setup), Neo4J, MongoDB, PostgreSQL, OpenSearch (optional)
+  - Use cases: Document Q&A, knowledge bases, semantic search with graph relationships, multimodal RAG (PDFs, images, tables)
+  - Production recommendation: Use LightRAG Server (REST API + Web UI) instead of embedding Python library directly
+  - Located in tools/ since it's a reusable utility for any project created in this framework
+
 ## 2026-05-03 — AutoResearch setup automation & upstream autosync
 - **Decision:** Enhanced setup.sh step 13 to automatically run `verify_setup.py` after `uv sync` completes, showing immediate dependency verification. Created `.claude/hooks/autoresearch-sync.sh` to automatically sync `tools/autoresearch/` with upstream karpathy/autoresearch repo via Stop hook every session.
 - **Why:** Eliminates manual verification step — users get instant confirmation that PyTorch and all 7 dependencies installed correctly (or specific error messages if something failed). Autosync ensures local copy stays current with upstream improvements/fixes without requiring manual `git pull` commands.

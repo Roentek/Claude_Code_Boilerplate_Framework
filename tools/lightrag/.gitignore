@@ -1,0 +1,27 @@
+# Python virtual environment (created by `uv sync`)
+.venv/
+venv/
+env/
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+
+# Runtime/cache directories (auto-created)
+rag_storage/
+__pycache__/
+*.pyc
+*.pyo
+
+# LightRAG cache files (auto-created in working_dir)
+kv_store_*.json
+vdb_*.json
+
+# Environment configuration (contains API keys)
+.env
+
+# Server logs
+server.log
+lightrag.log
+*.log

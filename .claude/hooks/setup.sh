@@ -488,7 +488,37 @@ else
   echo "  (tools/autoresearch/ directory not found — skipping)"
 fi
 
-# ── 14. Install pre-commit doc-sync hook ────────────────────
+# ── 14. Install LightRAG dependencies ───────────────────────
+echo ""
+echo "── LightRAG (Graph-Based RAG) ───────────────────────────"
+LIGHTRAG_DIR="$ROOT/tools/lightrag"
+
+if [ -d "$LIGHTRAG_DIR" ]; then
+  if command -v uv &>/dev/null; then
+    echo "  Installing LightRAG dependencies..."
+
+    if (cd "$LIGHTRAG_DIR" && uv sync --quiet 2>&1 >/dev/null); then
+      echo "✓ LightRAG dependencies installed (lightrag-hku)"
+      echo ""
+      echo "  Next steps:"
+      echo "    1. Add LLM API key to .env (OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY, or OLLAMA_HOST)"
+      echo "    2. Use /lightrag skill for setup + usage guide"
+      echo "    3. Optional: Start LightRAG Server for Web UI:"
+      echo "       cd tools/lightrag && python -m lightrag.server --port 9621"
+    else
+      echo "⚠ uv sync failed — complete it manually:"
+      echo "    cd tools/lightrag && uv sync"
+    fi
+  else
+    echo "⚠ uv not found — LightRAG requires uv to install dependencies"
+    echo "  Install uv (see step 5 above), then run:"
+    echo "    cd tools/lightrag && uv sync"
+  fi
+else
+  echo "  (tools/lightrag/ directory not found — skipping)"
+fi
+
+# ── 15. Install pre-commit doc-sync hook ────────────────────
 echo ""
 echo "── Git Pre-Commit Hook (doc-sync) ───────────────────────"
 HOOKS_DIR="$ROOT/.git/hooks"
@@ -509,7 +539,7 @@ else
   echo "✓ pre-commit doc-sync hook installed → .git/hooks/pre-commit"
 fi
 
-# ── 15. Summary ────────────────────────────────────────────
+# ── 16. Summary ────────────────────────────────────────────
 echo ""
 if [ $ERRORS -eq 0 ]; then
   echo "✓ Setup complete. Context monitor statusline is ready."

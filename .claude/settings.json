@@ -1,6 +1,7 @@
 {
   "env": {},
   "permissions": {
+    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(dir:*)",
       "Bash(ren:*)",
@@ -12,7 +13,7 @@
       "Bash(claude --version)",
       "Bash(claude --debug)",
       "Bash(where npm)",
-      "Bash(npm install:*)",
+      "Bash(npm install *)",
       "Bash(npm cache clean:*)",
       "Bash(npm run:*)",
       "Bash(where n8n-mcp)",
@@ -41,7 +42,7 @@
       "Bash(codex *)",
       "Bash(gemini *)",
       "Bash(uv *)",
-      "Bash(cp *)",      
+      "Bash(cp *)",
       "PowerShell(codex *)",
       "PowerShell(gemini *)",
       "PowerShell(uv *)",
@@ -92,7 +93,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/setup.sh",
+            "command": "bash \"$(git rev-parse --show-toplevel)/.claude/hooks/setup.sh\"",
             "statusMessage": "Running first-time project setup..."
           }
         ]
@@ -104,7 +105,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/read-guard.sh",
+            "command": "bash \"$(git rev-parse --show-toplevel)/.claude/hooks/read-guard.sh\"",
             "statusMessage": "Checking read scope..."
           }
         ]
@@ -116,7 +117,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/autosync-docs.sh",
+            "command": "bash \"$(git rev-parse --show-toplevel)/.claude/hooks/autosync-docs.sh\"",
             "statusMessage": "Checking if docs need updating..."
           }
         ]
@@ -128,7 +129,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/stop.sh"
+            "command": "bash \"$(git rev-parse --show-toplevel)/.claude/hooks/stop.sh\""
           }
         ]
       }

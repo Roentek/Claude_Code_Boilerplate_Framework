@@ -1,0 +1,42 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "LightRAG Server",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "lightrag.api.lightrag_server",
+      "args": [
+        "--port", "9621",
+        "--working-dir", "${workspaceFolder}/tools/lightrag/rag_storage"
+      ],
+      "cwd": "${workspaceFolder}/tools/lightrag",
+      "env": {
+        "PYTHONIOENCODING": "utf-8"
+      },
+      "envFile": "${workspaceFolder}/tools/lightrag/.env",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/tools/lightrag/.venv/Scripts/python.exe",
+      "serverReadyAction": {
+        "pattern": "Uvicorn running on",
+        "uriFormat": "http://localhost:9621",
+        "action": "openExternally"
+      }
+    },
+    {
+      "name": "LightRAG Test Script",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/tools/lightrag/test_lightrag.py",
+      "cwd": "${workspaceFolder}/tools/lightrag",
+      "env": {
+        "PYTHONIOENCODING": "utf-8"
+      },
+      "envFile": "${workspaceFolder}/tools/lightrag/.env",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/tools/lightrag/.venv/Scripts/python.exe"
+    }
+  ]
+}
