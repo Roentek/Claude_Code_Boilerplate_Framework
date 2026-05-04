@@ -1,7 +1,6 @@
 {
   "env": {},
   "permissions": {
-    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(dir:*)",
       "Bash(ren:*)",
@@ -60,7 +59,8 @@
       "PowerShell(Move-Item *)",
       "PowerShell(Compare-Object *)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "bypassPermissions"
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
