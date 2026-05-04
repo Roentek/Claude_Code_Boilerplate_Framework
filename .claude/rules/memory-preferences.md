@@ -31,3 +31,8 @@ Stated preferences about how Claude should behave, communicate, and structure wo
 <!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-05-03 — edit or delete below -->
 - {"session_id":"9e748c9e-4fc6-4527-8328-8107e87d386a","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\9e748c9e-4fc6-4527-8328-8107e87d386a.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"acceptEdits","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"For this simple setting, you can use the `/config` slash command instead:\n\n```\n/config permissions.defaultMode bypassPermissions\n```\n\nThis is faster than manually editing settings.json for basic settings like permission mode, theme, model, etc.\n\nHowever, if you'd prefer I edit settings.json directly, I can do that too.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-04 — edit or delete below -->
+- After restart, you can either:\n\n**Option 1: Use the skill command**\n```\n/autoresearch\n```\n\n**Option 2: Natural language prompt**\n> \"Let's run autoresearch overnight to optimize the GPT model\"\n\n**Option 3: Manual setup (if you prefer to see each step)**\n```bash\ncd tools/autoresearch\n\n# Install dependencies (first time only, ~5-10 min)\nuv sync\n\n# Verify installation\nuv run python verify_setup.py\n\n# Prepare dataset (first time only, ~2 min)\nuv run prepare.py\n\n# Test baseline run (~5 min)\nuv run train.py\n```\n\n---\n\n## ðŸ§  How It Works (Simple Explanation)\n\n1.
