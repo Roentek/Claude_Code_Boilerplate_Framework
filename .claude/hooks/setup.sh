@@ -551,6 +551,18 @@ fi
 echo ""
 echo "── OpenSpace (Self-Evolving Skill System) ───────────────"
 OPENSPACE_DIR="$ROOT/tools/openspace"
+
+# Check if OpenSpace is configured as a git submodule
+if [ -f "$ROOT/.gitmodules" ] && grep -q "path = tools/openspace" "$ROOT/.gitmodules"; then
+  # It's a submodule — initialize if not already done
+  if [ ! -d "$OPENSPACE_DIR/.git" ] && [ ! -f "$OPENSPACE_DIR/.git" ]; then
+    echo "  📦 Initializing OpenSpace submodule..."
+    (cd "$ROOT" && git submodule update --init --recursive tools/openspace)
+  else
+    echo "  ✓ OpenSpace submodule already initialized"
+  fi
+fi
+
 if [ -d "$OPENSPACE_DIR" ]; then
   echo "  Installing OpenSpace from tools/openspace/ via pip..."
   if command -v python3 &>/dev/null; then

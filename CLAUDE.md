@@ -406,7 +406,7 @@ tools/lightrag/
 | `PostToolUse` (Write/Edit) | [`.claude/hooks/autosync-docs.sh`](.claude/hooks/autosync-docs.sh) | After edits to tracked paths, injects context to update CLAUDE.md/README.md |
 | `pre-commit` (git) | [`.claude/hooks/pre-commit.sh`](.claude/hooks/pre-commit.sh) | Auto-updates CLAUDE.md and README.md before commits that touch tracked paths |
 | `autoresearch-sync` | [`.claude/hooks/autoresearch-sync.sh`](.claude/hooks/autoresearch-sync.sh) | Auto-syncs `tools/autoresearch/` with upstream karpathy/autoresearch (called by stop hook) |
-| `openspace-sync` | [`.claude/hooks/openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Auto-syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace (called by stop hook) |
+| `openspace-sync` | [`.claude/hooks/openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Auto-syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace; pulls latest commits; updates submodule pointer in parent repo; skips if uncommitted changes exist (called by stop hook) |
 
 > Add new hooks in [`.claude/settings.json`](.claude/settings.json) under `"hooks"`.
 

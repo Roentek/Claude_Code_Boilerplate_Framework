@@ -624,6 +624,7 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 | **pre-commit** (git) | [`pre-commit.sh`](.claude/hooks/pre-commit.sh) | Before every `git commit` | Detects staged changes to tracked paths; auto-runs `claude --print` to update CLAUDE.md and README.md, then stages the updated docs alongside the original changes |
 | **autoresearch-sync** | [`autoresearch-sync.sh`](.claude/hooks/autoresearch-sync.sh) | Called by stop.sh every session | Syncs `tools/autoresearch/` with upstream karpathy/autoresearch repo; runs silently if no changes; pulls updates if available; skips if local uncommitted changes exist |
 | **openspace-sync** | [`openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Called by stop.sh every session | Syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace repo; pulls latest commits; updates submodule pointer in parent repo; skips if uncommitted changes exist |
+| **openspace-sync** | [`openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Called by stop.sh every session | Syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace repo; pulls latest commits; updates submodule pointer in parent repo; skips if uncommitted changes exist |
 
 **`stop.sh` logic:**
 
