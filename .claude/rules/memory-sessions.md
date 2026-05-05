@@ -218,10 +218,6 @@ Summary of substantive work completed each session — what was built, what was 
 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-04 (auto-drafted — review before next session)
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-04 (auto-drafted — review before next session)
 - **`OPENSPACE_HOST_SKILL_DIRS`**: Changed from absolute path to `~/.claude/skills`\n   - Works on Unix/Mac/Git Bash (the `~` expands to the user's home directory)\n   - Added comment showing Windows alternatives: `%USERPROFILE%\\.claude\\skills` or the full path\n\n2.
 
 

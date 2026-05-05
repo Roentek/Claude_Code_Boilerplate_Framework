@@ -176,7 +176,3 @@ Architectural and technical decisions made during sessions — with date and rat
 <!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-05-04 — edit or delete below -->
 - **Vector Storage Architecture**\nYou want three storage backends.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-05-04 — edit or delete below -->
