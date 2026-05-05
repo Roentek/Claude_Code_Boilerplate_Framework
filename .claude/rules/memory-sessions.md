@@ -210,3 +210,8 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-05 (auto-drafted — review before next session)
 - âœ… `skills-lock.json` (obsolete lockfile from `npx skills` tool)\n\n**What's protected:**\n- Added `.agents/` to `.gitignore` to prevent future confusion\n\n**How your plugins are ACTUALLY tracked:**\n- All marketplace plugins â†’ `~/.claude/plugins/installed_plugins.json` (managed by Claude Code)\n- Your 12 marketplace plugins are all listed there with full metadata\n\n**Final git status:**\n```\nModified:\n - .claude/hooks/setup.sh (your marketplace setup)\n - .claude/settings.json (marketplace config)\n - .gitignore (added .agents/)\n - memory files (documentation)\n```\n\nYour marketplace-based `apify-ultimate-scraper@apify-agent-skills` installation is working perfectly â€” no dangling files, no confusion!
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-05 (auto-drafted — review before next session)
+- **Already Complete** âœ…\n\nThe `.example` file already had:\n- All MCP server credentials documented (APIFY_API_PAT, OPENSPACE_API_KEY, etc.)\n- Complete activation guides for every service\n- All CLI tool environment variables (OPENAI_API_KEY, GEMINI_API_KEY, etc.)\n\n---\n\n## Summary\n\n**CLI Tools Added:**\n- âœ… `apify` / `apify-cli` (Bash + PowerShell)\n- âœ… `openspace` CLI commands (Bash + PowerShell)\n\n**Skills Added:**\n- âœ… All 12 project skills that were missing from permissions\n- âœ… All 4 Apify agent skills\n\n**No changes needed to `.claude/settings.local.json`** â€” that's a per-machine file the user maintains separately from the example template."}
