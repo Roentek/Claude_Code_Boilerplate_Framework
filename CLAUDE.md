@@ -22,7 +22,10 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Voice AI (Vapi) | `vapi-mcp` tools | Create assistants, calls, phone numbers |
 | Browser automation | `/playwright` skill → `tools/playwright.js` | `workflows/browser-automation.md` — CLI first; `playwright-mcp` as backup |
 | Web scraping (single page / crawl) | `/firecrawl` skill → `firecrawl` CLI | `workflows/web-scraping.md` — CLI first; `firecrawl-mcp` backup for batch/schema |
-| Web scraping (large-scale / actors) | `apify` MCP | Search actors, fetch details, call actors |
+| Web scraping (large-scale / actors) | `/apify-ultimate-scraper` skill → `apify` CLI + MCP | 130+ curated Actors for Instagram, TikTok, LinkedIn, Google, Reddit, Amazon, etc. — skill routes to CLI or MCP based on task |
+| Apify Actor development | `/apify-actor-development` skill | Create, debug, deploy Actors in JS/TS/Python with bundled config schemas |
+| Convert code to Apify Actor | `/apify-actorization` skill | Transform existing scripts into Actors (JS/TS SDK, Python async, CLI wrappers) |
+| Generate Actor output schemas | `/apify-generate-output-schema` skill | Auto-generate `dataset_schema.json`, `output_schema.json`, `key_value_store_schema.json` from Actor source |
 | Vector search / RAG | `pinecone-mcp` tools | Upsert, search, rerank records |
 | Graph-based RAG / knowledge extraction | `/lightrag` skill → `tools/lightrag/` | Knowledge graph RAG, entity-relationship Q&A, multimodal docs — Web UI + REST API |
 | UI component search | `monet-mcp` tools | Search landing page components, get React/TS code |
@@ -124,6 +127,7 @@ npm install
 # 2. Run initial setup (hooks, skills, permissions, CLI tools, git submodules)
 bash .claude/hooks/setup.sh
 # Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything),
+#           Apify agent skills (ultimate-scraper, actor-development, actorization, generate-output-schema, actor-commands),
 #           project skills, npm deps, Playwright browser,
 #           skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli,
 #           autoresearch dependencies in tools/autoresearch/ (via uv sync),
@@ -265,6 +269,11 @@ docs/                         ← Project-level documentation
 | `/openspace` | Self-evolving skill system — skills auto-fix, auto-improve, auto-learn; 46% token reduction; cloud skill sharing |
 | `/delegate-task` | Delegate complex tasks to OpenSpace's grounding agent — auto skill evolution, search, fix, upload |
 | `/skill-discovery` | Search local + cloud skills before starting work — decide: follow, delegate, or skip |
+| `/apify-ultimate-scraper` | Universal web scraper — 130+ Actors for Instagram, TikTok, YouTube, LinkedIn, Google, Reddit, Amazon, Airbnb, Yelp; lead generation, brand monitoring, competitor analysis, trend research |
+| `/apify-actor-development` | Create and deploy Apify Actors — JS/TS/Python Actor development with config schemas and logging |
+| `/apify-actorization` | Convert existing code to Apify Actors — JS/TS SDK, Python async, CLI wrappers |
+| `/apify-generate-output-schema` | Generate Actor output schemas — auto-create `dataset_schema.json`, `output_schema.json`, `key_value_store_schema.json` |
+| `/create-actor` | Guided Actor scaffolding — from apify-actor-commands pack |
 
 **Superpowers skills** auto-trigger based on context (brainstorming, TDD, debugging, code review, planning, subagents, git worktrees). No manual invoke needed.
 
@@ -291,7 +300,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `vapi-mcp` | Voice AI — assistants, calls, phone numbers |
 | `notebooklm-mcp` | Google NotebookLM — notebooks, AI queries, podcasts/videos (backup — prefer `nlm` CLI) |
 | `openspace` | Self-evolving skills — execute tasks, search/fix/upload skills, auto skill evolution (FIX/DERIVED/CAPTURED) |
-| `apify` | Large-scale web scraping via Apify marketplace |
+| `apify` | Large-scale web scraping via Apify marketplace — 130+ Actors covering Instagram, TikTok, LinkedIn, Google, Reddit, Amazon, etc. Use with `/apify-ultimate-scraper` skill for guided workflows (lead generation, brand monitoring, competitor analysis, influencer vetting, trend research, SEO intelligence, review analysis, recruitment, real estate, e-commerce price monitoring, contact enrichment, RAG data feeds) |
 | `zep-mcp` | Zep long-term memory documentation |
 | `alpaca-mcp` | Algorithmic trading (paper mode) |
 | `canva-dev` | Canva app SDK and CLI docs |

@@ -219,6 +219,7 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 5. **Verifies uvx** — required for `google-workspace-mcp`, `alpaca`, and `notebooklm-mcp` MCP servers
 6. **Verifies Node.js / npx** — required by all 17 npx-based MCP servers (memory, supabase, openrouter, kie-ai, tavily, trigger, pinecone, vapi, n8n, apify, zep, canva, 21st-dev, playwright-mcp, firecrawl-mcp, higgsfield, context7)
 7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max`, `andrej-karpathy-skills`, `impeccable`, `codex`, `cc-gemini-plugin`, and `cli-anything` via CLI
+7a. **Installs Apify agent skills** — installs 5 skills from `apify/agent-skills` repo: `apify-ultimate-scraper` (130+ Actors for Instagram, TikTok, LinkedIn, Google, Reddit, Amazon, etc.), `apify-actor-development` (Actor creation/debugging), `apify-actorization` (convert code to Actors), `apify-generate-output-schema` (auto-generate Actor schemas), and `apify-actor-commands` (slash command pack)
 8. **Installs project skills** — copies `.claude/skills/*/` to `~/.claude/skills/` where Claude Code reads them (full directory, not just SKILL.md — preserves supporting docs and examples)
 9. **Installs npm dependencies + Playwright browser** — runs `npm install` for the `playwright` package, then `npx playwright install chromium` for the browser binary used by `tools/playwright.js`
 10. **Verifies GitHub CLI** — checks `gh` is installed; required by `github@claude-plugins-official` for `Bash(gh ...)` tool calls; prints platform-specific install instructions if missing
@@ -411,6 +412,7 @@ Two registries are configured in `extraKnownMarketplaces`:
 | `karpathy-skills` | `github.com/forrestchang/andrej-karpathy-skills` |
 | `impeccable` | `github.com/pbakaus/impeccable` |
 | `cli-anything` | `github.com/HKUDS/CLI-Anything` |
+| `apify-agent-skills` | `github.com/apify/agent-skills` |
 
 ### Installing Third-Party Marketplace Plugins
 
@@ -534,6 +536,18 @@ Source files live in `.claude/skills/<name>/SKILL.md`. `setup.sh` installs them 
 | `/delegate-task` | OpenSpace host skill — delegates complex tasks to OpenSpace's grounding agent with automatic skill evolution. Teaches Claude Code when to use `execute_task` vs handling directly, how to interpret OpenSpace results, when to trigger skill evolution (`fix_skill`), and how to upload successful patterns (`upload_skill`). Auto-installed by setup.sh to `~/.claude/skills/delegate-task/`. |
 | `/skill-discovery` | OpenSpace host skill — searches local + cloud skills before starting work. Teaches Claude Code when to search for skills (before complex tasks), how to evaluate search results (local vs cloud), decision framework (follow skill yourself, delegate to OpenSpace, or skip), and how to import cloud skills to local registry. Auto-installed by setup.sh to `~/.claude/skills/skill-discovery/`. |
 
+### Apify Agent Skills (`.agents/skills/`)
+
+Installed from the `apify/agent-skills` repository via `/skill install`. These provide guided workflows for web scraping, Actor development, and data extraction across 130+ platforms.
+
+| Slash Command | What It Does |
+| -------------- | ------------- |
+| `/apify-ultimate-scraper` | Universal AI-powered web scraper. 130+ curated Actors covering Instagram, Facebook, TikTok, YouTube, LinkedIn, X/Twitter, Google Maps, Google Search, Google Trends, Reddit, Airbnb, Yelp, Amazon, and 15+ more platforms. Use for: lead generation, brand monitoring, competitor analysis, influencer discovery, trend research, content analytics, audience analysis, review analysis, SEO intelligence, recruitment, real estate, e-commerce price monitoring, contact enrichment, RAG data feeds, company research. Routes intelligently between `apify` CLI and MCP based on task type. Includes 14 pre-written workflow guides. Requires `npm install -g apify-cli` and `APIFY_TOKEN`. |
+| `/apify-actor-development` | Create, debug, and deploy Apify Actors in JavaScript, TypeScript, or Python. Bundled references for Actor configuration schemas (`INPUT_SCHEMA.json`, `package.json`), logging (`Actor.log.info()`, structured logging), error handling (retries, graceful failures), and deployment (`apify actors push`). |
+| `/apify-actorization` | Convert existing code into Apify Actors. Supports JS/TS SDK (full Actor class), Python async context manager (`async with Actor()`), and generic CLI wrappers for any language/runtime. Includes migration guides for common patterns (loops → task queues, file I/O → key-value stores, stdout → datasets). |
+| `/apify-generate-output-schema` | Auto-generate output schemas (`dataset_schema.json`, `output_schema.json`, `key_value_store_schema.json`) for an Actor by analyzing its source code. Improves Actor discoverability and validates output structure at runtime. |
+| `/create-actor` | Guided Actor scaffolding from the `apify-actor-commands` pack. Interactive prompts for language (JS/TS/Python), SDK version, input schema, and directory structure. |
+
 ---
 
 ## MCP Servers
@@ -562,7 +576,7 @@ All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. C
 | **openspace** | `openspace-mcp` (installed via `pip install -e tools/openspace`) | `OPENSPACE_API_KEY` (optional), `OPENSPACE_HOST_SKILL_DIRS`, `OPENSPACE_WORKSPACE` | Self-evolving skill system — execute tasks with auto skill evolution (FIX/DERIVED/CAPTURED modes), search local + cloud skills, fix broken skills, upload evolved skills to cloud community. **CLI (`openspace`, `openspace-download-skill`, `openspace-upload-skill`) is always the primary tool** — saves ~200-500 tokens per call vs MCP. Use MCP only when structured output parsing or MCP state persistence is needed. 4 MCP tools: `execute_task` (multi-step grounding agent), `search_skills`, `fix_skill`, `upload_skill`. Requires Python 3.12+. **Host skills (`/delegate-task`, `/skill-discovery`) teach Claude Code when/how to use these tools.** Cloud features require `OPENSPACE_API_KEY` from open-space.cloud — local features work without it. Source: [HKUDS/OpenSpace](https://github.com/HKUDS/OpenSpace) (13K+ stars). |
 | **alpaca** | `uvx alpaca-mcp-server` | `ALPACA_API_KEY`, `ALPACA_SECRET_KEY` | Algorithmic trading via Alpaca (paper mode enabled by default) |
 | **n8n-mcp** | `npx n8n-mcp` | `N8N_HOST_URL`, `N8N_API_KEY` | n8n workflow automation — search nodes, validate, build via MCP |
-| **apify** | `npx @apify/actors-mcp-server` | `APIFY_API_PAT` | Web scraping marketplace — search actors, call actors, retrieve results |
+| **apify** | `npx @apify/actors-mcp-server` | `APIFY_API_PAT` | Web scraping marketplace — 130+ Actors covering Instagram, TikTok, LinkedIn, Google, Reddit, Amazon, Airbnb, Yelp, and more. **Use with `/apify-ultimate-scraper` skill for guided workflows**: lead generation, brand monitoring, competitor analysis, influencer vetting, trend research, SEO intelligence, review analysis, recruitment, real estate, e-commerce price monitoring, contact enrichment, RAG data feeds, company research. Skill routes intelligently between `apify` CLI and MCP tools based on task type. Includes 14 pre-written workflow guides. Also provides 3 development skills: `/apify-actor-development` (create/debug/deploy Actors), `/apify-actorization` (convert code to Actors), `/apify-generate-output-schema` (auto-generate schemas). |
 | **zep-mcp** | `npx mcp-remote` (remote) | — | Zep long-term memory documentation search |
 | **canva-dev** | `npx @canva/cli mcp` | — (browser OAuth) | Canva app SDK, UI kit, CLI docs, design operations |
 | **monet-mcp** | SSE remote (`monet.design`) | `MONET_API_KEY` | Landing page UI component library — search by natural language, retrieve full React/TypeScript source code. Tools: `search_components`, `get_component_code`, `get_component_details`, `list_categories`, `get_registry_stats`, `list_collections`, `get_collection`. Categories: hero, pricing, testimonial, feature, cta, faq, footer, gallery, and more. |
