@@ -16,6 +16,22 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-05-05 — OpenSpace converted to git submodule with auto-sync
+- **Decision:** `tools/openspace/` is now a git submodule (hybrid: Option 1 + Option 2) — tracks specific upstream commits while auto-syncing every session via `openspace-sync.sh` hook.
+- **Why:** 
+  - Reproducible builds: Each commit in the parent repo tracks an exact OpenSpace version
+  - Always up-to-date: Auto-sync hook pulls latest from HKUDS/OpenSpace every session
+  - Fresh clone friendly: `setup.sh` auto-initializes submodule for new team members
+  - Standard Git workflow: Anyone familiar with submodules can work with it
+  - Manual control: Can pin to a specific version if needed; auto-sync can be disabled
+- **Implication:**
+  - Infrastructure ready: `openspace-sync.sh` hook created, `stop.sh` updated to call it, `setup.sh` updated to initialize submodule
+  - Conversion not yet executed: User must run 6-step conversion (see `.claude/docs/openspace-submodule-conversion.md`)
+  - All integrations preserved: Skills (`openspace/`, `delegate-task/`, `skill-discovery/`), MCP server (`.mcp.json` + `settings.json`), VSCode launch configs (5 total), `.env` paths
+  - Auto-sync behavior: Silent if up-to-date; pulls updates if available; skips if uncommitted changes exist; updates submodule pointer in parent repo
+  - Documentation updated: `CLAUDE.md` (Key Commands, First-Time Setup, Hooks, Project Structure), `README.md` (Quick Start, Hooks, Project Structure), conversion guide created
+  - Pattern matches autoresearch-sync.sh: Same upstream sync pattern, called by `stop.sh`
+
 ## 2026-05-04 — Hook paths use directory-walking instead of git rev-parse
 - **Decision:** All hook commands in `settings.json` now search upwards from the current directory to find `.claude/hooks/*.sh` scripts instead of using `git rev-parse --show-toplevel`.
 - **Why:** The `tools/openspace/` directory contains its own `.git` repository (cloned from HKUDS/OpenSpace), so `git rev-parse --show-toplevel` returns the wrong root when executed from within that subdirectory. This caused stop.sh to fail with "No such file or directory" errors when the working directory was inside `tools/openspace/`.

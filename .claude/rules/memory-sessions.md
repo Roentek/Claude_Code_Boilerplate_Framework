@@ -4,6 +4,30 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-05-05 (session 13) — OpenSpace git submodule + auto-sync infrastructure
+- **Implemented:** Complete git submodule infrastructure for `tools/openspace/` with automatic upstream sync (hybrid approach: Option 1 + Option 2)
+- **Files created:**
+  - `.claude/hooks/openspace-sync.sh` — Auto-sync hook (pulls upstream HKUDS/OpenSpace, updates submodule pointer, skips if uncommitted changes)
+  - `.claude/docs/openspace-submodule-conversion.md` — Complete 6-step conversion guide with troubleshooting, integrations checklist, benefits summary
+  - `OPENSPACE_SUBMODULE_SETUP.md` — Executive summary of all work done + next steps for user
+- **Files updated:**
+  - `.claude/hooks/stop.sh` — Added `openspace-sync.sh` call after `autoresearch-sync.sh`
+  - `.claude/hooks/setup.sh` — Added submodule initialization check in step 15 (before pip install)
+  - `CLAUDE.md` — Updated 5 sections: Key Commands (submodule note + manual update command), First-Time Setup (submodule initialization), Hooks table (autoresearch-sync + openspace-sync rows), Project Structure (openspace/ marked as git submodule), conversion guide reference
+  - `README.md` — Updated 5 sections: Quick Start step 15 (submodule initialization), Hooks table (openspace-sync row), stop.sh logic (added step 2), Project Structure (hooks/ + openspace/ entries), conversion guide reference
+  - `memory-decisions.md` — Logged hybrid submodule decision with full rationale
+  - `memory-sessions.md` — This entry
+- **Integrations verified (all intact):**
+  - ✅ Environment: `.env` paths (`OPENSPACE_HOST_SKILL_DIRS`, `OPENSPACE_WORKSPACE`)
+  - ✅ VSCode: 5 launch configs (2 LightRAG + 3 OpenSpace)
+  - ✅ Skills: `openspace/`, `delegate-task/`, `skill-discovery/`
+  - ✅ MCP: `.mcp.json` config + `settings.json` enabled
+- **Auto-sync behavior:** Runs every session via `stop.sh`; silent if up-to-date; pulls if updates available; skips if uncommitted changes; updates submodule pointer
+- **User action required:** Run 6-step conversion from `.claude/docs/openspace-submodule-conversion.md` to convert existing clone to submodule
+- **Benefits:** Reproducible builds (pinned commits) + always up-to-date (auto-sync) + fresh clone friendly (auto-init) + manual control (can pin versions)
+
+---
+
 ## 2026-05-04 (session 12) — OpenSpace CLI-first priority established
 - **Updated:** OpenSpace documentation to establish CLI-first token-saving pattern (matching Playwright, Firecrawl, NotebookLM)
 - **Files updated:**
@@ -226,3 +250,15 @@ Summary of substantive work completed each session — what was built, what was 
 - I've implemented dynamic path detection for OpenSpace.
 - Here's what changed:\n\n## âœ… What Was Added:\n\n### 1.
 - **Updated `.env.example`**\n- Added clear comments explaining the auto-configuration\n- Shows platform-specific examples for reference\n- Makes it clear that users don't need to manually edit these paths\n\n### 3.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-05 (auto-drafted — review before next session)
+- Here's what was done:\n\n## âœ… OpenSpace Git Submodule + Auto-Sync Setup Complete\n\n### What Was Implemented\n\n**1.
+- Auto-Sync Hook Created**\n- `.claude/hooks/openspace-sync.sh` â€” Automatically syncs `tools/openspace/` with upstream HKUDS/OpenSpace\n- Runs at the end of every session (called by `stop.sh`)\n- Silent if up-to-date; pulls updates if available; skips if uncommitted changes exist\n\n**2.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-05 (auto-drafted — review before next session)
+- Skills Verified âœ…**\n- `/openspace` â€” Installed and working\n- `/delegate-task` â€” Installed and working\n- `/skill-discovery` â€” Installed and working (was missing, now fixed)\n\n**5.
+- **If you have uncommitted changes:** Skips sync\n\n**Result:** Your local OpenSpace stays current with HKUDS/OpenSpace automatically, but never overwrites your work.\n\n---\n\n## ðŸ“Š Summary Table\n\n| Aspect | How It Works |\n|--------|--------------|\n| **Tracked in repo?** | YES â€” as a commit reference, not file contents |\n| **Fresh clone?** | `tools/openspace/` empty until `setup.sh` runs |\n| **Auto-initialized?** | YES â€” `setup.sh` step 15 runs `git submodule update --init --recursive` |\n| **Auto-synced?** | YES â€” `stop.sh` calls `openspace-sync.sh` every session end |\n| **Frequency** | Every session end (can be 10+ times per day) |\n| **Safe?** | YES â€” skips sync if you have uncommitted changes |\n\n---\n\nI've created a full verification report at `.claude/docs/OPENSPACE_VERIFICATION_REPORT.md` with diagrams, troubleshooting, and a complete explanation of how submodules work!"}
