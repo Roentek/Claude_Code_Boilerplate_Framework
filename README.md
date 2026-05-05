@@ -33,7 +33,7 @@ This framework wires together every layer of a Claude Code project:
 - **Rules** — Markdown instruction files auto-loaded into every session
 - **Plugins** — Extend Claude Code with specialized modes (superpowers, frontend-design, agent-sdk, cli-anything, etc.)
 - **Skills** — Reusable slash commands you invoke with `/skill-name`
-- **MCP Servers** — 20 pre-configured Model Context Protocol integrations (Supabase, Google Workspace, Pinecone, Trigger.dev, n8n, Vapi, Apify, Alpaca, Firecrawl, NotebookLM, Monet, 21st.dev Magic, and more)
+- **MCP Servers** — 22 pre-configured Model Context Protocol integrations (Supabase, Google Workspace, Pinecone, Trigger.dev, n8n, Vapi, Apify, Alpaca, Firecrawl, NotebookLM, OpenSpace, Monet, 21st.dev Magic, and more)
 - **Hooks** — Lifecycle shell scripts that run on session start, stop, and tool events
 - **Scripts** — A context monitor statusline, first-time setup bootstrapper, and memory management tools
 - **WAT Framework** — Architecture pattern: Workflows → Agents → Tools
@@ -215,7 +215,7 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 1. **Makes hooks executable** — `chmod +x` on `stop.sh` and `pre-commit.sh` (Unix/macOS only)
 2. **Verifies Python** — checks `python3` / `python` is in PATH; required by the context-monitor statusline and `ui-ux-pro-max` design search scripts
 3. **Verifies context-monitor.py** — confirms the statusline script is present
-4. **Creates `.env`** — copies `.env.example` → `.env` if none exists
+4. **Creates `.env`** — copies `.env.example` → `.env` if none exists, then auto-configures OpenSpace paths (`OPENSPACE_HOST_SKILL_DIRS` and `OPENSPACE_WORKSPACE`) based on your platform (detects home directory automatically — works on Windows, macOS, Linux)
 5. **Verifies uvx** — required for `google-workspace-mcp`, `alpaca`, and `notebooklm-mcp` MCP servers
 6. **Verifies Node.js / npx** — required by all 17 npx-based MCP servers (memory, supabase, openrouter, kie-ai, tavily, trigger, pinecone, vapi, n8n, apify, zep, canva, 21st-dev, playwright-mcp, firecrawl-mcp, higgsfield, context7)
 7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max`, `andrej-karpathy-skills`, `impeccable`, `codex`, `cc-gemini-plugin`, and `cli-anything` via CLI
@@ -226,8 +226,9 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 12. **Prints authentication reminders** — lists integrations requiring a manual one-time auth step: NotebookLM (`nlm login`), Trigger.dev (`npx trigger.dev@latest login`), Google Workspace (browser OAuth), Canva (browser OAuth), Higgsfield (browser OAuth via `npx mcp-remote`), GitHub CLI (`gh auth login`), Gemini plugin (`GEMINI_API_KEY` at aistudio.google.com), and Codex plugin (`npm install -g @openai/codex`)
 13. **Installs autoresearch dependencies** — runs `uv sync` in the `tools/autoresearch/` directory to install PyTorch and ML dependencies for autonomous research experiments
 14. **Installs LightRAG dependencies** — runs `uv sync` in the `tools/lightrag/` directory to install `lightrag-hku` and dependencies for graph-based RAG
-15. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
-16. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
+15. **Installs OpenSpace** — runs `pip install -e .` in the `tools/openspace/` directory to install the self-evolving skill system (requires Python 3.12+); sets up the optional dashboard frontend by copying `.env.example` → `.env` and running `npm install` in `tools/openspace/frontend/` (requires Node.js ≥ 20)
+16. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
+17. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
 
 **Re-run setup manually** (e.g. fresh clone on a new machine):
 
@@ -299,7 +300,11 @@ bash .claude/hooks/setup.sh
 │       ├── notebooklm/SKILL.md      # Google NotebookLM: create notebooks, add sources, generate podcasts/videos/briefings
 │       ├── three-brain/SKILL.md     # Multi-model router: Claude (standard), Codex (review/rescue), Gemini (multimodal)
 │       ├── compact-memory/SKILL.md  # Memory hygiene: compress sessions, prune decisions, sync to knowledge graph
-│       └── autoresearch/SKILL.md    # Autonomous ML research: modify GPT code, run 5-min experiments, iterate overnight
+│       ├── autoresearch/SKILL.md    # Autonomous ML research: modify GPT code, run 5-min experiments, iterate overnight
+│       ├── lightrag/SKILL.md        # Graph-based RAG: knowledge extraction, entity-relationship Q&A, multimodal docs
+│       ├── openspace/SKILL.md       # Self-evolving skill system: auto-fix, auto-improve, auto-learn, cloud sharing
+│       ├── delegate-task/SKILL.md   # OpenSpace host skill: delegate tasks to grounding agent with auto evolution
+│       └── skill-discovery/SKILL.md # OpenSpace host skill: search local + cloud skills before starting work
 │
 ├── brand_assets/                    # Logos, color guides, design tokens
 ├── docs/                            # Project-level documentation
@@ -314,17 +319,26 @@ bash .claude/hooks/setup.sh
 │   │   ├── pyproject.toml           # Dependencies (PyTorch, etc.)
 │   │   ├── uv.lock                  # Dependency lockfile
 │   │   └── README.md                # Full autoresearch documentation
-│   └── lightrag/                    # Graph-based RAG server (HKUDS/LightRAG)
-│       ├── pyproject.toml           # Dependencies (lightrag-hku + server deps)
-│       ├── uv.lock                  # Dependency lockfile
-│       ├── README.md                # Full LightRAG documentation
-│       ├── .env                     # Server config + OPENAI_API_KEY (gitignored)
-│       ├── .env.example             # Configuration template (safe to commit)
-│       ├── .gitignore               # Excludes .env, logs, rag_storage, build artifacts
-│       ├── test_lightrag.py         # Test script: insert/query example
-│       ├── start_server.bat         # Windows quick launcher
-│       ├── .venv/                   # Virtual environment (gitignored, recreated by uv sync)
-│       └── rag_storage/             # Knowledge graph data (gitignored, auto-created on first use)
+│   ├── lightrag/                    # Graph-based RAG server (HKUDS/LightRAG)
+│   │   ├── pyproject.toml           # Dependencies (lightrag-hku + server deps)
+│   │   ├── uv.lock                  # Dependency lockfile
+│   │   ├── README.md                # Full LightRAG documentation
+│   │   ├── .env                     # Server config + OPENAI_API_KEY (gitignored)
+│   │   ├── .env.example             # Configuration template (safe to commit)
+│   │   ├── .gitignore               # Excludes .env, logs, rag_storage, build artifacts
+│   │   ├── test_lightrag.py         # Test script: insert/query example
+│   │   ├── start_server.bat         # Windows quick launcher
+│   │   ├── .venv/                   # Virtual environment (gitignored, recreated by uv sync)
+│   │   └── rag_storage/             # Knowledge graph data (gitignored, auto-created on first use)
+│   └── openspace/                   # Self-evolving skill system (HKUDS/OpenSpace)
+│       ├── openspace/               # Core Python package (grounding, skill_engine, cloud, agents)
+│       ├── pyproject.toml           # Dependencies (litellm, anthropic, openai, mcp, etc.)
+│       ├── README.md                # Full OpenSpace documentation
+│       ├── frontend/                # Dashboard UI (React + Tailwind, requires Node.js ≥ 20)
+│       ├── gdpval_bench/            # Benchmark experiments & results (GDPVal dataset)
+│       ├── showcase/                # Example projects built with OpenSpace (My Daily Monitor)
+│       ├── .openspace/              # Skill database + embedding cache (gitignored)
+│       └── logs/                    # Execution logs & recordings (gitignored)
 ├── workflows/
 │   ├── browser-automation.md        # WAT SOP for Playwright-based automation tasks
 │   └── web-scraping.md              # WAT SOP for Firecrawl-based web scraping tasks
@@ -511,6 +525,9 @@ Source files live in `.claude/skills/<name>/SKILL.md`. `setup.sh` installs them 
 | `/compact-memory` | Full memory hygiene cycle — compresses `memory-sessions.md` (entries >30 days → archive block), prunes obsolete decisions from `memory-decisions.md`, and syncs 3-5 key project facts to the knowledge graph (memory MCP) for queryable access without loading full files. Run monthly or when memory files exceed ~200 lines. Saves ~100-200 lines per run (~500-1000 tokens/session). |
 | `/autoresearch` | Autonomous ML research (karpathy/autoresearch). Agent modifies GPT training code (`train.py`), runs 5-minute experiments on a single GPU, evaluates improvements (lower `val_bpb` = better), keeps successful changes, discards failures, and repeats indefinitely until stopped (~12 experiments/hour, ~100 overnight while you sleep). Requires single NVIDIA GPU (H100 tested; see [tools/autoresearch/README.md](tools/autoresearch/README.md) for other platforms), Python 3.10+, and `uv` package manager. Auto-syncs with upstream karpathy/autoresearch every session via stop hook. Source: [karpathy/autoresearch](https://github.com/karpathy/autoresearch) (33K+ stars). |
 | `/lightrag` | Graph-based Retrieval-Augmented Generation (LightRAG). Extracts knowledge graphs from documents (entities + relationships), performs entity-aware Q&A with 5 query modes (naive, local, global, hybrid, mix with reranker), supports multimodal docs (PDFs, images, tables via RAG-Anything), and includes Web UI + REST API for visualization and programmatic access. Requires Python 3.10+, `uv` package manager, and LLM API key (OpenAI, Claude, Gemini, or Ollama). Storage backends: default (nano-vectordb), Neo4J, MongoDB, PostgreSQL, OpenSearch. Source: [HKUDS/LightRAG](https://github.com/HKUDS/LightRAG) (EMNLP 2025, 13K+ stars). |
+| `/openspace` | Self-evolving skill system (OpenSpace). Skills that automatically learn, fix themselves, and improve over time. Provides 3 evolution modes (FIX: repair broken skills in-place, DERIVED: create enhanced versions, CAPTURED: extract novel patterns from successful executions), quality monitoring that tracks skill/tool/code execution metrics, and cloud skill community for sharing improvements across agents. Token reduction: 46% fewer tokens through skill reuse and evolution. Performance: 4.2× better on professional tasks (GDPVal benchmark). Use for complex multi-step tasks, skill evolution workflows, or accessing cloud skill community. Requires Python 3.12+ and `pip install -e tools/openspace`. Optional: `OPENSPACE_API_KEY` for cloud features (register at open-space.cloud). Source: [HKUDS/OpenSpace](https://github.com/HKUDS/OpenSpace) (13K+ stars). |
+| `/delegate-task` | OpenSpace host skill — delegates complex tasks to OpenSpace's grounding agent with automatic skill evolution. Teaches Claude Code when to use `execute_task` vs handling directly, how to interpret OpenSpace results, when to trigger skill evolution (`fix_skill`), and how to upload successful patterns (`upload_skill`). Auto-installed by setup.sh to `~/.claude/skills/delegate-task/`. |
+| `/skill-discovery` | OpenSpace host skill — searches local + cloud skills before starting work. Teaches Claude Code when to search for skills (before complex tasks), how to evaluate search results (local vs cloud), decision framework (follow skill yourself, delegate to OpenSpace, or skip), and how to import cloud skills to local registry. Auto-installed by setup.sh to `~/.claude/skills/skill-discovery/`. |
 
 ---
 
@@ -537,6 +554,7 @@ All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. C
 | **pinecone-mcp** | `npx @pinecone-database/mcp` | `PINECONE_API_KEY` | Vector search, RAG — upsert, search, rerank, describe indexes |
 | **vapi-mcp** | `npx @vapi-ai/mcp-server` | `VAPI_API_TOKEN` | Voice AI — create assistants, make calls, manage phone numbers and tools |
 | **notebooklm-mcp** | `uvx --from notebooklm-mcp-cli notebooklm-mcp` | — (cookie auth via `nlm login`) | Google NotebookLM — create notebooks, add sources (URLs, text, Google Drive), generate podcasts/videos/briefings, query notebooks. **CLI (`nlm`) is always the primary tool** — use MCP only for multi-step interactive flows. Run `nlm login` before first use to authenticate with Google. |
+| **openspace** | `openspace-mcp` (installed via `pip install -e tools/openspace`) | `OPENSPACE_API_KEY` (optional), `OPENSPACE_HOST_SKILL_DIRS`, `OPENSPACE_WORKSPACE` | Self-evolving skill system — execute tasks with auto skill evolution (FIX/DERIVED/CAPTURED modes), search local + cloud skills, fix broken skills, upload evolved skills to cloud community. **CLI (`openspace`, `openspace-download-skill`, `openspace-upload-skill`) is always the primary tool** — saves ~200-500 tokens per call vs MCP. Use MCP only when structured output parsing or MCP state persistence is needed. 4 MCP tools: `execute_task` (multi-step grounding agent), `search_skills`, `fix_skill`, `upload_skill`. Requires Python 3.12+. **Host skills (`/delegate-task`, `/skill-discovery`) teach Claude Code when/how to use these tools.** Cloud features require `OPENSPACE_API_KEY` from open-space.cloud — local features work without it. Source: [HKUDS/OpenSpace](https://github.com/HKUDS/OpenSpace) (13K+ stars). |
 | **alpaca** | `uvx alpaca-mcp-server` | `ALPACA_API_KEY`, `ALPACA_SECRET_KEY` | Algorithmic trading via Alpaca (paper mode enabled by default) |
 | **n8n-mcp** | `npx n8n-mcp` | `N8N_HOST_URL`, `N8N_API_KEY` | n8n workflow automation — search nodes, validate, build via MCP |
 | **apify** | `npx @apify/actors-mcp-server` | `APIFY_API_PAT` | Web scraping marketplace — search actors, call actors, retrieve results |
@@ -794,7 +812,9 @@ PORT=9621
 
 ### VSCode Debug Configurations
 
-`.vscode/launch.json` includes two debug configs:
+`.vscode/launch.json` includes 4 individual configs + 1 compound config:
+
+**Individual Configurations:**
 
 1. **LightRAG Server**
    - Starts web server on port 9621
@@ -806,6 +826,27 @@ PORT=9621
    - Runs `test_lightrag.py` (insert/query example)
    - Uses same `.env` configuration
    - Good for testing API integration
+
+3. **OpenSpace Backend Server**
+   - Starts dashboard API on port 7788
+   - Debuggable Python Flask server
+   - Can be launched individually
+
+4. **OpenSpace Frontend**
+   - Starts Vite dev server on port 3789
+   - Auto-opens browser when ready
+   - Automatically checks/installs dependencies before launch
+   - Can be launched individually (requires backend running first)
+
+**Compound Configuration (Recommended):**
+
+5. **OpenSpace Dashboard (Full Stack)** ⭐
+   - **One-click launch** — starts both backend and frontend together
+   - Automatically verifies and installs frontend dependencies if missing
+   - Auto-opens browser to http://127.0.0.1:3789 when ready
+   - Stops both servers when you click the Stop button
+   - **Usage:** Press `F5` → Select "**OpenSpace Dashboard (Full Stack)**"
+   - Backend API: http://127.0.0.1:7788 | Frontend UI: http://127.0.0.1:3789
 
 ### Testing the Setup
 

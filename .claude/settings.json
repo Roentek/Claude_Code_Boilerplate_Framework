@@ -1,7 +1,6 @@
 {
   "env": {},
   "permissions": {
-    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(dir:*)",
       "Bash(ren:*)",
@@ -60,7 +59,8 @@
       "PowerShell(Move-Item *)",
       "PowerShell(Compare-Object *)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "bypassPermissions"
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
@@ -85,7 +85,8 @@
     "firecrawl-mcp",
     "higgsfield",
     "context7",
-    "notebooklm-mcp"
+    "notebooklm-mcp",
+    "openspace"
   ],
   "hooks": {
     "Setup": [
@@ -93,7 +94,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$(git rev-parse --show-toplevel)/.claude/hooks/setup.sh\"",
+            "command": "bash -c 'dir=\"$(pwd)\"; while [ \"$dir\" != \"/\" ] && [ ! -f \"$dir/.claude/hooks/setup.sh\" ]; do dir=\"$(dirname \"$dir\")\"; done; if [ -f \"$dir/.claude/hooks/setup.sh\" ]; then bash \"$dir/.claude/hooks/setup.sh\"; fi'",
             "statusMessage": "Running first-time project setup..."
           }
         ]
@@ -105,7 +106,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$(git rev-parse --show-toplevel)/.claude/hooks/read-guard.sh\"",
+            "command": "bash -c 'dir=\"$(pwd)\"; while [ \"$dir\" != \"/\" ] && [ ! -f \"$dir/.claude/hooks/read-guard.sh\" ]; do dir=\"$(dirname \"$dir\")\"; done; if [ -f \"$dir/.claude/hooks/read-guard.sh\" ]; then bash \"$dir/.claude/hooks/read-guard.sh\"; fi'",
             "statusMessage": "Checking read scope..."
           }
         ]
@@ -117,7 +118,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$(git rev-parse --show-toplevel)/.claude/hooks/autosync-docs.sh\"",
+            "command": "bash -c 'dir=\"$(pwd)\"; while [ \"$dir\" != \"/\" ] && [ ! -f \"$dir/.claude/hooks/autosync-docs.sh\" ]; do dir=\"$(dirname \"$dir\")\"; done; if [ -f \"$dir/.claude/hooks/autosync-docs.sh\" ]; then bash \"$dir/.claude/hooks/autosync-docs.sh\"; fi'",
             "statusMessage": "Checking if docs need updating..."
           }
         ]
@@ -129,7 +130,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$(git rev-parse --show-toplevel)/.claude/hooks/stop.sh\""
+            "command": "bash -c 'dir=\"$(pwd)\"; while [ \"$dir\" != \"/\" ] && [ ! -f \"$dir/.claude/hooks/stop.sh\" ]; do dir=\"$(dirname \"$dir\")\"; done; if [ -f \"$dir/.claude/hooks/stop.sh\" ]; then bash \"$dir/.claude/hooks/stop.sh\"; fi'"
           }
         ]
       }

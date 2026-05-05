@@ -83,6 +83,35 @@ else
   echo "✓ .env already exists"
 fi
 
+# ── 4a. Configure OpenSpace paths (platform-specific) ──────
+# Auto-detect platform and set correct paths for OpenSpace in .env
+if [ -f "$ROOT/.env" ]; then
+  # Detect user's home directory (works on all platforms)
+  if [[ -n "$HOME" ]]; then
+    SKILLS_DIR="$HOME/.claude/skills"
+  elif [[ -n "$USERPROFILE" ]]; then
+    # Windows fallback
+    SKILLS_DIR="$USERPROFILE/.claude/skills"
+  else
+    SKILLS_DIR="~/.claude/skills"
+  fi
+
+  # Workspace is always relative to project root
+  WORKSPACE_DIR="./tools/openspace"
+
+  # Replace placeholder paths in .env if they contain the generic values
+  if grep -q "OPENSPACE_HOST_SKILL_DIRS=~/\.claude/skills" "$ROOT/.env" 2>/dev/null; then
+    # Using a temporary file for cross-platform sed compatibility
+    sed "s|OPENSPACE_HOST_SKILL_DIRS=~/\.claude/skills|OPENSPACE_HOST_SKILL_DIRS=$SKILLS_DIR|g" "$ROOT/.env" > "$ROOT/.env.tmp"
+    mv "$ROOT/.env.tmp" "$ROOT/.env"
+    echo "✓ OpenSpace skills directory configured: $SKILLS_DIR"
+  fi
+
+  if grep -q "OPENSPACE_WORKSPACE=\./tools/openspace" "$ROOT/.env" 2>/dev/null; then
+    echo "✓ OpenSpace workspace configured: $WORKSPACE_DIR"
+  fi
+fi
+
 # ── 5. Verify uvx (google-workspace-mcp + alpaca) ──────────
 echo ""
 echo "── uvx ──────────────────────────────────────────────────"
@@ -518,7 +547,107 @@ else
   echo "  (tools/lightrag/ directory not found — skipping)"
 fi
 
-# ── 15. Install pre-commit doc-sync hook ────────────────────
+# ── 15. Install OpenSpace (self-evolving skill system) ───────
+echo ""
+echo "── OpenSpace (Self-Evolving Skill System) ───────────────"
+OPENSPACE_DIR="$ROOT/tools/openspace"
+if [ -d "$OPENSPACE_DIR" ]; then
+  echo "  Installing OpenSpace from tools/openspace/ via pip..."
+  if command -v python3 &>/dev/null; then
+    PYTHON_CMD="python3"
+  elif command -v py &>/dev/null; then
+    PYTHON_CMD="py"
+  elif command -v python &>/dev/null; then
+    PYTHON_CMD="python"
+  else
+    PYTHON_CMD=""
+  fi
+
+  if [ -n "$PYTHON_CMD" ]; then
+    # Check Python version (requires 3.12+)
+    PYTHON_VERSION=$($PYTHON_CMD --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+    PYTHON_MAJOR=$(echo "$PYTHON_VERSION" | cut -d. -f1)
+    PYTHON_MINOR=$(echo "$PYTHON_VERSION" | cut -d. -f2)
+
+    if [ "$PYTHON_MAJOR" -ge 3 ] && [ "$PYTHON_MINOR" -ge 12 ]; then
+      # Install in editable mode
+      if (cd "$OPENSPACE_DIR" && $PYTHON_CMD -m pip install -e . --quiet 2>&1 >/dev/null); then
+        echo "✓ OpenSpace installed successfully"
+        # Verify installation
+        if command -v openspace-mcp &>/dev/null; then
+          echo "✓ openspace-mcp command available"
+        else
+          echo "⚠ openspace-mcp not found in PATH — may need to restart shell or add Python scripts dir to PATH"
+        fi
+      else
+        echo "⚠ OpenSpace installation failed — complete it manually:"
+        echo "    cd tools/openspace && pip install -e ."
+      fi
+    else
+      echo "⚠ OpenSpace requires Python 3.12+ (found $PYTHON_VERSION)"
+      echo "  Install Python 3.12+ then run:"
+      echo "    cd tools/openspace && pip install -e ."
+    fi
+  else
+    echo "⚠ Python not found — OpenSpace requires Python 3.12+"
+    echo "  Install Python 3.12+, then run:"
+    echo "    cd tools/openspace && pip install -e ."
+  fi
+
+  # Set up OpenSpace frontend (optional dashboard — requires Node.js ≥ 20)
+  OPENSPACE_FRONTEND="$OPENSPACE_DIR/frontend"
+  if [ -d "$OPENSPACE_FRONTEND" ]; then
+    echo ""
+    echo "  Setting up OpenSpace Dashboard Frontend..."
+
+    # Copy .env.example to .env if not present
+    if [ ! -f "$OPENSPACE_FRONTEND/.env" ]; then
+      if [ -f "$OPENSPACE_FRONTEND/.env.example" ]; then
+        cp "$OPENSPACE_FRONTEND/.env.example" "$OPENSPACE_FRONTEND/.env"
+        echo "  ✓ frontend/.env created from .env.example"
+      fi
+    else
+      echo "  ✓ frontend/.env already exists"
+    fi
+
+    # Install npm dependencies if Node.js is available
+    if command -v npm &>/dev/null; then
+      # Check Node.js version (requires ≥ 20)
+      NODE_MAJOR=$(node --version 2>&1 | grep -oE '[0-9]+' | head -1)
+
+      if [ "$NODE_MAJOR" -ge 20 ]; then
+        if [ ! -d "$OPENSPACE_FRONTEND/node_modules" ]; then
+          echo "  Installing frontend dependencies (React/Vite)..."
+          if (cd "$OPENSPACE_FRONTEND" && npm install --silent 2>&1 >/dev/null); then
+            echo "  ✓ Frontend dependencies installed"
+            echo ""
+            echo "  Dashboard ready — launch via VSCode:"
+            echo "    Press F5 → Select 'OpenSpace Backend Server' → http://127.0.0.1:7788"
+            echo "    Press F5 → Select 'OpenSpace Frontend' → Browser opens at http://127.0.0.1:3789"
+          else
+            echo "  ⚠ Frontend npm install failed — complete it manually:"
+            echo "      cd tools/openspace/frontend && npm install"
+          fi
+        else
+          echo "  ✓ Frontend dependencies already installed"
+          echo "  Dashboard ready — launch via VSCode (F5 → OpenSpace Backend/Frontend)"
+        fi
+      else
+        echo "  ⚠ OpenSpace frontend requires Node.js ≥ 20 (found v$NODE_MAJOR)"
+        echo "    Dashboard backend (openspace-dashboard) will work, but frontend won't run"
+        echo "    Update Node.js to v20+ to use the Web UI"
+      fi
+    else
+      echo "  ⚠ npm not found — frontend requires Node.js ≥ 20"
+      echo "    Dashboard backend (openspace-dashboard) will work, but frontend requires npm"
+      echo "    Install Node.js v20+ from https://nodejs.org to use the Web UI"
+    fi
+  fi
+else
+  echo "  (tools/openspace/ directory not found — skipping)"
+fi
+
+# ── 16. Install pre-commit doc-sync hook ────────────────────
 echo ""
 echo "── Git Pre-Commit Hook (doc-sync) ───────────────────────"
 HOOKS_DIR="$ROOT/.git/hooks"
@@ -539,7 +668,7 @@ else
   echo "✓ pre-commit doc-sync hook installed → .git/hooks/pre-commit"
 fi
 
-# ── 16. Summary ────────────────────────────────────────────
+# ── 17. Summary ────────────────────────────────────────────
 echo ""
 if [ $ERRORS -eq 0 ]; then
   echo "✓ Setup complete. Context monitor statusline is ready."

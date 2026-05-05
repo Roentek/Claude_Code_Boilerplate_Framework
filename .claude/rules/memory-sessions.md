@@ -4,6 +4,22 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-05-04 (session 12) — OpenSpace CLI-first priority established
+- **Updated:** OpenSpace documentation to establish CLI-first token-saving pattern (matching Playwright, Firecrawl, NotebookLM)
+- **Files updated:**
+  - `.claude/skills/openspace/SKILL.md` — added "CLI vs MCP: Token-Saving Priority" section with decision matrix; added "CLI Commands (Use These First)" section with examples
+  - `CLAUDE.md` — updated routing table entry (CLI first; MCP backup), updated Key Commands section with CLI/MCP priority comments
+  - `README.md` — updated MCP servers table entry for openspace (CLI is always primary tool, saves ~200-500 tokens per call vs MCP)
+  - `memory-decisions.md` — logged CLI-first decision with full rationale and implications
+  - `memory-sessions.md` — this entry
+- **Priority order:** (1) `openspace` CLI via Bash (token-free) → (2) `mcp__openspace__*` tools as backup (protocol overhead)
+- **CLI commands:** `openspace --query "task"`, `openspace --search "keyword"`, `openspace-download-skill <id>`, `openspace-upload-skill /path/`
+- **MCP escalation triggers:** structured output needed, multi-step workflows with state persistence, integration with other MCP tools, automatic skill evolution tracking
+- **Token savings:** ~200-500 tokens per call; over 20 OpenSpace operations = 4K-10K tokens saved
+- **Pattern consistency:** OpenSpace, Playwright, Firecrawl, NotebookLM all follow same CLI-first architecture
+
+---
+
 ## 2026-05-03 (session 11) — LightRAG graph-based RAG integration
 - **Integrated:** HKUDS/LightRAG (13K+ stars, EMNLP 2025) — graph-based Retrieval-Augmented Generation with knowledge extraction
 - **Files created:**
@@ -172,3 +188,45 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-04 (auto-drafted — review before next session)
 - `LightRAGEnhanced` (Main Entry Point)**\n\n```python\nclass LightRAGEnhanced:\n    def __init__(\n        self,\n        working_dir: str,\n        embedding_provider: str = \"openai\",  # or \"gemini\"\n        embedding_model: str | None = None,  # Auto-selects default if None\n        enable_supabase: bool = False,\n        enable_pinecone: bool = False,\n        multimodal_mode: str = \"simple\"  # or \"advanced\"\n    )\n```\n\n**Critical Design Principle:**\n- **LightRAG Core is UNTOUCHED** - we instantiate native `LightRAG` class as-is\n- Adapters are bolt-ons that intercept embeddings after they're generated\n- If all adapters are disabled, system behaves identically to vanilla LightRAG\n\n**Responsibilities:**\n- Wraps native LightRAG instance (always created, always functional)\n- Initializes embedding provider based on config\n- Initializes enabled adapters (Supabase/Pinecone)\n- Routes `insert()` calls to appropriate pipeline\n- Routes `query()` calls based on mode parameter\n\n**Key Methods:**\n- `insert(content, content_type=\"text\")` - Insert text or multimodal content\n- `query(text, mode=\"graph\", top_k=10)` - Query with mode selection\n- `sync_to_remotes()` - Manual sync trigger (for recovery)\n\n---\n\n**2.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-04 (auto-drafted — review before next session)
+- **`.mcp.json`** â€” Added `openspace` MCP server configuration\n6.
+- **`.claude/settings.json`** â€” Added `openspace` to `enabledMcpjsonServers`\n\n**Configuration:**\n7.
+- **`.env.example`** â€” Added OpenSpace environment variables with comments\n8.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-04 (auto-drafted — review before next session)
+- `.claude/skills/openspace/SKILL.md`**\n- Added \"CLI vs MCP: Token-Saving Priority\" section with clear decision matrix\n- Added \"CLI Commands (Use These First)\" section with usage examples\n- CLI saves ~200-500 tokens per call vs MCP protocol overhead\n\n**2.
+- `memory-sessions.md`**\n- Session log entry added\n\n### Priority Order (Now Documented):\n\n```\n1.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-04 (auto-drafted — review before next session)
+- {"session_id":"dda3e218-130d-43ce-9632-b80d5e76224d","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\dda3e218-130d-43ce-9632-b80d5e76224d.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ… OpenSpace Dashboard Integrated into VSCode Launch Configurations\n\nI've added two new launch configurations for the OpenSpace dashboard.
+- **Browser opens automatically** to the dashboard at http://127.0.0.1:3789\n\n### What the Dashboard Shows:\n\nPer the frontend README, you'll see:\n- **Dashboard** â€” Overall health, pipeline stages, top skills, recent workflows\n- **Skills** â€” Searchable skill list with score breakdown\n- **Skill Detail** â€” Source preview, lineage graph, scoring metrics\n- **Workflows** â€” Recorded workflow sessions from `logs/recordings`\n- **Workflow Detail** â€” Timeline, artifacts, metadata, plans, and decisions\n\n### Files Updated:\n\n- `.vscode/launch.json` â€” Added 2 new launch configs (now 4 total)\n- `CLAUDE.md` â€” Updated Key Commands section with VSCode F5 option\n- `README.md` â€” Updated VSCode Debug Configurations section\n\nYou can now easily launch the full OpenSpace dashboard stack with full debugging support directly from VSCode!"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-04 (auto-drafted — review before next session)
+- {"session_id":"dda3e218-130d-43ce-9632-b80d5e76224d","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\dda3e218-130d-43ce-9632-b80d5e76224d.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ… OpenSpace Frontend Setup Fully Integrated into setup.sh\n\nAll OpenSpace installation requirements are now automated in the first-time setup script.\n\n### What Was Added to setup.sh (Step 15):\n\nAfter installing the OpenSpace Python package (`pip install -e .`), the script now automatically:\n\n1.
+- **Provides clear feedback** â€” tells users the dashboard is ready and how to launch it via VSCode\n\n### Version Requirements Enforced:\n\n- **Backend:** Python 3.12+ (already enforced)\n- **Frontend:** Node.js â‰¥ 20 (now enforced with clear error messages)\n\n### Output Example (when setup.sh runs):\n\n```\nâ”€â”€ OpenSpace (Self-Evolving Skill System) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n  Installing OpenSpace from tools/openspace/ via pip...\nâœ“ OpenSpace installed successfully\nâœ“ openspace-mcp command available\n\n  Setting up OpenSpace Dashboard Frontend...\n  âœ“ frontend/.env created from .env.example\n  Installing frontend dependencies (React/Vite)...\n  âœ“ Frontend dependencies installed\n\n  Dashboard ready â€” launch via VSCode:\n    Press F5 â†’ Select 'OpenSpace Backend Server' â†’ http://127.0.0.1:7788\n    Press F5 â†’ Select 'OpenSpace Frontend' â†’ Browser opens at http://127.0.0.1:3789\n```\n\n### Files Updated:\n\n1.
+- **`.claude/hooks/setup.sh`**\n   - Added frontend setup subsection in step 15\n   - Creates `.env`, installs npm deps, validates Node.js â‰¥ 20\n   - Provides clear success/error messages\n\n2.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-04 (auto-drafted — review before next session)
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-04 (auto-drafted — review before next session)
+- **`OPENSPACE_HOST_SKILL_DIRS`**: Changed from absolute path to `~/.claude/skills`\n   - Works on Unix/Mac/Git Bash (the `~` expands to the user's home directory)\n   - Added comment showing Windows alternatives: `%USERPROFILE%\\.claude\\skills` or the full path\n\n2.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-04 (auto-drafted — review before next session)
+- I've implemented dynamic path detection for OpenSpace.
+- Here's what changed:\n\n## âœ… What Was Added:\n\n### 1.
+- **Updated `.env.example`**\n- Added clear comments explaining the auto-configuration\n- Shows platform-specific examples for reference\n- Makes it clear that users don't need to manually edit these paths\n\n### 3.

@@ -29,6 +29,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | UI component inspiration / SVG logos | `21st-dev-magic` tools | Search UI components, SVG brand logos, generate variants |
 | AI image/video (cinematic, managed) | `higgsfield` MCP | No API key — browser OAuth; cinematic video, media library |
 | AI image/video/audio (specific model) | `kie-ai` MCP | Midjourney, Sora, ElevenLabs, Kling, Suno, etc. Requires API key |
+| Self-evolving AI skills / collective intelligence | `/openspace` skill → `openspace` CLI | Skills that auto-fix, auto-improve, auto-learn; 46% token reduction; cloud skill sharing — **CLI first; MCP backup** |
 
 ---
 
@@ -76,6 +77,34 @@ uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_st
 
 # Option 3: Quick start script (Windows)
 ./start_server.bat
+
+# OpenSpace — self-evolving skill system (CLI first, MCP backup)
+cd tools/openspace
+pip install -e .                           # Install OpenSpace (done by setup.sh)
+
+# CLI (primary — token-free execution)
+openspace --query "Create a monitoring dashboard for Docker containers"
+openspace --search "docker monitoring"   # Search skills before starting work
+openspace-download-skill <skill_id>      # Download from cloud
+openspace-upload-skill /path/to/skill/dir # Upload to cloud (requires OPENSPACE_API_KEY)
+
+# MCP (backup — use when CLI output insufficient or need structured results)
+# Use mcp__openspace__* tools via ToolSearch when CLI doesn't meet needs
+
+# Dashboard (optional — requires Node.js ≥ 20)
+# Option 1: VSCode one-click launch (recommended)
+# Press F5 → Select "OpenSpace Dashboard (Full Stack)" → Starts both backend + frontend
+
+# Option 2: VSCode individual launch
+# Press F5 → Select "OpenSpace Backend Server" → http://127.0.0.1:7788
+# Then F5 → Select "OpenSpace Frontend" → Browser opens at http://127.0.0.1:3789
+
+# Option 3: Manual terminal launch
+openspace-dashboard --host 127.0.0.1 --port 7788  # Terminal 1: Backend
+cd tools/openspace/frontend
+cp .env.example .env                              # First-time only (setup.sh does this)
+npm install                                        # First-time only (setup.sh does this)
+npm run dev                                        # Terminal 2: Frontend → http://127.0.0.1:3789
 ```
 
 > **MCP credential gotcha:** `.mcp.json` `${VAR}` substitution reads from the **OS process environment**, not `.env`. On a fresh machine, run `setx VAR_NAME "value"` (Windows) or `export VAR_NAME=value` (Unix) in your terminal before starting Claude Code.
@@ -94,7 +123,8 @@ bash .claude/hooks/setup.sh
 #           project skills, npm deps, Playwright browser,
 #           skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli,
 #           autoresearch dependencies in tools/autoresearch/ (via uv sync),
-#           lightrag dependencies in tools/lightrag/ (via uv sync)
+#           lightrag dependencies in tools/lightrag/ (via uv sync),
+#           openspace + dashboard frontend in tools/openspace/ (pip install -e . + npm install)
 
 # 3. Configure MCP credentials
 cp .claude/settings.local.json.example .claude/settings.local.json
@@ -103,6 +133,8 @@ cp .claude/settings.local.json.example .claude/settings.local.json
 # 4. Add API keys to .env
 cp .env.example .env
 # Edit .env and fill in required keys
+# Note: OpenSpace paths (OPENSPACE_HOST_SKILL_DIRS, OPENSPACE_WORKSPACE) are
+# auto-configured by setup.sh for your platform — no manual editing needed
 
 # 5. Restart Claude Code to activate MCP servers
 ```
@@ -154,6 +186,15 @@ tools/                        ← Deterministic execution scripts (Python/Node)
     test_lightrag.py          ← Test script (insert/query example)
     start_server.bat          ← Windows quick launcher
     rag_storage/              ← Knowledge graph data (gitignored, auto-created)
+  openspace/                  ← Self-evolving skill system (MCP server + CLI)
+    openspace/                ← Core Python package
+    pyproject.toml            ← Dependencies (litellm, anthropic, openai, etc.)
+    README.md                 ← Full OpenSpace documentation
+    frontend/                 ← Dashboard UI (optional, requires Node.js ≥ 20)
+    gdpval_bench/             ← Benchmark experiments & results
+    showcase/                 ← Example projects built with OpenSpace
+    .openspace/               ← Skill database + embeddings cache
+    logs/                     ← Execution logs & recordings
 workflows/                    ← Markdown SOPs defining automation tasks
 src/trigger/                  ← Trigger.dev TypeScript task files
 brand_assets/                 ← Logos, color guides, design tokens
@@ -213,6 +254,9 @@ docs/                         ← Project-level documentation
 | `/three-brain` | Auto-route work to Codex (review/rescue) or Gemini (multimodal/long-context) — requires codex-cli + gemini-cli |
 | `/autoresearch` | Autonomous ML research — modify GPT training code, run 5-min experiments, keep improvements (~12 exp/hour, ~100 overnight) |
 | `/lightrag` | Graph-based RAG — knowledge extraction, entity-relationship Q&A, multimodal docs (PDFs, images), Web UI + REST API |
+| `/openspace` | Self-evolving skill system — skills auto-fix, auto-improve, auto-learn; 46% token reduction; cloud skill sharing |
+| `/delegate-task` | Delegate complex tasks to OpenSpace's grounding agent — auto skill evolution, search, fix, upload |
+| `/skill-discovery` | Search local + cloud skills before starting work — decide: follow, delegate, or skip |
 
 **Superpowers skills** auto-trigger based on context (brainstorming, TDD, debugging, code review, planning, subagents, git worktrees). No manual invoke needed.
 
@@ -238,6 +282,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `n8n-mcp` | n8n workflow automation |
 | `vapi-mcp` | Voice AI — assistants, calls, phone numbers |
 | `notebooklm-mcp` | Google NotebookLM — notebooks, AI queries, podcasts/videos (backup — prefer `nlm` CLI) |
+| `openspace` | Self-evolving skills — execute tasks, search/fix/upload skills, auto skill evolution (FIX/DERIVED/CAPTURED) |
 | `apify` | Large-scale web scraping via Apify marketplace |
 | `zep-mcp` | Zep long-term memory documentation |
 | `alpaca-mcp` | Algorithmic trading (paper mode) |

@@ -16,6 +16,27 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-05-04 — Hook paths use directory-walking instead of git rev-parse
+- **Decision:** All hook commands in `settings.json` now search upwards from the current directory to find `.claude/hooks/*.sh` scripts instead of using `git rev-parse --show-toplevel`.
+- **Why:** The `tools/openspace/` directory contains its own `.git` repository (cloned from HKUDS/OpenSpace), so `git rev-parse --show-toplevel` returns the wrong root when executed from within that subdirectory. This caused stop.sh to fail with "No such file or directory" errors when the working directory was inside `tools/openspace/`.
+- **Implication:** 
+  - All four hooks (Setup, PreToolUse, PostToolUse, Stop) now use: `bash -c 'dir="$(pwd)"; while [ "$dir" != "/" ] && [ ! -f "$dir/.claude/hooks/<script>.sh" ]; do dir="$(dirname "$dir")"; done; if [ -f "$dir/.claude/hooks/<script>.sh" ]; then bash "$dir/.claude/hooks/<script>.sh"; fi'`
+  - Hooks work from any directory in the project, including nested git repositories
+  - More robust than git-based path resolution
+  - Pattern is portable across all Unix-like systems (macOS, Linux, Git Bash on Windows)
+
+## 2026-05-04 — OpenSpace CLI-first priority established
+- **Decision:** OpenSpace follows CLI-first pattern (like Playwright and Firecrawl). Always try CLI commands before escalating to MCP tools.
+- **Why:** MCP protocol overhead consumes ~200-500 tokens per call. CLI execution via Bash is token-free beyond the command itself. Over 20 OpenSpace operations, this saves 4K-10K tokens.
+- **Implication:** 
+  - Priority order: (1) `openspace` CLI via Bash → (2) `mcp__openspace__*` tools as backup
+  - CLI handles: task execution (`--query`), skill search (`--search`), download/upload (`openspace-download-skill`, `openspace-upload-skill`)
+  - MCP escalation only when: structured output needed, multi-step workflows require state persistence, integration with other MCP tools, automatic skill evolution tracking
+  - CLI saves cumulative tokens on repeated OpenSpace usage
+  - SKILL.md updated with CLI vs MCP decision matrix
+  - CLAUDE.md routing table and Key Commands section updated to reflect CLI-first pattern
+  - Pattern consistency: OpenSpace, Playwright, Firecrawl, NotebookLM all follow same CLI-first architecture
+
 ## 2026-05-03 — Fixed Windows hook paths to use absolute paths
 - **Decision:** Updated all hook commands in `settings.json` to use `$(git rev-parse --show-toplevel)` for absolute path resolution instead of relative paths.
 - **Why:** Git Bash on Windows cannot resolve relative paths like `.claude/hooks/stop.sh` when invoked from Claude Code's hook system. The relative path works in a terminal but fails when executed as a hook command because the working directory context is different.
@@ -148,9 +169,8 @@ Architectural and technical decisions made during sessions — with date and rat
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-05-03 — edit or delete below -->
-- /compact-memory Results\n\n| Metric | Result |\n|--------|--------|\n| **memory-sessions.md** | 237 â†’ 96 lines (59% reduction, 141 lines saved) |\n| **memory-decisions.md** | 135 â†’ 120 lines (11% reduction, 15 lines saved) |\n| **Knowledge graph entities** | 5 new entities synced (AutoResearch Integration, CLI-First Architecture Pattern, Context Token Optimization Stack, Setup Flow Architecture, MCP and Plugin Ecosystem) |\n| **Total token savings** | ~780 tokens per session (~156 lines Ã— 5 tokens/line) |\n\n**What was cleaned:**\n- Compressed 14 older sessions (May 1, Apr 30, Apr 29, Apr 28, Apr 27, Apr 22, Apr 20) into Archive block\n- Removed 73 lines of auto-drafted session entries\n- Removed 15 lines of draft decision entries\n- All 17 current decisions validated (no obsolete entries)\n\n---\n\n### 2.
-- **NEW: Context Optimization Features section** â€” Comprehensive table documenting all token-saving strategies with savings estimates\n\n**New section added:**\n- **Context Optimization Features** â€” Documents 6 token-saving strategies: reference docs on demand, read-guard hook, memory compression, knowledge graph memory, auto-drafted cleanup, CLI-first architecture\n\n---\n\n### 3.
+<!-- Drafted 2026-05-04 — edit or delete below -->
+- OpenSpace MCP â†’ Protocol overhead (backup only)\n   - Use when: structured output needed, state persistence required,\n     integration with other MCP tools, automatic evolution tracking\n```\n\n### Token Savings:\n- ~200-500 tokens saved per CLI call vs MCP\n- Over 20 OpenSpace operations: **4K-10K tokens saved**\n\n### Pattern Consistency:\nOpenSpace now matches the same CLI-first architecture used by:\n- Playwright (`node tools/playwright.js` â†’ `playwright-mcp`)\n- Firecrawl (`firecrawl` CLI â†’ `firecrawl-mcp`)\n- NotebookLM (`nlm` CLI â†’ `notebooklm-mcp`)\n\nThe framework is now optimized for long-term token efficiency across all major integrations."}
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
