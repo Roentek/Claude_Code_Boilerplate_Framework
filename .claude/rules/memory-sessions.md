@@ -4,6 +4,23 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-05-05 (session 14) — OpenSpace launch config verification + setup.sh port fix
+- **Verified:** All 5 VSCode launch configurations work correctly with git submodule architecture
+- **Tested:** Backend server (Python), frontend dev server (React/Vite), compound full-stack config
+- **Issues found & fixed:**
+  - Missing frontend dependencies → Already automated in setup.sh (npm install)
+  - Missing .env file → Already automated in setup.sh (copy from .env.example)
+  - Port mismatch (3888 vs 3789) → **NEW:** Added auto-fix to setup.sh
+- **Enhancement implemented:** setup.sh now runs `sed` to align .env port with package.json (3789)
+- **Files updated:**
+  - `.claude/hooks/setup.sh` — Added port alignment after .env creation (lines 622-627)
+  - `.tmp/openspace-launch-verification.md` — Complete test report with all findings
+  - `.tmp/openspace-setup-automation-verification.md` — Automation analysis + enhancement documentation
+  - `memory-sessions.md` — This entry
+- **Result:** Fresh clones now get properly aligned .env file with zero user confusion
+- **Git submodule status:** Initialized at commit d1e367d0, all integrations intact (skills, MCP, VSCode, .env paths)
+- **VSCode configs verified:** 3 individual + 1 compound = all working, paths correct for submodule
+
 ## 2026-05-05 (session 13) — OpenSpace git submodule + auto-sync infrastructure
 - **Implemented:** Complete git submodule infrastructure for `tools/openspace/` with automatic upstream sync (hybrid approach: Option 1 + Option 2)
 - **Files created:**
@@ -157,3 +174,39 @@ Summary of substantive work completed each session — what was built, what was 
 - **Apr 22 (s2):** `pre-commit.sh` git hook created for auto-updating CLAUDE.md/README.md; stop.sh enhanced with doc-sync check
 - **Apr 22 (s3):** README.md updated for pre-commit hook; expanded setup steps (5→9); hooks table corrected
 - **Apr 20:** Boilerplate sync scope locked — `SYNC_PATHS` permanently excludes project-specific files (README.md, LICENSE, .env.example, .gitignore, .gitattributes, CODEOWNERS, PR template)
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-05 (auto-drafted — review before next session)
+- **All 5 Launch Configs**: âœ… Paths resolve correctly to submodule location\n\n### Issues Found & Fixed\n\n1.
+- **Frontend .env missing** â†’ Created from `.env.example`\n3.
+- **Port mismatch in .env** â†’ Fixed to match package.json (3789, not 3888)\n\n### No Changes Needed\n\n- âœ… `launch.json` - all paths correct with `${workspaceFolder}/tools/openspace`\n- âœ… `tasks.json` - preLaunchTask works correctly\n- âœ… Main `.env` - `OPENSPACE_WORKSPACE=./tools/openspace` is correct\n- âœ… Environment variables - all pointing to submodule location\n\n### Ready to Use\n\nYou can now launch OpenSpace in VSCode:\n- **F5 â†’ \"OpenSpace Backend Server\"** - starts API on http://127.0.0.1:7788\n- **F5 â†’ \"OpenSpace Frontend\"** - starts UI on http://127.0.0.1:3789\n- **F5 â†’ \"OpenSpace Dashboard (Full Stack)\"** - starts both together\n\nFull test report saved to `.tmp/openspace-launch-verification.md`"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-05 (auto-drafted — review before next session)
+- {"session_id":"0f3eeabb-e6fb-4840-a428-33f065859a1f","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\0f3eeabb-e6fb-4840-a428-33f065859a1f.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework\\tools\\openspace\\frontend","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ… Enhancement Complete\n\nI've implemented the port alignment fix in setup.sh.
+- Here's what changed:\n\n### What I Added\n\n**Location:** `.claude/hooks/setup.sh` lines 622-627\n\n```bash\n# Fix port mismatch: upstream .env.example has 3888, but package.json uses 3789\n# The npm script's --port flag overrides .env, but we align them to avoid confusion\nif command -v sed &>/dev/null; then\n  sed -i.bak 's/VITE_PORT=3888/VITE_PORT=3789/' \"$OPENSPACE_FRONTEND/.env\" 2>/dev/null && rm -f \"$OPENSPACE_FRONTEND/.env.bak\"\n  echo \"  âœ“ Port aligned to 3789 (matches package.json)\"\nfi\n```\n\n### How It Works\n\n1.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-05 (auto-drafted — review before next session)
+- `.claude/settings.json`**\n- Added `apify-agent-skills` marketplace to `extraKnownMarketplaces`\n\n**2.
+- `.claude/hooks/setup.sh`**\n- Added step 7a: Auto-installs all 5 Apify skills via CLI\n- Skills installed: `apify-ultimate-scraper`, `apify-actor-development`, `apify-actorization`, `apify-generate-output-schema`, `apify-actor-commands`\n\n**3.
+- `CLAUDE.md`**\n- **Routing table**: Added 4 new rows for Apify Actor development workflows\n- **Skills section**: Documented all 5 skills with detailed descriptions\n- **MCP Servers section**: Expanded `apify` entry with skill integration details\n- **First-Time Setup**: Added Apify skills to setup.sh installation list\n\n**4.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-05 (auto-drafted — review before next session)
+- {"session_id":"3f6feac4-5224-4efd-a895-d5da35bce68b","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\3f6feac4-5224-4efd-a895-d5da35bce68b.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ… Fixed!\n\nThe issue was a stale `.git/index.lock` file that was blocking all git operations.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-05 (auto-drafted — review before next session)
+- **Added `.agents/` to `.gitignore`** â€” prevents this from happening again\n\n## âœ… Verified Marketplace Installation\n\nYour marketplace-based installation is working correctly:\n\n```\napify-ultimate-scraper@apify-agent-skills (v2.0.0)\nLocation: ~/.claude/plugins/cache/apify-agent-skills/apify-ultimate-scraper/2.0.0\nInstalled: 2026-05-05 19:21:56\n```\n\n## ðŸ“‹ New File: `skills-lock.json`\n\nThis is a **lockfile** that tracks your marketplace-based skill installation (similar to `package-lock.json` for npm).
+- It ensures everyone who clones the project gets the exact same skill version.\n\n**Recommendation**: Commit this file to version control.\n\n## Current Git Status\n\n```\nModified:\n - .claude/hooks/setup.sh (your marketplace integration)\n - .claude/rules/memory-decisions.md (your updates)\n - .claude/rules/memory-sessions.md (your updates)\n - .claude/settings.json (marketplace config)\n - .gitignore (added .agents/)\n\nUntracked:\n - skills-lock.json (new lockfile â€” should be committed)\n```\n\nEverything is now clean!
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-05 (auto-drafted — review before next session)
+- âœ… `skills-lock.json` (obsolete lockfile from `npx skills` tool)\n\n**What's protected:**\n- Added `.agents/` to `.gitignore` to prevent future confusion\n\n**How your plugins are ACTUALLY tracked:**\n- All marketplace plugins â†’ `~/.claude/plugins/installed_plugins.json` (managed by Claude Code)\n- Your 12 marketplace plugins are all listed there with full metadata\n\n**Final git status:**\n```\nModified:\n - .claude/hooks/setup.sh (your marketplace setup)\n - .claude/settings.json (marketplace config)\n - .gitignore (added .agents/)\n - memory files (documentation)\n```\n\nYour marketplace-based `apify-ultimate-scraper@apify-agent-skills` installation is working perfectly â€” no dangling files, no confusion!

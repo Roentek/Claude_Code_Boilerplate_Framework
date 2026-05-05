@@ -16,6 +16,21 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-05-05 — Apify agent skills integrated (5 skills from apify/agent-skills marketplace)
+- **Decision:** Added `apify/agent-skills` marketplace to `settings.json` and integrated all 5 skills: `apify-ultimate-scraper`, `apify-actor-development`, `apify-actorization`, `apify-generate-output-schema`, and `apify-actor-commands`.
+- **Why:** Provides comprehensive guided workflows for the entire Apify ecosystem — from using existing Actors for data extraction (130+ platforms) to developing custom Actors in JS/TS/Python. Previously only `apify-ultimate-scraper` was installed manually; now all skills install automatically via `setup.sh`.
+- **Implication:**
+  - Marketplace added to `settings.json` → `extraKnownMarketplaces` → `apify-agent-skills`
+  - Setup.sh step 7a: auto-installs all 5 Apify skills via `claude skill install <skill>@apify-agent-skills`
+  - CLAUDE.md routing table expanded: 4 new rows for Actor development workflows
+  - CLAUDE.md Skills section: 5 new skills documented (apify-ultimate-scraper, actor-development, actorization, generate-output-schema, create-actor)
+  - CLAUDE.md MCP Servers section: apify entry expanded with full skill integration details (14 workflow guides, intelligent CLI/MCP routing)
+  - README.md updated: step 7a added to Quick Start, new "Apify Agent Skills" section in Skills table, marketplace table updated, MCP Servers → apify entry expanded
+  - Apify MCP integration now routes through skills: `/apify-ultimate-scraper` intelligently chooses between `apify` CLI (lightweight, token-free) and MCP tools (batch operations, schema extraction) based on task type
+  - 14 pre-written workflow guides cover: lead generation, competitive intel, influencer vetting, brand monitoring, review analysis, content/SEO, social analytics, trend research, job market/recruitment, real estate/hospitality, e-commerce price monitoring, contact enrichment, knowledge base/RAG, company research
+  - Actor development stack now fully supported: create → debug → actorize existing code → generate schemas → deploy
+  - Source: https://github.com/apify/agent-skills
+
 ## 2026-05-05 — OpenSpace converted to git submodule with auto-sync
 - **Decision:** `tools/openspace/` is now a git submodule (hybrid: Option 1 + Option 2) — tracks specific upstream commits while auto-syncing every session via `openspace-sync.sh` hook.
 - **Why:** 
@@ -182,3 +197,8 @@ Architectural and technical decisions made during sessions — with date and rat
 - **Decision:** `SYNC_PATHS` is permanently locked to: `.claude/`, `workflows/`, `tools/`, `brand_assets/`, `CLAUDE.md`, `.mcp.json`
 - **Why:** Project-specific files (`README.md`, `LICENSE`, `.env.example`, `.gitignore`, `.gitattributes`, `CODEOWNERS`, `.github/PULL_REQUEST_TEMPLATE.md`) must never be overwritten by upstream boilerplate syncs — they carry per-project customizations
 - **Implication:** Never re-add the excluded files to `SYNC_PATHS` in any sync script, edge function, or workflow config
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-05 — edit or delete below -->
+- {"session_id":"0f3eeabb-e6fb-4840-a428-33f065859a1f","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\0f3eeabb-e6fb-4840-a428-33f065859a1f.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ… Verification Complete\n\nI've thoroughly tested all OpenSpace VSCode launch configurations with the new git submodule architecture.

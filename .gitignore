@@ -140,6 +140,7 @@ vite.config.ts.timestamp-*
 
 # WAT Framework
 .tmp/
+.agents/
 credentials.json
 token.json
 settings.local.json

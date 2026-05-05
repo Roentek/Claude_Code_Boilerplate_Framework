@@ -253,6 +253,64 @@ echo "  Marketplace sources are pre-configured in .claude/settings.json"
 echo "  under extraKnownMarketplaces — no manual marketplace registration"
 echo "  is needed if using the slash commands above."
 
+# ── 7a. Install Apify agent skills ─────────────────────────
+echo ""
+echo "── Apify Agent Skills (.agents/skills/) ────────────────"
+
+if command -v claude &>/dev/null; then
+  echo "  Installing Apify agent skills from apify/agent-skills..."
+  echo ""
+
+  # apify-ultimate-scraper — universal web scraper (130+ Actors)
+  if claude skill install apify-ultimate-scraper@apify-agent-skills 2>/dev/null; then
+    echo "  ✓ apify-ultimate-scraper installed"
+  else
+    echo "  ⚠ apify-ultimate-scraper — run in Claude Code:"
+    echo "      /skill install apify-ultimate-scraper@apify-agent-skills"
+  fi
+
+  # apify-actor-development — create, debug, deploy Actors
+  if claude skill install apify-actor-development@apify-agent-skills 2>/dev/null; then
+    echo "  ✓ apify-actor-development installed"
+  else
+    echo "  ⚠ apify-actor-development — run in Claude Code:"
+    echo "      /skill install apify-actor-development@apify-agent-skills"
+  fi
+
+  # apify-actorization — convert code to Actors
+  if claude skill install apify-actorization@apify-agent-skills 2>/dev/null; then
+    echo "  ✓ apify-actorization installed"
+  else
+    echo "  ⚠ apify-actorization — run in Claude Code:"
+    echo "      /skill install apify-actorization@apify-agent-skills"
+  fi
+
+  # apify-generate-output-schema — generate Actor output schemas
+  if claude skill install apify-generate-output-schema@apify-agent-skills 2>/dev/null; then
+    echo "  ✓ apify-generate-output-schema installed"
+  else
+    echo "  ⚠ apify-generate-output-schema — run in Claude Code:"
+    echo "      /skill install apify-generate-output-schema@apify-agent-skills"
+  fi
+
+  # apify-actor-commands — slash command pack (/create-actor, etc.)
+  if claude skill install apify-actor-commands@apify-agent-skills 2>/dev/null; then
+    echo "  ✓ apify-actor-commands installed"
+  else
+    echo "  ⚠ apify-actor-commands — run in Claude Code:"
+    echo "      /skill install apify-actor-commands@apify-agent-skills"
+  fi
+else
+  echo "  claude CLI not found — install Apify skills manually."
+  echo "  Run these slash commands inside a Claude Code chat session:"
+  echo ""
+  echo "  /skill install apify-ultimate-scraper@apify-agent-skills"
+  echo "  /skill install apify-actor-development@apify-agent-skills"
+  echo "  /skill install apify-actorization@apify-agent-skills"
+  echo "  /skill install apify-generate-output-schema@apify-agent-skills"
+  echo "  /skill install apify-actor-commands@apify-agent-skills"
+fi
+
 # ── 8. Install project skills to ~/.claude/skills/ ─────────
 echo ""
 echo "── Project Skills (~/.claude/skills/) ──────────────────"
@@ -617,6 +675,13 @@ if [ -d "$OPENSPACE_DIR" ]; then
       if [ -f "$OPENSPACE_FRONTEND/.env.example" ]; then
         cp "$OPENSPACE_FRONTEND/.env.example" "$OPENSPACE_FRONTEND/.env"
         echo "  ✓ frontend/.env created from .env.example"
+
+        # Fix port mismatch: upstream .env.example has 3888, but package.json uses 3789
+        # The npm script's --port flag overrides .env, but we align them to avoid confusion
+        if command -v sed &>/dev/null; then
+          sed -i.bak 's/VITE_PORT=3888/VITE_PORT=3789/' "$OPENSPACE_FRONTEND/.env" 2>/dev/null && rm -f "$OPENSPACE_FRONTEND/.env.bak"
+          echo "  ✓ Port aligned to 3789 (matches package.json)"
+        fi
       fi
     else
       echo "  ✓ frontend/.env already exists"

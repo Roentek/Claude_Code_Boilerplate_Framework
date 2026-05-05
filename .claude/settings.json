@@ -157,7 +157,8 @@
     "codex@openai-codex": true,
     "impeccable@impeccable": true,
     "cc-gemini-plugin@cc-gemini-plugin": true,
-    "cli-anything@cli-anything": true
+    "cli-anything@cli-anything": true,
+    "apify-ultimate-scraper@apify-agent-skills": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -205,6 +206,13 @@
       "source": {
         "source": "github",
         "repo": "HKUDS/CLI-Anything"
+      },
+      "autoUpdate": true
+    },
+    "apify-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "apify/agent-skills"
       },
       "autoUpdate": true
     }

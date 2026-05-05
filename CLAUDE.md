@@ -126,13 +126,13 @@ npm install
 
 # 2. Run initial setup (hooks, skills, permissions, CLI tools, git submodules)
 bash .claude/hooks/setup.sh
-# Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything),
-#           Apify agent skills (ultimate-scraper, actor-development, actorization, generate-output-schema, actor-commands),
-#           project skills, npm deps, Playwright browser,
-#           skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli,
-#           autoresearch dependencies in tools/autoresearch/ (via uv sync),
-#           lightrag dependencies in tools/lightrag/ (via uv sync),
-#           openspace submodule initialization + pip install -e . + dashboard frontend npm install
+# Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything)
+# Step 7a:  Apify agent skills (ultimate-scraper, actor-development, actorization, generate-output-schema, actor-commands)
+# Step 8:   project skills, npm deps, Playwright browser
+# Step 11:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli
+# Step 13:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
+# Step 14:  lightrag dependencies in tools/lightrag/ (via uv sync)
+# Step 15:  openspace submodule initialization + pip install -e . + dashboard frontend npm install
 
 # 3. Configure MCP credentials
 cp .claude/settings.local.json.example .claude/settings.local.json
