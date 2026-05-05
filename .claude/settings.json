@@ -76,7 +76,7 @@
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
-    "memory",
+    "memory-shrunk",
     "supabase-mcp",
     "openrouter-mcp",
     "kie-ai",
@@ -170,7 +170,8 @@
     "impeccable@impeccable": true,
     "cc-gemini-plugin@cc-gemini-plugin": true,
     "cli-anything@cli-anything": true,
-    "apify-ultimate-scraper@apify-agent-skills": true
+    "apify-ultimate-scraper@apify-agent-skills": true,
+    "caveman@caveman": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -225,6 +226,13 @@
       "source": {
         "source": "github",
         "repo": "apify/agent-skills"
+      },
+      "autoUpdate": true
+    },
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
       },
       "autoUpdate": true
     }

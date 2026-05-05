@@ -2,6 +2,30 @@
 
 Architectural and technical decisions made during sessions — with date and rationale. Update this file whenever a non-trivial decision is made or confirmed.
 
+---
+
+## 2026-05-05 — Caveman integrated as transparent token compression layer (Tier 3)
+- **Decision:** Integrated `caveman@caveman` plugin and `caveman-shrink` MCP proxy as an optional compression layer across the existing 3-tier memory system. Replaced `memory` MCP with `memory-shrunk` (caveman-wrapped) in `.mcp.json`.
+- **Why:** The framework already has robust memory systems (file-based + MCP knowledge graph), but every session loads substantial context. Caveman adds a transparent optimization layer that reduces token overhead on both inputs (via `/caveman-compress` for files and `caveman-shrink` for MCP metadata) and outputs (via `/caveman` compression modes) without changing the underlying memory architecture.
+- **Implication:**
+  - **Three-tier system becomes four** — added Tier 3: Compression Layer to `memory-guidelines.md` with full explanation of when/how to use each Caveman tool
+  - **MCP server change:** `memory` → `memory-shrunk` in `.mcp.json` and `settings.json` — wraps the standard memory MCP with `npx caveman-shrink` stdio proxy for ~50% metadata reduction
+  - **Plugin added:** `caveman@caveman` to `settings.json` → `enabledPlugins` and `extraKnownMarketplaces`
+  - **Setup automation:** Step 7b added to `setup.sh` — auto-installs caveman plugin via CLI
+  - **Documentation updated:**
+    - `memory-guidelines.md` — new Tier 3 section with tool matrix, integration points, when-to-use guide, trade-offs
+    - `CLAUDE.md` — added to Plugins, Skills (6 new commands), MCP Servers (`memory-shrunk` entry), Key Commands (caveman commands), First-Time Setup (step 7b)
+    - `README.md` — added to Plugins marketplace table, installation instructions, Enabled Plugins table, Skills section (6 commands), MCP Servers table (`memory-shrunk` entry), setup.sh step 7b
+    - `.claude/settings.local.json.example` — added activation guides for `caveman@caveman` and `memory-shrunk`
+  - **New commands available:** `/caveman` (activate compression), `/caveman-stats` (session tracking), `/caveman-compress` (shrink memory files), `/caveman-commit` (terse commits), `/caveman-review` (single-line PR comments), `/cavecrew` (compressed subagents)
+  - **Token savings:** 75% on Claude responses (output), ~46% on memory files (input), ~50% on MCP metadata (input)
+  - **Statusline integration:** `CAVEMAN_STATUSLINE_SAVINGS=1` env var shows lifetime token savings in statusline badge
+  - **Trade-offs:** Compressed output is telegraphic (fragments, dropped articles) — readable but less formal; memory file compression is one-way (keep backups); most valuable in heavy sessions, not needed for simple queries
+  - **Pattern:** Caveman is a **transparent optimization** — doesn't change what you store or how you query it, just reduces the token cost of loading/generating that content
+- **Source:** [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) — 75% token reduction validated via benchmarks (22-87% range, 65% average across diverse tasks)
+
+---
+
 <!-- Example entry format:
 ## 2026-04-06 — Use Trigger.dev for background jobs
 - **Decision:** All async/scheduled work runs as Trigger.dev tasks, not cron scripts
@@ -202,3 +226,9 @@ Architectural and technical decisions made during sessions — with date and rat
 <!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-05-05 — edit or delete below -->
 - {"session_id":"0f3eeabb-e6fb-4840-a428-33f065859a1f","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\0f3eeabb-e6fb-4840-a428-33f065859a1f.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ… Verification Complete\n\nI've thoroughly tested all OpenSpace VSCode launch configurations with the new git submodule architecture.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-05 — edit or delete below -->
+- Here's what I've done and what you need to know:\n\n## âœ… Integration Summary\n\n### Your Memory Architecture (Enhanced)\n\nYou now have a **4-tier memory system** with Caveman as an optional compression layer:\n\n1.
+- It operates as a **transparent optimization layer** that can save you significant tokens (and money) on heavy sessions without changing your workflow or memory architecture.\n\n**To activate:** Restart Claude Code  \n**To test:** Run `/caveman-stats`  \n**To read full guide:** See `.tmp/CAVEMAN_INTEGRATION_COMPLETE.md`\n\nEverything is configured, documented, and ready to go!

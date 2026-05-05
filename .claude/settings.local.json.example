@@ -27,6 +27,8 @@
     "github@claude-plugins-official": "GITHUB_PERSONAL_ACCESS_TOKEN — github.com → Settings → Developer settings → Personal access tokens → Fine-grained or classic token with 'repo' and 'read:org' scopes.",
     "cc-gemini-plugin@cc-gemini-plugin": "GEMINI_API_KEY — aistudio.google.com → Get API Key → Create API key in new project. Free tier available.",
     "context7":                          "CONTEXT7_API_KEY — context7.com → Account → API Keys. Used for live SDK/library documentation lookups via the context7 MCP server.",
+    "memory-shrunk":                     "NO KEY NEEDED — wraps the memory MCP server with caveman-shrink proxy to compress tool descriptions. Reduces context overhead by ~50% for MCP metadata. CAVEMAN_SHRINK_FIELDS controls which fields to compress (default: description). CAVEMAN_SHRINK_DEBUG=1 enables debug logging.",
+    "caveman@caveman":                   "NO KEY NEEDED — 75% token reduction on Claude responses. Commands: /caveman (activate), /caveman-commit (terse commits), /caveman-review (single-line PR comments), /caveman-stats (session token analysis), /caveman-compress (shrink memory files by 46%), /cavecrew (compressed subagents). CAVEMAN_STATUSLINE_SAVINGS=1 shows lifetime token savings in statusline.",
 
     "__note_cli_tools": "The keys below are for global CLI tools installed by setup.sh (codex-cli, gemini-cli). These run locally via Bash, not through MCP servers. Set them here AND in .env so both Claude Code and local shell scripts can access them.",
     "codex-cli (three-brain)":  "OPENAI_API_KEY — platform.openai.com → API Keys → Create new secret key. Required by codex-cli for /three-brain review/rescue routes and codex plugin.",

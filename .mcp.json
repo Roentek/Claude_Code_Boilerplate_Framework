@@ -190,6 +190,19 @@
         "OPENSPACE_WORKSPACE": "${OPENSPACE_WORKSPACE}",
         "OPENSPACE_API_KEY": "${OPENSPACE_API_KEY}"
       }
+    },
+    "memory-shrunk": {
+      "command": "npx",
+      "args": [
+        "caveman-shrink",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {
+        "CAVEMAN_SHRINK_FIELDS": "description",
+        "CAVEMAN_SHRINK_DEBUG": "0"
+      }
     }
   }
 }

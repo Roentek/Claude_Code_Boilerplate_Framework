@@ -38,9 +38,9 @@ Memories about rapidly-changing state go stale fast. When recalling them, verify
 
 ---
 
-## Two-Tier Memory System
+## Three-Tier Memory System + Compression Layer
 
-This project has two memory layers. Use the right one for the right purpose.
+This project has three memory tiers plus an optional compression layer. Use the right one for the right purpose.
 
 ### Tier 1: File-Based Memory (`.claude/rules/memory-*.md`)
 
@@ -84,3 +84,39 @@ A persistent graph database of **entities**, **relations**, and **observations**
 | "Searching for all entities related to a service" | Knowledge graph (`search_nodes`) |
 
 **Never duplicate** the same fact across both tiers. Pick the tier that best matches the query pattern you'll use to retrieve it.
+
+### Tier 3: Compression Layer (Caveman — Optional)
+
+An **optional token optimization layer** that reduces context overhead across all memory tiers without changing their structure.
+
+| Tool | Purpose |
+|------|---------|
+| `/caveman` | Activate 75% token reduction on all Claude responses (lite/full/ultra modes) |
+| `/caveman-compress` | Shrink memory files (memory-*.md, CLAUDE.md) by ~46% — preserves code/URLs/paths exactly |
+| `/caveman-stats` | Show actual token usage and savings from session JSONL |
+| `memory-shrunk` MCP | Wraps the `memory` MCP server to compress tool descriptions (~50% metadata reduction) |
+| `/caveman-commit` | Generate terse commit messages (≤50 chars, Conventional Commits format) |
+| `/caveman-review` | Single-line PR comments: "L42: 🔴 bug: user null. Add guard" |
+| `/cavecrew` | Compressed subagents (investigator/builder/reviewer with 60% fewer tokens) |
+
+**How it integrates:**
+
+- **Input compression:** `/caveman-compress` can shrink Tier 1 memory files; `memory-shrunk` MCP compresses Tier 2 tool descriptions
+- **Output compression:** `/caveman` reduces all Claude responses by 75% without affecting memory storage
+- **Session tracking:** `/caveman-stats` reads Claude Code session JSONL for actual token counts and cost analysis
+- **Statusline badge:** `CAVEMAN_STATUSLINE_SAVINGS=1` shows lifetime token savings in statusline
+
+**When to use:**
+
+- **Heavy sessions:** Enable `/caveman` when working with large codebases or long research tasks
+- **Memory cleanup:** Run `/caveman-compress` on memory files after `/compact-memory` for additional savings
+- **Cost optimization:** Use `/caveman-stats` to track token costs and identify high-usage patterns
+- **Quick commits/reviews:** Use `/caveman-commit` and `/caveman-review` for terse, token-efficient git workflows
+
+**Trade-offs:**
+
+- **Readability:** Compressed output is telegraphic (fragments, dropped articles) — readable but less formal
+- **Reversibility:** Memory file compression is one-way; keep backups if experimenting
+- **Selective use:** Not needed for simple queries; most valuable in long sessions with heavy context
+
+Caveman is a **transparent optimization layer** — it doesn't change what you store or how you query it, just how much space it takes.

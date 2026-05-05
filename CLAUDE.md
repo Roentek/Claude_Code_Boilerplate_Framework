@@ -98,6 +98,14 @@ openspace-upload-skill /path/to/skill/dir # Upload to cloud (requires OPENSPACE_
 # Submodule updates (automatic via stop hook, or manual)
 git submodule update --remote tools/openspace  # Manual: pull latest from upstream
 
+# Caveman — token compression (75% reduction on responses, 46% on memory files)
+/caveman                          # Activate compression mode (lite/full/ultra)
+/caveman-stats                    # Show session token usage + savings
+/caveman-compress memory-*.md     # Shrink memory files by ~46%
+/caveman-commit                   # Terse commit messages (≤50 chars)
+/caveman-review                   # Single-line PR comments
+/cavecrew                         # Compressed subagents (60% fewer tokens)
+
 # Dashboard (optional — requires Node.js ≥ 20)
 # Option 1: VSCode one-click launch (recommended)
 # Press F5 → Select "OpenSpace Dashboard (Full Stack)" → Starts both backend + frontend
@@ -126,8 +134,9 @@ npm install
 
 # 2. Run initial setup (hooks, skills, permissions, CLI tools, git submodules)
 bash .claude/hooks/setup.sh
-# Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything)
+# Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything, caveman)
 # Step 7a:  Apify agent skills (ultimate-scraper, actor-development, actorization, generate-output-schema, actor-commands)
+# Step 7b:  Caveman plugin (token compression — 75% response reduction, 46% memory file reduction)
 # Step 8:   project skills, npm deps, Playwright browser
 # Step 11:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli
 # Step 13:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
@@ -231,6 +240,7 @@ docs/                         ← Project-level documentation
 | `impeccable` | Frontend critique/polish/audit — 23 commands + anti-pattern detection |
 | `github` | Reading private repos, reviewing PRs — requires `GITHUB_PERSONAL_ACCESS_TOKEN` |
 | `cli-anything` | Generating AI-native CLIs for existing software (GIMP, Blender, LibreOffice, etc.) — 50+ apps, 2,280+ tests |
+| `caveman` | Token compression — 75% reduction on responses, 46% on memory files; terse commits/reviews; session tracking |
 
 > Disabled: `pinecone`, `supabase`, `plugin-dev` — enable in [`.claude/settings.json`](.claude/settings.json) → `enabledPlugins`.
 
@@ -274,6 +284,12 @@ docs/                         ← Project-level documentation
 | `/apify-actorization` | Convert existing code to Apify Actors — JS/TS SDK, Python async, CLI wrappers |
 | `/apify-generate-output-schema` | Generate Actor output schemas — auto-create `dataset_schema.json`, `output_schema.json`, `key_value_store_schema.json` |
 | `/create-actor` | Guided Actor scaffolding — from apify-actor-commands pack |
+| `/caveman` | Activate 75% token reduction (lite/full/ultra modes) — telegraphic responses without context loss |
+| `/caveman-stats` | Show actual session token usage, savings, and USD costs from JSONL logs |
+| `/caveman-compress` | Shrink memory files (memory-*.md, CLAUDE.md) by ~46% — preserves code/URLs/paths exactly |
+| `/caveman-commit` | Generate terse commit messages (≤50 chars, Conventional Commits format) |
+| `/caveman-review` | Single-line PR comments: "L42: 🔴 bug: user null. Add guard" |
+| `/cavecrew` | Compressed subagents (investigator/builder/reviewer with 60% fewer tokens) |
 
 **Superpowers skills** auto-trigger based on context (brainstorming, TDD, debugging, code review, planning, subagents, git worktrees). No manual invoke needed.
 
@@ -289,7 +305,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 
 | Server | Use For |
 | ------ | ------- |
-| `memory` | Persistent knowledge graph memory across sessions |
+| `memory-shrunk` | **Replaces `memory`** — Caveman-compressed knowledge graph; ~50% metadata reduction on tool descriptions |
 | `supabase-mcp` | Postgres database + Supabase platform |
 | `openrouter-mcp` | Multi-model LLM routing, benchmarking |
 | `tavily-mcp` | Web search and content extraction |

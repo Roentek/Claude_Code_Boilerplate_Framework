@@ -311,6 +311,27 @@ else
   echo "  /skill install apify-actor-commands@apify-agent-skills"
 fi
 
+# ── 7b. Install Caveman plugin (token compression) ─────────
+echo ""
+echo "── Caveman Plugin (75% token reduction) ────────────────"
+if command -v claude &>/dev/null; then
+  echo "  Installing caveman plugin from JuliusBrussee/caveman..."
+
+  if claude plugin install caveman@caveman 2>/dev/null; then
+    echo "  ✓ caveman plugin installed"
+    echo "  Commands: /caveman, /caveman-commit, /caveman-review, /caveman-stats, /caveman-compress, /cavecrew"
+    echo "  MCP proxy: memory-shrunk (wraps memory server for compressed descriptions)"
+  else
+    echo "  ⚠ caveman — run in Claude Code:"
+    echo "      /plugin install caveman@caveman"
+  fi
+else
+  echo "  claude CLI not found — install caveman manually."
+  echo "  Run this slash command inside a Claude Code chat session:"
+  echo ""
+  echo "  /plugin install caveman@caveman"
+fi
+
 # ── 8. Install project skills to ~/.claude/skills/ ─────────
 echo ""
 echo "── Project Skills (~/.claude/skills/) ──────────────────"

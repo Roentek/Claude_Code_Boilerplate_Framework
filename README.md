@@ -220,6 +220,7 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 6. **Verifies Node.js / npx** — required by all 17 npx-based MCP servers (memory, supabase, openrouter, kie-ai, tavily, trigger, pinecone, vapi, n8n, apify, zep, canva, 21st-dev, playwright-mcp, firecrawl-mcp, higgsfield, context7)
 7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max`, `andrej-karpathy-skills`, `impeccable`, `codex`, `cc-gemini-plugin`, and `cli-anything` via CLI
 7a. **Installs Apify agent skills** — installs 5 skills from `apify/agent-skills` repo: `apify-ultimate-scraper` (130+ Actors for Instagram, TikTok, LinkedIn, Google, Reddit, Amazon, etc.), `apify-actor-development` (Actor creation/debugging), `apify-actorization` (convert code to Actors), `apify-generate-output-schema` (auto-generate Actor schemas), and `apify-actor-commands` (slash command pack)
+7b. **Installs Caveman plugin** — installs `caveman@caveman` for 75% token reduction on responses and 46% reduction on memory files; includes commands: `/caveman` (activate compression), `/caveman-stats` (session token tracking), `/caveman-compress` (shrink memory files), `/caveman-commit` (terse commits), `/caveman-review` (single-line PR comments), `/cavecrew` (compressed subagents)
 8. **Installs project skills** — copies `.claude/skills/*/` to `~/.claude/skills/` where Claude Code reads them (full directory, not just SKILL.md — preserves supporting docs and examples)
 9. **Installs npm dependencies + Playwright browser** — runs `npm install` for the `playwright` package, then `npx playwright install chromium` for the browser binary used by `tools/playwright.js`
 10. **Verifies GitHub CLI** — checks `gh` is installed; required by `github@claude-plugins-official` for `Bash(gh ...)` tool calls; prints platform-specific install instructions if missing
@@ -413,6 +414,7 @@ Two registries are configured in `extraKnownMarketplaces`:
 | `impeccable` | `github.com/pbakaus/impeccable` |
 | `cli-anything` | `github.com/HKUDS/CLI-Anything` |
 | `apify-agent-skills` | `github.com/apify/agent-skills` |
+| `caveman` | `github.com/JuliusBrussee/caveman` |
 
 ### Installing Third-Party Marketplace Plugins
 
@@ -446,6 +448,13 @@ The three third-party plugins below are enabled in `settings.json` but must be i
 /plugin install cli-anything@cli-anything
 ```
 
+**Caveman** — token compression layer that reduces Claude responses by 75% and memory files by 46%. Includes session token tracking, terse commits/reviews, and compressed subagents. Commands: `/caveman`, `/caveman-stats`, `/caveman-compress`, `/caveman-commit`, `/caveman-review`, `/cavecrew`:
+
+```bash
+/plugin marketplace add JuliusBrussee/caveman
+/plugin install caveman@caveman
+```
+
 > The marketplace sources are already registered in `extraKnownMarketplaces` inside `.claude/settings.json`, so no separate marketplace registration step is needed when using the CLI: `claude plugins install ui-ux-pro-max@ui-ux-pro-max-skill`.
 
 Install or update official plugins via CLI:
@@ -463,6 +472,7 @@ claude plugins install <plugin-name>
 | **ui-ux-pro-max** | `ui-ux-pro-max@ui-ux-pro-max-skill` | Design intelligence: 67 styles, 161 palettes, 57 font pairings, 99 UX rules, 25 chart types |
 | **impeccable** | `impeccable@impeccable` | Frontend design skill: 23 commands (`/impeccable polish`, `/impeccable audit`, etc.) + 24-issue anti-pattern detection. Standalone: `npx impeccable detect` |
 | **cli-anything** | `cli-anything@cli-anything` | Generates AI-native CLIs for existing software (GIMP, Blender, LibreOffice, Audacity, etc.). 50+ apps, 2,280+ tests. Commands: `/cli-anything`, `/cli-anything:refine`, `/cli-anything:test`, `/cli-anything:validate`, `/cli-anything:list` |
+| **caveman** | `caveman@caveman` | Token compression: 75% reduction on responses, 46% on memory files. Session tracking + terse commits/reviews. Commands: `/caveman`, `/caveman-stats`, `/caveman-compress`, `/caveman-commit`, `/caveman-review`, `/cavecrew`. MCP proxy: `memory-shrunk` (wraps memory server) |
 | **github** | `github@claude-plugins-official` | GitHub operations — read/write repos, PRs, issues, branches, file contents, code search. Requires `GITHUB_PERSONAL_ACCESS_TOKEN` in `settings.local.json` |
 | **agent-sdk-dev** | `agent-sdk-dev@claude-plugins-official` | Agent scaffolding — creates Claude sub-agent definitions |
 | **claude-code-setup** | `claude-code-setup@claude-plugins-official` | Project bootstrapping and Claude Code automation recommendations |
@@ -495,6 +505,12 @@ Skills are Markdown files that expand into full instructions when invoked. Proje
 | `/loop [interval] [command]` | Runs a prompt or command on a recurring interval (e.g. `/loop 5m /command`). |
 | `/update-config` | Configures hooks, permissions, and automated behaviors in `settings.json`. |
 | `/keybindings-help` | Customizes keyboard shortcuts in `keybindings.json`. |
+| `/caveman` | Activates 75% token reduction on Claude responses (lite/full/ultra modes). Telegraphic output without context loss. |
+| `/caveman-stats` | Shows actual session token usage, savings estimate, and USD costs from Claude Code session JSONL. |
+| `/caveman-compress` | Shrinks memory files (`memory-*.md`, `CLAUDE.md`) by ~46% — preserves code, URLs, and paths exactly. |
+| `/caveman-commit` | Generates terse commit messages (≤50 chars, Conventional Commits format with reasoning over description). |
+| `/caveman-review` | Single-line PR comments in format: "L42: 🔴 bug: user null. Add guard" — no unnecessary context. |
+| `/cavecrew` | Compressed subagents (investigator, builder, reviewer) that emit ~60% fewer tokens than vanilla equivalents. |
 
 ### Superpowers Skills (auto-trigger based on context)
 
@@ -562,7 +578,7 @@ All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. C
 
 | Server | Transport | `.env` Keys Required | Purpose |
 | -------- | ----------- | --------------------- | --------- |
-| **memory** | `npx @modelcontextprotocol/server-memory` | — | Persistent knowledge graph across sessions (entities, relations, observations) |
+| **memory-shrunk** | `npx caveman-shrink @modelcontextprotocol/server-memory` | — | **Replaces `memory`** — Caveman-compressed knowledge graph with ~50% metadata reduction on tool descriptions. Wraps the standard memory server with the `caveman-shrink` stdio proxy to compress prose fields while preserving code/URLs/paths. |
 | **supabase-mcp** | `npx @supabase/mcp-server-supabase` | `SUPABASE_API_PAT` | Postgres queries, auth, storage, migrations via Supabase |
 | **openrouter-mcp** | `npx @physics91/openrouter-mcp` | `OPENROUTER_API_KEY` | Multi-model LLM routing — chat, compare, benchmark 200+ models |
 | **kie-ai** | `npx @felores/kie-ai-mcp-server` | `KIE_AI_API_KEY` | AI media generation: images (Flux, Midjourney, DALL-E), video (Kling, Sora), audio (ElevenLabs) |

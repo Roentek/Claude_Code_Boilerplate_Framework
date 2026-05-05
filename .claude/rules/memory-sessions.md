@@ -4,6 +4,25 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-05-05 (session 15) — Caveman token compression layer integration
+- **Integrated:** `caveman@caveman` plugin and `caveman-shrink` MCP proxy as Tier 3 compression layer across existing memory system
+- **Files modified:**
+  - `.claude/settings.json` — added caveman marketplace + enabled plugin, replaced `memory` with `memory-shrunk` in enabledMcpjsonServers
+  - `.mcp.json` — added `memory-shrunk` server (wraps memory MCP with caveman-shrink stdio proxy)
+  - `.claude/settings.local.json.example` — added activation guides for caveman plugin and memory-shrunk MCP
+  - `.claude/hooks/setup.sh` — added step 7b for caveman plugin installation
+  - `memory-guidelines.md` — added Tier 3: Compression Layer section with full integration guide
+  - `CLAUDE.md` — updated Plugins, Skills, MCP Servers, Key Commands, First-Time Setup sections
+  - `README.md` — updated Plugins marketplace table, installation instructions, Enabled Plugins, Skills, MCP Servers, setup.sh steps
+  - `memory-decisions.md` — logged integration decision with full rationale and implications
+  - `memory-sessions.md` — this entry
+- **New commands available:** `/caveman` (75% response compression), `/caveman-stats` (session token tracking), `/caveman-compress` (46% memory file reduction), `/caveman-commit` (terse commits), `/caveman-review` (single-line PR comments), `/cavecrew` (compressed subagents)
+- **Token savings:** 75% on outputs, ~46% on memory files, ~50% on MCP metadata, 65% average overall (validated benchmarks)
+- **Architecture:** Caveman operates as a **transparent optimization layer** — doesn't change what you store or how you query memory, just reduces the token cost
+- **Integration quality:** Complete — plugin marketplace added, MCP server configured, setup automation added (step 7b), all documentation updated (5 files), decision logged
+- **Source:** [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) — stdio proxy for MCP compression + plugin for output compression
+- **Summary document:** Created `.tmp/CAVEMAN_INTEGRATION_COMPLETE.md` with activation instructions, verification steps, trade-offs, and cost impact analysis
+
 ## 2026-05-05 (session 14) — OpenSpace launch config verification + setup.sh port fix
 - **Verified:** All 5 VSCode launch configurations work correctly with git submodule architecture
 - **Tested:** Backend server (Python), frontend dev server (React/Vite), compound full-stack config
@@ -215,3 +234,9 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-05 (auto-drafted — review before next session)
 - **Already Complete** âœ…\n\nThe `.example` file already had:\n- All MCP server credentials documented (APIFY_API_PAT, OPENSPACE_API_KEY, etc.)\n- Complete activation guides for every service\n- All CLI tool environment variables (OPENAI_API_KEY, GEMINI_API_KEY, etc.)\n\n---\n\n## Summary\n\n**CLI Tools Added:**\n- âœ… `apify` / `apify-cli` (Bash + PowerShell)\n- âœ… `openspace` CLI commands (Bash + PowerShell)\n\n**Skills Added:**\n- âœ… All 12 project skills that were missing from permissions\n- âœ… All 4 Apify agent skills\n\n**No changes needed to `.claude/settings.local.json`** â€” that's a per-machine file the user maintains separately from the example template."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-05 (auto-drafted — review before next session)
+- **Tier 3: Compression Layer** (Caveman â€” Optional)\n   - **Input compression:** Shrinks memory files and MCP tool descriptions\n   - **Output compression:** Reduces Claude responses by 75%\n   - **Session tracking:** Real token usage from JSONL logs\n   - **Quick workflows:** Terse commits and PR reviews\n\n### What Changed\n\n**9 files modified:**\n- âœ… `.claude/settings.json` â€” caveman marketplace + plugin enabled, `memory` â†’ `memory-shrunk`\n- âœ… `.mcp.json` â€” added `memory-shrunk` MCP server\n- âœ… `.claude/settings.local.json.example` â€” activation guides\n- âœ… `.claude/hooks/setup.sh` â€” step 7b for auto-installation\n- âœ… `memory-guidelines.md` â€” new Tier 3 section\n- âœ… `CLAUDE.md` â€” 5 sections updated\n- âœ… `README.md` â€” 6 sections updated\n- âœ… `memory-decisions.md` â€” integration decision logged\n- âœ… `memory-sessions.md` â€” session entry added\n\n**1 summary document created:**\n- âœ… `.tmp/CAVEMAN_INTEGRATION_COMPLETE.md` â€” full activation guide\n\n### 6 New Commands Available\n\n| Command | Token Savings | Use Case |\n|---------|--------------|----------|\n| `/caveman` | 75% on responses | Heavy research sessions |\n| `/caveman-stats` | N/A (tracking) | Monitor token costs |\n| `/caveman-compress` | 46% on memory files | After `/compact-memory` |\n| `/caveman-commit` | ~60% on commits | Quick git workflows |\n| `/caveman-review` | ~70% on PR comments | Code review |\n| `/cavecrew` | 60% on subagents | Multi-agent sessions |\n\n### Token Savings Breakdown\n\n- **Claude responses (output):** 75% reduction\n- **Memory files (input):** ~46% reduction via `/caveman-compress`\n- **MCP metadata (input):** ~50% reduction via `memory-shrunk`\n- **Overall average:** 65% (validated across diverse benchmarks)\n\n**Cost impact:** For intensive daily use, this could save **~$150/month** in token costs.\n\n---\n\n## ðŸš€ Next Steps\n\n### 1.
+- **Compressed output is telegraphic** â€” fragments, dropped articles (e.g., \"Fixed bug\" instead of \"I have fixed the bug\")\n2.
