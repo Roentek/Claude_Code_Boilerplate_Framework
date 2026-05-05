@@ -171,3 +171,8 @@ Architectural and technical decisions made during sessions — with date and rat
 <!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-05-04 — edit or delete below -->
 - OpenSpace MCP â†’ Protocol overhead (backup only)\n   - Use when: structured output needed, state persistence required,\n     integration with other MCP tools, automatic evolution tracking\n```\n\n### Token Savings:\n- ~200-500 tokens saved per CLI call vs MCP\n- Over 20 OpenSpace operations: **4K-10K tokens saved**\n\n### Pattern Consistency:\nOpenSpace now matches the same CLI-first architecture used by:\n- Playwright (`node tools/playwright.js` â†’ `playwright-mcp`)\n- Firecrawl (`firecrawl` CLI â†’ `firecrawl-mcp`)\n- NotebookLM (`nlm` CLI â†’ `notebooklm-mcp`)\n\nThe framework is now optimized for long-term token efficiency across all major integrations."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-04 — edit or delete below -->
+- **Vector Storage Architecture**\nYou want three storage backends.
