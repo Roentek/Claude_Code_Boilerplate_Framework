@@ -226,7 +226,7 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 12. **Prints authentication reminders** — lists integrations requiring a manual one-time auth step: NotebookLM (`nlm login`), Trigger.dev (`npx trigger.dev@latest login`), Google Workspace (browser OAuth), Canva (browser OAuth), Higgsfield (browser OAuth via `npx mcp-remote`), GitHub CLI (`gh auth login`), Gemini plugin (`GEMINI_API_KEY` at aistudio.google.com), and Codex plugin (`npm install -g @openai/codex`)
 13. **Installs autoresearch dependencies** — runs `uv sync` in the `tools/autoresearch/` directory to install PyTorch and ML dependencies for autonomous research experiments
 14. **Installs LightRAG dependencies** — runs `uv sync` in the `tools/lightrag/` directory to install `lightrag-hku` and dependencies for graph-based RAG
-15. **Installs OpenSpace** — runs `pip install -e .` in the `tools/openspace/` directory to install the self-evolving skill system (requires Python 3.12+); sets up the optional dashboard frontend by copying `.env.example` → `.env` and running `npm install` in `tools/openspace/frontend/` (requires Node.js ≥ 20)
+15. **Initializes OpenSpace submodule and installs** — checks if `tools/openspace/` is a git submodule and initializes it via `git submodule update --init --recursive` if not already done; then runs `pip install -e .` to install the self-evolving skill system (requires Python 3.12+); sets up the optional dashboard frontend by copying `.env.example` → `.env` and running `npm install` in `tools/openspace/frontend/` (requires Node.js ≥ 20)
 16. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
 17. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
 
@@ -241,6 +241,10 @@ rm -f .claude/.setup-complete && bash .claude/hooks/setup.sh
 ```bash
 bash .claude/hooks/setup.sh
 ```
+
+**Converting existing OpenSpace clone to submodule:**
+
+If you cloned OpenSpace before the submodule setup was added, see [`.claude/docs/openspace-submodule-conversion.md`](.claude/docs/openspace-submodule-conversion.md) for step-by-step conversion instructions. This preserves all integrations (skills, MCP, launch configs, .env paths) while enabling auto-sync with upstream.
 
 ---
 
@@ -270,10 +274,11 @@ bash .claude/hooks/setup.sh
 │   │   └── ui-ux-pro-max-instructions.md
 │   ├── hooks/
 │   │   ├── setup.sh                 # Setup hook: first-time machine bootstrapper
-│   │   ├── stop.sh                  # Stop hook: auto-drafts memory, syncs autoresearch, checks doc updates
+│   │   ├── stop.sh                  # Stop hook: syncs autoresearch + openspace, drafts memory, checks doc updates
 │   │   ├── pre-commit.sh            # Pre-commit hook: auto-updates CLAUDE.md/README.md for tracked-path changes
 │   │   ├── autosync-docs.sh         # PostToolUse hook: detects tracked-path edits, injects doc-sync reminder
 │   │   ├── autoresearch-sync.sh     # Autoresearch upstream sync (called by stop.sh every session)
+│   │   ├── openspace-sync.sh        # OpenSpace submodule sync (called by stop.sh every session)
 │   │   └── read-guard.py            # PreToolUse hook: warns on unscoped reads of large files (>200 lines)
 │   ├── rules/                       # Auto-loaded Markdown instructions (every session)
 │   │   ├── agent-instructions.md
@@ -330,7 +335,7 @@ bash .claude/hooks/setup.sh
 │   │   ├── start_server.bat         # Windows quick launcher
 │   │   ├── .venv/                   # Virtual environment (gitignored, recreated by uv sync)
 │   │   └── rag_storage/             # Knowledge graph data (gitignored, auto-created on first use)
-│   └── openspace/                   # Self-evolving skill system (HKUDS/OpenSpace)
+│   └── openspace/                   # Self-evolving skill system (git submodule → HKUDS/OpenSpace)
 │       ├── openspace/               # Core Python package (grounding, skill_engine, cloud, agents)
 │       ├── pyproject.toml           # Dependencies (litellm, anthropic, openai, mcp, etc.)
 │       ├── README.md                # Full OpenSpace documentation
@@ -612,19 +617,21 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 
 | Hook | File | Trigger | Behavior |
 | ------ | ------ | --------- | --------- |
-| **Setup** | [`setup.sh`](.claude/hooks/setup.sh) | First session open on a new machine | Bootstraps the project (see [Quick Start](#quick-start)) — 16 steps: dependencies, plugins, skills, CLI tools, autoresearch setup, lightrag setup |
-| **Stop** | [`stop.sh`](.claude/hooks/stop.sh) | Every time Claude finishes responding | (1) Auto-syncs `tools/autoresearch/` with upstream via `autoresearch-sync.sh`, (2) auto-drafts memory entries via `memory-drafter.py`, (3) checks if tracked paths changed and prompts doc update |
+| **Setup** | [`setup.sh`](.claude/hooks/setup.sh) | First session open on a new machine | Bootstraps the project (see [Quick Start](#quick-start)) — 16 steps: dependencies, plugins, skills, CLI tools, git submodules, autoresearch setup, lightrag setup, openspace submodule init + installation |
+| **Stop** | [`stop.sh`](.claude/hooks/stop.sh) | Every time Claude finishes responding | (1) Auto-syncs `tools/autoresearch/` with upstream via `autoresearch-sync.sh`, (2) auto-syncs `tools/openspace/` git submodule with upstream via `openspace-sync.sh`, (3) auto-drafts memory entries via `memory-drafter.py`, (4) checks if tracked paths changed and prompts doc update |
 | **PreToolUse** (Read) | [`read-guard.py`](.claude/hooks/read-guard.py) | Before every Read tool call | Warns when large files (>200 lines) are read without `offset`+`limit` to save tokens; always approves — advisory only |
 | **PostToolUse** | [`autosync-docs.sh`](.claude/hooks/autosync-docs.sh) | After every Write/Edit tool call | Checks if the edited file is in a tracked path; if so, injects `additionalContext` telling Claude to update CLAUDE.md/README.md immediately. CLAUDE.md and README.md are excluded to prevent update loops. Logic in `autosync-docs.py`. |
 | **pre-commit** (git) | [`pre-commit.sh`](.claude/hooks/pre-commit.sh) | Before every `git commit` | Detects staged changes to tracked paths; auto-runs `claude --print` to update CLAUDE.md and README.md, then stages the updated docs alongside the original changes |
 | **autoresearch-sync** | [`autoresearch-sync.sh`](.claude/hooks/autoresearch-sync.sh) | Called by stop.sh every session | Syncs `tools/autoresearch/` with upstream karpathy/autoresearch repo; runs silently if no changes; pulls updates if available; skips if local uncommitted changes exist |
+| **openspace-sync** | [`openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Called by stop.sh every session | Syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace repo; pulls latest commits; updates submodule pointer in parent repo; skips if uncommitted changes exist |
 
 **`stop.sh` logic:**
 
 1. **Autoresearch sync** — Calls `autoresearch-sync.sh` to pull upstream updates from karpathy/autoresearch if available (silent if no changes)
-2. **Memory auto-draft** — Calls `memory-drafter.py` to scan session transcript for memory signals (decisions, fixes, learnings) and auto-draft memory file updates
-3. **Doc-sync check** — If any tracked paths (`.claude/rules/`, `.claude/hooks/`, `.claude/scripts/`, `.mcp.json`, `workflows/`, `tools/`, etc.) were modified during the session → reports the count and prompts a manual or commit-triggered doc sync
-4. Always approves (never blocks completion)
+2. **OpenSpace submodule sync** — Calls `openspace-sync.sh` to pull upstream updates from HKUDS/OpenSpace if available; updates submodule pointer in parent repo (silent if no changes)
+3. **Memory auto-draft** — Calls `memory-drafter.py` to scan session transcript for memory signals (decisions, fixes, learnings) and auto-draft memory file updates
+4. **Doc-sync check** — If any tracked paths (`.claude/rules/`, `.claude/hooks/`, `.claude/scripts/`, `.mcp.json`, `workflows/`, `tools/`, etc.) were modified during the session → reports the count and prompts a manual or commit-triggered doc sync
+5. Always approves (never blocks completion)
 
 **`pre-commit.sh` logic:**
 
@@ -741,7 +748,7 @@ The framework includes several automated features to minimize token consumption:
 
 **Source:** [github.com/HKUDS/LightRAG](https://github.com/HKUDS/LightRAG) (EMNLP 2025, 13K+ stars)
 
-### Quick Start
+### LightRAG Quick Start
 
 ```bash
 # 1. Navigate to LightRAG directory
@@ -759,19 +766,22 @@ cp .env.example .env
 
 ### Starting the Server
 
-**Method 1: VSCode Debug (Recommended)**
+**Method 1: VSCode Debug (Recommended)**  
+
 1. Press `F5` (or Run → Start Debugging)
 2. Select "**LightRAG Server**" from dropdown
-3. Browser automatically opens at http://localhost:9621
+3. Browser automatically opens at [LightRAG Server](http://localhost:9621)
 4. Full debugging support with breakpoints
 
-**Method 2: Quick Start Script (Windows)**
+**Method 2: Quick Start Script (Windows)**  
+
 ```bash
 cd tools/lightrag
 ./start_server.bat
 ```
 
-**Method 3: Command Line**
+**Method 3: Command Line**  
+
 ```bash
 cd tools/lightrag
 uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_storage
@@ -779,9 +789,9 @@ uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_st
 
 ### Access Points
 
-- **Web UI:** http://localhost:9621 (knowledge graph visualization, insert/query forms)
-- **API Documentation:** http://localhost:9621/docs (Swagger UI)
-- **Alternative Docs:** http://localhost:9621/redoc (ReDoc)
+- [Web UI](http://localhost:9621) (knowledge graph visualization, insert/query forms)
+- [API Documentation](http://localhost:9621/docs) (Swagger UI)
+- [Alternative Docs](http://localhost:9621/redoc) (ReDoc)
 
 ### Configuration
 
@@ -806,6 +816,7 @@ PORT=9621
 ```
 
 **Alternative LLM Providers:**
+
 - **Anthropic Claude:** Set `LLM_BINDING=anthropic` + `ANTHROPIC_API_KEY`
 - **Google Gemini:** Set `LLM_BINDING=gemini` + `GEMINI_API_KEY`
 - **Local Ollama:** Set `LLM_BINDING=ollama` + `OLLAMA_HOST=http://localhost:11434`
@@ -838,15 +849,13 @@ PORT=9621
    - Automatically checks/installs dependencies before launch
    - Can be launched individually (requires backend running first)
 
-**Compound Configuration (Recommended):**
-
-5. **OpenSpace Dashboard (Full Stack)** ⭐
+5. **OpenSpace Dashboard (Full Stack)** ⭐ **Compound Configuration Recommended**
    - **One-click launch** — starts both backend and frontend together
    - Automatically verifies and installs frontend dependencies if missing
-   - Auto-opens browser to http://127.0.0.1:3789 when ready
+   - Auto-opens browser to [Frontend UI](http://127.0.0.1:3789) when ready
    - Stops both servers when you click the Stop button
    - **Usage:** Press `F5` → Select "**OpenSpace Dashboard (Full Stack)**"
-   - Backend API: http://127.0.0.1:7788 | Frontend UI: http://127.0.0.1:3789
+   - [Backend API](http://127.0.0.1:7788) | [Frontend UI](http://127.0.0.1:3789)
 
 ### Testing the Setup
 
@@ -858,7 +867,8 @@ uv run python test_lightrag.py
 ```
 
 Expected output:
-```
+
+```text
 [1/4] Initializing LightRAG...
 [2/4] Initializing storage...
 [3/4] Inserting test document...
@@ -893,17 +903,20 @@ The following packages are automatically installed by `uv sync`:
 ### Troubleshooting
 
 **Port already in use:**
+
 ```powershell
 # Stop any process using port 9621
 Get-NetTCPConnection -LocalPort 9621 | Select-Object -ExpandProperty OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force }
 ```
 
 **API key not found:**
+
 - Verify `OPENAI_API_KEY` is set in `tools/lightrag/.env`
 - Check that `.env` file exists (not just `.env.example`)
 - Restart the server after editing `.env`
 
 **Unicode errors on Windows:**
+
 - The VSCode debug config sets `PYTHONIOENCODING=utf-8` automatically
 - For command line: `$env:PYTHONIOENCODING="utf-8"` before starting server
 

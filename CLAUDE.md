@@ -79,6 +79,7 @@ uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_st
 ./start_server.bat
 
 # OpenSpace — self-evolving skill system (CLI first, MCP backup)
+# Git submodule — auto-syncs with upstream every session via openspace-sync.sh hook
 cd tools/openspace
 pip install -e .                           # Install OpenSpace (done by setup.sh)
 
@@ -90,6 +91,9 @@ openspace-upload-skill /path/to/skill/dir # Upload to cloud (requires OPENSPACE_
 
 # MCP (backup — use when CLI output insufficient or need structured results)
 # Use mcp__openspace__* tools via ToolSearch when CLI doesn't meet needs
+
+# Submodule updates (automatic via stop hook, or manual)
+git submodule update --remote tools/openspace  # Manual: pull latest from upstream
 
 # Dashboard (optional — requires Node.js ≥ 20)
 # Option 1: VSCode one-click launch (recommended)
@@ -117,14 +121,14 @@ npm run dev                                        # Terminal 2: Frontend → ht
 # 1. Install dependencies
 npm install
 
-# 2. Run initial setup (hooks, skills, permissions, CLI tools)
+# 2. Run initial setup (hooks, skills, permissions, CLI tools, git submodules)
 bash .claude/hooks/setup.sh
 # Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything),
 #           project skills, npm deps, Playwright browser,
 #           skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli,
 #           autoresearch dependencies in tools/autoresearch/ (via uv sync),
 #           lightrag dependencies in tools/lightrag/ (via uv sync),
-#           openspace + dashboard frontend in tools/openspace/ (pip install -e . + npm install)
+#           openspace submodule initialization + pip install -e . + dashboard frontend npm install
 
 # 3. Configure MCP credentials
 cp .claude/settings.local.json.example .claude/settings.local.json
@@ -145,6 +149,10 @@ cp .env.example .env
 # If setup.sh was already run, you'll see:
 cat .claude/.setup-complete
 ```
+
+**Converting existing OpenSpace clone to submodule:**
+
+If you cloned OpenSpace before the submodule setup, see [`.claude/docs/openspace-submodule-conversion.md`](.claude/docs/openspace-submodule-conversion.md) for conversion instructions.
 
 ---
 
@@ -186,7 +194,7 @@ tools/                        ← Deterministic execution scripts (Python/Node)
     test_lightrag.py          ← Test script (insert/query example)
     start_server.bat          ← Windows quick launcher
     rag_storage/              ← Knowledge graph data (gitignored, auto-created)
-  openspace/                  ← Self-evolving skill system (MCP server + CLI)
+  openspace/                  ← Self-evolving skill system (git submodule — auto-syncs with upstream)
     openspace/                ← Core Python package
     pyproject.toml            ← Dependencies (litellm, anthropic, openai, etc.)
     README.md                 ← Full OpenSpace documentation
@@ -394,9 +402,11 @@ tools/lightrag/
 | Hook | File | Behavior |
 | ---- | ---- | -------- |
 | `PreToolUse` (Read) | [`.claude/hooks/read-guard.py`](.claude/hooks/read-guard.py) | Warns when large files are read without `offset`+`limit` to save tokens |
-| `Stop` | [`.claude/hooks/stop.sh`](.claude/hooks/stop.sh) | Scans session for fixes; auto-drafts memory entries; flags tracked-path doc changes |
+| `Stop` | [`.claude/hooks/stop.sh`](.claude/hooks/stop.sh) | Calls autoresearch-sync + openspace-sync; drafts memory entries; flags tracked-path doc changes |
 | `PostToolUse` (Write/Edit) | [`.claude/hooks/autosync-docs.sh`](.claude/hooks/autosync-docs.sh) | After edits to tracked paths, injects context to update CLAUDE.md/README.md |
 | `pre-commit` (git) | [`.claude/hooks/pre-commit.sh`](.claude/hooks/pre-commit.sh) | Auto-updates CLAUDE.md and README.md before commits that touch tracked paths |
+| `autoresearch-sync` | [`.claude/hooks/autoresearch-sync.sh`](.claude/hooks/autoresearch-sync.sh) | Auto-syncs `tools/autoresearch/` with upstream karpathy/autoresearch (called by stop hook) |
+| `openspace-sync` | [`.claude/hooks/openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Auto-syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace (called by stop hook) |
 
 > Add new hooks in [`.claude/settings.json`](.claude/settings.json) under `"hooks"`.
 
