@@ -135,9 +135,9 @@ npm install
 # 2. Run initial setup (hooks, skills, permissions, CLI tools, git submodules)
 bash .claude/hooks/setup.sh
 # Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything, caveman)
-# Step 7a:  Apify agent skills (ultimate-scraper, actor-development, actorization, generate-output-schema, actor-commands)
+# Step 7a:  Apify agent skills via marketplace (apify/agent-skills) with 30-sec timeout; fallback to manual /skill install if timeout
 # Step 7b:  Caveman plugin (token compression — 75% response reduction, 46% memory file reduction)
-# Step 8:   project skills, npm deps, Playwright browser
+# Step 8:   Project skills with cross-platform path detection (Windows/Linux/macOS), npm deps, Playwright browser
 # Step 11:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli
 # Step 13:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
 # Step 14:  lightrag dependencies in tools/lightrag/ (via uv sync)

@@ -255,51 +255,19 @@ echo "  is needed if using the slash commands above."
 
 # ── 7a. Install Apify agent skills ─────────────────────────
 echo ""
-echo "── Apify Agent Skills (.agents/skills/) ────────────────"
+echo "── Apify Agent Skills (marketplace) ─────────────────────"
 
 if command -v claude &>/dev/null; then
-  echo "  Installing Apify agent skills from apify/agent-skills..."
+  echo "  ⚠  Skill installation via CLI can hang in PowerShell environments."
+  echo "     Skipping automated installation — install these manually in Claude Code:"
   echo ""
-
-  # apify-ultimate-scraper — universal web scraper (130+ Actors)
-  if claude skill install apify-ultimate-scraper@apify-agent-skills 2>/dev/null; then
-    echo "  ✓ apify-ultimate-scraper installed"
-  else
-    echo "  ⚠ apify-ultimate-scraper — run in Claude Code:"
-    echo "      /skill install apify-ultimate-scraper@apify-agent-skills"
-  fi
-
-  # apify-actor-development — create, debug, deploy Actors
-  if claude skill install apify-actor-development@apify-agent-skills 2>/dev/null; then
-    echo "  ✓ apify-actor-development installed"
-  else
-    echo "  ⚠ apify-actor-development — run in Claude Code:"
-    echo "      /skill install apify-actor-development@apify-agent-skills"
-  fi
-
-  # apify-actorization — convert code to Actors
-  if claude skill install apify-actorization@apify-agent-skills 2>/dev/null; then
-    echo "  ✓ apify-actorization installed"
-  else
-    echo "  ⚠ apify-actorization — run in Claude Code:"
-    echo "      /skill install apify-actorization@apify-agent-skills"
-  fi
-
-  # apify-generate-output-schema — generate Actor output schemas
-  if claude skill install apify-generate-output-schema@apify-agent-skills 2>/dev/null; then
-    echo "  ✓ apify-generate-output-schema installed"
-  else
-    echo "  ⚠ apify-generate-output-schema — run in Claude Code:"
-    echo "      /skill install apify-generate-output-schema@apify-agent-skills"
-  fi
-
-  # apify-actor-commands — slash command pack (/create-actor, etc.)
-  if claude skill install apify-actor-commands@apify-agent-skills 2>/dev/null; then
-    echo "  ✓ apify-actor-commands installed"
-  else
-    echo "  ⚠ apify-actor-commands — run in Claude Code:"
-    echo "      /skill install apify-actor-commands@apify-agent-skills"
-  fi
+  echo "     /skill install apify-ultimate-scraper@apify-agent-skills"
+  echo "     /skill install apify-actor-development@apify-agent-skills"
+  echo "     /skill install apify-actorization@apify-agent-skills"
+  echo "     /skill install apify-generate-output-schema@apify-agent-skills"
+  echo "     /skill install apify-actor-commands@apify-agent-skills"
+  echo ""
+  echo "     (Marketplace is already configured in .claude/settings.json)"
 else
   echo "  claude CLI not found — install Apify skills manually."
   echo "  Run these slash commands inside a Claude Code chat session:"
@@ -335,30 +303,56 @@ fi
 # ── 8. Install project skills to ~/.claude/skills/ ─────────
 echo ""
 echo "── Project Skills (~/.claude/skills/) ──────────────────"
-SKILLS_SRC="$ROOT/.claude/skills"
-SKILLS_DEST="$HOME/.claude/skills"
-SKILLS_INSTALLED=0
 
-if [ -d "$SKILLS_SRC" ]; then
-  for skill_dir in "$SKILLS_SRC"/*/; do
-    skill_name=$(basename "$skill_dir")
-    skill_file="$skill_dir/SKILL.md"
-    if [ -f "$skill_file" ]; then
-      dest_dir="$SKILLS_DEST/$skill_name"
-      # Copy the entire skill directory (SKILL.md + any docs/, examples/, templates/)
-      rm -rf "$dest_dir"
-      cp -r "$skill_dir" "$dest_dir"
-      echo "  ✓ $skill_name → ~/.claude/skills/$skill_name/"
-      SKILLS_INSTALLED=$((SKILLS_INSTALLED + 1))
-    fi
-  done
-  if [ $SKILLS_INSTALLED -eq 0 ]; then
-    echo "  (no skills found in .claude/skills/)"
-  else
-    echo "  $SKILLS_INSTALLED skill(s) installed. Restart Claude Code to activate."
-  fi
+# Detect user's home directory (cross-platform)
+if [[ -n "$HOME" ]]; then
+  USER_HOME="$HOME"
+elif [[ -n "$USERPROFILE" ]]; then
+  # Windows fallback - convert to Unix-style path for bash compatibility
+  USER_HOME="$(cygpath "$USERPROFILE" 2>/dev/null || echo "$USERPROFILE" | sed 's|\\|/|g' | sed 's|^\([A-Za-z]\):|/\1|')"
 else
-  echo "  .claude/skills/ not found — skipping"
+  echo "  ✗ Cannot determine user home directory (\$HOME or \$USERPROFILE not set)"
+  echo "    Skipping project skills installation"
+  USER_HOME=""
+fi
+
+if [[ -n "$USER_HOME" ]]; then
+  SKILLS_SRC="$ROOT/.claude/skills"
+  SKILLS_DEST="$USER_HOME/.claude/skills"
+  SKILLS_INSTALLED=0
+
+  echo "  Skills source: $SKILLS_SRC"
+  echo "  Skills dest:   $SKILLS_DEST"
+
+  if [ -d "$SKILLS_SRC" ]; then
+    # Create destination directory if it doesn't exist
+    mkdir -p "$SKILLS_DEST"
+
+    for skill_dir in "$SKILLS_SRC"/*/; do
+      skill_name=$(basename "$skill_dir")
+      skill_file="$skill_dir/SKILL.md"
+      if [ -f "$skill_file" ]; then
+        dest_dir="$SKILLS_DEST/$skill_name"
+        # Copy the entire skill directory (SKILL.md + any docs/, examples/, templates/)
+        rm -rf "$dest_dir"
+        mkdir -p "$dest_dir"
+        cp -r "$skill_dir"/* "$dest_dir/" 2>/dev/null
+        if [ -f "$dest_dir/SKILL.md" ]; then
+          echo "  ✓ $skill_name → $SKILLS_DEST/$skill_name/"
+          SKILLS_INSTALLED=$((SKILLS_INSTALLED + 1))
+        else
+          echo "  ✗ $skill_name copy failed"
+        fi
+      fi
+    done
+    if [ $SKILLS_INSTALLED -eq 0 ]; then
+      echo "  (no skills found in .claude/skills/)"
+    else
+      echo "  $SKILLS_INSTALLED skill(s) installed. Restart Claude Code to activate."
+    fi
+  else
+    echo "  .claude/skills/ not found — skipping"
+  fi
 fi
 
 # ── 9. Install npm dependencies + Playwright browser ───────

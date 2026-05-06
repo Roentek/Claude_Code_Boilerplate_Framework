@@ -88,6 +88,7 @@
     "OPENROUTER_BASE_URL":        "",
     "OPENROUTER_MODEL":           "",
     "VAPI_SDK_KEY":               "",
+    "CAVEMAN_STATUSLINE_SAVINGS": "1",
     "ALPACA_BASE_URL": "https://paper-api.alpaca.markets/v2",
     "OPENROUTER_BASE_URL": "https://openrouter.ai/api/v1",
     "OPENROUTER_MODEL": "openrouter/auto",
