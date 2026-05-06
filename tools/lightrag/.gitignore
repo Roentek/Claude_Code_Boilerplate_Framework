@@ -25,3 +25,4 @@ vdb_*.json
 server.log
 lightrag.log
 *.log
+.worktrees/
