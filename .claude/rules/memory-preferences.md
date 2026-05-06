@@ -36,3 +36,8 @@ Stated preferences about how Claude should behave, communicate, and structure wo
 <!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-05-04 — edit or delete below -->
 - `src/lightrag_enhanced.py` - Wrapper that injects adapters into LightRAG\n\n**Does this approach sound good, or would you prefer one of the others?**"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-04 — edit or delete below -->
+- **Verify Connection**:\n   ```bash\n   cd tools/lightrag\n   uv run python setup_backends.py\n   ```\n\n### Pinecone (if enabled)\n\n**Auto-created** by setup script - no manual steps required!\n\nThe setup script will:\n- Check if index exists\n- Create index with correct dimension if missing\n- Validate dimension matches `.env` config\n\n### Manual Setup (Alternative)\n\nIf you prefer to create Pinecone index manually:\n\n```python\nfrom pinecone import Pinecone, ServerlessSpec\n\npc = Pinecone(api_key=\"your-api-key\")\n\npc.create_index(\n    name=\"lightrag-vectors\",\n    dimension=3072,  # Match EMBEDDING_DIM\n    metric=\"cosine\",\n    spec=ServerlessSpec(cloud=\"aws\", region=\"us-east-1\")\n)\n```\n\n### Troubleshooting\n\n**Supabase dimension mismatch:**\n```\nError: operator does not exist: vector(1536) <=> vector(3072)\n```\nâ†’ Your schema has wrong dimension.

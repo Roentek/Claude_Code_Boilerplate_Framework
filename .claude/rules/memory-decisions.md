@@ -247,6 +247,25 @@ Architectural and technical decisions made during sessions — with date and rat
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
+<<<<<<< HEAD
+<!-- Drafted 2026-05-04 — edit or delete below -->
+- **Vector Storage Architecture**\nYou want three storage backends.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-05 — edit or delete below -->
+- {"session_id":"9fb734f9-6f47-4e8e-af68-cfd12bed053e","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\9fb734f9-6f47-4e8e-af68-cfd12bed053e.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework\\tools\\lightrag","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"---\n\n## Spec Review Gate\n\nSpec written and committed to `docs/superpowers/specs/2026-05-04-gemini-lightrag-integration-design.md`.\n\n**Please review it and let me know if you want to make any changes before we start writing out the implementation plan.**\n\nThe spec covers:\n- Complete architecture with adapter layer pattern\n- All 5 components (LightRAGEnhanced, EmbeddingProvider, VectorAdapter, ContentIngestor, Config)\n- Full data flows (text insert, multimodal simple/advanced, graph/hybrid queries)\n- Configuration with guardrails against invalid setups\n- Backend setup (Supabase manual SQL, Pinecone auto-create)\n- Error handling strategy (fail-fast config, fail-safe runtime)\n- 7 implementation phases\n- Testing strategy\n- Usage examples\n\nReady to proceed with implementation planning?"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-05 — edit or delete below -->
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-05 — edit or delete below -->
+- **README.md Completely Rewritten**\n\n**New Sections:**\n- âœ… **Enhanced Features** overview (multimodal, multi-backend)\n- âœ… **Embedding Providers** comparison table (OpenAI vs Gemini)\n- âœ… **Backend Storage Options** (local, Supabase, Pinecone combinations)\n- âœ… **Query Modes** (graph vs hybrid)\n- âœ… **Backend Setup** instructions (Supabase manual, Pinecone auto)\n- âœ… **Usage Examples** (3 complete examples: pure LightRAG, dual backend, multimodal)\n- âœ… **Storage Architecture** (core + optional mirrors)\n- âœ… **Implementation Status** with link to design spec\n\n**Updated Sections:**\n- âœ… Environment variables (new structure)\n- âœ… Configuration (embedding providers, query modes)\n- âœ… File structure (includes src/, adapters/, ingestors/)\n\n---\n\n### 4.
+=======
 <!-- Drafted 2026-05-05 — edit or delete below -->
 - Here's what I've done and what you need to know:\n\n## âœ… Integration Summary\n\n### Your Memory Architecture (Enhanced)\n\nYou now have a **4-tier memory system** with Caveman as an optional compression layer:\n\n1.
 - It operates as a **transparent optimization layer** that can save you significant tokens (and money) on heavy sessions without changing your workflow or memory architecture.\n\n**To activate:** Restart Claude Code  \n**To test:** Run `/caveman-stats`  \n**To read full guide:** See `.tmp/CAVEMAN_INTEGRATION_COMPLETE.md`\n\nEverything is configured, documented, and ready to go!
+>>>>>>> f192ecdec673966abcfadda8ed1d13350162a81a
