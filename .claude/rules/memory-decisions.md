@@ -4,6 +4,24 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-05-06 — setup.sh PowerShell compatibility fixes
+- **Problem:** setup.sh hangs indefinitely in PowerShell during Apify skill installation (step 7a); project skills installation fails with "cannot find folder /Path/.claude/skills" error (step 8)
+- **Root causes:**
+  1. `claude skill install` commands hang when invoked from bash script running in PowerShell environment (CLI waits for input that never comes)
+  2. Path detection used `$HOME` which may not be correctly set in all Windows shells; no fallback to `$USERPROFILE`
+  3. Destination directory `~/.claude/skills` not created before copying, causing failures if directory doesn't exist
+  4. No verification that files actually copied successfully
+- **Fixes implemented:**
+  - **Step 7a (Apify skills):** Added 30-second timeout protection (if `timeout` command available); marketplace installation via `claude skill install <name>@apify-agent-skills` attempted for each of 5 skills; if timeout/failure occurs, displays manual `/skill install` commands; preserves automation where it works while providing graceful fallback
+  - **Step 8 (project skills):** Enhanced cross-platform path detection with explicit `$USERPROFILE` fallback for Windows; converts Windows paths to Unix-style for bash compatibility using `cygpath` or sed; creates destination directory if missing; verifies each copy succeeded by checking for `SKILL.md` file; adds verbose output showing source and destination paths for debugging
+- **Files updated:**
+  - `.claude/hooks/setup.sh` — rewrote steps 7a (lines 256-319) and 8 (lines 321-364)
+  - `CLAUDE.md` — updated First-Time Setup step 7a description (line 138)
+  - `README.md` — updated Quick Start step 7a and 8 descriptions (lines 222, 224)
+  - `memory-decisions.md` — this entry
+- **Testing:** User should run `rm -f .claude/.setup-complete && bash .claude/hooks/setup.sh` in PowerShell to verify fixes
+- **Timeout strategy:** Uses `timeout 30` if available (Linux/macOS with coreutils); falls back to no timeout on systems without the command; warns users they can Ctrl+C if hanging; marketplace configuration in `settings.json` → `extraKnownMarketplaces` → `apify-agent-skills`
+
 ## 2026-05-05 — Caveman integrated as transparent token compression layer (Tier 3)
 - **Decision:** Integrated `caveman@caveman` plugin and `caveman-shrink` MCP proxy as an optional compression layer across the existing 3-tier memory system. Replaced `memory` MCP with `memory-shrunk` (caveman-wrapped) in `.mcp.json`.
 - **Why:** The framework already has robust memory systems (file-based + MCP knowledge graph), but every session loads substantial context. Caveman adds a transparent optimization layer that reduces token overhead on both inputs (via `/caveman-compress` for files and `caveman-shrink` for MCP metadata) and outputs (via `/caveman` compression modes) without changing the underlying memory architecture.
