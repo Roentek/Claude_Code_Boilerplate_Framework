@@ -135,13 +135,13 @@ npm install
 # 2. Run initial setup (hooks, skills, permissions, CLI tools, git submodules)
 bash .claude/hooks/setup.sh
 # Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything, caveman)
-# Step 7a:  Apify agent skills via marketplace (apify/agent-skills) with 30-sec timeout; fallback to manual /skill install if timeout
+# Step 7a:  Apify agent skills (5 skills from apify/agent-skills marketplace) with 30-sec timeout protection; displays manual /skill install commands if timeout/failure occurs
 # Step 7b:  Caveman plugin (token compression — 75% response reduction, 46% memory file reduction)
-# Step 8:   Project skills with cross-platform path detection (Windows/Linux/macOS), npm deps, Playwright browser
+# Step 8:   Project skills with cross-platform path detection (Windows $USERPROFILE fallback, Unix-style path conversion); creates destination directory; verifies each copy succeeded
 # Step 11:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli
 # Step 13:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
 # Step 14:  lightrag dependencies in tools/lightrag/ (via uv sync)
-# Step 15:  openspace submodule initialization + pip install -e . + dashboard frontend npm install
+# Step 15:  openspace submodule initialization + pip install -e . + dashboard frontend npm install + .env port alignment (3889 → 3789 to match package.json)
 
 # 3. Configure MCP credentials
 cp .claude/settings.local.json.example .claude/settings.local.json

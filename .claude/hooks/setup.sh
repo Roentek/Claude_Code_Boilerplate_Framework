@@ -256,18 +256,62 @@ echo "  is needed if using the slash commands above."
 # ── 7a. Install Apify agent skills ─────────────────────────
 echo ""
 echo "── Apify Agent Skills (marketplace) ─────────────────────"
+echo "   Source: https://github.com/apify/agent-skills"
 
 if command -v claude &>/dev/null; then
-  echo "  ⚠  Skill installation via CLI can hang in PowerShell environments."
-  echo "     Skipping automated installation — install these manually in Claude Code:"
+  echo "  Attempting marketplace installation via CLI..."
+  echo "  (If installation hangs, press Ctrl+C and install manually in Claude Code)"
   echo ""
-  echo "     /skill install apify-ultimate-scraper@apify-agent-skills"
-  echo "     /skill install apify-actor-development@apify-agent-skills"
-  echo "     /skill install apify-actorization@apify-agent-skills"
-  echo "     /skill install apify-generate-output-schema@apify-agent-skills"
-  echo "     /skill install apify-actor-commands@apify-agent-skills"
+
+  # Check if timeout command is available for hang protection
+  TIMEOUT_CMD=""
+  if command -v timeout &>/dev/null; then
+    TIMEOUT_CMD="timeout 30"
+    echo "  Using 30-second timeout per skill"
+  fi
+
+  # apify-ultimate-scraper — universal web scraper (130+ Actors)
+  if $TIMEOUT_CMD claude skill install apify-ultimate-scraper@apify-agent-skills 2>/dev/null; then
+    echo "  ✓ apify-ultimate-scraper installed"
+  else
+    echo "  ⚠ apify-ultimate-scraper — install manually:"
+    echo "      /skill install apify-ultimate-scraper@apify-agent-skills"
+  fi
+
+  # apify-actor-development — create, debug, deploy Actors
+  if $TIMEOUT_CMD claude skill install apify-actor-development@apify-agent-skills 2>/dev/null; then
+    echo "  ✓ apify-actor-development installed"
+  else
+    echo "  ⚠ apify-actor-development — install manually:"
+    echo "      /skill install apify-actor-development@apify-agent-skills"
+  fi
+
+  # apify-actorization — convert code to Actors
+  if $TIMEOUT_CMD claude skill install apify-actorization@apify-agent-skills 2>/dev/null; then
+    echo "  ✓ apify-actorization installed"
+  else
+    echo "  ⚠ apify-actorization — install manually:"
+    echo "      /skill install apify-actorization@apify-agent-skills"
+  fi
+
+  # apify-generate-output-schema — generate Actor output schemas
+  if $TIMEOUT_CMD claude skill install apify-generate-output-schema@apify-agent-skills 2>/dev/null; then
+    echo "  ✓ apify-generate-output-schema installed"
+  else
+    echo "  ⚠ apify-generate-output-schema — install manually:"
+    echo "      /skill install apify-generate-output-schema@apify-agent-skills"
+  fi
+
+  # apify-actor-commands — slash command pack (/create-actor, etc.)
+  if $TIMEOUT_CMD claude skill install apify-actor-commands@apify-agent-skills 2>/dev/null; then
+    echo "  ✓ apify-actor-commands installed"
+  else
+    echo "  ⚠ apify-actor-commands — install manually:"
+    echo "      /skill install apify-actor-commands@apify-agent-skills"
+  fi
+
   echo ""
-  echo "     (Marketplace is already configured in .claude/settings.json)"
+  echo "  Marketplace configured in .claude/settings.json → extraKnownMarketplaces"
 else
   echo "  claude CLI not found — install Apify skills manually."
   echo "  Run these slash commands inside a Claude Code chat session:"
@@ -277,6 +321,8 @@ else
   echo "  /skill install apify-actorization@apify-agent-skills"
   echo "  /skill install apify-generate-output-schema@apify-agent-skills"
   echo "  /skill install apify-actor-commands@apify-agent-skills"
+  echo ""
+  echo "  Marketplace: https://github.com/apify/agent-skills"
 fi
 
 # ── 7b. Install Caveman plugin (token compression) ─────────
