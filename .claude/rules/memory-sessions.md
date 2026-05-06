@@ -4,6 +4,66 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-05-05 (session 15) — Caveman token compression layer integration
+- **Integrated:** `caveman@caveman` plugin and `caveman-shrink` MCP proxy as Tier 3 compression layer across existing memory system
+- **Files modified:**
+  - `.claude/settings.json` — added caveman marketplace + enabled plugin, replaced `memory` with `memory-shrunk` in enabledMcpjsonServers
+  - `.mcp.json` — added `memory-shrunk` server (wraps memory MCP with caveman-shrink stdio proxy)
+  - `.claude/settings.local.json.example` — added activation guides for caveman plugin and memory-shrunk MCP
+  - `.claude/hooks/setup.sh` — added step 7b for caveman plugin installation
+  - `memory-guidelines.md` — added Tier 3: Compression Layer section with full integration guide
+  - `CLAUDE.md` — updated Plugins, Skills, MCP Servers, Key Commands, First-Time Setup sections
+  - `README.md` — updated Plugins marketplace table, installation instructions, Enabled Plugins, Skills, MCP Servers, setup.sh steps
+  - `memory-decisions.md` — logged integration decision with full rationale and implications
+  - `memory-sessions.md` — this entry
+- **New commands available:** `/caveman` (75% response compression), `/caveman-stats` (session token tracking), `/caveman-compress` (46% memory file reduction), `/caveman-commit` (terse commits), `/caveman-review` (single-line PR comments), `/cavecrew` (compressed subagents)
+- **Token savings:** 75% on outputs, ~46% on memory files, ~50% on MCP metadata, 65% average overall (validated benchmarks)
+- **Architecture:** Caveman operates as a **transparent optimization layer** — doesn't change what you store or how you query memory, just reduces the token cost
+- **Integration quality:** Complete — plugin marketplace added, MCP server configured, setup automation added (step 7b), all documentation updated (5 files), decision logged
+- **Source:** [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) — stdio proxy for MCP compression + plugin for output compression
+- **Summary document:** Created `.tmp/CAVEMAN_INTEGRATION_COMPLETE.md` with activation instructions, verification steps, trade-offs, and cost impact analysis
+
+## 2026-05-05 (session 14) — OpenSpace launch config verification + setup.sh port fix
+- **Verified:** All 5 VSCode launch configurations work correctly with git submodule architecture
+- **Tested:** Backend server (Python), frontend dev server (React/Vite), compound full-stack config
+- **Issues found & fixed:**
+  - Missing frontend dependencies → Already automated in setup.sh (npm install)
+  - Missing .env file → Already automated in setup.sh (copy from .env.example)
+  - Port mismatch (3888 vs 3789) → **NEW:** Added auto-fix to setup.sh
+- **Enhancement implemented:** setup.sh now runs `sed` to align .env port with package.json (3789)
+- **Files updated:**
+  - `.claude/hooks/setup.sh` — Added port alignment after .env creation (lines 622-627)
+  - `.tmp/openspace-launch-verification.md` — Complete test report with all findings
+  - `.tmp/openspace-setup-automation-verification.md` — Automation analysis + enhancement documentation
+  - `memory-sessions.md` — This entry
+- **Result:** Fresh clones now get properly aligned .env file with zero user confusion
+- **Git submodule status:** Initialized at commit d1e367d0, all integrations intact (skills, MCP, VSCode, .env paths)
+- **VSCode configs verified:** 3 individual + 1 compound = all working, paths correct for submodule
+
+## 2026-05-05 (session 13) — OpenSpace git submodule + auto-sync infrastructure
+- **Implemented:** Complete git submodule infrastructure for `tools/openspace/` with automatic upstream sync (hybrid approach: Option 1 + Option 2)
+- **Files created:**
+  - `.claude/hooks/openspace-sync.sh` — Auto-sync hook (pulls upstream HKUDS/OpenSpace, updates submodule pointer, skips if uncommitted changes)
+  - `.claude/docs/openspace-submodule-conversion.md` — Complete 6-step conversion guide with troubleshooting, integrations checklist, benefits summary
+  - `OPENSPACE_SUBMODULE_SETUP.md` — Executive summary of all work done + next steps for user
+- **Files updated:**
+  - `.claude/hooks/stop.sh` — Added `openspace-sync.sh` call after `autoresearch-sync.sh`
+  - `.claude/hooks/setup.sh` — Added submodule initialization check in step 15 (before pip install)
+  - `CLAUDE.md` — Updated 5 sections: Key Commands (submodule note + manual update command), First-Time Setup (submodule initialization), Hooks table (autoresearch-sync + openspace-sync rows), Project Structure (openspace/ marked as git submodule), conversion guide reference
+  - `README.md` — Updated 5 sections: Quick Start step 15 (submodule initialization), Hooks table (openspace-sync row), stop.sh logic (added step 2), Project Structure (hooks/ + openspace/ entries), conversion guide reference
+  - `memory-decisions.md` — Logged hybrid submodule decision with full rationale
+  - `memory-sessions.md` — This entry
+- **Integrations verified (all intact):**
+  - ✅ Environment: `.env` paths (`OPENSPACE_HOST_SKILL_DIRS`, `OPENSPACE_WORKSPACE`)
+  - ✅ VSCode: 5 launch configs (2 LightRAG + 3 OpenSpace)
+  - ✅ Skills: `openspace/`, `delegate-task/`, `skill-discovery/`
+  - ✅ MCP: `.mcp.json` config + `settings.json` enabled
+- **Auto-sync behavior:** Runs every session via `stop.sh`; silent if up-to-date; pulls if updates available; skips if uncommitted changes; updates submodule pointer
+- **User action required:** Run 6-step conversion from `.claude/docs/openspace-submodule-conversion.md` to convert existing clone to submodule
+- **Benefits:** Reproducible builds (pinned commits) + always up-to-date (auto-sync) + fresh clone friendly (auto-init) + manual control (can pin versions)
+
+---
+
 ## 2026-05-04 (session 12) — OpenSpace CLI-first priority established
 - **Updated:** OpenSpace documentation to establish CLI-first token-saving pattern (matching Playwright, Firecrawl, NotebookLM)
 - **Files updated:**
@@ -136,96 +196,50 @@ Summary of substantive work completed each session — what was built, what was 
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-03 (auto-drafted — review before next session)
-- **Scripts section** â€” Added `memory-drafter.py` to `.claude/scripts/` in Project Structure\n3.
-- **Hooks section** â€” Added `autoresearch-sync.sh` and updated hook descriptions with new behaviors\n4.
-- **Skills list** â€” Added `/compact-memory`, `/notebooklm`, and `/three-brain` to Project Structure\n5.
+## 2026-05-05 (auto-drafted — review before next session)
+- **All 5 Launch Configs**: âœ… Paths resolve correctly to submodule location\n\n### Issues Found & Fixed\n\n1.
+- **Frontend .env missing** â†’ Created from `.env.example`\n3.
+- **Port mismatch in .env** â†’ Fixed to match package.json (3789, not 3888)\n\n### No Changes Needed\n\n- âœ… `launch.json` - all paths correct with `${workspaceFolder}/tools/openspace`\n- âœ… `tasks.json` - preLaunchTask works correctly\n- âœ… Main `.env` - `OPENSPACE_WORKSPACE=./tools/openspace` is correct\n- âœ… Environment variables - all pointing to submodule location\n\n### Ready to Use\n\nYou can now launch OpenSpace in VSCode:\n- **F5 â†’ \"OpenSpace Backend Server\"** - starts API on http://127.0.0.1:7788\n- **F5 â†’ \"OpenSpace Frontend\"** - starts UI on http://127.0.0.1:3789\n- **F5 â†’ \"OpenSpace Dashboard (Full Stack)\"** - starts both together\n\nFull test report saved to `.tmp/openspace-launch-verification.md`"}
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-03 (auto-drafted — review before next session)
-- {"session_id":"a4c834d2-d0dd-4d38-ada9-d65f35a568a4","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\a4c834d2-d0dd-4d38-ada9-d65f35a568a4.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ“ All Hooks Fixed and Tested\n\n**Issue:** Git Bash on Windows couldn't resolve relative paths when Claude Code executed hook commands.\n\n**Fix:** Updated all hook commands in `settings.json` to use absolute paths via `$(git rev-parse --show-toplevel)`.\n\n| Hook | Status | Command Pattern |\n|------|--------|-----------------|\n| **Setup** | âœ“ Syntax valid | `bash \"$(git rev-parse --show-toplevel)/.claude/hooks/setup.sh\"` |\n| **PreToolUse (Read)** | âœ“ Tested, working | `bash \"$(git rev-parse --show-toplevel)/.claude/hooks/read-guard.sh\"` |\n| **PostToolUse (Write\\|Edit)** | âœ“ Tested, working | `bash \"$(git rev-parse --show-toplevel)/.claude/hooks/autosync-docs.sh\"` |\n| **Stop** | âœ“ Tested, working | `bash \"$(git rev-parse --show-toplevel)/.claude/hooks/stop.sh\"` |\n| **autoresearch-sync** | âœ“ Syntax valid | Called by stop.sh |\n| **pre-commit** | âœ“ Syntax valid | Git pre-commit hook |\n\n**Test results:**\n- read-guard.sh: Returns `{\"decision\": \"approve\"}` âœ“\n- autosync-docs.sh: Executes without errors âœ“\n- stop.sh: Runs autoresearch-sync + memory-drafter + doc-sync check âœ“\n- All scripts pass bash syntax validation (`bash -n`) âœ“\n\n**Cross-platform:** This solution works on Windows (Git Bash), macOS, and Linux.\n\nThe stop hook error is now fixed.
+## 2026-05-05 (auto-drafted — review before next session)
+- {"session_id":"0f3eeabb-e6fb-4840-a428-33f065859a1f","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\0f3eeabb-e6fb-4840-a428-33f065859a1f.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework\\tools\\openspace\\frontend","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ… Enhancement Complete\n\nI've implemented the port alignment fix in setup.sh.
+- Here's what changed:\n\n### What I Added\n\n**Location:** `.claude/hooks/setup.sh` lines 622-627\n\n```bash\n# Fix port mismatch: upstream .env.example has 3888, but package.json uses 3789\n# The npm script's --port flag overrides .env, but we align them to avoid confusion\nif command -v sed &>/dev/null; then\n  sed -i.bak 's/VITE_PORT=3888/VITE_PORT=3789/' \"$OPENSPACE_FRONTEND/.env\" 2>/dev/null && rm -f \"$OPENSPACE_FRONTEND/.env.bak\"\n  echo \"  âœ“ Port aligned to 3789 (matches package.json)\"\nfi\n```\n\n### How It Works\n\n1.
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-03 (auto-drafted — review before next session)
-- Here's the breakdown:\n\n### Files Tracked (465KB total):\n- âœ… `.gitignore` â€” excludes build artifacts\n- âœ… `pyproject.toml` (1KB) â€” dependencies\n- âœ… `README.md` (5KB) â€” documentation  \n- âœ… `uv.lock` (456KB) â€” dependency lock file\n\n### Files Gitignored (165MB):\n- ðŸš« `.venv/` (164MB) â€” virtual environment (recreated by `uv sync`)\n- ðŸš« `lightrag_integration.egg-info/` (9KB) â€” build metadata\n- ðŸš« `rag_storage/` â€” working directory (auto-created on first use)\n- ðŸš« `kv_store_*.json`, `vdb_*.json` â€” LLM cache files (auto-created)\n\n### Documentation Updated:\n- âœ… `tools/lightrag/.gitignore` â€” created with Python/build exclusions\n- âœ… `.gitignore` â€” added Python venv patterns\n- âœ… `.claude/skills/lightrag/SKILL.md` â€” updated file structure section\n- âœ… `tools/lightrag/README.md` â€” added file structure section\n- âœ… `CLAUDE.md` â€” updated project structure\n- âœ… `README.md` â€” updated project structure\n\n**Result:** The setup is now clean and follows best practices.
-- The `.venv` directory will be recreated automatically when running `uv sync`, and `rag_storage` will be created on first use."}
+## 2026-05-05 (auto-drafted — review before next session)
+- `.claude/settings.json`**\n- Added `apify-agent-skills` marketplace to `extraKnownMarketplaces`\n\n**2.
+- `.claude/hooks/setup.sh`**\n- Added step 7a: Auto-installs all 5 Apify skills via CLI\n- Skills installed: `apify-ultimate-scraper`, `apify-actor-development`, `apify-actorization`, `apify-generate-output-schema`, `apify-actor-commands`\n\n**3.
+- `CLAUDE.md`**\n- **Routing table**: Added 4 new rows for Apify Actor development workflows\n- **Skills section**: Documented all 5 skills with detailed descriptions\n- **MCP Servers section**: Expanded `apify` entry with skill integration details\n- **First-Time Setup**: Added Apify skills to setup.sh installation list\n\n**4.
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-03 (auto-drafted — review before next session)
-- LightRAG is Working\n\nHere's your complete guide to running LightRAG on localhost:\n\n### What Just Worked:\n- âœ… Installed dependencies (lightrag-hku, fastapi, uvicorn, openai)\n- âœ… Created and ran a test script\n- âœ… Successfully inserted a document into the knowledge graph\n- âœ… Successfully queried and got results back\n\n### Quick Test (What We Just Ran):\n```bash\ncd tools/lightrag\nuv run python test_lightrag.py\n```\n\n### To Use LightRAG:\n\n**Option 1: Python Script (What the test does)**\n```python\nfrom lightrag import LightRAG, QueryParam\nfrom lightrag.llm.openai import gpt_4o_mini_complete, openai_embed\nimport asyncio\n\nasync def main():\n    # Initialize\n    rag = LightRAG(\n        working_dir=\"./rag_storage\",\n        llm_model_func=gpt_4o_mini_complete,\n        embedding_func=openai_embed\n    )\n    await rag.initialize_storages()\n    \n    # Insert document\n    await rag.ainsert(\"Your document text here...\")\n    \n    # Query\n    result = await rag.aquery(\"Your question?\", param=QueryParam(mode=\"hybrid\"))\n    print(result)\n\nasyncio.run(main())\n```\n\n**Option 2: Web Server + UI (Coming Next)**\n\nThe server needs one more dependency.
+## 2026-05-05 (auto-drafted — review before next session)
+- {"session_id":"3f6feac4-5224-4efd-a895-d5da35bce68b","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\3f6feac4-5224-4efd-a895-d5da35bce68b.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ… Fixed!\n\nThe issue was a stale `.git/index.lock` file that was blocking all git operations.
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-03 (auto-drafted — review before next session)
+## 2026-05-05 (auto-drafted — review before next session)
+- **Added `.agents/` to `.gitignore`** â€” prevents this from happening again\n\n## âœ… Verified Marketplace Installation\n\nYour marketplace-based installation is working correctly:\n\n```\napify-ultimate-scraper@apify-agent-skills (v2.0.0)\nLocation: ~/.claude/plugins/cache/apify-agent-skills/apify-ultimate-scraper/2.0.0\nInstalled: 2026-05-05 19:21:56\n```\n\n## ðŸ“‹ New File: `skills-lock.json`\n\nThis is a **lockfile** that tracks your marketplace-based skill installation (similar to `package-lock.json` for npm).
+- It ensures everyone who clones the project gets the exact same skill version.\n\n**Recommendation**: Commit this file to version control.\n\n## Current Git Status\n\n```\nModified:\n - .claude/hooks/setup.sh (your marketplace integration)\n - .claude/rules/memory-decisions.md (your updates)\n - .claude/rules/memory-sessions.md (your updates)\n - .claude/settings.json (marketplace config)\n - .gitignore (added .agents/)\n\nUntracked:\n - skills-lock.json (new lockfile â€” should be committed)\n```\n\nEverything is now clean!
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-03 (auto-drafted — review before next session)
+## 2026-05-05 (auto-drafted — review before next session)
+- âœ… `skills-lock.json` (obsolete lockfile from `npx skills` tool)\n\n**What's protected:**\n- Added `.agents/` to `.gitignore` to prevent future confusion\n\n**How your plugins are ACTUALLY tracked:**\n- All marketplace plugins â†’ `~/.claude/plugins/installed_plugins.json` (managed by Claude Code)\n- Your 12 marketplace plugins are all listed there with full metadata\n\n**Final git status:**\n```\nModified:\n - .claude/hooks/setup.sh (your marketplace setup)\n - .claude/settings.json (marketplace config)\n - .gitignore (added .agents/)\n - memory files (documentation)\n```\n\nYour marketplace-based `apify-ultimate-scraper@apify-agent-skills` installation is working perfectly â€” no dangling files, no confusion!
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-03 (auto-drafted — review before next session)
-- âœ… The browser will now auto-open when the server starts.\n\n## What I Added:\n\n```json\n\"serverReadyAction\": {\n  \"pattern\": \"Uvicorn running on\",\n  \"uriFormat\": \"http://localhost:9621\",\n  \"action\": \"openExternally\"\n}\n```\n\n**How it works:**\n1.
+## 2026-05-05 (auto-drafted — review before next session)
+- **Already Complete** âœ…\n\nThe `.example` file already had:\n- All MCP server credentials documented (APIFY_API_PAT, OPENSPACE_API_KEY, etc.)\n- Complete activation guides for every service\n- All CLI tool environment variables (OPENAI_API_KEY, GEMINI_API_KEY, etc.)\n\n---\n\n## Summary\n\n**CLI Tools Added:**\n- âœ… `apify` / `apify-cli` (Bash + PowerShell)\n- âœ… `openspace` CLI commands (Bash + PowerShell)\n\n**Skills Added:**\n- âœ… All 12 project skills that were missing from permissions\n- âœ… All 4 Apify agent skills\n\n**No changes needed to `.claude/settings.local.json`** â€” that's a per-machine file the user maintains separately from the example template."}
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-03 (auto-drafted — review before next session)
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-04 (auto-drafted — review before next session)
-- I'll ask one key question at a time.\n\n## Question 1: Multimodal Processing Strategy\n\nYour reference repo has specialized ingestors that extract text/metadata from multimodal files before embedding:\n\n- **Images**: Resize if needed, then embed the raw image bytes\n- **Video**: Extract keyframes every 5 seconds, embed each frame  \n- **Audio**: Embed the raw audio file directly\n\nLightRAG's strength is its knowledge graph built from text entities and relationships.\n\n**Which approach do you prefer for multimodal integration?**\n\n**A) Multimodal-First** (closer to your reference repo)\n- Embed images/video/audio directly with Gemini\n- Store these embeddings ONLY in Supabase/Pinecone (not in LightRAG's graph)\n- At query time: search both LightRAG graph (text) and Supabase/Pinecone (multimodal)\n- Pro: Preserves multimodal semantic search exactly as your reference repo does\n- Con: Creates two separate search systems\n\n**B) Text-Extraction Bridge** (preserves LightRAG graph)\n- Preprocess multimodal files to extract text (OCR for images, transcription for audio/video)\n- Feed the extracted text to LightRAG â†’ builds graph with entities/relations\n- Also embed original multimodal content with Gemini â†’ store in Supabase/Pinecone\n- Pro: Everything participates in the knowledge graph\n- Con: Adds dependency on OCR/transcription services\n\n**C) Hybrid** (my recommendation)\n- Support both workflows as options\n- Simple mode: Extract text only, feed to LightRAG (no multimodal embeddings)\n- Advanced mode: Extract text for graph + embed multimodal for vector search\n- Pro: Maximum flexibility\n- Con: More configuration complexity\n\nWhich approach fits your workflow best?"}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-04 (auto-drafted — review before next session)
-- `LightRAGEnhanced` (Main Entry Point)**\n\n```python\nclass LightRAGEnhanced:\n    def __init__(\n        self,\n        working_dir: str,\n        embedding_provider: str = \"openai\",  # or \"gemini\"\n        enable_supabase: bool = False,\n        enable_pinecone: bool = False,\n        multimodal_mode: str = \"simple\"  # or \"advanced\"\n    )\n```\n\n**Responsibilities:**\n- Wraps native LightRAG instance (always created, always functional)\n- Initializes embedding provider based on config\n- Initializes enabled adapters (Supabase/Pinecone)\n- Routes `insert()` calls to appropriate pipeline\n- Routes `query()` calls based on mode parameter\n\n**Key Methods:**\n- `insert(content, content_type=\"text\")` - Insert text or multimodal content\n- `query(text, mode=\"graph\", top_k=10)` - Query with mode selection\n- `sync_to_remotes()` - Manual sync trigger (for recovery)\n\n---\n\n**2.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-04 (auto-drafted — review before next session)
-- `LightRAGEnhanced` (Main Entry Point)**\n\n```python\nclass LightRAGEnhanced:\n    def __init__(\n        self,\n        working_dir: str,\n        embedding_provider: str = \"openai\",  # or \"gemini\"\n        embedding_model: str | None = None,  # Auto-selects default if None\n        enable_supabase: bool = False,\n        enable_pinecone: bool = False,\n        multimodal_mode: str = \"simple\"  # or \"advanced\"\n    )\n```\n\n**Critical Design Principle:**\n- **LightRAG Core is UNTOUCHED** - we instantiate native `LightRAG` class as-is\n- Adapters are bolt-ons that intercept embeddings after they're generated\n- If all adapters are disabled, system behaves identically to vanilla LightRAG\n\n**Responsibilities:**\n- Wraps native LightRAG instance (always created, always functional)\n- Initializes embedding provider based on config\n- Initializes enabled adapters (Supabase/Pinecone)\n- Routes `insert()` calls to appropriate pipeline\n- Routes `query()` calls based on mode parameter\n\n**Key Methods:**\n- `insert(content, content_type=\"text\")` - Insert text or multimodal content\n- `query(text, mode=\"graph\", top_k=10)` - Query with mode selection\n- `sync_to_remotes()` - Manual sync trigger (for recovery)\n\n---\n\n**2.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-04 (auto-drafted — review before next session)
-- **`.mcp.json`** â€” Added `openspace` MCP server configuration\n6.
-- **`.claude/settings.json`** â€” Added `openspace` to `enabledMcpjsonServers`\n\n**Configuration:**\n7.
-- **`.env.example`** â€” Added OpenSpace environment variables with comments\n8.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-04 (auto-drafted — review before next session)
-- `.claude/skills/openspace/SKILL.md`**\n- Added \"CLI vs MCP: Token-Saving Priority\" section with clear decision matrix\n- Added \"CLI Commands (Use These First)\" section with usage examples\n- CLI saves ~200-500 tokens per call vs MCP protocol overhead\n\n**2.
-- `memory-sessions.md`**\n- Session log entry added\n\n### Priority Order (Now Documented):\n\n```\n1.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-04 (auto-drafted — review before next session)
-- {"session_id":"dda3e218-130d-43ce-9632-b80d5e76224d","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\dda3e218-130d-43ce-9632-b80d5e76224d.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ… OpenSpace Dashboard Integrated into VSCode Launch Configurations\n\nI've added two new launch configurations for the OpenSpace dashboard.
-- **Browser opens automatically** to the dashboard at http://127.0.0.1:3789\n\n### What the Dashboard Shows:\n\nPer the frontend README, you'll see:\n- **Dashboard** â€” Overall health, pipeline stages, top skills, recent workflows\n- **Skills** â€” Searchable skill list with score breakdown\n- **Skill Detail** â€” Source preview, lineage graph, scoring metrics\n- **Workflows** â€” Recorded workflow sessions from `logs/recordings`\n- **Workflow Detail** â€” Timeline, artifacts, metadata, plans, and decisions\n\n### Files Updated:\n\n- `.vscode/launch.json` â€” Added 2 new launch configs (now 4 total)\n- `CLAUDE.md` â€” Updated Key Commands section with VSCode F5 option\n- `README.md` â€” Updated VSCode Debug Configurations section\n\nYou can now easily launch the full OpenSpace dashboard stack with full debugging support directly from VSCode!"}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-04 (auto-drafted — review before next session)
-- {"session_id":"dda3e218-130d-43ce-9632-b80d5e76224d","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\dda3e218-130d-43ce-9632-b80d5e76224d.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ… OpenSpace Frontend Setup Fully Integrated into setup.sh\n\nAll OpenSpace installation requirements are now automated in the first-time setup script.\n\n### What Was Added to setup.sh (Step 15):\n\nAfter installing the OpenSpace Python package (`pip install -e .`), the script now automatically:\n\n1.
-- **Provides clear feedback** â€” tells users the dashboard is ready and how to launch it via VSCode\n\n### Version Requirements Enforced:\n\n- **Backend:** Python 3.12+ (already enforced)\n- **Frontend:** Node.js â‰¥ 20 (now enforced with clear error messages)\n\n### Output Example (when setup.sh runs):\n\n```\nâ”€â”€ OpenSpace (Self-Evolving Skill System) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n  Installing OpenSpace from tools/openspace/ via pip...\nâœ“ OpenSpace installed successfully\nâœ“ openspace-mcp command available\n\n  Setting up OpenSpace Dashboard Frontend...\n  âœ“ frontend/.env created from .env.example\n  Installing frontend dependencies (React/Vite)...\n  âœ“ Frontend dependencies installed\n\n  Dashboard ready â€” launch via VSCode:\n    Press F5 â†’ Select 'OpenSpace Backend Server' â†’ http://127.0.0.1:7788\n    Press F5 â†’ Select 'OpenSpace Frontend' â†’ Browser opens at http://127.0.0.1:3789\n```\n\n### Files Updated:\n\n1.
-- **`.claude/hooks/setup.sh`**\n   - Added frontend setup subsection in step 15\n   - Creates `.env`, installs npm deps, validates Node.js â‰¥ 20\n   - Provides clear success/error messages\n\n2.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-04 (auto-drafted — review before next session)
-- **`OPENSPACE_HOST_SKILL_DIRS`**: Changed from absolute path to `~/.claude/skills`\n   - Works on Unix/Mac/Git Bash (the `~` expands to the user's home directory)\n   - Added comment showing Windows alternatives: `%USERPROFILE%\\.claude\\skills` or the full path\n\n2.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-04 (auto-drafted — review before next session)
-- I've implemented dynamic path detection for OpenSpace.
-- Here's what changed:\n\n## âœ… What Was Added:\n\n### 1.
-- **Updated `.env.example`**\n- Added clear comments explaining the auto-configuration\n- Shows platform-specific examples for reference\n- Makes it clear that users don't need to manually edit these paths\n\n### 3.
+## 2026-05-05 (auto-drafted — review before next session)
+- **Tier 3: Compression Layer** (Caveman â€” Optional)\n   - **Input compression:** Shrinks memory files and MCP tool descriptions\n   - **Output compression:** Reduces Claude responses by 75%\n   - **Session tracking:** Real token usage from JSONL logs\n   - **Quick workflows:** Terse commits and PR reviews\n\n### What Changed\n\n**9 files modified:**\n- âœ… `.claude/settings.json` â€” caveman marketplace + plugin enabled, `memory` â†’ `memory-shrunk`\n- âœ… `.mcp.json` â€” added `memory-shrunk` MCP server\n- âœ… `.claude/settings.local.json.example` â€” activation guides\n- âœ… `.claude/hooks/setup.sh` â€” step 7b for auto-installation\n- âœ… `memory-guidelines.md` â€” new Tier 3 section\n- âœ… `CLAUDE.md` â€” 5 sections updated\n- âœ… `README.md` â€” 6 sections updated\n- âœ… `memory-decisions.md` â€” integration decision logged\n- âœ… `memory-sessions.md` â€” session entry added\n\n**1 summary document created:**\n- âœ… `.tmp/CAVEMAN_INTEGRATION_COMPLETE.md` â€” full activation guide\n\n### 6 New Commands Available\n\n| Command | Token Savings | Use Case |\n|---------|--------------|----------|\n| `/caveman` | 75% on responses | Heavy research sessions |\n| `/caveman-stats` | N/A (tracking) | Monitor token costs |\n| `/caveman-compress` | 46% on memory files | After `/compact-memory` |\n| `/caveman-commit` | ~60% on commits | Quick git workflows |\n| `/caveman-review` | ~70% on PR comments | Code review |\n| `/cavecrew` | 60% on subagents | Multi-agent sessions |\n\n### Token Savings Breakdown\n\n- **Claude responses (output):** 75% reduction\n- **Memory files (input):** ~46% reduction via `/caveman-compress`\n- **MCP metadata (input):** ~50% reduction via `memory-shrunk`\n- **Overall average:** 65% (validated across diverse benchmarks)\n\n**Cost impact:** For intensive daily use, this could save **~$150/month** in token costs.\n\n---\n\n## ðŸš€ Next Steps\n\n### 1.
+- **Compressed output is telegraphic** â€” fragments, dropped articles (e.g., \"Fixed bug\" instead of \"I have fixed the bug\")\n2.
 
 
 <!-- DRAFT: review and edit before treating as permanent -->

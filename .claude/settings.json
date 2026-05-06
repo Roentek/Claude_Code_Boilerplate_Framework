@@ -34,6 +34,12 @@
       "Bash(npx firecrawl-cli:*)",
       "Bash(nlm:*)",
       "Bash(uvx --from notebooklm-mcp-cli nlm:*)",
+      "Bash(apify *)",
+      "Bash(npx apify-cli *)",
+      "Bash(openspace *)",
+      "Bash(openspace-download-skill *)",
+      "Bash(openspace-upload-skill *)",
+      "Bash(openspace-dashboard *)",
       "Bash(bash .claude/hooks/setup.sh)",
       "Bash(echo \"exit: $?\")",
       "Bash(git *)",
@@ -53,6 +59,12 @@
       "PowerShell(npx firecrawl-cli *)",
       "PowerShell(nlm *)",
       "PowerShell(uvx --from notebooklm-mcp-cli nlm *)",
+      "PowerShell(apify *)",
+      "PowerShell(npx apify-cli *)",
+      "PowerShell(openspace *)",
+      "PowerShell(openspace-download-skill *)",
+      "PowerShell(openspace-upload-skill *)",
+      "PowerShell(openspace-dashboard *)",
       "PowerShell(npm install *)",
       "PowerShell(Get-Process *)",
       "PowerShell(uv sync *)",
@@ -64,7 +76,7 @@
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
-    "memory",
+    "memory-shrunk",
     "supabase-mcp",
     "openrouter-mcp",
     "kie-ai",
@@ -157,7 +169,9 @@
     "codex@openai-codex": true,
     "impeccable@impeccable": true,
     "cc-gemini-plugin@cc-gemini-plugin": true,
-    "cli-anything@cli-anything": true
+    "cli-anything@cli-anything": true,
+    "apify-ultimate-scraper@apify-agent-skills": true,
+    "caveman@caveman": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -205,6 +219,20 @@
       "source": {
         "source": "github",
         "repo": "HKUDS/CLI-Anything"
+      },
+      "autoUpdate": true
+    },
+    "apify-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "apify/agent-skills"
+      },
+      "autoUpdate": true
+    },
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
       },
       "autoUpdate": true
     }

@@ -2,6 +2,30 @@
 
 Architectural and technical decisions made during sessions — with date and rationale. Update this file whenever a non-trivial decision is made or confirmed.
 
+---
+
+## 2026-05-05 — Caveman integrated as transparent token compression layer (Tier 3)
+- **Decision:** Integrated `caveman@caveman` plugin and `caveman-shrink` MCP proxy as an optional compression layer across the existing 3-tier memory system. Replaced `memory` MCP with `memory-shrunk` (caveman-wrapped) in `.mcp.json`.
+- **Why:** The framework already has robust memory systems (file-based + MCP knowledge graph), but every session loads substantial context. Caveman adds a transparent optimization layer that reduces token overhead on both inputs (via `/caveman-compress` for files and `caveman-shrink` for MCP metadata) and outputs (via `/caveman` compression modes) without changing the underlying memory architecture.
+- **Implication:**
+  - **Three-tier system becomes four** — added Tier 3: Compression Layer to `memory-guidelines.md` with full explanation of when/how to use each Caveman tool
+  - **MCP server change:** `memory` → `memory-shrunk` in `.mcp.json` and `settings.json` — wraps the standard memory MCP with `npx caveman-shrink` stdio proxy for ~50% metadata reduction
+  - **Plugin added:** `caveman@caveman` to `settings.json` → `enabledPlugins` and `extraKnownMarketplaces`
+  - **Setup automation:** Step 7b added to `setup.sh` — auto-installs caveman plugin via CLI
+  - **Documentation updated:**
+    - `memory-guidelines.md` — new Tier 3 section with tool matrix, integration points, when-to-use guide, trade-offs
+    - `CLAUDE.md` — added to Plugins, Skills (6 new commands), MCP Servers (`memory-shrunk` entry), Key Commands (caveman commands), First-Time Setup (step 7b)
+    - `README.md` — added to Plugins marketplace table, installation instructions, Enabled Plugins table, Skills section (6 commands), MCP Servers table (`memory-shrunk` entry), setup.sh step 7b
+    - `.claude/settings.local.json.example` — added activation guides for `caveman@caveman` and `memory-shrunk`
+  - **New commands available:** `/caveman` (activate compression), `/caveman-stats` (session tracking), `/caveman-compress` (shrink memory files), `/caveman-commit` (terse commits), `/caveman-review` (single-line PR comments), `/cavecrew` (compressed subagents)
+  - **Token savings:** 75% on Claude responses (output), ~46% on memory files (input), ~50% on MCP metadata (input)
+  - **Statusline integration:** `CAVEMAN_STATUSLINE_SAVINGS=1` env var shows lifetime token savings in statusline badge
+  - **Trade-offs:** Compressed output is telegraphic (fragments, dropped articles) — readable but less formal; memory file compression is one-way (keep backups); most valuable in heavy sessions, not needed for simple queries
+  - **Pattern:** Caveman is a **transparent optimization** — doesn't change what you store or how you query it, just reduces the token cost of loading/generating that content
+- **Source:** [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) — 75% token reduction validated via benchmarks (22-87% range, 65% average across diverse tasks)
+
+---
+
 <!-- Example entry format:
 ## 2026-04-06 — Use Trigger.dev for background jobs
 - **Decision:** All async/scheduled work runs as Trigger.dev tasks, not cron scripts
@@ -15,6 +39,37 @@ Architectural and technical decisions made during sessions — with date and rat
 -->
 
 ---
+
+## 2026-05-05 — Apify agent skills integrated (5 skills from apify/agent-skills marketplace)
+- **Decision:** Added `apify/agent-skills` marketplace to `settings.json` and integrated all 5 skills: `apify-ultimate-scraper`, `apify-actor-development`, `apify-actorization`, `apify-generate-output-schema`, and `apify-actor-commands`.
+- **Why:** Provides comprehensive guided workflows for the entire Apify ecosystem — from using existing Actors for data extraction (130+ platforms) to developing custom Actors in JS/TS/Python. Previously only `apify-ultimate-scraper` was installed manually; now all skills install automatically via `setup.sh`.
+- **Implication:**
+  - Marketplace added to `settings.json` → `extraKnownMarketplaces` → `apify-agent-skills`
+  - Setup.sh step 7a: auto-installs all 5 Apify skills via `claude skill install <skill>@apify-agent-skills`
+  - CLAUDE.md routing table expanded: 4 new rows for Actor development workflows
+  - CLAUDE.md Skills section: 5 new skills documented (apify-ultimate-scraper, actor-development, actorization, generate-output-schema, create-actor)
+  - CLAUDE.md MCP Servers section: apify entry expanded with full skill integration details (14 workflow guides, intelligent CLI/MCP routing)
+  - README.md updated: step 7a added to Quick Start, new "Apify Agent Skills" section in Skills table, marketplace table updated, MCP Servers → apify entry expanded
+  - Apify MCP integration now routes through skills: `/apify-ultimate-scraper` intelligently chooses between `apify` CLI (lightweight, token-free) and MCP tools (batch operations, schema extraction) based on task type
+  - 14 pre-written workflow guides cover: lead generation, competitive intel, influencer vetting, brand monitoring, review analysis, content/SEO, social analytics, trend research, job market/recruitment, real estate/hospitality, e-commerce price monitoring, contact enrichment, knowledge base/RAG, company research
+  - Actor development stack now fully supported: create → debug → actorize existing code → generate schemas → deploy
+  - Source: https://github.com/apify/agent-skills
+
+## 2026-05-05 — OpenSpace converted to git submodule with auto-sync
+- **Decision:** `tools/openspace/` is now a git submodule (hybrid: Option 1 + Option 2) — tracks specific upstream commits while auto-syncing every session via `openspace-sync.sh` hook.
+- **Why:** 
+  - Reproducible builds: Each commit in the parent repo tracks an exact OpenSpace version
+  - Always up-to-date: Auto-sync hook pulls latest from HKUDS/OpenSpace every session
+  - Fresh clone friendly: `setup.sh` auto-initializes submodule for new team members
+  - Standard Git workflow: Anyone familiar with submodules can work with it
+  - Manual control: Can pin to a specific version if needed; auto-sync can be disabled
+- **Implication:**
+  - Infrastructure ready: `openspace-sync.sh` hook created, `stop.sh` updated to call it, `setup.sh` updated to initialize submodule
+  - Conversion not yet executed: User must run 6-step conversion (see `.claude/docs/openspace-submodule-conversion.md`)
+  - All integrations preserved: Skills (`openspace/`, `delegate-task/`, `skill-discovery/`), MCP server (`.mcp.json` + `settings.json`), VSCode launch configs (5 total), `.env` paths
+  - Auto-sync behavior: Silent if up-to-date; pulls updates if available; skips if uncommitted changes exist; updates submodule pointer in parent repo
+  - Documentation updated: `CLAUDE.md` (Key Commands, First-Time Setup, Hooks, Project Structure), `README.md` (Quick Start, Hooks, Project Structure), conversion guide created
+  - Pattern matches autoresearch-sync.sh: Same upstream sync pattern, called by `stop.sh`
 
 ## 2026-05-04 — Hook paths use directory-walking instead of git rev-parse
 - **Decision:** All hook commands in `settings.json` now search upwards from the current directory to find `.claude/hooks/*.sh` scripts instead of using `git rev-parse --show-toplevel`.
@@ -169,11 +224,12 @@ Architectural and technical decisions made during sessions — with date and rat
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-05-04 — edit or delete below -->
-- OpenSpace MCP â†’ Protocol overhead (backup only)\n   - Use when: structured output needed, state persistence required,\n     integration with other MCP tools, automatic evolution tracking\n```\n\n### Token Savings:\n- ~200-500 tokens saved per CLI call vs MCP\n- Over 20 OpenSpace operations: **4K-10K tokens saved**\n\n### Pattern Consistency:\nOpenSpace now matches the same CLI-first architecture used by:\n- Playwright (`node tools/playwright.js` â†’ `playwright-mcp`)\n- Firecrawl (`firecrawl` CLI â†’ `firecrawl-mcp`)\n- NotebookLM (`nlm` CLI â†’ `notebooklm-mcp`)\n\nThe framework is now optimized for long-term token efficiency across all major integrations."}
+<!-- Drafted 2026-05-05 — edit or delete below -->
+- {"session_id":"0f3eeabb-e6fb-4840-a428-33f065859a1f","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\0f3eeabb-e6fb-4840-a428-33f065859a1f.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ… Verification Complete\n\nI've thoroughly tested all OpenSpace VSCode launch configurations with the new git submodule architecture.
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
+<<<<<<< HEAD
 <!-- Drafted 2026-05-04 — edit or delete below -->
 - **Vector Storage Architecture**\nYou want three storage backends.
 
@@ -190,3 +246,8 @@ Architectural and technical decisions made during sessions — with date and rat
 <!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-05-05 — edit or delete below -->
 - **README.md Completely Rewritten**\n\n**New Sections:**\n- âœ… **Enhanced Features** overview (multimodal, multi-backend)\n- âœ… **Embedding Providers** comparison table (OpenAI vs Gemini)\n- âœ… **Backend Storage Options** (local, Supabase, Pinecone combinations)\n- âœ… **Query Modes** (graph vs hybrid)\n- âœ… **Backend Setup** instructions (Supabase manual, Pinecone auto)\n- âœ… **Usage Examples** (3 complete examples: pure LightRAG, dual backend, multimodal)\n- âœ… **Storage Architecture** (core + optional mirrors)\n- âœ… **Implementation Status** with link to design spec\n\n**Updated Sections:**\n- âœ… Environment variables (new structure)\n- âœ… Configuration (embedding providers, query modes)\n- âœ… File structure (includes src/, adapters/, ingestors/)\n\n---\n\n### 4.
+=======
+<!-- Drafted 2026-05-05 — edit or delete below -->
+- Here's what I've done and what you need to know:\n\n## âœ… Integration Summary\n\n### Your Memory Architecture (Enhanced)\n\nYou now have a **4-tier memory system** with Caveman as an optional compression layer:\n\n1.
+- It operates as a **transparent optimization layer** that can save you significant tokens (and money) on heavy sessions without changing your workflow or memory architecture.\n\n**To activate:** Restart Claude Code  \n**To test:** Run `/caveman-stats`  \n**To read full guide:** See `.tmp/CAVEMAN_INTEGRATION_COMPLETE.md`\n\nEverything is configured, documented, and ready to go!
+>>>>>>> f192ecdec673966abcfadda8ed1d13350162a81a

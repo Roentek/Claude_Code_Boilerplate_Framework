@@ -219,6 +219,8 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 5. **Verifies uvx** — required for `google-workspace-mcp`, `alpaca`, and `notebooklm-mcp` MCP servers
 6. **Verifies Node.js / npx** — required by all 17 npx-based MCP servers (memory, supabase, openrouter, kie-ai, tavily, trigger, pinecone, vapi, n8n, apify, zep, canva, 21st-dev, playwright-mcp, firecrawl-mcp, higgsfield, context7)
 7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max`, `andrej-karpathy-skills`, `impeccable`, `codex`, `cc-gemini-plugin`, and `cli-anything` via CLI
+7a. **Installs Apify agent skills** — installs 5 skills from `apify/agent-skills` repo: `apify-ultimate-scraper` (130+ Actors for Instagram, TikTok, LinkedIn, Google, Reddit, Amazon, etc.), `apify-actor-development` (Actor creation/debugging), `apify-actorization` (convert code to Actors), `apify-generate-output-schema` (auto-generate Actor schemas), and `apify-actor-commands` (slash command pack)
+7b. **Installs Caveman plugin** — installs `caveman@caveman` for 75% token reduction on responses and 46% reduction on memory files; includes commands: `/caveman` (activate compression), `/caveman-stats` (session token tracking), `/caveman-compress` (shrink memory files), `/caveman-commit` (terse commits), `/caveman-review` (single-line PR comments), `/cavecrew` (compressed subagents)
 8. **Installs project skills** — copies `.claude/skills/*/` to `~/.claude/skills/` where Claude Code reads them (full directory, not just SKILL.md — preserves supporting docs and examples)
 9. **Installs npm dependencies + Playwright browser** — runs `npm install` for the `playwright` package, then `npx playwright install chromium` for the browser binary used by `tools/playwright.js`
 10. **Verifies GitHub CLI** — checks `gh` is installed; required by `github@claude-plugins-official` for `Bash(gh ...)` tool calls; prints platform-specific install instructions if missing
@@ -226,7 +228,7 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 12. **Prints authentication reminders** — lists integrations requiring a manual one-time auth step: NotebookLM (`nlm login`), Trigger.dev (`npx trigger.dev@latest login`), Google Workspace (browser OAuth), Canva (browser OAuth), Higgsfield (browser OAuth via `npx mcp-remote`), GitHub CLI (`gh auth login`), Gemini plugin (`GEMINI_API_KEY` at aistudio.google.com), and Codex plugin (`npm install -g @openai/codex`)
 13. **Installs autoresearch dependencies** — runs `uv sync` in the `tools/autoresearch/` directory to install PyTorch and ML dependencies for autonomous research experiments
 14. **Installs LightRAG dependencies** — runs `uv sync` in the `tools/lightrag/` directory to install `lightrag-hku` and dependencies for graph-based RAG
-15. **Installs OpenSpace** — runs `pip install -e .` in the `tools/openspace/` directory to install the self-evolving skill system (requires Python 3.12+); sets up the optional dashboard frontend by copying `.env.example` → `.env` and running `npm install` in `tools/openspace/frontend/` (requires Node.js ≥ 20)
+15. **Initializes OpenSpace submodule and installs** — checks if `tools/openspace/` is a git submodule and initializes it via `git submodule update --init --recursive` if not already done; then runs `pip install -e .` to install the self-evolving skill system (requires Python 3.12+); sets up the optional dashboard frontend by copying `.env.example` → `.env` and running `npm install` in `tools/openspace/frontend/` (requires Node.js ≥ 20)
 16. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
 17. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
 
@@ -241,6 +243,10 @@ rm -f .claude/.setup-complete && bash .claude/hooks/setup.sh
 ```bash
 bash .claude/hooks/setup.sh
 ```
+
+**Converting existing OpenSpace clone to submodule:**
+
+If you cloned OpenSpace before the submodule setup was added, see [`.claude/docs/openspace-submodule-conversion.md`](.claude/docs/openspace-submodule-conversion.md) for step-by-step conversion instructions. This preserves all integrations (skills, MCP, launch configs, .env paths) while enabling auto-sync with upstream.
 
 ---
 
@@ -270,10 +276,11 @@ bash .claude/hooks/setup.sh
 │   │   └── ui-ux-pro-max-instructions.md
 │   ├── hooks/
 │   │   ├── setup.sh                 # Setup hook: first-time machine bootstrapper
-│   │   ├── stop.sh                  # Stop hook: auto-drafts memory, syncs autoresearch, checks doc updates
+│   │   ├── stop.sh                  # Stop hook: syncs autoresearch + openspace, drafts memory, checks doc updates
 │   │   ├── pre-commit.sh            # Pre-commit hook: auto-updates CLAUDE.md/README.md for tracked-path changes
 │   │   ├── autosync-docs.sh         # PostToolUse hook: detects tracked-path edits, injects doc-sync reminder
 │   │   ├── autoresearch-sync.sh     # Autoresearch upstream sync (called by stop.sh every session)
+│   │   ├── openspace-sync.sh        # OpenSpace submodule sync (called by stop.sh every session)
 │   │   └── read-guard.py            # PreToolUse hook: warns on unscoped reads of large files (>200 lines)
 │   ├── rules/                       # Auto-loaded Markdown instructions (every session)
 │   │   ├── agent-instructions.md
@@ -330,7 +337,7 @@ bash .claude/hooks/setup.sh
 │   │   ├── start_server.bat         # Windows quick launcher
 │   │   ├── .venv/                   # Virtual environment (gitignored, recreated by uv sync)
 │   │   └── rag_storage/             # Knowledge graph data (gitignored, auto-created on first use)
-│   └── openspace/                   # Self-evolving skill system (HKUDS/OpenSpace)
+│   └── openspace/                   # Self-evolving skill system (git submodule → HKUDS/OpenSpace)
 │       ├── openspace/               # Core Python package (grounding, skill_engine, cloud, agents)
 │       ├── pyproject.toml           # Dependencies (litellm, anthropic, openai, mcp, etc.)
 │       ├── README.md                # Full OpenSpace documentation
@@ -406,6 +413,8 @@ Two registries are configured in `extraKnownMarketplaces`:
 | `karpathy-skills` | `github.com/forrestchang/andrej-karpathy-skills` |
 | `impeccable` | `github.com/pbakaus/impeccable` |
 | `cli-anything` | `github.com/HKUDS/CLI-Anything` |
+| `apify-agent-skills` | `github.com/apify/agent-skills` |
+| `caveman` | `github.com/JuliusBrussee/caveman` |
 
 ### Installing Third-Party Marketplace Plugins
 
@@ -439,6 +448,13 @@ The three third-party plugins below are enabled in `settings.json` but must be i
 /plugin install cli-anything@cli-anything
 ```
 
+**Caveman** — token compression layer that reduces Claude responses by 75% and memory files by 46%. Includes session token tracking, terse commits/reviews, and compressed subagents. Commands: `/caveman`, `/caveman-stats`, `/caveman-compress`, `/caveman-commit`, `/caveman-review`, `/cavecrew`:
+
+```bash
+/plugin marketplace add JuliusBrussee/caveman
+/plugin install caveman@caveman
+```
+
 > The marketplace sources are already registered in `extraKnownMarketplaces` inside `.claude/settings.json`, so no separate marketplace registration step is needed when using the CLI: `claude plugins install ui-ux-pro-max@ui-ux-pro-max-skill`.
 
 Install or update official plugins via CLI:
@@ -456,6 +472,7 @@ claude plugins install <plugin-name>
 | **ui-ux-pro-max** | `ui-ux-pro-max@ui-ux-pro-max-skill` | Design intelligence: 67 styles, 161 palettes, 57 font pairings, 99 UX rules, 25 chart types |
 | **impeccable** | `impeccable@impeccable` | Frontend design skill: 23 commands (`/impeccable polish`, `/impeccable audit`, etc.) + 24-issue anti-pattern detection. Standalone: `npx impeccable detect` |
 | **cli-anything** | `cli-anything@cli-anything` | Generates AI-native CLIs for existing software (GIMP, Blender, LibreOffice, Audacity, etc.). 50+ apps, 2,280+ tests. Commands: `/cli-anything`, `/cli-anything:refine`, `/cli-anything:test`, `/cli-anything:validate`, `/cli-anything:list` |
+| **caveman** | `caveman@caveman` | Token compression: 75% reduction on responses, 46% on memory files. Session tracking + terse commits/reviews. Commands: `/caveman`, `/caveman-stats`, `/caveman-compress`, `/caveman-commit`, `/caveman-review`, `/cavecrew`. MCP proxy: `memory-shrunk` (wraps memory server) |
 | **github** | `github@claude-plugins-official` | GitHub operations — read/write repos, PRs, issues, branches, file contents, code search. Requires `GITHUB_PERSONAL_ACCESS_TOKEN` in `settings.local.json` |
 | **agent-sdk-dev** | `agent-sdk-dev@claude-plugins-official` | Agent scaffolding — creates Claude sub-agent definitions |
 | **claude-code-setup** | `claude-code-setup@claude-plugins-official` | Project bootstrapping and Claude Code automation recommendations |
@@ -488,6 +505,12 @@ Skills are Markdown files that expand into full instructions when invoked. Proje
 | `/loop [interval] [command]` | Runs a prompt or command on a recurring interval (e.g. `/loop 5m /command`). |
 | `/update-config` | Configures hooks, permissions, and automated behaviors in `settings.json`. |
 | `/keybindings-help` | Customizes keyboard shortcuts in `keybindings.json`. |
+| `/caveman` | Activates 75% token reduction on Claude responses (lite/full/ultra modes). Telegraphic output without context loss. |
+| `/caveman-stats` | Shows actual session token usage, savings estimate, and USD costs from Claude Code session JSONL. |
+| `/caveman-compress` | Shrinks memory files (`memory-*.md`, `CLAUDE.md`) by ~46% — preserves code, URLs, and paths exactly. |
+| `/caveman-commit` | Generates terse commit messages (≤50 chars, Conventional Commits format with reasoning over description). |
+| `/caveman-review` | Single-line PR comments in format: "L42: 🔴 bug: user null. Add guard" — no unnecessary context. |
+| `/cavecrew` | Compressed subagents (investigator, builder, reviewer) that emit ~60% fewer tokens than vanilla equivalents. |
 
 ### Superpowers Skills (auto-trigger based on context)
 
@@ -529,6 +552,18 @@ Source files live in `.claude/skills/<name>/SKILL.md`. `setup.sh` installs them 
 | `/delegate-task` | OpenSpace host skill — delegates complex tasks to OpenSpace's grounding agent with automatic skill evolution. Teaches Claude Code when to use `execute_task` vs handling directly, how to interpret OpenSpace results, when to trigger skill evolution (`fix_skill`), and how to upload successful patterns (`upload_skill`). Auto-installed by setup.sh to `~/.claude/skills/delegate-task/`. |
 | `/skill-discovery` | OpenSpace host skill — searches local + cloud skills before starting work. Teaches Claude Code when to search for skills (before complex tasks), how to evaluate search results (local vs cloud), decision framework (follow skill yourself, delegate to OpenSpace, or skip), and how to import cloud skills to local registry. Auto-installed by setup.sh to `~/.claude/skills/skill-discovery/`. |
 
+### Apify Agent Skills (`.agents/skills/`)
+
+Installed from the `apify/agent-skills` repository via `/skill install`. These provide guided workflows for web scraping, Actor development, and data extraction across 130+ platforms.
+
+| Slash Command | What It Does |
+| -------------- | ------------- |
+| `/apify-ultimate-scraper` | Universal AI-powered web scraper. 130+ curated Actors covering Instagram, Facebook, TikTok, YouTube, LinkedIn, X/Twitter, Google Maps, Google Search, Google Trends, Reddit, Airbnb, Yelp, Amazon, and 15+ more platforms. Use for: lead generation, brand monitoring, competitor analysis, influencer discovery, trend research, content analytics, audience analysis, review analysis, SEO intelligence, recruitment, real estate, e-commerce price monitoring, contact enrichment, RAG data feeds, company research. Routes intelligently between `apify` CLI and MCP based on task type. Includes 14 pre-written workflow guides. Requires `npm install -g apify-cli` and `APIFY_TOKEN`. |
+| `/apify-actor-development` | Create, debug, and deploy Apify Actors in JavaScript, TypeScript, or Python. Bundled references for Actor configuration schemas (`INPUT_SCHEMA.json`, `package.json`), logging (`Actor.log.info()`, structured logging), error handling (retries, graceful failures), and deployment (`apify actors push`). |
+| `/apify-actorization` | Convert existing code into Apify Actors. Supports JS/TS SDK (full Actor class), Python async context manager (`async with Actor()`), and generic CLI wrappers for any language/runtime. Includes migration guides for common patterns (loops → task queues, file I/O → key-value stores, stdout → datasets). |
+| `/apify-generate-output-schema` | Auto-generate output schemas (`dataset_schema.json`, `output_schema.json`, `key_value_store_schema.json`) for an Actor by analyzing its source code. Improves Actor discoverability and validates output structure at runtime. |
+| `/create-actor` | Guided Actor scaffolding from the `apify-actor-commands` pack. Interactive prompts for language (JS/TS/Python), SDK version, input schema, and directory structure. |
+
 ---
 
 ## MCP Servers
@@ -543,7 +578,7 @@ All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. C
 
 | Server | Transport | `.env` Keys Required | Purpose |
 | -------- | ----------- | --------------------- | --------- |
-| **memory** | `npx @modelcontextprotocol/server-memory` | — | Persistent knowledge graph across sessions (entities, relations, observations) |
+| **memory-shrunk** | `npx caveman-shrink @modelcontextprotocol/server-memory` | — | **Replaces `memory`** — Caveman-compressed knowledge graph with ~50% metadata reduction on tool descriptions. Wraps the standard memory server with the `caveman-shrink` stdio proxy to compress prose fields while preserving code/URLs/paths. |
 | **supabase-mcp** | `npx @supabase/mcp-server-supabase` | `SUPABASE_API_PAT` | Postgres queries, auth, storage, migrations via Supabase |
 | **openrouter-mcp** | `npx @physics91/openrouter-mcp` | `OPENROUTER_API_KEY` | Multi-model LLM routing — chat, compare, benchmark 200+ models |
 | **kie-ai** | `npx @felores/kie-ai-mcp-server` | `KIE_AI_API_KEY` | AI media generation: images (Flux, Midjourney, DALL-E), video (Kling, Sora), audio (ElevenLabs) |
@@ -557,7 +592,7 @@ All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. C
 | **openspace** | `openspace-mcp` (installed via `pip install -e tools/openspace`) | `OPENSPACE_API_KEY` (optional), `OPENSPACE_HOST_SKILL_DIRS`, `OPENSPACE_WORKSPACE` | Self-evolving skill system — execute tasks with auto skill evolution (FIX/DERIVED/CAPTURED modes), search local + cloud skills, fix broken skills, upload evolved skills to cloud community. **CLI (`openspace`, `openspace-download-skill`, `openspace-upload-skill`) is always the primary tool** — saves ~200-500 tokens per call vs MCP. Use MCP only when structured output parsing or MCP state persistence is needed. 4 MCP tools: `execute_task` (multi-step grounding agent), `search_skills`, `fix_skill`, `upload_skill`. Requires Python 3.12+. **Host skills (`/delegate-task`, `/skill-discovery`) teach Claude Code when/how to use these tools.** Cloud features require `OPENSPACE_API_KEY` from open-space.cloud — local features work without it. Source: [HKUDS/OpenSpace](https://github.com/HKUDS/OpenSpace) (13K+ stars). |
 | **alpaca** | `uvx alpaca-mcp-server` | `ALPACA_API_KEY`, `ALPACA_SECRET_KEY` | Algorithmic trading via Alpaca (paper mode enabled by default) |
 | **n8n-mcp** | `npx n8n-mcp` | `N8N_HOST_URL`, `N8N_API_KEY` | n8n workflow automation — search nodes, validate, build via MCP |
-| **apify** | `npx @apify/actors-mcp-server` | `APIFY_API_PAT` | Web scraping marketplace — search actors, call actors, retrieve results |
+| **apify** | `npx @apify/actors-mcp-server` | `APIFY_API_PAT` | Web scraping marketplace — 130+ Actors covering Instagram, TikTok, LinkedIn, Google, Reddit, Amazon, Airbnb, Yelp, and more. **Use with `/apify-ultimate-scraper` skill for guided workflows**: lead generation, brand monitoring, competitor analysis, influencer vetting, trend research, SEO intelligence, review analysis, recruitment, real estate, e-commerce price monitoring, contact enrichment, RAG data feeds, company research. Skill routes intelligently between `apify` CLI and MCP tools based on task type. Includes 14 pre-written workflow guides. Also provides 3 development skills: `/apify-actor-development` (create/debug/deploy Actors), `/apify-actorization` (convert code to Actors), `/apify-generate-output-schema` (auto-generate schemas). |
 | **zep-mcp** | `npx mcp-remote` (remote) | — | Zep long-term memory documentation search |
 | **canva-dev** | `npx @canva/cli mcp` | — (browser OAuth) | Canva app SDK, UI kit, CLI docs, design operations |
 | **monet-mcp** | SSE remote (`monet.design`) | `MONET_API_KEY` | Landing page UI component library — search by natural language, retrieve full React/TypeScript source code. Tools: `search_components`, `get_component_code`, `get_component_details`, `list_categories`, `get_registry_stats`, `list_collections`, `get_collection`. Categories: hero, pricing, testimonial, feature, cta, faq, footer, gallery, and more. |
@@ -612,19 +647,22 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 
 | Hook | File | Trigger | Behavior |
 | ------ | ------ | --------- | --------- |
-| **Setup** | [`setup.sh`](.claude/hooks/setup.sh) | First session open on a new machine | Bootstraps the project (see [Quick Start](#quick-start)) — 16 steps: dependencies, plugins, skills, CLI tools, autoresearch setup, lightrag setup |
-| **Stop** | [`stop.sh`](.claude/hooks/stop.sh) | Every time Claude finishes responding | (1) Auto-syncs `tools/autoresearch/` with upstream via `autoresearch-sync.sh`, (2) auto-drafts memory entries via `memory-drafter.py`, (3) checks if tracked paths changed and prompts doc update |
+| **Setup** | [`setup.sh`](.claude/hooks/setup.sh) | First session open on a new machine | Bootstraps the project (see [Quick Start](#quick-start)) — 16 steps: dependencies, plugins, skills, CLI tools, git submodules, autoresearch setup, lightrag setup, openspace submodule init + installation |
+| **Stop** | [`stop.sh`](.claude/hooks/stop.sh) | Every time Claude finishes responding | (1) Auto-syncs `tools/autoresearch/` with upstream via `autoresearch-sync.sh`, (2) auto-syncs `tools/openspace/` git submodule with upstream via `openspace-sync.sh`, (3) auto-drafts memory entries via `memory-drafter.py`, (4) checks if tracked paths changed and prompts doc update |
 | **PreToolUse** (Read) | [`read-guard.py`](.claude/hooks/read-guard.py) | Before every Read tool call | Warns when large files (>200 lines) are read without `offset`+`limit` to save tokens; always approves — advisory only |
 | **PostToolUse** | [`autosync-docs.sh`](.claude/hooks/autosync-docs.sh) | After every Write/Edit tool call | Checks if the edited file is in a tracked path; if so, injects `additionalContext` telling Claude to update CLAUDE.md/README.md immediately. CLAUDE.md and README.md are excluded to prevent update loops. Logic in `autosync-docs.py`. |
 | **pre-commit** (git) | [`pre-commit.sh`](.claude/hooks/pre-commit.sh) | Before every `git commit` | Detects staged changes to tracked paths; auto-runs `claude --print` to update CLAUDE.md and README.md, then stages the updated docs alongside the original changes |
 | **autoresearch-sync** | [`autoresearch-sync.sh`](.claude/hooks/autoresearch-sync.sh) | Called by stop.sh every session | Syncs `tools/autoresearch/` with upstream karpathy/autoresearch repo; runs silently if no changes; pulls updates if available; skips if local uncommitted changes exist |
+| **openspace-sync** | [`openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Called by stop.sh every session | Syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace repo; pulls latest commits; updates submodule pointer in parent repo; skips if uncommitted changes exist |
+| **openspace-sync** | [`openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Called by stop.sh every session | Syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace repo; pulls latest commits; updates submodule pointer in parent repo; skips if uncommitted changes exist |
 
 **`stop.sh` logic:**
 
 1. **Autoresearch sync** — Calls `autoresearch-sync.sh` to pull upstream updates from karpathy/autoresearch if available (silent if no changes)
-2. **Memory auto-draft** — Calls `memory-drafter.py` to scan session transcript for memory signals (decisions, fixes, learnings) and auto-draft memory file updates
-3. **Doc-sync check** — If any tracked paths (`.claude/rules/`, `.claude/hooks/`, `.claude/scripts/`, `.mcp.json`, `workflows/`, `tools/`, etc.) were modified during the session → reports the count and prompts a manual or commit-triggered doc sync
-4. Always approves (never blocks completion)
+2. **OpenSpace submodule sync** — Calls `openspace-sync.sh` to pull upstream updates from HKUDS/OpenSpace if available; updates submodule pointer in parent repo (silent if no changes)
+3. **Memory auto-draft** — Calls `memory-drafter.py` to scan session transcript for memory signals (decisions, fixes, learnings) and auto-draft memory file updates
+4. **Doc-sync check** — If any tracked paths (`.claude/rules/`, `.claude/hooks/`, `.claude/scripts/`, `.mcp.json`, `workflows/`, `tools/`, etc.) were modified during the session → reports the count and prompts a manual or commit-triggered doc sync
+5. Always approves (never blocks completion)
 
 **`pre-commit.sh` logic:**
 
@@ -741,7 +779,7 @@ The framework includes several automated features to minimize token consumption:
 
 **Source:** [github.com/HKUDS/LightRAG](https://github.com/HKUDS/LightRAG) (EMNLP 2025, 13K+ stars)
 
-### Quick Start
+### LightRAG Quick Start
 
 ```bash
 # 1. Navigate to LightRAG directory
@@ -759,19 +797,22 @@ cp .env.example .env
 
 ### Starting the Server
 
-**Method 1: VSCode Debug (Recommended)**
+**Method 1: VSCode Debug (Recommended)**  
+
 1. Press `F5` (or Run → Start Debugging)
 2. Select "**LightRAG Server**" from dropdown
-3. Browser automatically opens at http://localhost:9621
+3. Browser automatically opens at [LightRAG Server](http://localhost:9621)
 4. Full debugging support with breakpoints
 
-**Method 2: Quick Start Script (Windows)**
+**Method 2: Quick Start Script (Windows)**  
+
 ```bash
 cd tools/lightrag
 ./start_server.bat
 ```
 
-**Method 3: Command Line**
+**Method 3: Command Line**  
+
 ```bash
 cd tools/lightrag
 uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_storage
@@ -779,9 +820,9 @@ uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_st
 
 ### Access Points
 
-- **Web UI:** http://localhost:9621 (knowledge graph visualization, insert/query forms)
-- **API Documentation:** http://localhost:9621/docs (Swagger UI)
-- **Alternative Docs:** http://localhost:9621/redoc (ReDoc)
+- [Web UI](http://localhost:9621) (knowledge graph visualization, insert/query forms)
+- [API Documentation](http://localhost:9621/docs) (Swagger UI)
+- [Alternative Docs](http://localhost:9621/redoc) (ReDoc)
 
 ### Configuration
 
@@ -806,6 +847,7 @@ PORT=9621
 ```
 
 **Alternative LLM Providers:**
+
 - **Anthropic Claude:** Set `LLM_BINDING=anthropic` + `ANTHROPIC_API_KEY`
 - **Google Gemini:** Set `LLM_BINDING=gemini` + `GEMINI_API_KEY`
 - **Local Ollama:** Set `LLM_BINDING=ollama` + `OLLAMA_HOST=http://localhost:11434`
@@ -838,15 +880,13 @@ PORT=9621
    - Automatically checks/installs dependencies before launch
    - Can be launched individually (requires backend running first)
 
-**Compound Configuration (Recommended):**
-
-5. **OpenSpace Dashboard (Full Stack)** ⭐
+5. **OpenSpace Dashboard (Full Stack)** ⭐ **Compound Configuration Recommended**
    - **One-click launch** — starts both backend and frontend together
    - Automatically verifies and installs frontend dependencies if missing
-   - Auto-opens browser to http://127.0.0.1:3789 when ready
+   - Auto-opens browser to [Frontend UI](http://127.0.0.1:3789) when ready
    - Stops both servers when you click the Stop button
    - **Usage:** Press `F5` → Select "**OpenSpace Dashboard (Full Stack)**"
-   - Backend API: http://127.0.0.1:7788 | Frontend UI: http://127.0.0.1:3789
+   - [Backend API](http://127.0.0.1:7788) | [Frontend UI](http://127.0.0.1:3789)
 
 ### Testing the Setup
 
@@ -858,7 +898,8 @@ uv run python test_lightrag.py
 ```
 
 Expected output:
-```
+
+```text
 [1/4] Initializing LightRAG...
 [2/4] Initializing storage...
 [3/4] Inserting test document...
@@ -893,17 +934,20 @@ The following packages are automatically installed by `uv sync`:
 ### Troubleshooting
 
 **Port already in use:**
+
 ```powershell
 # Stop any process using port 9621
 Get-NetTCPConnection -LocalPort 9621 | Select-Object -ExpandProperty OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force }
 ```
 
 **API key not found:**
+
 - Verify `OPENAI_API_KEY` is set in `tools/lightrag/.env`
 - Check that `.env` file exists (not just `.env.example`)
 - Restart the server after editing `.env`
 
 **Unicode errors on Windows:**
+
 - The VSCode debug config sets `PYTHONIOENCODING=utf-8` automatically
 - For command line: `$env:PYTHONIOENCODING="utf-8"` before starting server
 
