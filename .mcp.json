@@ -14,7 +14,8 @@
         "@supabase/mcp-server-supabase@latest"
       ],
       "env": {
-        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_API_PAT}"
+        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_API_PAT}",
+        "SUPABASE_URL": "${SUPABASE_PROJECT_URL}"
       }
     },
     "openrouter-mcp": {

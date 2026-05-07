@@ -3,7 +3,7 @@
 
   "__activation_guide": {
     "memory-shrunk":        "NO KEY NEEDED — wraps memory MCP with caveman-shrink proxy for ~50% metadata reduction. Replaces standalone 'memory' server. Requires npx in PATH.",
-    "supabase-mcp":         "SUPABASE_API_PAT — supabase.com → Account → Access Tokens → Generate new token (all scopes).",
+    "supabase-mcp":         "SUPABASE_API_PAT + SUPABASE_PROJECT_URL — (1) supabase.com → Account → Access Tokens → Generate new token (all scopes). (2) Project Settings → API → Project URL.",
     "openrouter-mcp":       "OPENROUTER_API_KEY — openrouter.ai → Keys → Create Key.",
     "kie-ai":               "KIE_AI_API_KEY — kie.ai → Dashboard → API Keys.",
     "tavily-mcp":           "TAVILY_API_KEY — tavily.com → Dashboard → API Key (free tier available).",
