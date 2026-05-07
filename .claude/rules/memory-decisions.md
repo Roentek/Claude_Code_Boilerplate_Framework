@@ -269,3 +269,8 @@ Architectural and technical decisions made during sessions — with date and rat
 - Here's what I've done and what you need to know:\n\n## âœ… Integration Summary\n\n### Your Memory Architecture (Enhanced)\n\nYou now have a **4-tier memory system** with Caveman as an optional compression layer:\n\n1.
 - It operates as a **transparent optimization layer** that can save you significant tokens (and money) on heavy sessions without changing your workflow or memory architecture.\n\n**To activate:** Restart Claude Code  \n**To test:** Run `/caveman-stats`  \n**To read full guide:** See `.tmp/CAVEMAN_INTEGRATION_COMPLETE.md`\n\nEverything is configured, documented, and ready to go!
 >>>>>>> f192ecdec673966abcfadda8ed1d13350162a81a
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-06 — edit or delete below -->
+- Optional: Enable Cloud Features**\n   - Register at https://open-space.cloud\n   - Get API key\n   - Add to `.env` and `.claude/settings.local.json`:\n     ```ini\n     OPENSPACE_API_KEY=sk-xxx...\n     ```\n\n### ðŸ“Š CLI vs MCP Priority\n\n**Always use CLI first** (saves 200-500 tokens per call):\n\n```powershell\n# Execute tasks\ncd tools/openspace\npython -m openspace --query \"Your task\"\n\n# Search skills\npython -m openspace --search \"keyword\"\n```\n\n**Use MCP only when:**\n- You need structured output parsing\n- Multi-step workflows with state persistence\n- Integration with other MCP tools\n\n### ðŸ“„ Full Verification Guide\n\nSee `.tmp/openspace-setup-verification.md` for:\n- Complete configuration details\n- Troubleshooting steps\n- All verification commands\n- Cloud setup instructions\n\n**Ready to restart Claude Code and test!** ðŸŽ‰"}

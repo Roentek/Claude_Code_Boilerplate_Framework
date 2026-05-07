@@ -183,12 +183,14 @@
       "args": ["--from", "notebooklm-mcp-cli", "notebooklm-mcp"]
     },
     "openspace": {
-      "command": "openspace-mcp",
+      "command": "python",
+      "args": ["-m", "openspace.mcp_server"],
       "toolTimeout": 600,
       "env": {
         "OPENSPACE_HOST_SKILL_DIRS": "${OPENSPACE_HOST_SKILL_DIRS}",
         "OPENSPACE_WORKSPACE": "${OPENSPACE_WORKSPACE}",
-        "OPENSPACE_API_KEY": "${OPENSPACE_API_KEY}"
+        "OPENSPACE_API_KEY": "${OPENSPACE_API_KEY}",
+        "PYTHONUTF8": "1"
       }
     },
     "memory-shrunk": {

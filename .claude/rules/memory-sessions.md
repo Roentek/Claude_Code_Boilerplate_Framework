@@ -273,3 +273,21 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-06 (auto-drafted — review before next session)
 - **Step 8 (Project Skills) - Cross-Platform Path Detection**\n**Problem:** Used `$HOME` which doesn't work reliably in PowerShell; destination folder not created  \n**Fix:** \n- Detects `$HOME` (Unix/macOS/Git Bash) OR `$USERPROFILE` (Windows)\n- Converts Windows paths to Unix-style for bash compatibility\n- Creates `~/.claude/skills/` directory if missing\n- Verifies each skill copy succeeded\n- Shows source and destination paths for debugging\n\nYou'll see this output:\n```\nâ”€â”€ Project Skills (~/.claude/skills/) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n  Skills source: C:/Users/YourName/Project/.claude/skills\n  Skills dest:   C:/Users/YourName/.claude/skills\n  âœ“ site-teardown â†’ C:/Users/YourName/.claude/skills/site-teardown/\n  âœ“ skillui â†’ C:/Users/YourName/.claude/skills/skillui/\n  ...\n```\n\n## ðŸ§ª Testing\n\nRun this in PowerShell to test the fixes:\n\n```powershell\n# Reset the setup marker so it runs again\nrm -f .claude/.setup-complete\n\n# Run setup (should not hang anymore)\nbash .claude/hooks/setup.sh\n```\n\n**Expected results:**\n1.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-06 (auto-drafted — review before next session)
+- **Environment Variables Fixed** âœ…\n   - **`.env`**: Updated `OPENSPACE_HOST_SKILL_DIRS=C:/Users/mdmor/.claude/skills`\n   - **`.claude/settings.local.json`**: Updated same path\n   - Used forward slashes (Python handles these correctly on Windows)\n\n4.
+- **Documentation Updated** âœ…\n   - CLAUDE.md â€” Added Windows command note\n   - README.md â€” Updated with Windows path examples\n\n### ðŸ“‹ MCP Tools Available (After Restart)\n\nThese 4 tools will be available once you restart Claude Code:\n\n1.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-06 (auto-drafted — review before next session)
+- **`.mcp.json`** (line 193)\n   - Added `\"PYTHONUTF8\": \"1\"` to openspace MCP env\n\n2.
+- **`.env`** (line 43)\n   - Added `PYTHONUTF8=1` for CLI usage\n   - Comment: \"Windows encoding fix â€” forces UTF-8 mode (fixes checkmark rendering in CLI)\"\n\n3.
+- **`.env.example`** (line 59)\n   - Added `PYTHONUTF8=1` so fresh clones get fix\n\n4.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-06 (auto-drafted — review before next session)
+- {"session_id":"3e81f6c4-8b6b-4329-b2c3-9b1b0345a57f","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\c--GIT-Claude-Code-Boilerplate-Framework\\3e81f6c4-8b6b-4329-b2c3-9b1b0345a57f.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"acceptEdits","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"âœ… **Fixed**\n\nRemoved stale `.git/index.lock` file.
