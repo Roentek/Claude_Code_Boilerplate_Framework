@@ -326,12 +326,21 @@ If you cloned OpenSpace before the submodule setup was added, see [`.claude/docs
 │   │   ├── pyproject.toml           # Dependencies (PyTorch, etc.)
 │   │   ├── uv.lock                  # Dependency lockfile
 │   │   └── README.md                # Full autoresearch documentation
-│   ├── lightrag/                    # Graph-based RAG server (HKUDS/LightRAG)
+│   ├── lightrag/                    # LightRAG Enhanced (graph-based RAG with multimodal + multi-backend support)
+│   │   ├── src/                     # Enhanced implementation
+│   │   │   ├── config.py            # Environment config + feature flags
+│   │   │   ├── lightrag_enhanced.py # Main wrapper class
+│   │   │   ├── embedders/           # OpenAI (text-only) + Gemini (multimodal) embeddings
+│   │   │   ├── adapters/            # Supabase + Pinecone vector mirrors (optional)
+│   │   │   └── ingestors/           # Multimodal preprocessing (images, video, audio)
+│   │   ├── schema/                  # Backend setup scripts
+│   │   │   └── supabase_schema.sql  # Supabase table definitions
+│   │   ├── setup_backends.py        # Backend validation script
 │   │   ├── pyproject.toml           # Dependencies (lightrag-hku + server deps)
 │   │   ├── uv.lock                  # Dependency lockfile
-│   │   ├── README.md                # Full LightRAG documentation
-│   │   ├── .env                     # Server config + OPENAI_API_KEY (gitignored)
-│   │   ├── .env.example             # Configuration template (safe to commit)
+│   │   ├── README.md                # Full LightRAG Enhanced documentation
+│   │   ├── .env                     # Server config + API keys (gitignored)
+│   │   ├── .env.example             # Configuration template with all options
 │   │   ├── .gitignore               # Excludes .env, logs, rag_storage, build artifacts
 │   │   ├── test_lightrag.py         # Test script: insert/query example
 │   │   ├── start_server.bat         # Windows quick launcher

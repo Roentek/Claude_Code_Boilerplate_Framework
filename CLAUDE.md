@@ -197,15 +197,25 @@ CLAUDE.md                     ← You are here (routing only)
 tools/                        ← Deterministic execution scripts (Python/Node)
   playwright.js               ← Browser automation CLI wrapper
   autoresearch/               ← Autonomous ML research (prepare.py, train.py, program.md)
-  lightrag/                   ← Graph-based RAG server
+  lightrag/                   ← LightRAG Enhanced (graph-based RAG with multimodal + multi-backend support)
+    src/                      ← Enhanced implementation
+      config.py               ← Environment config + feature flags
+      lightrag_enhanced.py    ← Main wrapper class
+      embedders/              ← OpenAI (text-only) + Gemini (multimodal) embeddings
+      adapters/               ← Supabase + Pinecone vector mirrors (optional)
+      ingestors/              ← Multimodal preprocessing (images, video, audio)
+    schema/                   ← Backend setup scripts
+      supabase_schema.sql     ← Supabase table definitions
+    setup_backends.py         ← Backend validation script
     pyproject.toml            ← Dependencies (lightrag-hku + server deps)
     uv.lock                   ← Dependency lockfile
-    README.md                 ← Full LightRAG documentation
-    .env                      ← Server config + OPENAI_API_KEY (gitignored)
-    .env.example              ← Template (safe to commit)
-    .gitignore                ← Excludes .env, logs, rag_storage
+    README.md                 ← Full LightRAG Enhanced documentation
+    .env                      ← Server config + API keys (gitignored)
+    .env.example              ← Configuration template with all options
+    .gitignore                ← Excludes .env, logs, rag_storage, build artifacts
     test_lightrag.py          ← Test script (insert/query example)
     start_server.bat          ← Windows quick launcher
+    .venv/                    ← Virtual environment (gitignored)
     rag_storage/              ← Knowledge graph data (gitignored, auto-created)
   openspace/                  ← Self-evolving skill system (git submodule — auto-syncs with upstream)
     openspace/                ← Core Python package
