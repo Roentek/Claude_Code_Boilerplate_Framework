@@ -357,6 +357,31 @@ if command -v claude &>/dev/null; then
     echo "  Slash commands: /context-mode:ctx-stats, /context-mode:ctx-doctor, /context-mode:ctx-upgrade"
     echo "  Statusline: Shows $ saved this session · $ saved across sessions · % efficient"
     echo "  Sandboxes tool output — 315 KB becomes 5.4 KB (98% reduction)"
+
+    # Install better-sqlite3 (optional native dep — required for FTS5/session continuity)
+    # Uses NODE_TLS_REJECT_UNAUTHORIZED=0 to bypass corporate SSL proxy interception.
+    echo "  Installing better-sqlite3 (FTS5 session continuity)..."
+    PLUGIN_DIR=""
+    # Find installed plugin directory (marketplaces or cache location)
+    for candidate in \
+      "$HOME/.claude/plugins/marketplaces/context-mode" \
+      "$USERPROFILE/.claude/plugins/marketplaces/context-mode" \
+      "$(cygpath "$USERPROFILE" 2>/dev/null)/.claude/plugins/marketplaces/context-mode"; do
+      if [[ -f "$candidate/package.json" ]]; then
+        PLUGIN_DIR="$candidate"
+        break
+      fi
+    done
+    if [[ -n "$PLUGIN_DIR" ]]; then
+      if NODE_TLS_REJECT_UNAUTHORIZED=0 npm install better-sqlite3 --include=optional --prefix "$PLUGIN_DIR" \
+          --no-package-lock 2>/dev/null; then
+        echo "  ✓ better-sqlite3 installed — FTS5 session continuity active"
+      else
+        echo "  ⚠ better-sqlite3 install failed — run /context-mode:ctx-doctor to diagnose"
+      fi
+    else
+      echo "  ⚠ context-mode plugin dir not found — run /context-mode:ctx-doctor after restart"
+    fi
   else
     echo "  ⚠ context-mode — run in Claude Code:"
     echo "      /plugin install context-mode@context-mode"

@@ -60,3 +60,8 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-07 (auto-drafted — review before next session)
 - {"session_id":"5157cc75-685c-4296-90ee-134e70b966f8","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\5157cc75-685c-4296-90ee-134e70b966f8.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"**Step 4: Summary**\n\n| Metric | Before | After | Saved |\n|--------|--------|-------|-------|\n| sessions lines | 152 | 73 | 79 lines |\n| decisions entries | 28 | 27 | 1 removed |\n| decisions lines | 278 | 268 | 10 lines |\n| graph entities | 0 | 5 | â€” |\n\n**Removed decision:** `2026-05-03 â€” Fixed Windows hook paths to use absolute paths` â€” superseded by `2026-05-04 â€” Hook paths use directory-walking`.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-07 (auto-drafted — review before next session)
+- FTS5/SQLite fixed â€” context-mode session continuity now works across compactions.\n\n**Root cause:** Corporate proxy (TK Elevator) intercepts TLS â†’ `prebuild-install` couldn't download prebuilt `.node` binary â†’ `NODE_TLS_REJECT_UNAUTHORIZED=0` bypass let the prebuilt binary download succeed.\n\n**Remaining warn:** Bun optional â€” skip unless you want 3-5x faster sandbox execution."}

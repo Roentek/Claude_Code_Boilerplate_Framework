@@ -9,10 +9,16 @@ import sys
 import subprocess
 import os
 
+# Force UTF-8 output on Windows (avoids cp1252 emoji encode errors)
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+
 
 def read_stdin_safe():
     """Read JSON from stdin, stripping UTF-8 BOM if present (Windows PowerShell)."""
     raw = sys.stdin.buffer.read()
+    if not raw.strip():
+        return {}
     # Strip UTF-8 BOM (EF BB BF) if present
     if raw.startswith(b'\xef\xbb\xbf'):
         raw = raw[3:]
