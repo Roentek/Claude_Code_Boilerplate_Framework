@@ -39,8 +39,7 @@ description: Self-evolving skill system - skills that auto-fix, auto-improve, an
 ```
 
 ### When to use CLI (Primary):
-- ✅ Simple queries: `openspace --query "task description"`
-- ✅ Skill search: `openspace --search "keyword"`
+- ✅ Task execution: `openspace --query "task description"`
 - ✅ Skill download: `openspace-download-skill <skill_id>`
 - ✅ Skill upload: `openspace-upload-skill /path/to/skill/dir`
 - ✅ Quick task execution without needing structured results back
@@ -76,9 +75,6 @@ OpenSpace provides a standalone CLI for token-free execution:
 # Execute a task
 openspace --query "Create a monitoring dashboard for Docker containers"
 
-# Search for skills (local + cloud)
-openspace --search "docker monitoring"
-
 # Download a skill from cloud
 openspace-download-skill <skill_id>
 
@@ -92,14 +88,22 @@ openspace-dashboard --port 7788
 **CLI examples:**
 
 ```bash
-# Simple task execution
+# Task execution
 openspace --query "Generate a Python script to process CSV files"
-
-# Search before starting work
-openspace --search "csv processing"
 
 # Download and use community skill
 openspace-download-skill sk_abc123xyz
+```
+
+**Search is MCP-only** — use `mcp__openspace__search_skills` tool:
+
+```python
+# Search via MCP tool (not CLI)
+mcp__openspace__search_skills(
+    query="csv processing",
+    source="all",  # local + cloud
+    limit=10
+)
 ```
 
 ## Available MCP Tools (Use as Backup)

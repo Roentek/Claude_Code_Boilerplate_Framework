@@ -88,11 +88,11 @@ pip install -e .                           # Install OpenSpace (done by setup.sh
 
 # CLI (primary — token-free execution)
 openspace --query "Create a monitoring dashboard for Docker containers"
-openspace --search "docker monitoring"   # Search skills before starting work
 openspace-download-skill <skill_id>      # Download from cloud
 openspace-upload-skill /path/to/skill/dir # Upload to cloud (requires OPENSPACE_API_KEY)
 
 # MCP (backup — use when CLI output insufficient or need structured results)
+# Search: mcp__openspace__search_skills (no CLI equivalent)
 # Use mcp__openspace__* tools via ToolSearch when CLI doesn't meet needs
 
 # Submodule updates (automatic via stop hook, or manual)
