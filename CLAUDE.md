@@ -348,6 +348,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 Graph-based RAG with multimodal support. See [`tools/lightrag/README.md`](tools/lightrag/README.md).
 
 **Quick start:**
+
 ```bash
 cd tools/lightrag && uv sync && cp .env.example .env
 # Add OPENAI_API_KEY to .env, then:
@@ -355,7 +356,7 @@ uv run python -m lightrag.api.lightrag_server --port 9621
 # Or: Press F5 → "LightRAG Server" (VSCode)
 ```
 
-**Access:** http://localhost:9621 (Web UI + API docs)
+**Access:** [Web UI + API Docs](http://localhost:9621)
 
 ---
 
@@ -377,7 +378,7 @@ uv run python -m lightrag.api.lightrag_server --port 9621
 ## Troubleshooting
 
 | Issue | Fix |
-|-------|-----|
+| ------- | ----- |
 | `uvx: command not found` | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
 | MCP server timeout | Increase `toolTimeout` in `.mcp.json` (default 600s → 1200s) |
 | Git Bash crash (Windows) | Use PowerShell or WSL instead |
