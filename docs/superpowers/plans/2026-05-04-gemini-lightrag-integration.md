@@ -66,6 +66,7 @@ tools/lightrag/
 ### Task 1.1: Create Config Class
 
 **Files:**
+
 - Create: `tools/lightrag/src/__init__.py`
 - Create: `tools/lightrag/src/config.py`
 - Create: `tools/lightrag/tests/test_config.py`
@@ -353,6 +354,7 @@ git commit -m "feat(lightrag): add Config class with backward compatibility
 ### Task 1.2: Create Abstract Embedding Provider
 
 **Files:**
+
 - Create: `tools/lightrag/src/embedders/__init__.py`
 - Create: `tools/lightrag/src/embedders/base.py`
 - Modify: `tools/lightrag/tests/test_embedders.py` (create)
@@ -518,6 +520,7 @@ git commit -m "feat(lightrag): add abstract EmbeddingProvider interface
 ### Task 1.3: Implement OpenAI Embedder
 
 **Files:**
+
 - Create: `tools/lightrag/src/embedders/openai_embedder.py`
 - Modify: `tools/lightrag/tests/test_embedders.py`
 
@@ -723,6 +726,7 @@ git commit -m "feat(lightrag): add OpenAI text-only embedder
 ### Task 1.4: Create LightRAGEnhanced Wrapper (Text-Only, No Adapters)
 
 **Files:**
+
 - Create: `tools/lightrag/src/lightrag_enhanced.py`
 - Create: `tools/lightrag/tests/test_integration.py`
 
@@ -1043,6 +1047,7 @@ Phases 2-8 will add:
 ### Task 2.1: Create Supabase Schema
 
 **Files:**
+
 - Create: `tools/lightrag/schema/supabase_schema.sql`
 - Create: `tools/lightrag/schema/README.md`
 
@@ -1205,6 +1210,7 @@ ORDER BY ordinal_position;
 ```
 
 Expected output:
+
 - `id` (uuid)
 - `source` (text)
 - `content_type` (USER-DEFINED: content_type_enum)
@@ -1251,12 +1257,14 @@ SELECT * FROM match_lightrag_embeddings(
 **The vector dimension MUST match your `EMBEDDING_DIM` in `.env`.**
 
 Default dimensions by provider:
+
 - OpenAI `text-embedding-3-small`: 1536
 - OpenAI `text-embedding-3-large`: 3072
 - Gemini `gemini-embedding-2-preview`: 3072
 - Gemini `gemini-embedding-2`: 768
 
 If you change `EMBEDDING_DIM`, you must:
+
 1. Update `VECTOR(3072)` in the SQL schema to match
 2. Drop and recreate the table (or create a new table)
 3. Re-run the schema SQL
@@ -1287,7 +1295,6 @@ Solution: Dimension mismatch. Check `VECTOR(N)` in schema matches `EMBEDDING_DIM
 ### Error: "function match_lightrag_embeddings does not exist"
 
 Solution: Re-run the RPC function creation SQL from `supabase_schema.sql`.
-```
 
 - [ ] **Step 4: Commit Supabase schema files**
 
@@ -1307,6 +1314,7 @@ git commit -m "feat(lightrag): add Supabase pgvector schema
 ### Task 2.2: Implement Abstract Vector Adapter
 
 **Files:**
+
 - Create: `tools/lightrag/src/adapters/__init__.py`
 - Create: `tools/lightrag/src/adapters/base.py`
 - Create: `tools/lightrag/tests/test_adapters.py`
@@ -1442,6 +1450,7 @@ git commit -m "feat(lightrag): add abstract VectorAdapter interface
 ### Task 2.3: Implement Supabase Adapter
 
 **Files:**
+
 - Create: `tools/lightrag/src/adapters/supabase_adapter.py`
 - Modify: `tools/lightrag/tests/test_adapters.py`
 - Modify: `tools/lightrag/pyproject.toml` (add supabase dependency)
@@ -1770,6 +1779,7 @@ git commit -m "feat(lightrag): add Supabase pgvector adapter
 ### Task 2.4: Create Backend Setup Script (Supabase Validation)
 
 **Files:**
+
 - Create: `tools/lightrag/setup_backends.py`
 
 - [ ] **Step 1: Write backend validation script**
@@ -1908,8 +1918,9 @@ if __name__ == "__main__":
 - [ ] **Step 2: Test setup script with valid Supabase config**
 
 Run: `cd tools/lightrag && uv run python setup_backends.py`  
-Expected: 
-```
+Expected:
+
+```text
 ============================================================
 LightRAG Enhanced - Backend Setup
 ============================================================
@@ -1951,6 +1962,7 @@ git commit -m "feat(lightrag): add backend setup validation script
 ### Task 3.1: Implement Pinecone Adapter
 
 **Files:**
+
 - Create: `tools/lightrag/src/adapters/pinecone_adapter.py`
 - Modify: `tools/lightrag/tests/test_adapters.py`
 - Modify: `tools/lightrag/pyproject.toml` (add pinecone dependency)
@@ -2251,6 +2263,7 @@ git commit -m "feat(lightrag): add Pinecone serverless adapter
 ### Task 3.2: Update Backend Setup Script (Pinecone Auto-Creation)
 
 **Files:**
+
 - Modify: `tools/lightrag/setup_backends.py`
 
 - [ ] **Step 1: Add Pinecone validation to setup script**
@@ -2319,7 +2332,8 @@ async def validate_pinecone(config: Config) -> bool:
 
 Run: `cd tools/lightrag && uv run python setup_backends.py`  
 Expected:
-```
+
+```text
 ============================================================
 Pinecone Setup
 ============================================================
@@ -2351,6 +2365,7 @@ git commit -m "feat(lightrag): add Pinecone validation to setup script
 ### Task 4.1: Implement Gemini Embedder
 
 **Files:**
+
 - Create: `tools/lightrag/src/embedders/gemini_embedder.py`
 - Modify: `tools/lightrag/tests/test_embedders.py`
 - Modify: `tools/lightrag/pyproject.toml` (add httpx dependency)
@@ -2673,6 +2688,7 @@ git commit -m "feat(lightrag): add Gemini multimodal embedder
 ### Task 5.1: Create Abstract Content Ingestor
 
 **Files:**
+
 - Create: `tools/lightrag/src/ingestors/__init__.py`
 - Create: `tools/lightrag/src/ingestors/base.py`
 - Create: `tools/lightrag/tests/test_ingestors.py`
@@ -2811,6 +2827,7 @@ git commit -m "feat(lightrag): add abstract ContentIngestor interface
 ### Task 5.2: Implement Image Ingestor
 
 **Files:**
+
 - Create: `tools/lightrag/src/ingestors/image_ingestor.py`
 - Modify: `tools/lightrag/tests/test_ingestors.py`
 - Modify: `tools/lightrag/pyproject.toml` (add pytesseract dependency)
@@ -3059,6 +3076,7 @@ git commit -m "feat(lightrag): add image ingestor with OCR
 ### Task 5.3: Update LightRAGEnhanced for Multimodal Insert
 
 **Files:**
+
 - Modify: `tools/lightrag/src/lightrag_enhanced.py`
 - Modify: `tools/lightrag/tests/test_integration.py`
 
@@ -3239,21 +3257,25 @@ git commit -m "feat(lightrag): add multimodal file insert support
 **Remaining implementation tasks:**
 
 ### Phase 6: HTTP Upload API Extension (Optional)
+
 - Extend LightRAG Server's `/documents/upload` endpoint
 - Add multimodal file type support to DocumentManager
 - Route uploads to appropriate ingestor based on file extension
 
 ### Phase 7: File Watcher (Optional - Deferred)
+
 - Port watcher.py from reference repo
 - Implement startup_sync and watch_data_folder
 - Add SSE broadcast for real-time UI updates
 
 ### Phase 8: Hybrid Query Mode
+
 - Implement result merging from multiple backends
 - De-duplication by source ID
 - Re-ranking by similarity score
 
 ### Phase 9: Documentation & Examples
+
 - Update README.md with complete file ingestion guide
 - Add usage examples for all 3 ingestion methods
 - Create troubleshooting guide
@@ -3272,6 +3294,7 @@ git commit -m "feat(lightrag): add multimodal file insert support
 - [ ] Validate all file paths are absolute and correct
 
 **Dependencies Added:**
+
 - supabase>=2.0.0
 - pinecone-client>=5.0.0
 - httpx>=0.27.0
@@ -3279,6 +3302,7 @@ git commit -m "feat(lightrag): add multimodal file insert support
 - Pillow>=10.0.0
 
 **Tests Coverage:**
+
 - Config: 7 tests
 - Embedders: 5 tests
 - Adapters: 7 tests
@@ -3291,6 +3315,7 @@ git commit -m "feat(lightrag): add multimodal file insert support
 ## Plan Complete
 
 This implementation plan covers Phases 1-5 in full detail with:
+
 - ✅ Exact file paths and code blocks
 - ✅ Bite-sized steps (2-5 minutes each)
 - ✅ Test-first approach
