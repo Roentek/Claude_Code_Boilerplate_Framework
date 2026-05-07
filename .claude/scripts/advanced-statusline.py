@@ -49,15 +49,44 @@ def get_context_monitor_output(data):
         return None
 
 
+def get_context_mode_output():
+    """Run context-mode statusline.mjs and return its stdout."""
+    try:
+        home = os.path.expanduser("~")
+        statusline_mjs = os.path.join(
+            home, ".claude", "plugins", "marketplaces", "context-mode", "bin", "statusline.mjs"
+        )
+        if not os.path.exists(statusline_mjs):
+            return None
+
+        result = subprocess.run(
+            ["node", statusline_mjs],
+            capture_output=True,
+            timeout=5
+        )
+
+        if result.returncode == 0:
+            return result.stdout.decode('utf-8', errors='replace').strip()
+        return None
+
+    except Exception:
+        return None
+
+
 def main():
     try:
         data = read_stdin_safe()
         line = get_context_monitor_output(data)
+        ctx_mode = get_context_mode_output()
 
-        if line:
+        if line and ctx_mode:
+            print(f"{line} | {ctx_mode}")
+        elif line:
             print(line)
+        elif ctx_mode:
+            print(ctx_mode)
         else:
-            # Minimal fallback if context-monitor fails
+            # Minimal fallback if both fail
             directory = os.path.basename(
                 data.get("workspace", {}).get("project_dir", os.getcwd())
             )
