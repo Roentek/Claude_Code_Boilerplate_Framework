@@ -2,6 +2,8 @@
 
 Defines **how we work**, not what we're building. If a rule doesn't change behavior, it doesn't belong here.
 
+> **Global defaults:** [`~/.claude/CLAUDE.md`](~/.claude/CLAUDE.md) — communication style, platform (Windows/PowerShell), Python toolchain (uv), git conventions. Loaded before this file every session; project rules override.
+
 ---
 
 ## What Are You Building?
@@ -66,20 +68,8 @@ uv run prepare.py              # One-time data prep (~2 min)
 uv run train.py                # Test baseline run (~5 min)
 # Then use /autoresearch skill to start autonomous research loop
 
-# LightRAG — graph-based RAG
-cd tools/lightrag
-uv sync                                    # Install dependencies
-cp .env.example .env                       # Copy environment template
-# Edit .env and add your OPENAI_API_KEY
-
-# Option 1: Start via VSCode (recommended)
-# Press F5 → Select "LightRAG Server" → Browser opens automatically at http://localhost:9621
-
-# Option 2: Start via command line
-uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_storage
-
-# Option 3: Quick start script (Windows)
-./start_server.bat
+# LightRAG — graph-based RAG (see LightRAG Server Setup section below for full start options)
+cd tools/lightrag && uv sync && cp .env.example .env  # First-time setup
 
 # OpenSpace — self-evolving skill system (CLI first, MCP backup)
 # Git submodule — auto-syncs with upstream every session via openspace-sync.sh hook
@@ -107,19 +97,7 @@ git submodule update --remote tools/openspace  # Manual: pull latest from upstre
 /cavecrew                         # Compressed subagents (60% fewer tokens)
 
 # Dashboard (optional — requires Node.js ≥ 20)
-# Option 1: VSCode one-click launch (recommended)
-# Press F5 → Select "OpenSpace Dashboard (Full Stack)" → Starts both backend + frontend
-
-# Option 2: VSCode individual launch
-# Press F5 → Select "OpenSpace Backend Server" → http://127.0.0.1:7788
-# Then F5 → Select "OpenSpace Frontend" → Browser opens at http://127.0.0.1:3789
-
-# Option 3: Manual terminal launch
-openspace-dashboard --host 127.0.0.1 --port 7788  # Terminal 1: Backend
-cd tools/openspace/frontend
-cp .env.example .env                              # First-time only (setup.sh does this)
-npm install                                        # First-time only (setup.sh does this)
-npm run dev                                        # Terminal 2: Frontend → http://127.0.0.1:3789
+# Press F5 → "OpenSpace Dashboard (Full Stack)" — or see tools/openspace/README.md
 ```
 
 > **MCP credential gotcha:** `.mcp.json` `${VAR}` substitution reads from the **OS process environment**, not `.env`. On a fresh machine, run `setx VAR_NAME "value"` (Windows) or `export VAR_NAME=value` (Unix) in your terminal before starting Claude Code.
@@ -163,10 +141,6 @@ cp .env.example .env
 # If setup.sh was already run, you'll see:
 cat .claude/.setup-complete
 ```
-
-**Converting existing OpenSpace clone to submodule:**
-
-If you cloned OpenSpace before the submodule setup, see [`.claude/docs/openspace-submodule-conversion.md`](.claude/docs/openspace-submodule-conversion.md) for conversion instructions.
 
 ---
 
@@ -386,6 +360,7 @@ uv run python -m lightrag.api.lightrag_server --port 9621
 | Git Bash crash (Windows) | Use PowerShell or WSL instead |
 | `OPENAI_API_KEY not set` | Add to both `.env` AND OS environment (`setx` on Windows) |
 | setup.sh hangs at skill install | Press Ctrl+C, run manual `/skill install` commands shown |
+| `better-sqlite3` build fails (corporate proxy) | `NODE_TLS_REJECT_UNAUTHORIZED=0 npm install better-sqlite3 --build-from-source` — or re-run setup.sh (step 7c applies this fix automatically) |
 
 ---
 
@@ -395,10 +370,10 @@ Update memory files **as you go**, not at session end. Do not ask — just updat
 
 | Trigger | File |
 | ------- | ---- |
-| User shares a fact about themselves | `memory-profile.md` |
-| User states a preference | `memory-preferences.md` |
-| A non-trivial decision is made | `memory-decisions.md` (with date) |
-| Substantive work is completed | `memory-sessions.md` |
+| User shares a fact about themselves | `.claude/rules/memory-profile.md` |
+| User states a preference | `.claude/rules/memory-preferences.md` |
+| A non-trivial decision is made | `.claude/rules/memory-decisions.md` (with date) |
+| Substantive work is completed | `.claude/rules/memory-sessions.md` |
 
 **Maintenance:** Run `/compact-memory` monthly (or when `memory-sessions.md` exceeds ~200 lines) to compress old entries, prune obsolete decisions, and sync key facts to the knowledge graph.
 
