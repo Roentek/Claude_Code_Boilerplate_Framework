@@ -120,3 +120,22 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-07 (auto-drafted — review before next session)
 - {"session_id":"1d7626fe-9361-4649-b509-f6f6253482e0","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\1d7626fe-9361-4649-b509-f6f6253482e0.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## MCP Environment Audit Complete\n\n**Full analysis:** `.tmp/mcp-env-audit.md`\n\n### Issues Found & Fixed\n\n| Issue | File | Problem | Fix Applied |\n|-------|------|---------|-------------|\n| **1.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-07 (auto-drafted — review before next session)
+- Check Claude Code logs** (if server shows \"connected\" but no tools):\n   - Windows: `%LOCALAPPDATA%\\Claude\\logs\\`\n   - Look for startup errors, auth failures\n\n### What I Fixed\n\n| File | Change | Why |\n|------|--------|-----|\n| `settings.local.json` | Added `ANTHROPIC_API_KEY` | Was empty â€” MCP servers couldn't use Claude models |\n| `tools/lightrag/.env` | Updated `SUPABASE_KEY` | Was using PAT token instead of service role JWT |\n\nAll env vars now correct.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-07 (auto-drafted — review before next session)
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-07 (auto-drafted — review before next session)
+- {"session_id":"ad60c208-bba7-41cb-ac20-97bc18d6b499","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\ad60c208-bba7-41cb-ac20-97bc18d6b499.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## âœ… Test Tools Created\n\n**1.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-07 (auto-drafted — review before next session)
+- {"session_id":"ac455d8c-395b-43c3-bcee-fdc1c7272efd","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\ac455d8c-395b-43c3-bcee-fdc1c7272efd.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"**Git unlocked.**\n\n**Changes:**\n- `.mcp.json` â€” added `SUPABASE_URL` to supabase-mcp env\n- `settings.local.json.example` â€” updated activation guide\n\n**Restart Claude Code** to reconnect supabase-mcp with both credentials."}
