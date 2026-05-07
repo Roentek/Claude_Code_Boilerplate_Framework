@@ -345,90 +345,17 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 
 ## LightRAG Server Setup
 
-**LightRAG** is a graph-based RAG system with Web UI + REST API for knowledge extraction and Q&A.
+Graph-based RAG with multimodal support. See [`tools/lightrag/README.md`](tools/lightrag/README.md).
 
-### Quick Start (3 steps)
-
+**Quick start:**
 ```bash
-# 1. Install dependencies
-cd tools/lightrag
-uv sync
-
-# 2. Configure API key
-cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY
-
-# 3. Start server (choose one method)
+cd tools/lightrag && uv sync && cp .env.example .env
+# Add OPENAI_API_KEY to .env, then:
+uv run python -m lightrag.api.lightrag_server --port 9621
+# Or: Press F5 → "LightRAG Server" (VSCode)
 ```
 
-**Method 1: VSCode Debug (Recommended)**  
-
-- Press `F5` → Select "**LightRAG Server**"
-- Browser opens automatically at [LightRAG Web UI](http://localhost:9621)
-- Full debugging support with breakpoints
-
-**Method 2: Quick Start Script**  
-
-```bash
-./start_server.bat
-```
-
-**Method 3: Command Line**  
-
-```bash
-uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_storage
-```
-
-### Access Points
-
-- [Web UI](http://localhost:9621) - Knowledge Graph Visualization, Insert/Query
-- [API Docs](http://localhost:9621/docs) - Swagger UI
-- [Alt Docs](http://localhost:9621/redoc) - ReDoc
-
-### Configuration (`.env`)
-
-```ini
-# Required
-OPENAI_API_KEY=sk-proj-...
-
-# LLM Configuration
-LLM_BINDING=openai          # Options: openai, anthropic, gemini, ollama
-LLM_MODEL=gpt-4o-mini
-
-# Embedding Configuration
-EMBEDDING_BINDING=openai
-EMBEDDING_MODEL=text-embedding-3-small
-EMBEDDING_DIM=1536
-```
-
-### VSCode Integration
-
-The `.vscode/launch.json` includes two debug configurations:
-
-1. **LightRAG Server** — Starts the web server with auto-browser-open
-2. **LightRAG Test Script** — Runs `test_lightrag.py` for insert/query testing
-
-Both configs automatically load environment variables from `tools/lightrag/.env`.
-
-### File Structure
-
-```text
-tools/lightrag/
-  ├── .env                 ← API key + server config (gitignored)
-  ├── .env.example         ← Template (commit this)
-  ├── pyproject.toml       ← Dependencies
-  ├── test_lightrag.py     ← Example usage
-  ├── start_server.bat     ← Windows launcher
-  └── rag_storage/         ← Knowledge graph data (gitignored)
-```
-
-### Dependencies Installed
-
-- `lightrag-hku` — Core library
-- `fastapi` + `uvicorn` — Web server
-- `openai` — OpenAI integration
-- `pyjwt`, `bcrypt`, `passlib` — Authentication
-- `aiofiles` — Async file I/O
+**Access:** http://localhost:9621 (Web UI + API docs)
 
 ---
 
@@ -444,6 +371,18 @@ tools/lightrag/
 | `openspace-sync` | [`.claude/hooks/openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Auto-syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace; pulls latest commits; updates submodule pointer in parent repo; skips if uncommitted changes exist (called by stop hook) |
 
 > Add new hooks in [`.claude/settings.json`](.claude/settings.json) under `"hooks"`.
+
+---
+
+## Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| `uvx: command not found` | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
+| MCP server timeout | Increase `toolTimeout` in `.mcp.json` (default 600s → 1200s) |
+| Git Bash crash (Windows) | Use PowerShell or WSL instead |
+| `OPENAI_API_KEY not set` | Add to both `.env` AND OS environment (`setx` on Windows) |
+| setup.sh hangs at skill install | Press Ctrl+C, run manual `/skill install` commands shown |
 
 ---
 
