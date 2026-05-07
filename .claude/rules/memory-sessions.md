@@ -109,3 +109,9 @@ Summary of substantive work completed each session — what was built, what was 
 - **Apr 22 (s2):** `pre-commit.sh` git hook created for auto-updating CLAUDE.md/README.md; stop.sh enhanced with doc-sync check
 - **Apr 22 (s3):** README.md updated for pre-commit hook; expanded setup steps (5→9); hooks table corrected
 - **Apr 20:** Boilerplate sync scope locked — `SYNC_PATHS` permanently excludes project-specific files (README.md, LICENSE, .env.example, .gitignore, .gitattributes, CODEOWNERS, PR template)
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-07 (auto-drafted — review before next session)
+- Environment Variables (lines 92-93)**\n- Added `CAVEMAN_SHRINK_FIELDS: \"description\"`\n- Added `CAVEMAN_SHRINK_DEBUG: \"0\"`\n\n**3.
+- Permissions Added**\n- **supabase-mcp:** 8 tools (list_tables, describe_table, query, apply_migration, get_logs, get_advisors, get_project_url, get_publishable_api_key)\n- **context7:** 2 tools (query-docs, resolve-library-id)\n- **notebooklm-mcp:** 45 tools (notebook_*, source_*, studio_*, research_*, etc.)\n- **Skills:** 8 missing (create-actor, caveman, caveman-stats, caveman-compress, caveman-commit, caveman-review, cavecrew, caveman-help)\n- **WebFetch domains:** 3 missing (context7.com, notebooklm.google.com, monet.design)\n\n### Impact\n\nFresh clones now get complete configuration template â€” no \"Missing environment variables\" errors for OpenSpace, Context7, NotebookLM, Supabase MCP, or Caveman integrations.\n\n**Decision logged:** `memory-decisions.md` entry created (2026-05-07)"}

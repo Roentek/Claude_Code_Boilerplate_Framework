@@ -4,6 +4,21 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-05-07 — settings.local.json.example completed with missing integrations
+- **Decision:** Audited and updated `.claude/settings.local.json.example` to include all MCP servers, plugins, skills, and WebFetch domains from `.mcp.json` and `CLAUDE.md`.
+- **Why:** The example file was missing activation guides, environment variables, permissions, and WebFetch domains for several integrations (OpenSpace, Context7, NotebookLM, Supabase MCP, Caveman, memory-shrunk). New users copying the template would miss critical configuration.
+- **Implication:**
+  - **Line 5 activation guide:** Changed from `"memory"` to `"memory-shrunk"` (reflects 2026-05-05 decision to use caveman-wrapped memory MCP)
+  - **Env vars added:** `CAVEMAN_SHRINK_FIELDS`, `CAVEMAN_SHRINK_DEBUG` (lines 92-93)
+  - **Permissions added:**
+    - supabase-mcp: 8 tools (list_tables, describe_table, query, apply_migration, get_logs, get_advisors, get_project_url, get_publishable_api_key)
+    - context7: 2 tools (query-docs, resolve-library-id)
+    - notebooklm-mcp: 45 tools (notebook_*, source_*, studio_*, research_*, etc.)
+    - Skills: 8 new entries (create-actor, caveman, caveman-stats, caveman-compress, caveman-commit, caveman-review, cavecrew, caveman-help)
+    - WebFetch domains: 3 new (context7.com, notebooklm.google.com, monet.design)
+  - **Files updated:** `.claude/settings.local.json.example` (7 sections modified)
+  - **User impact:** Fresh clones now have complete configuration template; no more "Missing environment variables" errors for standard integrations
+
 ## 2026-05-06 — setup.sh PowerShell compatibility fixes
 - **Problem:** setup.sh hangs indefinitely in PowerShell during Apify skill installation (step 7a); project skills installation fails with "cannot find folder /Path/.claude/skills" error (step 8)
 - **Root causes:**
