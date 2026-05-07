@@ -690,7 +690,7 @@ class OpenAIEmbedder(EmbeddingProvider):
         return self._embedding_dim
 ```
 
-- [ ] **Step 4: Update embedders __init__.py**
+- [ ] **Step 4: Update embedders `__init__.py`**
 
 ```python
 # tools/lightrag/src/embedders/__init__.py
@@ -1741,7 +1741,7 @@ class SupabaseAdapter(VectorAdapter):
             return False
 ```
 
-- [ ] **Step 6: Update adapters __init__.py**
+- [ ] **Step 6: Update adapters `__init__.py`**
 
 ```python
 # tools/lightrag/src/adapters/__init__.py
@@ -2225,7 +2225,7 @@ class PineconeAdapter(VectorAdapter):
             return False
 ```
 
-- [ ] **Step 6: Update adapters __init__.py**
+- [ ] **Step 6: Update adapters `__init__.py`**
 
 ```python
 # tools/lightrag/src/adapters/__init__.py
@@ -2632,7 +2632,7 @@ class GeminiEmbedder(EmbeddingProvider):
         await self.client.aclose()
 ```
 
-- [ ] **Step 6: Update embedders __init__.py**
+- [ ] **Step 6: Update embedders `__init__.py`**
 
 ```python
 # tools/lightrag/src/embedders/__init__.py
@@ -3040,7 +3040,7 @@ class ImageIngestor(ContentIngestor):
         )
 ```
 
-- [ ] **Step 6: Update ingestors __init__.py**
+- [ ] **Step 6: Update ingestors `__init__.py`**
 
 ```python
 # tools/lightrag/src/ingestors/__init__.py
@@ -3211,7 +3211,7 @@ Expected: FAIL (insert() doesn't support Path or content_type yet)
         return result
 ```
 
-- [ ] **Step 4: Initialize adapters in __init__**
+- [ ] **Step 4: Initialize adapters in `__init__`**
 
 ```python
 # In tools/lightrag/src/lightrag_enhanced.py __init__, replace the adapters line:

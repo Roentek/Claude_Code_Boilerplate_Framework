@@ -140,9 +140,9 @@ class LightRAGEnhanced:
 **Implementations:**
 
 | Provider | Capabilities | Models | Dimensions |
-|----------|-------------|--------|-----------|
-| **OpenAI** | Text only | `text-embedding-3-small` (default)<br>`text-embedding-3-large` | 1536<br>3072 |
-| **Gemini** | Text + multimodal | `gemini-embedding-2-preview` (default)<br>`gemini-embedding-2` | 3072<br>768 |
+| ---------- | ------------- | -------- | ----------- |
+| **OpenAI** | Text only | `text-embedding-3-small`, (default)`text-embedding-3-large` | 1536, 3072 |
+| **Gemini** | Text + multimodal | `gemini-embedding-2-preview`, (default)`gemini-embedding-2` | 3072, 768 |
 
 **Interface:**
 
@@ -186,6 +186,7 @@ class VectorAdapter(ABC):
 ```
 
 **Implementations:**
+
 - `SupabaseAdapter` - Uses Supabase pgvector with `lightrag_embeddings` table
 - `PineconeAdapter` - Uses Pinecone serverless index
 
@@ -209,6 +210,7 @@ class ContentIngestor(ABC):
 ```
 
 **Implementations:**
+
 - `TextIngestor` - Pass-through (already text)
 - `ImageIngestor` - OCR extraction + optional raw embedding
 - `VideoIngestor` - Transcript + optional keyframe embedding
@@ -246,6 +248,7 @@ class Config:
 ```
 
 **Validation Rules:**
+
 1. Provider must be `openai` or `gemini`
 2. Required API key for selected provider must be set
 3. `MULTIMODAL_MODE=advanced` requires `EMBEDDING_PROVIDER=gemini`
@@ -271,7 +274,7 @@ class Config:
 **Legacy Variable Mapping:**
 
 | New Variable (Preferred) | Legacy Variable (Supported) | Purpose |
-|-------------------------|----------------------------|---------|
+| ------------------------- | ---------------------------- | --------- |
 | `EMBEDDING_PROVIDER` | `EMBEDDING_BINDING` | Embedding provider selection |
 | `OPENAI_EMBEDDING_MODEL` | `EMBEDDING_MODEL` | OpenAI model selection |
 | `LIGHTRAG_LLM_PROVIDER` | `LLM_BINDING` | LLM provider for answer generation |
@@ -289,7 +292,7 @@ This ensures existing LightRAG server configs continue to work without modificat
 
 **Solution:** Embedding Function Wrapper Pattern
 
-**Step 1: Create Wrapped Embedding Function**
+**Step 1: Create Wrapped Embedding Function**  
 
 ```python
 class LightRAGEnhanced:
@@ -326,7 +329,7 @@ class LightRAGEnhanced:
         return embedding_func_with_sync
 ```
 
-**Step 2: Pass Wrapped Function to LightRAG**
+**Step 2: Pass Wrapped Function to LightRAG**  
 
 ```python
     def __init__(self, ...):
@@ -345,7 +348,7 @@ class LightRAGEnhanced:
 
 **Data Flow:**
 
-```
+```text
 LightRAG calls embedding_func(text)  [thinks it's calling OpenAI directly]
     ↓
 Our wrapper intercepts the call
@@ -356,6 +359,7 @@ Our wrapper intercepts the call
 ```
 
 **Key Benefits:**
+
 1. ✅ **Non-invasive** - LightRAG code is never modified
 2. ✅ **Transparent** - LightRAG doesn't know adapters exist
 3. ✅ **Non-blocking** - Sync happens in background, doesn't slow down LightRAG
@@ -365,7 +369,7 @@ Our wrapper intercepts the call
 **Integration Points Summary:**
 
 | LightRAG Component | How We Integrate | Modification Level |
-|--------------------|------------------|-------------------|
+| -------------------- | ------------------ | ------------------- |
 | Embedding function | **Replace** with our wrapper | ✅ Zero modification |
 | LLM function | Pass our configured function | ✅ Zero modification |
 | Storage | Use LightRAG's default (nano-vectordb) | ✅ Zero modification |
@@ -377,7 +381,7 @@ Our wrapper intercepts the call
 
 ### Insert Flow (Text Content)
 
-```
+```text
 User: rag.insert("Document text...")
     ↓
 LightRAGEnhanced.insert()
@@ -398,6 +402,7 @@ Return to user
 ```
 
 **Key Points:**
+
 - LightRAG completes **before** remote sync
 - Local graph **always** updated successfully
 - Remote failures logged but don't block
@@ -406,7 +411,7 @@ Return to user
 
 ### Insert Flow (Multimodal - Simple Mode)
 
-```
+```text
 User: rag.insert(Path("image.jpg"), content_type="image")
     ↓
 ImageIngestor.extract_text() → OCR result
@@ -423,7 +428,7 @@ LightRAG Core (receives text)
 
 ### Insert Flow (Multimodal - Advanced Mode)
 
-```
+```text
 User: rag.insert(Path("image.jpg"), content_type="image")
     ↓
 Fork TWO parallel paths:
@@ -438,6 +443,7 @@ LightRAG Core           VectorSyncAdapter
 ```
 
 **Advanced Mode Benefits:**
+
 - Text goes into knowledge graph (entities, relationships)
 - Raw multimodal embedding enables semantic visual search
 - Queryable via hybrid mode
@@ -446,7 +452,7 @@ LightRAG Core           VectorSyncAdapter
 
 ### Query Flow (Graph Mode - Default)
 
-```
+```text
 User: rag.query("What is X?")  # mode="graph" default
     ↓
 Embed query → [float] × dimension
@@ -465,7 +471,7 @@ Return answer + sources
 
 ### Query Flow (Hybrid Mode)
 
-```
+```text
 User: rag.query("Show me images of X", mode="hybrid")
     ↓
 Embed query → [float] × dimension
@@ -493,14 +499,14 @@ Generate answer with merged context
 ### Provider Capabilities
 
 | Provider | Text | Images | Video | Audio | Use Case |
-|----------|------|--------|-------|-------|----------|
+| ---------- | ------ | -------- | ------- | ------- | ---------- |
 | **OpenAI** | ✅ | ❌ | ❌ | ❌ | Pure text RAG |
 | **Gemini** | ✅ | ✅ | ✅ | ✅ | Multimodal RAG |
 
 ### Valid Configurations
 
 | Provider | Multimodal Mode | Content Types | Backend Sync | Valid? |
-|----------|----------------|---------------|--------------|--------|
+| ---------- | ---------------- | --------------- | -------------- | -------- |
 | `openai` | `simple` | Text only | Supabase/Pinecone (text) | ✅ |
 | `openai` | `advanced` | Any | - | ❌ ERROR: OpenAI can't embed multimodal |
 | `gemini` | `simple` | Text only | Supabase/Pinecone (text) | ✅ |
@@ -509,7 +515,7 @@ Generate answer with merged context
 ### Backend Combinations
 
 | Supabase | Pinecone | Behavior |
-|----------|----------|----------|
+| ---------- | ---------- | ---------- |
 | ❌ | ❌ | Local only (vanilla LightRAG) |
 | ✅ | ❌ | Sync to Supabase only |
 | ❌ | ✅ | Sync to Pinecone only |
@@ -564,6 +570,7 @@ No manual setup required. The `setup_backends.py` script will:
 3. Validate dimension matches config
 
 **Index Spec:**
+
 - Dimension: Matches `EMBEDDING_DIM` (e.g., 3072)
 - Metric: `cosine`
 - Type: Serverless (AWS)
@@ -581,6 +588,7 @@ uv run python setup_backends.py
 ```
 
 **What it does:**
+
 1. ✅ Validates Supabase connection
 2. ✅ Checks if `lightrag_embeddings` table exists
 3. ✅ Checks if RPC function exists
@@ -588,7 +596,8 @@ uv run python setup_backends.py
 5. ✅ Validates dimensions match across all backends
 
 **Output:**
-```
+
+```text
 ════════════════════════════════════════════════════════════
 LightRAG Enhanced - Backend Setup
 ════════════════════════════════════════════════════════════
@@ -702,12 +711,14 @@ def validate_content_type(content_type, provider, mode):
 ### Unit Tests
 
 **Coverage:**
+
 - `Config` validation rules
 - Embedding provider dimension detection
 - Adapter error handling (mocked backends)
 - Content type validation logic
 
 **Example:**
+
 ```python
 def test_config_rejects_advanced_mode_with_openai():
     os.environ["EMBEDDING_PROVIDER"] = "openai"
@@ -721,17 +732,20 @@ def test_config_rejects_advanced_mode_with_openai():
 ### Integration Tests
 
 **Coverage:**
+
 - Supabase adapter CRUD operations
 - Pinecone adapter CRUD operations
 - LightRAG + adapter sync flow
 - Query result merging (hybrid mode)
 
 **Requirements:**
+
 - Test Supabase project (dimension 1536)
 - Test Pinecone index (dimension 1536)
 - Environment: `ENABLE_SUPABASE=true`, `ENABLE_PINECONE=true`
 
 **Example:**
+
 ```python
 async def test_dual_backend_sync():
     rag = LightRAGEnhanced(
@@ -753,6 +767,7 @@ async def test_dual_backend_sync():
 ### Manual Tests
 
 **Scenarios:**
+
 1. Pure text RAG (OpenAI + local only)
 2. Text RAG with Supabase mirror
 3. Text RAG with Pinecone mirror
@@ -844,6 +859,7 @@ print(result["sources"])  # Includes both text and image sources
 ### Current State Analysis
 
 **LightRAG Server (tools/lightrag/.venv/Lib/site-packages/lightrag/api/):**
+
 - ✅ **HTTP Upload API**: `/documents/upload` endpoint (`document_routes.py:2118`)
 - ✅ **Background Processing**: FastAPI BackgroundTasks for async ingestion
 - ✅ **Duplicate Detection**: Filename and content-based deduplication
@@ -852,6 +868,7 @@ print(result["sources"])  # Includes both text and image sources
 - ❌ **File Watching**: No automatic data folder monitoring
 
 **Reference Repo (Gemini RAG Framework):**
+
 - ✅ **Automatic File Watcher**: `watcher.py` monitors `data/` folder with 1.5s debounce
 - ✅ **Multimodal Support**: text, images (`.png`, `.jpg`), video (`.mp4`, `.mov`), audio (`.mp3`, `.wav`)
 - ✅ **SSE Broadcast**: Real-time status updates pushed to web UI via `/sync-events`
@@ -860,6 +877,7 @@ print(result["sources"])  # Includes both text and image sources
 ### Gap Identified
 
 LightRAG Enhanced needs to support multimodal files when using Gemini embeddings, but:
+
 1. LightRAG Server's `/documents/upload` only accepts text-based file types
 2. No automatic file watching for drop-and-ingest workflows
 3. Web UI not designed for multimodal file uploads
@@ -867,6 +885,7 @@ LightRAG Enhanced needs to support multimodal files when using Gemini embeddings
 ### Proposed Solution: Three-Tiered Ingestion
 
 **Tier 1: Programmatic API** (Already in Design)
+
 ```python
 rag.insert(Path("diagram.png"), content_type="image")  # Direct method call
 ```
@@ -888,6 +907,7 @@ supported_extensions: tuple = (
 ```
 
 **File Type Routing Logic:**
+
 ```python
 async def process_upload(file_path: Path):
     ext = file_path.suffix.lower()
@@ -931,6 +951,7 @@ async def sync_then_watch(rag_enhanced, data_dir, on_event=None):
 ```
 
 **Server Integration (Optional Flag):**
+
 ```python
 # In lightrag_server.py lifespan
 if Config.ENABLE_FILE_WATCHER:  # New env var: ENABLE_FILE_WATCHER=true
@@ -945,13 +966,15 @@ if Config.ENABLE_FILE_WATCHER:  # New env var: ENABLE_FILE_WATCHER=true
 ### User-Facing Workflow
 
 **Option A: Web UI Upload** (Existing LightRAG Flow)
-1. User opens http://localhost:9621 (LightRAG Server)
+
+1. User opens [LightRAG Server](http://localhost:9621)
 2. Uploads file via UI (drag-and-drop or file picker)
 3. Server validates file type based on embedding provider
 4. Background task processes file
 5. Web UI shows ingestion progress
 
 **Option B: Data Folder Drop** (Optional, New)
+
 1. User drops files into `tools/lightrag/data/images/`, `data/text/`, `data/video/`
 2. File watcher detects changes with 1.5s debounce
 3. Auto-ingests new/modified files
@@ -959,6 +982,7 @@ if Config.ENABLE_FILE_WATCHER:  # New env var: ENABLE_FILE_WATCHER=true
 5. SSE broadcast shows real-time status (if UI connected)
 
 **Option C: Programmatic API** (Existing in Design)
+
 ```python
 from pathlib import Path
 from tools.lightrag.src.lightrag_enhanced import LightRAGEnhanced
@@ -970,16 +994,19 @@ await rag.insert(Path("diagram.png"), content_type="image")
 ### Implementation Decision
 
 **Phase 1 (Core Infrastructure):** Programmatic API only (Option C)
+
 - `rag.insert(Path(...), content_type=...)` works immediately
 - No server changes required
 - Sufficient for power users and scripting
 
 **Phase 2 (HTTP API Extension):** Extend `/documents/upload` endpoint
+
 - Multimodal file type support based on embedding provider
 - File type routing to appropriate ingestor
 - Backward compatible — text files still work as before
 
 **Phase 3 (Optional):** File watcher for drop-and-ingest workflow
+
 - Controlled by `ENABLE_FILE_WATCHER` env var (default: false)
 - Creates `data/` subdirectory in `working_dir`
 - Startup sync + live watching with SSE broadcast
@@ -987,6 +1014,7 @@ await rag.insert(Path("diagram.png"), content_type="image")
 ### Configuration
 
 **New Environment Variables:**
+
 ```bash
 # File Ingestion (Optional)
 ENABLE_FILE_WATCHER=false  # Enable automatic data folder monitoring
@@ -995,6 +1023,7 @@ ENABLE_FILE_WATCHER=false  # Enable automatic data folder monitoring
 ### Documentation Updates
 
 **README.md additions:**
+
 ```markdown
 ### File Ingestion Methods
 
@@ -1004,13 +1033,15 @@ rag.insert(Path("document.pdf"))                   # Text extraction
 rag.insert(Path("diagram.png"), content_type="image")  # Multimodal
 ```
 
-**Method 2: HTTP Upload**
+**Method 2: HTTP Upload**  
+
 ```bash
 curl -X POST http://localhost:9621/documents/upload \
   -F "file=@diagram.png"
 ```
 
-**Method 3: Data Folder (Optional)**
+**Method 3: Data Folder (Optional)**  
+
 ```bash
 # Enable in .env
 ENABLE_FILE_WATCHER=true
@@ -1021,59 +1052,67 @@ cp *.pdf tools/lightrag/data/text/
 
 # Auto-ingested within 1.5 seconds
 ```
-```
 
 ---
 
 ## Implementation Phases
 
-**Phase 1: Core Infrastructure**
+**Phase 1: Core Infrastructure**  
+
 1. `Config` class with validation
 2. `EmbeddingProvider` base + OpenAI implementation
 3. `LightRAGEnhanced` wrapper (text-only, no adapters)
 4. Unit tests
 
-**Phase 2: Supabase Adapter**
+**Phase 2: Supabase Adapter**  
+
 1. `SupabaseAdapter` implementation
 2. `supabase_schema.sql`
 3. Integration tests
 4. `setup_backends.py` (Supabase validation only)
 
-**Phase 3: Pinecone Adapter**
+**Phase 3: Pinecone Adapter**  
+
 1. `PineconeAdapter` implementation
 2. `setup_backends.py` (Pinecone auto-create)
 3. Integration tests
 
-**Phase 4: Gemini Embeddings**
+**Phase 4: Gemini Embeddings**  
+
 1. `GeminiEmbedder` (port from reference repo)
 2. Model configuration
 3. Multimodal tests
 
-**Phase 5: Multimodal Ingestors & File Ingestion**
+**Phase 5: Multimodal Ingestors & File Ingestion**  
+
 1. `ImageIngestor`, `VideoIngestor`, `AudioIngestor`
 2. Simple mode (text extraction)
 3. Advanced mode (raw embeddings)
 4. Programmatic file ingestion API (`rag.insert(Path(...), content_type=...)`)
 5. End-to-end multimodal tests
 
-**Phase 6: HTTP Upload API Extension** (Optional)
+**Phase 6: HTTP Upload API Extension** (Optional)  
+
 1. Extend DocumentManager supported_extensions for multimodal files
 2. File type routing in `/documents/upload` endpoint
 3. Backward compatibility tests
 
 **Phase 7: File Watcher** (Optional — Deferred to Future Release)
+
 1. Port `watcher.py` from reference repo
 2. `ENABLE_FILE_WATCHER` configuration flag
 3. SSE broadcast integration
 4. Startup sync + live watching
 
-**Phase 8: Hybrid Query Mode**
+**Phase 8: Hybrid Query Mode**  
+
 1. Result merging logic
 2. De-duplication
 3. Re-ranking by similarity
 4. Performance optimization
 
-**Phase 9: Documentation & Examples**
+**Phase 9: Documentation & Examples**  
+
 1. README updates (all file ingestion methods documented)
 2. Usage examples (programmatic, HTTP, data folder)
 3. Troubleshooting guide
@@ -1104,6 +1143,7 @@ dependencies = [
 ## Success Criteria
 
 **Must Have:**
+
 1. ✅ LightRAG core untouched, fully functional without any adapters
 2. ✅ OpenAI and Gemini embeddings both supported
 3. ✅ Supabase and Pinecone adapters work independently and together
@@ -1113,12 +1153,14 @@ dependencies = [
 7. ✅ Comprehensive error messages guide users to fix issues
 
 **Should Have:**
+
 1. ✅ Simple and advanced multimodal modes
 2. ✅ Hybrid query mode with result merging
 3. ✅ Auto-detected embedding dimensions
 4. ✅ Clear usage examples in README
 
 **Nice to Have:**
+
 1. Batch sync operation (sync multiple embeddings at once)
 2. Retry logic for transient remote failures
 3. Sync status dashboard
@@ -1129,7 +1171,7 @@ dependencies = [
 ## Risks & Mitigations
 
 | Risk | Impact | Mitigation |
-|------|--------|------------|
+| ------ | -------- | ------------ |
 | Dimension mismatch between providers/backends | High - breaks similarity search | Config validation + setup script dimension checks |
 | Remote backend downtime blocks inserts | High - system unusable | Fail-safe adapter pattern - local always succeeds |
 | Multimodal content submitted to OpenAI | Medium - runtime crash | Validation in `insert()` before processing |
@@ -1143,6 +1185,7 @@ dependencies = [
 This design integrates Gemini multimodal embeddings and multi-backend vector storage into LightRAG using a clean adapter layer pattern. The system remains fully functional as vanilla LightRAG when all adapters are disabled, while offering powerful multimodal and multi-backend capabilities when enabled.
 
 **Next Steps:**
+
 1. Review and approve this design document
 2. Create implementation plan via `writing-plans` skill
 3. Execute implementation in phases
