@@ -346,6 +346,28 @@ else
   echo "  /plugin install caveman@caveman"
 fi
 
+# ── 7c. Install Context Mode plugin (98% context reduction) ─
+echo ""
+echo "── Context Mode Plugin (98% context reduction) ─────────"
+if command -v claude &>/dev/null; then
+  echo "  Installing context-mode plugin from mksglu/context-mode..."
+
+  if claude plugin install context-mode@context-mode 2>/dev/null; then
+    echo "  ✓ context-mode plugin installed"
+    echo "  Slash commands: /context-mode:ctx-stats, /context-mode:ctx-doctor, /context-mode:ctx-upgrade"
+    echo "  Statusline: Shows $ saved this session · $ saved across sessions · % efficient"
+    echo "  Sandboxes tool output — 315 KB becomes 5.4 KB (98% reduction)"
+  else
+    echo "  ⚠ context-mode — run in Claude Code:"
+    echo "      /plugin install context-mode@context-mode"
+  fi
+else
+  echo "  claude CLI not found — install context-mode manually."
+  echo "  Run this slash command inside a Claude Code chat session:"
+  echo ""
+  echo "  /plugin install context-mode@context-mode"
+fi
+
 # ── 8. Install project skills to ~/.claude/skills/ ─────────
 echo ""
 echo "── Project Skills (~/.claude/skills/) ──────────────────"

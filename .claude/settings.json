@@ -150,7 +150,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "python -X utf8 .claude/scripts/context-monitor.py"
+    "command": "python -X utf8 .claude/scripts/advanced-statusline.py"
   },
   "enabledPlugins": {
     "agent-sdk-dev@claude-plugins-official": true,
@@ -171,7 +171,8 @@
     "cc-gemini-plugin@cc-gemini-plugin": true,
     "cli-anything@cli-anything": true,
     "apify-ultimate-scraper@apify-agent-skills": true,
-    "caveman@caveman": true
+    "caveman@caveman": true,
+    "context-mode@context-mode": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -233,6 +234,13 @@
       "source": {
         "source": "github",
         "repo": "JuliusBrussee/caveman"
+      },
+      "autoUpdate": true
+    },
+    "context-mode": {
+      "source": {
+        "source": "github",
+        "repo": "mksglu/context-mode"
       },
       "autoUpdate": true
     }

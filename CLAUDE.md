@@ -134,9 +134,10 @@ npm install
 
 # 2. Run initial setup (hooks, skills, permissions, CLI tools, git submodules)
 bash .claude/hooks/setup.sh
-# Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything, caveman)
+# Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything, caveman, context-mode)
 # Step 7a:  Apify agent skills (5 skills from apify/agent-skills marketplace) with 30-sec timeout protection; displays manual /skill install commands if timeout/failure occurs
 # Step 7b:  Caveman plugin (token compression — 75% response reduction, 46% memory file reduction)
+# Step 7c:  Context Mode plugin (98% context reduction via sandboxing; statusline shows session/total savings + efficiency %)
 # Step 8:   Project skills with cross-platform path detection (Windows $USERPROFILE fallback, Unix-style path conversion); creates destination directory; verifies each copy succeeded
 # Step 11:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli
 # Step 13:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
@@ -251,6 +252,7 @@ docs/                         ← Project-level documentation
 | `github` | Reading private repos, reviewing PRs — requires `GITHUB_PERSONAL_ACCESS_TOKEN` |
 | `cli-anything` | Generating AI-native CLIs for existing software (GIMP, Blender, LibreOffice, etc.) — 50+ apps, 2,280+ tests |
 | `caveman` | Token compression — 75% reduction on responses, 46% on memory files; terse commits/reviews; session tracking |
+| `context-mode` | Context window optimization — 98% reduction via sandboxing (315 KB → 5.4 KB); session continuity via SQLite FTS5; output compression ~65-75% |
 
 > Disabled: `pinecone`, `supabase`, `plugin-dev` — enable in [`.claude/settings.json`](.claude/settings.json) → `enabledPlugins`.
 

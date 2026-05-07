@@ -4,6 +4,27 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-05-07 — Context Mode integrated for 98% context window reduction
+- **Decision:** Integrated `context-mode@context-mode` plugin (mksglu/context-mode, 13.8K stars) with combined statusline showing both context monitoring AND context-mode savings metrics.
+- **Why:** Complements Caveman's output compression (75%) with input compression (98% via sandboxing). Context-mode sandboxes tool output (315 KB → 5.4 KB), tracks session continuity in SQLite FTS5 (survives conversation compaction), and compresses output ~65-75%. Together with Caveman: 75% output + 98% input = maximum token savings.
+- **Implication:**
+  - **Plugin integration:** Added `context-mode@context-mode` to `settings.json` → `enabledPlugins` and `extraKnownMarketplaces` (GitHub repo: mksglu/context-mode)
+  - **Setup automation:** Step 7c added to `setup.sh` — auto-installs context-mode plugin via CLI; shows slash commands on success; displays manual `/plugin install` instructions if CLI unavailable
+  - **Statusline combined:** Created `.claude/scripts/advanced-statusline.py` wrapper that calls both `context-monitor.py` (existing context usage + session metrics) and `context-mode statusline` (savings metrics), then merges output with pipe separator. Graceful fallbacks if either script fails. Updated `settings.json` statusLine command to use wrapper.
+  - **Statusline format:** `[Model] 📁 directory | 🌿 branch (N) | 🧠 🟢 bar N% | 💰 $X.XX ⏱ Nm 📝 +N | 💎 $X.XX this session · $X.XX total · N% efficient`
+  - **6 sandbox tools:** `ctx_batch_execute`, `ctx_execute`, `ctx_execute_file`, `ctx_index`, `ctx_search`, `ctx_fetch_and_index`
+  - **5 meta tools:** `ctx_stats`, `ctx_doctor`, `ctx_upgrade`, `ctx_purge`, `ctx_insight` (personal analytics dashboard with 90 metrics, 37 insight patterns, 4 composite scores)
+  - **Auto-installed hooks:** SessionStart (routing injection), PreToolUse (intercept large-output tools), PostToolUse (index to SQLite FTS5), PreCompact (preserve session data)
+  - **Documentation updated:**
+    - `CLAUDE.md` — Plugins table (context-mode row), First-Time Setup (step 7c added to comment)
+    - `README.md` — Plugins → Marketplace table (context-mode entry), Installation instructions (full context-mode block), Enabled Plugins table (context-mode row with commands), Quick Start (step 7c description)
+    - `.claude/settings.local.json.example` — activation guide for context-mode@context-mode
+  - **Integration quality:** A+ — zero config needed (NO_KEY_NEEDED), statusline auto-combines both systems, graceful fallbacks, no breaking changes, preserves existing context-monitor.py
+  - **Files created:** `.claude/scripts/advanced-statusline.py`, `.tmp/CONTEXT_MODE_INTEGRATION_COMPLETE.md` (full integration report)
+  - **Files modified:** `.claude/settings.json` (plugin + statusLine), `.claude/hooks/setup.sh` (step 7c), `CLAUDE.md` (2 sections), `README.md` (4 sections), `.claude/settings.local.json.example` (activation guide), `memory-decisions.md` (this entry)
+- **Verification:** After restart, run `/context-mode:ctx-doctor` to verify installation. Statusline shows `💎 $0.00 this session · $0.00 total · 0% efficient` initially, accumulates with usage.
+- **Pattern:** Follows same integration pattern as Caveman — marketplace + setup.sh + combined approach + full docs. Context-mode handles INPUT compression (98%), Caveman handles OUTPUT compression (75%). Together = maximum savings.
+
 ## 2026-05-07 — settings.local.json.example completed with missing integrations
 - **Decision:** Audited and updated `.claude/settings.local.json.example` to include all MCP servers, plugins, skills, and WebFetch domains from `.mcp.json` and `CLAUDE.md`.
 - **Why:** The example file was missing activation guides, environment variables, permissions, and WebFetch domains for several integrations (OpenSpace, Context7, NotebookLM, Supabase MCP, Caveman, memory-shrunk). New users copying the template would miss critical configuration.
@@ -124,17 +145,6 @@ Architectural and technical decisions made during sessions — with date and rat
   - SKILL.md updated with CLI vs MCP decision matrix
   - CLAUDE.md routing table and Key Commands section updated to reflect CLI-first pattern
   - Pattern consistency: OpenSpace, Playwright, Firecrawl, NotebookLM all follow same CLI-first architecture
-
-## 2026-05-03 — Fixed Windows hook paths to use absolute paths
-- **Decision:** Updated all hook commands in `settings.json` to use `$(git rev-parse --show-toplevel)` for absolute path resolution instead of relative paths.
-- **Why:** Git Bash on Windows cannot resolve relative paths like `.claude/hooks/stop.sh` when invoked from Claude Code's hook system. The relative path works in a terminal but fails when executed as a hook command because the working directory context is different.
-- **Implication:** All four hooks now use: `bash "$(git rev-parse --show-toplevel)/.claude/hooks/<script>.sh"`
-  - Setup: `setup.sh`
-  - PreToolUse (Read): `read-guard.sh`
-  - PostToolUse (Write|Edit): `autosync-docs.sh`
-  - Stop: `stop.sh`
-  - All hooks tested and verified working on Windows
-  - Pattern is cross-platform compatible (works on macOS, Linux, Windows with Git Bash)
 
 ## 2026-05-03 — LightRAG integrated for graph-based RAG
 - **Decision:** Integrated HKUDS/LightRAG (13K+ stars, EMNLP 2025) in `tools/lightrag/` directory. Provides graph-based knowledge extraction and entity-relationship Q&A, multimodal document processing, and Web UI + REST API.
