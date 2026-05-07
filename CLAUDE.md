@@ -276,6 +276,7 @@ docs/                         ← Project-level documentation
 | `/caveman-commit` | Generate terse commit messages (≤50 chars, Conventional Commits format) |
 | `/caveman-review` | Single-line PR comments: "L42: 🔴 bug: user null. Add guard" |
 | `/cavecrew` | Compressed subagents (investigator/builder/reviewer with 60% fewer tokens) |
+| `/auto-stage-commit` | Stage all changes + generate lean commit message — outputs ready-to-run `git commit` command; **does not commit** (auto-triggers on commit intent) |
 
 **Superpowers skills** auto-trigger based on context (brainstorming, TDD, debugging, code review, planning, subagents, git worktrees). No manual invoke needed.
 

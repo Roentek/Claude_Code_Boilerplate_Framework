@@ -530,6 +530,7 @@ Skills are Markdown files that expand into full instructions when invoked. Proje
 | `/caveman-commit` | Generates terse commit messages (≤50 chars, Conventional Commits format with reasoning over description). |
 | `/caveman-review` | Single-line PR comments in format: "L42: 🔴 bug: user null. Add guard" — no unnecessary context. |
 | `/cavecrew` | Compressed subagents (investigator, builder, reviewer) that emit ~60% fewer tokens than vanilla equivalents. |
+| `/auto-stage-commit` | Stages all changes + generates lean Conventional Commits message — outputs ready-to-run `git commit` command without committing. Auto-triggers on commit intent. |
 
 ### Superpowers Skills (auto-trigger based on context)
 
