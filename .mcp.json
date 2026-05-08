@@ -1,12 +1,5 @@
 {
   "mcpServers": {
-    "memory": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-memory"
-      ]
-    },
     "supabase-mcp": {
       "command": "npx",
       "args": [
@@ -197,6 +190,7 @@
     "memory-shrunk": {
       "command": "npx",
       "args": [
+        "-y",
         "caveman-shrink",
         "npx",
         "-y",

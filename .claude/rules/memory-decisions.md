@@ -284,3 +284,8 @@ Architectural and technical decisions made during sessions — with date and rat
 <!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-05-07 — edit or delete below -->
 - ./CLAUDE.md (Project Root)\n\n**Score: 97/100 (Grade: A+)**\n\n| Criterion | Score | Notes |\n|-----------|-------|-------|\n| Commands/workflows | 19/20 | Comprehensive routing table + all key commands |\n| Architecture clarity | 19/20 | Full dir tree, WAT philosophy, tables |\n| Non-obvious patterns | 14/15 | MCP env gotcha, proxy fix, CLI-first all documented |\n| Conciseness | 13/15 | 380 lines â€” lean for scope (was 405) |\n| Currency | 15/15 | Global reference added, all edits from this session applied |\n| Actionability | 15/15 | Every command copy-paste ready |\n\n**No issues.** File is in optimal state.\n\n---\n\n### 2.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-07 — edit or delete below -->
+- {"session_id":"12a45873-63a3-49a6-bc61-163ddead6521","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\12a45873-63a3-49a6-bc61-163ddead6521.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Switched to **full** mode.
