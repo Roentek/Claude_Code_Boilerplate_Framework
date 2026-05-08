@@ -192,6 +192,8 @@
       "args": [
         "-y",
         "caveman-shrink",
+        "cmd",
+        "/c",
         "npx",
         "-y",
         "@modelcontextprotocol/server-memory"

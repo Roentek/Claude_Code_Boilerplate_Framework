@@ -667,6 +667,7 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 
 | Hook | File | Trigger | Behavior |
 | ------ | ------ | --------- | --------- |
+| **SessionStart** | [`mcp-cleanup.sh`](.claude/hooks/mcp-cleanup.sh) | Every new Claude Code session | Kills stale MCP node processes from crashed/force-killed sessions; prevents `EBUSY` file-lock errors on reconnect |
 | **Setup** | [`setup.sh`](.claude/hooks/setup.sh) | First session open on a new machine | Bootstraps the project (see [Quick Start](#quick-start)) — 16 steps: dependencies, plugins, skills, CLI tools, git submodules, autoresearch setup, lightrag setup, openspace submodule init + installation |
 | **Stop** | [`stop.sh`](.claude/hooks/stop.sh) | Every time Claude finishes responding | (1) Auto-syncs `tools/autoresearch/` with upstream via `autoresearch-sync.sh`, (2) auto-syncs `tools/openspace/` git submodule with upstream via `openspace-sync.sh`, (3) auto-drafts memory entries via `memory-drafter.py`, (4) checks if tracked paths changed and prompts doc update |
 | **PreToolUse** (Read) | [`read-guard.py`](.claude/hooks/read-guard.py) | Before every Read tool call | Warns when large files (>200 lines) are read without `offset`+`limit` to save tokens; always approves — advisory only |

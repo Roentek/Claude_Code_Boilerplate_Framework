@@ -102,3 +102,8 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-07 (auto-drafted — review before next session)
 - {"session_id":"73b45b13-2900-4953-b31f-7e4f9e32c62a","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\73b45b13-2900-4953-b31f-7e4f9e32c62a.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"No docs update needed â€” bug fix only, no structural change.\n\n**Fix:** Added `-y` to `npx caveman-shrink` call in `.mcp.json`.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-07 (auto-drafted — review before next session)
+- {"session_id":"f73c2b0f-6903-443d-a9de-3cde9756daf5","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\f73c2b0f-6903-443d-a9de-3cde9756daf5.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"```\nfix(mcp): remove duplicate memory server, add -y to caveman-shrink\n```\n\nThree changes: removed stale `memory` entry (superseded by `memory-shrunk`), added missing `-y` flag to `caveman-shrink` spawn args.

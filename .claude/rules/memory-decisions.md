@@ -286,6 +286,16 @@ Architectural and technical decisions made during sessions — with date and rat
 - ./CLAUDE.md (Project Root)\n\n**Score: 97/100 (Grade: A+)**\n\n| Criterion | Score | Notes |\n|-----------|-------|-------|\n| Commands/workflows | 19/20 | Comprehensive routing table + all key commands |\n| Architecture clarity | 19/20 | Full dir tree, WAT philosophy, tables |\n| Non-obvious patterns | 14/15 | MCP env gotcha, proxy fix, CLI-first all documented |\n| Conciseness | 13/15 | 380 lines â€” lean for scope (was 405) |\n| Currency | 15/15 | Global reference added, all edits from this session applied |\n| Actionability | 15/15 | Every command copy-paste ready |\n\n**No issues.** File is in optimal state.\n\n---\n\n### 2.
 
 
+## 2026-05-07 — memory-shrunk Windows fix: use cmd /c npx as upstream command
+- **Decision:** Changed `memory-shrunk` upstream args in `.mcp.json` from `["npx", "-y", "@modelcontextprotocol/server-memory"]` to `["cmd", "/c", "npx", "-y", "@modelcontextprotocol/server-memory"]`.
+- **Why:** `caveman-shrink` calls `spawn(args[0], args.slice(1))` without `shell: true`. On Windows, `npx` is `npx.cmd` — a CMD script — which Node.js `spawn` cannot resolve without shell mode, causing `ENOENT`. Using `cmd /c npx ...` works because `cmd.exe` is a real executable, and it passes stdin through to npx correctly.
+- **How to apply:** Any `caveman-shrink` wrapper in `.mcp.json` on Windows must use `cmd /c npx` instead of bare `npx` as the upstream command.
+
 <!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-05-07 — edit or delete below -->
 - {"session_id":"12a45873-63a3-49a6-bc61-163ddead6521","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\12a45873-63a3-49a6-bc61-163ddead6521.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Switched to **full** mode.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-07 — edit or delete below -->
+- The broken module error was a red herring from stale cache.\n\n`.mcp.json` maps `APIFY_TOKEN` â†’ `${APIFY_API_PAT}`, but `${VAR}` reads OS env â€” not `.env` file.\n\n**Error:** `APIFY_TOKEN is required but not set in the environment variables`\n\nFix: set it at OS level, then restart Claude Code.\n\nRun this in your terminal (replacing the token):\n\n```powershell\nsetx APIFY_API_PAT \"your_apify_token_here\"\n```\n\nThen restart Claude Code.

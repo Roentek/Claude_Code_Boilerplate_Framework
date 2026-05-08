@@ -341,6 +341,7 @@ uv run python -m lightrag.api.lightrag_server --port 9621
 
 | Hook | File | Behavior |
 | ---- | ---- | -------- |
+| `SessionStart` | [`.claude/hooks/mcp-cleanup.sh`](.claude/hooks/mcp-cleanup.sh) | Kills stale MCP node processes from previous sessions before new MCP servers start |
 | `PreToolUse` (Read) | [`.claude/hooks/read-guard.py`](.claude/hooks/read-guard.py) | Warns when large files are read without `offset`+`limit` to save tokens |
 | `Stop` | [`.claude/hooks/stop.sh`](.claude/hooks/stop.sh) | Calls autoresearch-sync + openspace-sync; drafts memory entries; flags tracked-path doc changes |
 | `PostToolUse` (Write/Edit) | [`.claude/hooks/autosync-docs.sh`](.claude/hooks/autosync-docs.sh) | After edits to tracked paths, injects context to update CLAUDE.md/README.md |
