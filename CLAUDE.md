@@ -120,6 +120,7 @@ bash .claude/hooks/setup.sh
 # Step 11:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli
 # Step 13:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
 # Step 14:  lightrag dependencies in tools/lightrag/ (via uv sync)
+# Step 14a: Ollama install + llama3.2 pull (local LLM for LightRAG; Windows: shows winget command, Unix: auto-installs)
 # Step 15:  openspace submodule initialization + pip install -e . + dashboard frontend npm install + .env port alignment (3889 → 3789 to match package.json)
 
 # 3. Configure MCP credentials

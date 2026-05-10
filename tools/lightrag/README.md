@@ -59,19 +59,26 @@ cp .env.example .env
 
 **Edit `.env` and configure:**
 
-**Required (choose one embedding provider):**
+**Required — choose embedding provider based on content type:**
+
+| Content | Provider | Why |
+| --------- | ---------- | ----- |
+| Text only (PDFs, markdown, docs) | `openai` | Cheaper, faster, simpler — use this by default |
+| Images / video / audio | `gemini` | Only provider that can embed non-text files |
 
 ```bash
-# For text-only RAG (recommended for getting started)
+# TEXT ONLY (default — documents, PDFs, markdown)
 EMBEDDING_PROVIDER=openai
 OPENAI_API_KEY=sk-...
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small  # or text-embedding-3-large
 
-# OR for multimodal RAG (text + images + video + audio)
-EMBEDDING_PROVIDER=gemini
-GEMINI_API_KEY=...
-GEMINI_EMBEDDING_MODEL=gemini-embedding-2-preview  # or gemini-embedding-2
+# MULTIMODAL (images, video, audio — switch to this when needed)
+# EMBEDDING_PROVIDER=gemini
+# GEMINI_API_KEY=...
+# GEMINI_EMBEDDING_MODEL=gemini-embedding-2-preview
 ```
+
+> **LLM vs Embeddings:** These are separate. LLM (set via `LIGHTRAG_LLM_PROVIDER`) generates responses. Embeddings convert text/media to vectors for search. You can mix — e.g. Ollama LLM (local/free) + OpenAI embeddings (cloud/cheap).
 
 **Optional (enable remote vector storage):**
 

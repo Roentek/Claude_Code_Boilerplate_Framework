@@ -68,3 +68,8 @@ Stated preferences about how Claude should behave, communicate, and structure wo
 <!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-05-07 — edit or delete below -->
 - Subdirectory `CLAUDE.md` files â€” scoped context\n\n**What to put there (things true across ALL your projects):**\n\n```markdown\n# Global Defaults\n\n## Communication\n- Caveman mode full by default â€” drop articles, fragments OK\n- No trailing summaries â€” I can read the diff\n\n## Git\n- Always conventional commits (feat/fix/chore)\n- Never --no-verify\n\n## Code style\n- No comments unless WHY is non-obvious\n- No docstrings on obvious functions\n- TypeScript: strict mode assumed\n\n## Tools\n- PowerShell on Windows, not Git Bash\n- Prefer uv over pip for Python\n```\n\n**What NOT to put there:** Project-specific routing, tool configs, MCP servers, memory rules â€” those belong in project CLAUDE.md.\n\n**Create it:**\n```bash\nnotepad $env:USERPROFILE\\.claude\\CLAUDE.md\n```\n\nAnything you find yourself correcting Claude on repeatedly across different projects â†’ belongs in global CLAUDE.md so you never repeat it."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-08 — edit or delete below -->
+- Good to go.\n\n**Launch:** F5 â†’ select **\"LightRAG Server\"** â†’ browser auto-opens at `http://localhost:9621`\n\nWeb UI lets you:\n- Insert documents (text/files)\n- Query with 5 modes (naive, local, global, hybrid, mix)\n- Visualize the knowledge graph\n\nAlso available: `tools/lightrag/start_server.bat` if you prefer terminal over F5."}

@@ -107,3 +107,18 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-07 (auto-drafted — review before next session)
 - {"session_id":"f73c2b0f-6903-443d-a9de-3cde9756daf5","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\f73c2b0f-6903-443d-a9de-3cde9756daf5.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"```\nfix(mcp): remove duplicate memory server, add -y to caveman-shrink\n```\n\nThree changes: removed stale `memory` entry (superseded by `memory-shrunk`), added missing `-y` flag to `caveman-shrink` spawn args.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-09 (auto-drafted — review before next session)
+- The README describes enhanced features (Gemini multimodal, Supabase/Pinecone mirrors) but the actual code was being built on this branch â€” never merged.
+- That's why `tools/lightrag/src/` is empty on `main`.\n\n**Your options:**\n\n| Option | What it means |\n|--------|---------------|\n| Merge it | Bring the Config class + tests into main â€” completes the Enhanced layer |\n| Delete it | You're happy with vanilla lightrag-hku + `.env` config â€” no custom code needed |\n| Leave it | Keep branch for later |\n\nGiven your current setup works fine (vanilla LightRAG + Ollama LLM + OpenAI embeddings), you probably don't need it unless you want the Gemini multimodal pipeline built out.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-09 (auto-drafted — review before next session)
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-09 (auto-drafted — review before next session)
+- Summary:\n\n- **`setup.sh`** â€” step 14a added: Windows shows `winget` command, Unix auto-installs + pulls `llama3.2`\n- **`tools/lightrag/.env`** â€” back to `LIGHTRAG_LLM_PROVIDER=ollama` / `llama3.2`\n- **`CLAUDE.md`** + **`README.md`** â€” step 14a documented\n\n**To test now:** install Ollama first:\n```powershell\nwinget install Ollama.Ollama\n```\nThen restart terminal, `ollama pull llama3.2`, then F5 â†’ **LightRAG Server**."}

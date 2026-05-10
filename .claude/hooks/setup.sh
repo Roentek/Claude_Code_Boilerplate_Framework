@@ -713,6 +713,54 @@ else
   echo "  (tools/lightrag/ directory not found — skipping)"
 fi
 
+# ── 14a. Install Ollama (local LLM for LightRAG) ────────────
+echo ""
+echo "── Ollama (Local LLM) ───────────────────────────────────"
+
+IS_WIN=false
+if [[ "$OSTYPE" == "msys"* || "$OSTYPE" == "cygwin"* || "$OS" == "Windows_NT" ]]; then
+  IS_WIN=true
+fi
+
+if command -v ollama &>/dev/null; then
+  echo "✓ Ollama already installed"
+  # Pull llama3.2 if not already present
+  if ollama list 2>/dev/null | grep -q "llama3.2"; then
+    echo "✓ llama3.2 model already pulled"
+  else
+    echo "  Pulling llama3.2 (~2GB, this may take a few minutes)..."
+    if ollama pull llama3.2; then
+      echo "✓ llama3.2 pulled"
+    else
+      echo "⚠ ollama pull failed — run manually: ollama pull llama3.2"
+      ERRORS=$((ERRORS + 1))
+    fi
+  fi
+else
+  if [ "$IS_WIN" = true ]; then
+    echo "  Ollama not found. Install via winget:"
+    echo "    winget install Ollama.Ollama"
+    echo "  Then pull the model:"
+    echo "    ollama pull llama3.2"
+    echo "  Or download: https://ollama.com/download/OllamaSetup.exe"
+  else
+    echo "  Installing Ollama..."
+    if curl -fsSL https://ollama.com/install.sh | sh; then
+      echo "✓ Ollama installed"
+      echo "  Pulling llama3.2..."
+      if ollama pull llama3.2; then
+        echo "✓ llama3.2 pulled"
+      else
+        echo "⚠ Pull failed — run manually: ollama pull llama3.2"
+        ERRORS=$((ERRORS + 1))
+      fi
+    else
+      echo "⚠ Ollama install failed — install manually: https://ollama.com"
+      ERRORS=$((ERRORS + 1))
+    fi
+  fi
+fi
+
 # ── 15. Install OpenSpace (self-evolving skill system) ───────
 echo ""
 echo "── OpenSpace (Self-Evolving Skill System) ───────────────"
