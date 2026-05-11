@@ -117,7 +117,7 @@ bash .claude/hooks/setup.sh
 # Step 7a:  Apify agent skills (5 skills from apify/agent-skills marketplace) with 30-sec timeout protection; displays manual /skill install commands if timeout/failure occurs
 # Step 7b:  Caveman plugin (token compression — 75% response reduction, 46% memory file reduction)
 # Step 7c:  Context Mode plugin (98% context reduction via sandboxing; statusline shows session/total savings + efficiency %); auto-installs better-sqlite3 with NODE_TLS_REJECT_UNAUTHORIZED=0 (corporate SSL proxy fix) for FTS5 session continuity
-# Step 7d-pre: Bun runtime (required by claude-mem worker for web viewer + MCP search; also 3-5x faster context-mode sandbox); Windows: winget install Oven-sh.Bun; Unix: curl -fsSL https://bun.sh/install | bash
+# Step 7d-pre: Bun runtime (required by claude-mem worker for web viewer + MCP search; also 3-5x faster context-mode sandbox); Windows: powershell -c "irm bun.sh/install.ps1 | iex"; Unix: curl -fsSL https://bun.sh/install | bash
 # Step 7d:  Claude-Mem plugin (persistent memory across sessions; context survives session end/reconnect; web viewer at http://localhost:37777; requires Bun)
 # Step 8:   Project skills with cross-platform path detection (Windows $USERPROFILE fallback, Unix-style path conversion); creates destination directory; verifies each copy succeeded
 # Step 9:   npm install (all package.json deps: react, react-dom, @types/react, @splinetool/react-spline, @splinetool/runtime, Playwright) + Playwright Chromium browser

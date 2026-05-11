@@ -407,13 +407,13 @@ else
   fi
 
   if $IS_WINDOWS; then
-    echo "  Installing Bun via winget..."
-    if winget install Oven-sh.Bun --accept-source-agreements --accept-package-agreements 2>/dev/null; then
-      echo "  ✓ Bun installed — restart terminal to pick up PATH"
+    echo "  Installing Bun via official PowerShell script..."
+    # winget silently succeeds but leaves empty dir — official script is reliable
+    if powershell -NoProfile -ExecutionPolicy Bypass -Command "irm bun.sh/install.ps1 | iex" 2>/dev/null; then
+      echo "  ✓ Bun installed — restart terminal + Claude Code to pick up PATH (~\.bun\bin)"
     else
-      echo "  ⚠ winget install failed. Install manually:"
-      echo "      winget install Oven-sh.Bun"
-      echo "    Or: https://bun.sh/docs/installation"
+      echo "  ⚠ Bun install failed. Run manually in PowerShell:"
+      echo "      powershell -c \"irm bun.sh/install.ps1 | iex\""
     fi
   else
     echo "  Installing Bun via install script..."
