@@ -73,3 +73,8 @@ Stated preferences about how Claude should behave, communicate, and structure wo
 <!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-05-08 — edit or delete below -->
 - Good to go.\n\n**Launch:** F5 â†’ select **\"LightRAG Server\"** â†’ browser auto-opens at `http://localhost:9621`\n\nWeb UI lets you:\n- Insert documents (text/files)\n- Query with 5 modes (naive, local, global, hybrid, mix)\n- Visualize the knowledge graph\n\nAlso available: `tools/lightrag/start_server.bat` if you prefer terminal over F5."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-11 — edit or delete below -->
+- **Extend existing** `find-skills` to include installed-skills section before marketplace search\n\nWhich do you prefer?

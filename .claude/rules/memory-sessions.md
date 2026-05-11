@@ -122,3 +122,13 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-09 (auto-drafted — review before next session)
 - Summary:\n\n- **`setup.sh`** â€” step 14a added: Windows shows `winget` command, Unix auto-installs + pulls `llama3.2`\n- **`tools/lightrag/.env`** â€” back to `LIGHTRAG_LLM_PROVIDER=ollama` / `llama3.2`\n- **`CLAUDE.md`** + **`README.md`** â€” step 14a documented\n\n**To test now:** install Ollama first:\n```powershell\nwinget install Ollama.Ollama\n```\nThen restart terminal, `ollama pull llama3.2`, then F5 â†’ **LightRAG Server**."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-11 (auto-drafted — review before next session)
+- Not a built-in Claude skill.\n\nWant me to check `setup.sh` to confirm how it got there?"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-11 (auto-drafted — review before next session)
+- Summary:\n\n- **Deleted:** `~/.claude/skills/find-skills` symlink (external, untracked)\n- **Created:** `.claude/skills/find-skills/SKILL.md` â€” lists installed skills + plugins, flags gaps\n- **Copied to global:** `find-skills` + `three-brain` both now in `~/.claude/skills/`\n- **Updated:** `CLAUDE.md` + `README.md` with `/find-skills` entry\n- **`three-brain` fix:** No setup.sh change needed â€” step 8 globs all skills automatically; just needs `setup.sh` re-run next time"}
