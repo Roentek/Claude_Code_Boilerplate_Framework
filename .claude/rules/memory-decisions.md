@@ -130,8 +130,8 @@ Architectural and technical decisions made during sessions — with date and rat
   - Standard Git workflow: Anyone familiar with submodules can work with it
   - Manual control: Can pin to a specific version if needed; auto-sync can be disabled
 - **Implication:**
-  - Infrastructure ready: `openspace-sync.sh` hook created, `stop.sh` updated to call it, `setup.sh` updated to initialize submodule
-  - Conversion not yet executed: User must run 6-step conversion (see `.claude/docs/openspace-submodule-conversion.md`)
+  - Infrastructure complete: `openspace-sync.sh` hook created, `stop.sh` updated to call it, `setup.sh` updated to initialize submodule
+  - Conversion complete: `tools/openspace/` is an active git submodule (verified 2026-05-11)
   - All integrations preserved: Skills (`openspace/`, `delegate-task/`, `skill-discovery/`), MCP server (`.mcp.json` + `settings.json`), VSCode launch configs (5 total), `.env` paths
   - Auto-sync behavior: Silent if up-to-date; pulls updates if available; skips if uncommitted changes exist; updates submodule pointer in parent repo
   - Documentation updated: `CLAUDE.md` (Key Commands, First-Time Setup, Hooks, Project Structure), `README.md` (Quick Start, Hooks, Project Structure), conversion guide created
@@ -278,36 +278,7 @@ Architectural and technical decisions made during sessions — with date and rat
 - **Implication:** Never re-add the excluded files to `SYNC_PATHS` in any sync script, edge function, or workflow config
 
 
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-05-07 — edit or delete below -->
-- {"session_id":"5157cc75-685c-4296-90ee-134e70b966f8","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\5157cc75-685c-4296-90ee-134e70b966f8.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Switched to **lite** mode.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-05-07 — edit or delete below -->
-- Starting assessment.\n\n## CLAUDE.md Quality Report\n\n### Summary\n- **Files found:** 1 (`./CLAUDE.md`)\n- **Lines:** 405\n- **Score:** 92/100 (Grade: **A**)\n- **Files needing update:** 1 (minor polish only)\n\n---\n\n### ./CLAUDE.md (Project Root)\n\n| Criterion | Score | Notes |\n|-----------|-------|-------|\n| Commands/workflows | 19/20 | Exceptional â€” routing table, Key Commands, First-Time Setup all copy-paste ready |\n| Architecture clarity | 19/20 | Full dir tree, WAT philosophy, plugin/skills/MCP tables â€” outstanding |\n| Non-obvious patterns | 13/15 | MCP env-var gotcha, proxy fix, CLI-first pattern â€” all documented |\n| Conciseness | 11/15 | 405 lines; justified by scope, but 3 verbose sections can be trimmed ~30 lines |\n| Currency | 15/15 | Updated today, reflects current state |\n| Actionability | 15/15 | Every command is executable, no vague instructions |\n\n---\n\n### Issues Found\n\n**1.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-05-07 — edit or delete below -->
-- {"session_id":"b70f41a2-c94c-4722-bd40-2f659494db1b","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\b70f41a2-c94c-4722-bd40-2f659494db1b.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"## CLAUDE.md Quality Report (Re-assessment)\n\n### Summary\n- **Files found:** 1 (`./CLAUDE.md`) + 0 global (`~/.claude/CLAUDE.md` â€” not found)\n- **Lines:** 390 (down from 405 at session start)\n- **Score:** 95/100 (Grade: **A**)\n- **Remaining issues:** 2 minor\n\n---\n\n### ./CLAUDE.md (Project Root)\n\n| Criterion | Score | Notes |\n|-----------|-------|-------|\n| Commands/workflows | 19/20 | Excellent â€” all 4 edits applied correctly |\n| Architecture clarity | 19/20 | Unchanged â€” still outstanding |\n| Non-obvious patterns | 14/15 | Corporate proxy row now present |\n| Conciseness | 12/15 | One verbose block remains (see below) |\n| Currency | 15/15 | Current |\n| Actionability | 15/15 | All commands executable |\n\n---\n\n### Remaining Issues\n\n**1.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-05-07 — edit or delete below -->
-- ./CLAUDE.md (Project Root)\n\n**Score: 97/100 (Grade: A+)**\n\n| Criterion | Score | Notes |\n|-----------|-------|-------|\n| Commands/workflows | 19/20 | Comprehensive routing table + all key commands |\n| Architecture clarity | 19/20 | Full dir tree, WAT philosophy, tables |\n| Non-obvious patterns | 14/15 | MCP env gotcha, proxy fix, CLI-first all documented |\n| Conciseness | 13/15 | 380 lines â€” lean for scope (was 405) |\n| Currency | 15/15 | Global reference added, all edits from this session applied |\n| Actionability | 15/15 | Every command copy-paste ready |\n\n**No issues.** File is in optimal state.\n\n---\n\n### 2.
-
-
 ## 2026-05-07 — memory-shrunk Windows fix: use cmd /c npx as upstream command
 - **Decision:** Changed `memory-shrunk` upstream args in `.mcp.json` from `["npx", "-y", "@modelcontextprotocol/server-memory"]` to `["cmd", "/c", "npx", "-y", "@modelcontextprotocol/server-memory"]`.
 - **Why:** `caveman-shrink` calls `spawn(args[0], args.slice(1))` without `shell: true`. On Windows, `npx` is `npx.cmd` — a CMD script — which Node.js `spawn` cannot resolve without shell mode, causing `ENOENT`. Using `cmd /c npx ...` works because `cmd.exe` is a real executable, and it passes stdin through to npx correctly.
 - **How to apply:** Any `caveman-shrink` wrapper in `.mcp.json` on Windows must use `cmd /c npx` instead of bare `npx` as the upstream command.
-
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-05-07 — edit or delete below -->
-- {"session_id":"12a45873-63a3-49a6-bc61-163ddead6521","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\12a45873-63a3-49a6-bc61-163ddead6521.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Switched to **full** mode.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-05-07 — edit or delete below -->
-- The broken module error was a red herring from stale cache.\n\n`.mcp.json` maps `APIFY_TOKEN` â†’ `${APIFY_API_PAT}`, but `${VAR}` reads OS env â€” not `.env` file.\n\n**Error:** `APIFY_TOKEN is required but not set in the environment variables`\n\nFix: set it at OS level, then restart Claude Code.\n\nRun this in your terminal (replacing the token):\n\n```powershell\nsetx APIFY_API_PAT \"your_apify_token_here\"\n```\n\nThen restart Claude Code.

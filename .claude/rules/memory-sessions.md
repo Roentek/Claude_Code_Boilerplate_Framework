@@ -34,7 +34,17 @@ Summary of substantive work completed each session — what was built, what was 
 
 ## Archive
 
-**May 2026:**
+**May 2026 (continued):**
+- **May 11 (s3):** spline-3d prereqs fixed — `react`, `react-dom`, `@types/react` added to `package.json`; React default import added to `react-spline-wrapper.tsx`; `setup.sh` step 9 simplified (redundant explicit spline install removed, `npm install` now covers all deps)
+- **May 11 (s3):** Bun winget broken on this machine — winget installs empty dir; `setup.sh` updated to use official PS script (`irm bun.sh/install.ps1 | iex`) instead; CLAUDE.md step 7d-pre updated
+- **May 11 (s2):** VSCode launch configs added for claude-mem web viewer (Edge + Chrome variants)
+- **May 11 (s1):** find-skills skill created + installed globally; three-brain synced to `~/.claude/skills/`; claude-mem requires Bun to start worker (`~/.claude-mem/` not created until Bun runs)
+- **May 9 (s2):** setup.sh step 14a added — Ollama install (Windows: winget, Unix: auto-install); `tools/lightrag/.env` reset to `ollama`/`llama3.2`
+- **May 9 (s1):** LightRAG enhanced branch (Gemini multimodal, Supabase/Pinecone mirrors) never merged to `main`; `tools/lightrag/src/` empty on main; vanilla LightRAG + Ollama is the active setup
+- **May 7 (s4):** caveman-shrink: added `-y` flag; removed duplicate `memory` entry from `.mcp.json`; Windows fix: `cmd /c npx` required (bare `npx` fails without shell mode)
+- **May 7 (s3):** auto-stage-commit skill created + installed globally; triggers on any commit-intent phrase
+- **May 7 (s2):** FTS5/better-sqlite3 fixed via `NODE_TLS_REJECT_UNAUTHORIZED=0` (TK Elevator corporate proxy intercepts TLS; prebuilt `.node` binary download fails otherwise)
+- **May 7 (s1):** CLAUDE.md audited to 97/100; global `~/.claude/CLAUDE.md` created with cross-project defaults; `settings.local.json.example` completed
 - **May 4 (s12):** OpenSpace CLI-first — CLI (token-free) before MCP; saves ~200-500 tokens/call; SKILL.md updated with decision matrix; matches Playwright/Firecrawl/NotebookLM pattern
 - **May 3 (s11):** LightRAG — HKUDS/LightRAG in `tools/lightrag/`; 5 query modes; Web UI + REST API at port 9621; `/lightrag` skill; setup.sh step 14 runs uv sync
 - **May 3 (s10):** AutoResearch autosync — `autoresearch-sync.sh` syncs upstream karpathy/autoresearch every session; `verify_setup.py` auto-runs after uv sync
@@ -58,115 +68,5 @@ Summary of substantive work completed each session — what was built, what was 
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-07 (auto-drafted — review before next session)
-- {"session_id":"5157cc75-685c-4296-90ee-134e70b966f8","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\5157cc75-685c-4296-90ee-134e70b966f8.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"**Step 4: Summary**\n\n| Metric | Before | After | Saved |\n|--------|--------|-------|-------|\n| sessions lines | 152 | 73 | 79 lines |\n| decisions entries | 28 | 27 | 1 removed |\n| decisions lines | 278 | 268 | 10 lines |\n| graph entities | 0 | 5 | â€” |\n\n**Removed decision:** `2026-05-03 â€” Fixed Windows hook paths to use absolute paths` â€” superseded by `2026-05-04 â€” Hook paths use directory-walking`.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-07 (auto-drafted — review before next session)
-- FTS5/SQLite fixed â€” context-mode session continuity now works across compactions.\n\n**Root cause:** Corporate proxy (TK Elevator) intercepts TLS â†’ `prebuild-install` couldn't download prebuilt `.node` binary â†’ `NODE_TLS_REJECT_UNAUTHORIZED=0` bypass let the prebuilt binary download succeed.\n\n**Remaining warn:** Bun optional â€” skip unless you want 3-5x faster sandbox execution."}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-07 (auto-drafted — review before next session)
-- Starting assessment.\n\n## CLAUDE.md Quality Report\n\n### Summary\n- **Files found:** 1 (`./CLAUDE.md`)\n- **Lines:** 405\n- **Score:** 92/100 (Grade: **A**)\n- **Files needing update:** 1 (minor polish only)\n\n---\n\n### ./CLAUDE.md (Project Root)\n\n| Criterion | Score | Notes |\n|-----------|-------|-------|\n| Commands/workflows | 19/20 | Exceptional â€” routing table, Key Commands, First-Time Setup all copy-paste ready |\n| Architecture clarity | 19/20 | Full dir tree, WAT philosophy, plugin/skills/MCP tables â€” outstanding |\n| Non-obvious patterns | 13/15 | MCP env-var gotcha, proxy fix, CLI-first pattern â€” all documented |\n| Conciseness | 11/15 | 405 lines; justified by scope, but 3 verbose sections can be trimmed ~30 lines |\n| Currency | 15/15 | Updated today, reflects current state |\n| Actionability | 15/15 | Every command is executable, no vague instructions |\n\n---\n\n### Issues Found\n\n**1.
-- Minor confusion for new users trying to find the file.\n\n---\n\n### Proposed Updates\n\n**Update 1 â€” Remove stale OpenSpace conversion note (~5 lines)**\n\n```diff\n-**Converting existing OpenSpace clone to submodule:**\n-\n-If you cloned OpenSpace before the submodule setup, see [`.claude/docs/openspace-submodule-conversion.md`](.claude/docs/openspace-submodule-conversion.md) for conversion instructions.\n```\n\n**Update 2 â€” Trim OpenSpace Dashboard block (~12 lines saved)**\n\n```diff\n-# Dashboard (optional â€” requires Node.js â‰¥ 20)\n-# Option 1: VSCode one-click launch (recommended)\n-# Press F5 â†’ Select \"OpenSpace Dashboard (Full Stack)\" â†’ Starts both backend + frontend\n-\n-# Option 2: VSCode individual launch\n-# Press F5 â†’ Select \"OpenSpace Backend Server\" â†’ http://127.0.0.1:7788\n-# Then F5 â†’ Select \"OpenSpace Frontend\" â†’ Browser opens at http://127.0.0.1:3789\n-\n-# Option 3: Manual terminal launch\n-openspace-dashboard --host 127.0.0.1 --port 7788  # Terminal 1: Backend\n-cd tools/openspace/frontend\n-cp .env.example .env                              # First-time only (setup.sh does this)\n-npm install                                        # First-time only (setup.sh does this)\n-npm run dev                                        # Terminal 2: Frontend â†’ http://127.0.0.1:3789\n+# Dashboard (optional â€” requires Node.js â‰¥ 20)\n+# Press F5 â†’ \"OpenSpace Dashboard (Full Stack)\" â€” or see tools/openspace/README.md\n```\n\n**Update 3 â€” Add corporate proxy troubleshooting row**\n\n```diff\n | setup.sh hangs at skill install | Press Ctrl+C, run manual `/skill install` commands shown |\n+| `better-sqlite3` build fails (corporate proxy) | `NODE_TLS_REJECT_UNAUTHORIZED=0 npm install better-sqlite3 --build-from-source` (or re-run setup.sh â€” step 7c applies this fix automatically) |\n```\n\n**Update 4 â€” Fix memory file paths**\n\n```diff\n-| User shares a fact about themselves | `memory-profile.md` |\n-| User states a preference | `memory-preferences.md` |\n-| A non-trivial decision is made | `memory-decisions.md` (with date) |\n-| Substantive work is completed | `memory-sessions.md` |\n+| User shares a fact about themselves | `.claude/rules/memory-profile.md` |\n+| User states a preference | `.claude/rules/memory-preferences.md` |\n+| A non-trivial decision is made | `.claude/rules/memory-decisions.md` (with date) |\n+| Substantive work is completed | `.claude/rules/memory-sessions.md` |\n```\n\n---\n\n**Net result:** ~17 lines removed, 1 line added.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-07 (auto-drafted — review before next session)
-- Same pattern fixed for OpenSpace Dashboard.\n\n**2.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-07 (auto-drafted — review before next session)
-- {"session_id":"b70f41a2-c94c-4722-bd40-2f659494db1b","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\b70f41a2-c94c-4722-bd40-2f659494db1b.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Created at `C:\\Users\\MorarMonil\\.claude\\CLAUDE.md`.\n\nTakes effect immediately â€” no restart needed.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-07 (auto-drafted — review before next session)
-- Added as a callout on line 5 â€” visible immediately when file loads."}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-07 (auto-drafted — review before next session)
-- ./CLAUDE.md (Project Root)\n\n**Score: 97/100 (Grade: A+)**\n\n| Criterion | Score | Notes |\n|-----------|-------|-------|\n| Commands/workflows | 19/20 | Comprehensive routing table + all key commands |\n| Architecture clarity | 19/20 | Full dir tree, WAT philosophy, tables |\n| Non-obvious patterns | 14/15 | MCP env gotcha, proxy fix, CLI-first all documented |\n| Conciseness | 13/15 | 380 lines â€” lean for scope (was 405) |\n| Currency | 15/15 | Global reference added, all edits from this session applied |\n| Actionability | 15/15 | Every command copy-paste ready |\n\n**No issues.** File is in optimal state.\n\n---\n\n### 2.
-- ~/.claude/CLAUDE.md (Global)\n\n**Score: 94/100 (Grade: A)**\n\n| Criterion | Score | Notes |\n|-----------|-------|-------|\n| Behavioral rules | 18/20 | Communication, platform, Python, git, code style â€” solid coverage |\n| Clarity | 19/20 | Well-sectioned, rules unambiguous |\n| Non-obvious patterns | 13/15 | MCP `${VAR}` gotcha is cross-project useful; good call including it |\n| Conciseness | 14/15 | 40 lines â€” tight |\n| Currency | 15/15 | Just created |\n| Actionability | 15/15 | Rules are behavioral â€” all enforceable |\n\n**One optional enhancement:**\n\nGlobal file has no fallback for sessions where caveman hook isn't active (new projects, remote Claude, other IDEs).
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-07 (auto-drafted — review before next session)
-- Summary:\n\n- **Skill created:** `.claude/skills/auto-stage-commit/SKILL.md`\n- **Installed globally:** `~/.claude/skills/auto-stage-commit/` â€” active now\n- **CLAUDE.md + README.md** updated with entry\n\n**Usage:** Say \"commit my changes\", \"stage and commit\", \"let's commit\" â€” or any commit-intent phrase.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-07 (auto-drafted — review before next session)
-- {"session_id":"73b45b13-2900-4953-b31f-7e4f9e32c62a","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\73b45b13-2900-4953-b31f-7e4f9e32c62a.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"No docs update needed â€” bug fix only, no structural change.\n\n**Fix:** Added `-y` to `npx caveman-shrink` call in `.mcp.json`.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-07 (auto-drafted — review before next session)
-- {"session_id":"f73c2b0f-6903-443d-a9de-3cde9756daf5","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\f73c2b0f-6903-443d-a9de-3cde9756daf5.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"```\nfix(mcp): remove duplicate memory server, add -y to caveman-shrink\n```\n\nThree changes: removed stale `memory` entry (superseded by `memory-shrunk`), added missing `-y` flag to `caveman-shrink` spawn args.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-09 (auto-drafted — review before next session)
-- The README describes enhanced features (Gemini multimodal, Supabase/Pinecone mirrors) but the actual code was being built on this branch â€” never merged.
-- That's why `tools/lightrag/src/` is empty on `main`.\n\n**Your options:**\n\n| Option | What it means |\n|--------|---------------|\n| Merge it | Bring the Config class + tests into main â€” completes the Enhanced layer |\n| Delete it | You're happy with vanilla lightrag-hku + `.env` config â€” no custom code needed |\n| Leave it | Keep branch for later |\n\nGiven your current setup works fine (vanilla LightRAG + Ollama LLM + OpenAI embeddings), you probably don't need it unless you want the Gemini multimodal pipeline built out.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-09 (auto-drafted — review before next session)
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-09 (auto-drafted — review before next session)
-- Summary:\n\n- **`setup.sh`** â€” step 14a added: Windows shows `winget` command, Unix auto-installs + pulls `llama3.2`\n- **`tools/lightrag/.env`** â€” back to `LIGHTRAG_LLM_PROVIDER=ollama` / `llama3.2`\n- **`CLAUDE.md`** + **`README.md`** â€” step 14a documented\n\n**To test now:** install Ollama first:\n```powershell\nwinget install Ollama.Ollama\n```\nThen restart terminal, `ollama pull llama3.2`, then F5 â†’ **LightRAG Server**."}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-11 (auto-drafted — review before next session)
-- Not a built-in Claude skill.\n\nWant me to check `setup.sh` to confirm how it got there?"}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-11 (auto-drafted — review before next session)
-- Summary:\n\n- **Deleted:** `~/.claude/skills/find-skills` symlink (external, untracked)\n- **Created:** `.claude/skills/find-skills/SKILL.md` â€” lists installed skills + plugins, flags gaps\n- **Copied to global:** `find-skills` + `three-brain` both now in `~/.claude/skills/`\n- **Updated:** `CLAUDE.md` + `README.md` with `/find-skills` entry\n- **`three-brain` fix:** No setup.sh change needed â€” step 8 globs all skills automatically; just needs `setup.sh` re-run next time"}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-11 (auto-drafted — review before next session)
-- `CLAUDE_MEM_DATA_DIR` defaults to `homedir()/.claude-mem`, not the project dir.\n\n**Why it doesn't exist yet:** Directory is created on first worker start.
-- The worker requires **Bun** (`bun.sh`) â€” without it, the background service can't start and the dir never gets created.\n\nTo initialize:\n1.
-- `~/.claude-mem/` will be created with `settings.json`, `claude-mem.db`, `logs/`\n\nThe memory stream (web viewer at `http://localhost:37777`) only works once the Bun worker is running."}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-11 (auto-drafted — review before next session)
-- **Worker process** (web viewer) requires Bun\n\n**Status:** No past observations to search â€” `claude-mem.db` doesn't exist yet (first run, worker never started).\n\n**To fix both:**\n\n```powershell\n# Install Bun\nwinget install Oven-sh.Bun\n# Then restart terminal + restart Claude Code\n```\n\nAfter restart, the worker auto-starts, `~/.claude-mem/` gets created, and MCP tools become available.\n\nAs for \"did we already solve this?\" â€” yes, we just solved it in this conversation.
-- The answer: `~/.claude-mem/settings.json` = `C:\\Users\\MorarMonil\\.claude-mem\\settings.json`, global scope, created on first Bun worker start."}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-11 (auto-drafted — review before next session)
-- Done:\n\n- **setup.sh** â€” step 7d-pre added: installs Bun (Windows: `winget`, Unix: curl script), skips if already present\n- **CLAUDE.md** + **README.md** â€” step 7d-pre documented\n- **Bun installed now** â€” v1.3.13 at `C:\\Users\\MorarMonil\\.bun\\bin\\bun.exe`\n\n**Restart Claude Code** to pick up Bun in PATH â€” claude-mem worker will auto-start on next session and `~/.claude-mem/` will be created."}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-11 (auto-drafted — review before next session)
-- {"session_id":"f40bb045-6185-436c-a221-139b3a75e09c","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\f40bb045-6185-436c-a221-139b3a75e09c.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"high"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Two configs added â€” F5 â†’ **\"Claude-Mem Web Viewer\"** opens Edge, **\"Claude-Mem Web Viewer (Chrome)\"** opens Chrome.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-11 (auto-drafted — review before next session)
-- {"session_id":"8ebe0ef2-6cd7-470b-9bc9-77765f8200e8","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\8ebe0ef2-6cd7-470b-9bc9-77765f8200e8.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"high"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"**Phase 6 â€” Done.** All 6 files updated (3 project source + 3 global installed).\n\n**Root cause:** `@splinetool/react-spline` not installed â€” skill examples imported it but no install instruction was visible at point-of-use.\n\n**Fix applied:**\n- `SKILL.md` â€” added prominent Prerequisites block with install command\n- `examples/react-spline-wrapper.tsx` â€” `INSTALL FIRST:` comment at top\n- `examples/interactive-scene.tsx` â€” `INSTALL FIRST:` comment at top\n\n**To run the examples now:**\n```bash\nnpm install @splinetool/react-spline @splinetool/runtime\n```"}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-11 (auto-drafted — review before next session)
-- {"session_id":"3f2ebee7-337d-4ed0-b7b9-d4450d8cfb18","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\3f2ebee7-337d-4ed0-b7b9-d4450d8cfb18.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"high"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Now run `npm install` to pull in react, react-dom, and @types/react:\n\n```powershell\nnpm install\n```\n\n**What was wrong:**\n- `react-spline-wrapper.tsx` â€” missing `React` default import; JSX compiles to `React.createElement` so `React` must be in scope\n- `interactive-scene.tsx` â€” already had the import, but VS Code couldn't resolve `react` because it wasn't in `package.json`\n\n**Fixed:**\n- Added `react` + `react-dom` to `dependencies`, `@types/react` to `devDependencies`\n- Fixed the import in `react-spline-wrapper.tsx`\n- Synced fix to global skill install"}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-11 (auto-drafted — review before next session)
-- Summary:\n\n- `package.json` â€” added `react`, `react-dom` to deps; `@types/react` to devDeps\n- `react-spline-wrapper.tsx` â€” added `React` default import (JSX transform compat)\n- `setup.sh` step 9 â€” removed redundant explicit spline install; `npm install` covers all deps via package.json\n- `CLAUDE.md` step 9 comment â€” updated to list all installed deps\n- Synced fixed wrapper to `~/.claude/skills/spline-3d/examples/`\n\nRun `npm install` to pull the new packages."}
+- Three ways:\n\n```bash\n# CLI (token-free) â€” run a task, OpenSpace auto-creates a skill\nopenspace --query \"Build a Python script that monitors disk usage and alerts at 90%\"\n\n# Via Claude Code\n/delegate-task   # uses OpenSpace under the hood\n/openspace       # direct OpenSpace skill\n```\n\nTo search the **cloud** for pre-built skills (no local execution needed):\n\n```bash\nopenspace --search \"web scraping\"   # search cloud skill registry\n```\n\nOr via MCP: `mcp__openspace__search_skills`\n\n---\n\n**To see the full dashboard tree:** Frontend also needs to run.
