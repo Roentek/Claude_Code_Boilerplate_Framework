@@ -67,18 +67,23 @@ cp .env.example .env
 | Images / video / audio | `gemini` | Only provider that can embed non-text files |
 
 ```bash
-# TEXT ONLY (default — documents, PDFs, markdown)
-EMBEDDING_PROVIDER=openai
-OPENAI_API_KEY=sk-...
-OPENAI_EMBEDDING_MODEL=text-embedding-3-small  # or text-embedding-3-large
+# LLM — local Ollama (free, private)
+LLM_BINDING=ollama
+LLM_MODEL=llama3.2
+LLM_BINDING_HOST=http://localhost:11434   # default, can omit
 
-# MULTIMODAL (images, video, audio — switch to this when needed)
-# EMBEDDING_PROVIDER=gemini
-# GEMINI_API_KEY=...
-# GEMINI_EMBEDDING_MODEL=gemini-embedding-2-preview
+# Embedding — TEXT ONLY (documents, PDFs, markdown)
+EMBEDDING_BINDING=openai
+EMBEDDING_BINDING_API_KEY=sk-...
+EMBEDDING_MODEL=text-embedding-3-small    # or text-embedding-3-large
+
+# Embedding — MULTIMODAL (images, video, audio — switch when needed)
+# EMBEDDING_BINDING=gemini
+# EMBEDDING_BINDING_API_KEY=your-gemini-key
+# EMBEDDING_MODEL=gemini-embedding-2-preview
 ```
 
-> **LLM vs Embeddings:** These are separate. LLM (set via `LIGHTRAG_LLM_PROVIDER`) generates responses. Embeddings convert text/media to vectors for search. You can mix — e.g. Ollama LLM (local/free) + OpenAI embeddings (cloud/cheap).
+> **Key vars:** `LLM_BINDING` / `LLM_MODEL` control the LLM. `EMBEDDING_BINDING` / `EMBEDDING_MODEL` control embeddings. These are separate — mix freely (e.g. Ollama LLM + OpenAI embeddings).
 
 **Optional (enable remote vector storage):**
 

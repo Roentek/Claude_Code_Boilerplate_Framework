@@ -12,8 +12,12 @@ dependencies = [
     "passlib>=1.7.4",
     "python-multipart>=0.0.6",
     "bcrypt>=4.0.0",
-    "aiofiles>=24.0.0"
+    "aiofiles>=24.0.0",
+    "ollama>=0.3.0"
 ]
+
+[tool.setuptools.packages.find]
+exclude = ["rag_storage*", "inputs*", "tests*"]
 
 [build-system]
 requires = ["setuptools>=64"]
