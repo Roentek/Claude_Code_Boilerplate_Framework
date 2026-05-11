@@ -282,3 +282,8 @@ Architectural and technical decisions made during sessions — with date and rat
 - **Decision:** Changed `memory-shrunk` upstream args in `.mcp.json` from `["npx", "-y", "@modelcontextprotocol/server-memory"]` to `["cmd", "/c", "npx", "-y", "@modelcontextprotocol/server-memory"]`.
 - **Why:** `caveman-shrink` calls `spawn(args[0], args.slice(1))` without `shell: true`. On Windows, `npx` is `npx.cmd` — a CMD script — which Node.js `spawn` cannot resolve without shell mode, causing `ENOENT`. Using `cmd /c npx ...` works because `cmd.exe` is a real executable, and it passes stdin through to npx correctly.
 - **How to apply:** Any `caveman-shrink` wrapper in `.mcp.json` on Windows must use `cmd /c npx` instead of bare `npx` as the upstream command.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-05-11 — edit or delete below -->
+- `./CLAUDE.md` (Project Root) â€” 390 lines\n\n**Score: 97/100 (Grade: A+)**\n\n| Criterion | Score | Notes |\n|-----------|-------|-------|\n| Commands/workflows | 20/20 | 10+ command blocks, all copy-paste ready, labeled by tool |\n| Architecture clarity | 20/20 | Routing table, WAT framework, full dir tree â€” outstanding |\n| Non-obvious patterns | 14/15 | MCP env var gotcha, proxy fix, CLI-first pattern documented |\n| Conciseness | 13/15 | 390 lines â€” justified by scope; prior trimming removed verbose blocks |\n| Currency | 15/15 | Bun PS script updated, find-skills added, spline prereqs reflected |\n| Actionability | 15/15 | All commands executable |\n\n**No blocking issues.** One minor gap:\n\n- **`/spline-3d` skill missing from Skills table.** It's in the routing table (\"Embed Spline 3D scenes\") but not listed in the Built-in or Project skills section.
