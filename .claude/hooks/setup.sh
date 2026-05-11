@@ -393,6 +393,62 @@ else
   echo "  /plugin install context-mode@context-mode"
 fi
 
+# ── 7d-pre. Install Bun (required by claude-mem worker + 3-5x faster context-mode) ─
+echo ""
+echo "── Bun Runtime (claude-mem worker + context-mode speedup) ──"
+if command -v bun &>/dev/null; then
+  echo "  ✓ Bun already installed: $(bun --version)"
+else
+  IS_WINDOWS=false
+  if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" || "$OSTYPE" == "win32" ]]; then
+    IS_WINDOWS=true
+  elif [[ -n "$WINDIR" || -n "$SystemRoot" ]]; then
+    IS_WINDOWS=true
+  fi
+
+  if $IS_WINDOWS; then
+    echo "  Installing Bun via winget..."
+    if winget install Oven-sh.Bun --accept-source-agreements --accept-package-agreements 2>/dev/null; then
+      echo "  ✓ Bun installed — restart terminal to pick up PATH"
+    else
+      echo "  ⚠ winget install failed. Install manually:"
+      echo "      winget install Oven-sh.Bun"
+      echo "    Or: https://bun.sh/docs/installation"
+    fi
+  else
+    echo "  Installing Bun via install script..."
+    if curl -fsSL https://bun.sh/install | bash 2>/dev/null; then
+      echo "  ✓ Bun installed"
+      # Add to PATH for rest of this script
+      export BUN_INSTALL="$HOME/.bun"
+      export PATH="$BUN_INSTALL/bin:$PATH"
+    else
+      echo "  ⚠ Bun install failed. Install manually: curl -fsSL https://bun.sh/install | bash"
+    fi
+  fi
+fi
+
+# ── 7d. Install Claude-Mem plugin (persistent memory across sessions) ─
+echo ""
+echo "── Claude-Mem Plugin (persistent memory across sessions) ──"
+if command -v claude &>/dev/null; then
+  echo "  Installing claude-mem plugin from thedotmack/claude-mem..."
+
+  if claude plugin install claude-mem@claude-mem 2>/dev/null; then
+    echo "  ✓ claude-mem plugin installed"
+    echo "  Context preserved across sessions via ~/.claude-mem/settings.json"
+    echo "  Web viewer: http://localhost:37777 (requires Bun — restart terminal first)"
+  else
+    echo "  ⚠ claude-mem — run in Claude Code:"
+    echo "      /plugin install claude-mem@claude-mem"
+  fi
+else
+  echo "  claude CLI not found — install claude-mem manually."
+  echo "  Run this slash command inside a Claude Code chat session:"
+  echo ""
+  echo "  /plugin install claude-mem@claude-mem"
+fi
+
 # ── 8. Install project skills to ~/.claude/skills/ ─────────
 echo ""
 echo "── Project Skills (~/.claude/skills/) ──────────────────"

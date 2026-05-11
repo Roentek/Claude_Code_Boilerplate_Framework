@@ -183,7 +183,8 @@
     "cli-anything@cli-anything": true,
     "apify-ultimate-scraper@apify-agent-skills": true,
     "caveman@caveman": true,
-    "context-mode@context-mode": true
+    "context-mode@context-mode": true,
+    "claude-mem@claude-mem": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -252,6 +253,13 @@
       "source": {
         "source": "github",
         "repo": "mksglu/context-mode"
+      },
+      "autoUpdate": true
+    },
+    "claude-mem": {
+      "source": {
+        "source": "github",
+        "repo": "thedotmack/claude-mem"
       },
       "autoUpdate": true
     }

@@ -132,3 +132,26 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-11 (auto-drafted — review before next session)
 - Summary:\n\n- **Deleted:** `~/.claude/skills/find-skills` symlink (external, untracked)\n- **Created:** `.claude/skills/find-skills/SKILL.md` â€” lists installed skills + plugins, flags gaps\n- **Copied to global:** `find-skills` + `three-brain` both now in `~/.claude/skills/`\n- **Updated:** `CLAUDE.md` + `README.md` with `/find-skills` entry\n- **`three-brain` fix:** No setup.sh change needed â€” step 8 globs all skills automatically; just needs `setup.sh` re-run next time"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-11 (auto-drafted — review before next session)
+- `CLAUDE_MEM_DATA_DIR` defaults to `homedir()/.claude-mem`, not the project dir.\n\n**Why it doesn't exist yet:** Directory is created on first worker start.
+- The worker requires **Bun** (`bun.sh`) â€” without it, the background service can't start and the dir never gets created.\n\nTo initialize:\n1.
+- `~/.claude-mem/` will be created with `settings.json`, `claude-mem.db`, `logs/`\n\nThe memory stream (web viewer at `http://localhost:37777`) only works once the Bun worker is running."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-11 (auto-drafted — review before next session)
+- **Worker process** (web viewer) requires Bun\n\n**Status:** No past observations to search â€” `claude-mem.db` doesn't exist yet (first run, worker never started).\n\n**To fix both:**\n\n```powershell\n# Install Bun\nwinget install Oven-sh.Bun\n# Then restart terminal + restart Claude Code\n```\n\nAfter restart, the worker auto-starts, `~/.claude-mem/` gets created, and MCP tools become available.\n\nAs for \"did we already solve this?\" â€” yes, we just solved it in this conversation.
+- The answer: `~/.claude-mem/settings.json` = `C:\\Users\\MorarMonil\\.claude-mem\\settings.json`, global scope, created on first Bun worker start."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-11 (auto-drafted — review before next session)
+- Done:\n\n- **setup.sh** â€” step 7d-pre added: installs Bun (Windows: `winget`, Unix: curl script), skips if already present\n- **CLAUDE.md** + **README.md** â€” step 7d-pre documented\n- **Bun installed now** â€” v1.3.13 at `C:\\Users\\MorarMonil\\.bun\\bin\\bun.exe`\n\n**Restart Claude Code** to pick up Bun in PATH â€” claude-mem worker will auto-start on next session and `~/.claude-mem/` will be created."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-11 (auto-drafted — review before next session)
+- {"session_id":"f40bb045-6185-436c-a221-139b3a75e09c","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\f40bb045-6185-436c-a221-139b3a75e09c.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"high"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Two configs added â€” F5 â†’ **\"Claude-Mem Web Viewer\"** opens Edge, **\"Claude-Mem Web Viewer (Chrome)\"** opens Chrome.

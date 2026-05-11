@@ -73,6 +73,26 @@
         "uriFormat": "http://127.0.0.1:$1",
         "action": "openExternally"
       }
+    },
+    {
+      "name": "Claude-Mem Web Viewer",
+      "type": "msedge",
+      "request": "launch",
+      "url": "http://localhost:37777",
+      "presentation": {
+        "group": "claude-mem",
+        "order": 1
+      }
+    },
+    {
+      "name": "Claude-Mem Web Viewer (Chrome)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:37777",
+      "presentation": {
+        "group": "claude-mem",
+        "order": 2
+      }
     }
   ],
   "compounds": [

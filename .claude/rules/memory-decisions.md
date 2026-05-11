@@ -4,6 +4,18 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-05-11 — Claude-Mem plugin integrated for persistent cross-session memory
+- **Decision:** Integrated `claude-mem@claude-mem` plugin (thedotmack/claude-mem) as an additional memory layer on top of the existing three-tier system.
+- **Why:** Existing memory (file-based + MCP graph) requires explicit writes. Claude-Mem automatically captures tool usage observations and generates semantic summaries passively — no manual update required. Complements the existing system rather than replacing it.
+- **Implication:**
+  - Plugin added to `settings.json` → `enabledPlugins` and `extraKnownMarketplaces` (github: thedotmack/claude-mem)
+  - `setup.sh` step 7d: auto-installs via `claude plugin install claude-mem@claude-mem`
+  - Settings auto-created at `~/.claude-mem/settings.json` on first run (no manual config needed)
+  - `CLAUDE_MEM_MODE` env var added to `.env.example` (default: `code`; options: `code--zh`, `code--ja`)
+  - Web viewer at http://localhost:37777 for real-time memory stream
+  - Docs updated: `CLAUDE.md` (Plugins table, First-Time Setup), `README.md` (marketplace table, install block, Enabled Plugins table, setup.sh step 7d)
+- **Pattern:** Passive observation layer — automatically captures without requiring Claude to explicitly write memory files. Works alongside existing Tier 1 (files) + Tier 2 (MCP graph) + Tier 3 (Caveman compression).
+
 ## 2026-05-07 — Context Mode integrated for 98% context window reduction
 - **Decision:** Integrated `context-mode@context-mode` plugin (mksglu/context-mode, 13.8K stars) with combined statusline showing both context monitoring AND context-mode savings metrics.
 - **Why:** Complements Caveman's output compression (75%) with input compression (98% via sandboxing). Context-mode sandboxes tool output (315 KB → 5.4 KB), tracks session continuity in SQLite FTS5 (survives conversation compaction), and compresses output ~65-75%. Together with Caveman: 75% output + 98% input = maximum token savings.

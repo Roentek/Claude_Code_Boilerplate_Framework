@@ -222,6 +222,8 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 7a. **Installs Apify agent skills from marketplace** — attempts automated installation of 5 skills from [apify/agent-skills](https://github.com/apify/agent-skills) repo: `apify-ultimate-scraper` (130+ Actors for Instagram, TikTok, LinkedIn, Google, Reddit, Amazon, etc.), `apify-actor-development` (Actor creation/debugging), `apify-actorization` (convert code to Actors), `apify-generate-output-schema` (auto-generate Actor schemas), and `apify-actor-commands` (slash command pack). Uses 30-second timeout protection per skill if `timeout` command is available. If installation times out or fails, displays manual `/skill install <name>@apify-agent-skills` commands for Claude Code chat. Marketplace is pre-configured in `settings.json` → `extraKnownMarketplaces`
 7b. **Installs Caveman plugin** — installs `caveman@caveman` for 75% token reduction on responses and 46% reduction on memory files; includes commands: `/caveman` (activate compression), `/caveman-stats` (session token tracking), `/caveman-compress` (shrink memory files), `/caveman-commit` (terse commits), `/caveman-review` (single-line PR comments), `/cavecrew` (compressed subagents)
 7c. **Installs Context Mode plugin** — installs `context-mode@context-mode` for 98% context reduction via sandboxing (315 KB → 5.4 KB); tracks session continuity in SQLite FTS5; output compression ~65-75%; combined statusline shows $ saved this session, $ saved across sessions, % efficiency in real time
+7d-pre. **Installs Bun runtime** — required by claude-mem worker (MCP search + web viewer at http://localhost:37777) and optional 3-5x speedup for context-mode sandbox. Windows: `winget install Oven-sh.Bun`; Unix: `curl -fsSL https://bun.sh/install | bash`. Skipped if already installed.
+7d. **Installs Claude-Mem plugin** — installs `claude-mem@claude-mem` for persistent memory across sessions; automatically captures tool usage observations and generates semantic summaries available to future sessions; web viewer at http://localhost:37777 (requires Bun); settings auto-created at `~/.claude-mem/settings.json`
 8. **Installs project skills** — copies `.claude/skills/*/` to `~/.claude/skills/` where Claude Code reads them (full directory, not just SKILL.md — preserves supporting docs and examples). Uses cross-platform path detection with explicit `$USERPROFILE` fallback for Windows and Unix-style path conversion via `cygpath` or sed. Creates destination directory if missing, verifies each copy succeeded by checking for SKILL.md file, adds verbose output showing source and destination paths
 9. **Installs npm dependencies + Playwright browser** — runs `npm install` for the `playwright` package, then `npx playwright install chromium` for the browser binary used by `tools/playwright.js`
 10. **Verifies GitHub CLI** — checks `gh` is installed; required by `github@claude-plugins-official` for `Bash(gh ...)` tool calls; prints platform-specific install instructions if missing
@@ -427,6 +429,7 @@ Two registries are configured in `extraKnownMarketplaces`:
 | `apify-agent-skills` | `github.com/apify/agent-skills` |
 | `caveman` | `github.com/JuliusBrussee/caveman` |
 | `context-mode` | `github.com/mksglu/context-mode` |
+| `claude-mem` | `github.com/thedotmack/claude-mem` |
 
 ### Installing Third-Party Marketplace Plugins
 
@@ -474,6 +477,13 @@ The three third-party plugins below are enabled in `settings.json` but must be i
 /plugin install context-mode@context-mode
 ```
 
+**Claude-Mem** — persistent memory across sessions. Automatically captures tool usage observations, generates semantic summaries, and makes them available to future sessions. Web viewer at http://localhost:37777. Settings auto-created at `~/.claude-mem/settings.json`:
+
+```bash
+/plugin marketplace add thedotmack/claude-mem
+/plugin install claude-mem@claude-mem
+```
+
 > The marketplace sources are already registered in `extraKnownMarketplaces` inside `.claude/settings.json`, so no separate marketplace registration step is needed when using the CLI: `claude plugins install ui-ux-pro-max@ui-ux-pro-max-skill`.
 
 Install or update official plugins via CLI:
@@ -493,6 +503,7 @@ claude plugins install <plugin-name>
 | **cli-anything** | `cli-anything@cli-anything` | Generates AI-native CLIs for existing software (GIMP, Blender, LibreOffice, Audacity, etc.). 50+ apps, 2,280+ tests. Commands: `/cli-anything`, `/cli-anything:refine`, `/cli-anything:test`, `/cli-anything:validate`, `/cli-anything:list` |
 | **caveman** | `caveman@caveman` | Token compression: 75% reduction on responses, 46% on memory files. Session tracking + terse commits/reviews. Commands: `/caveman`, `/caveman-stats`, `/caveman-compress`, `/caveman-commit`, `/caveman-review`, `/cavecrew`. MCP proxy: `memory-shrunk` (wraps memory server) |
 | **context-mode** | `context-mode@context-mode` | Context window optimization: 98% reduction via sandboxing (315 KB → 5.4 KB), session continuity (SQLite FTS5), output compression ~65-75%. Commands: `/context-mode:ctx-stats`, `/context-mode:ctx-doctor`, `/context-mode:ctx-upgrade`, `/context-mode:ctx-purge`, `/context-mode:ctx-insight`. Statusline shows: $ saved session · $ saved total · % efficient |
+| **claude-mem** | `claude-mem@claude-mem` | Persistent memory across sessions — captures tool usage, generates semantic summaries, web viewer at http://localhost:37777. Config: `~/.claude-mem/settings.json`. Mode: `CLAUDE_MEM_MODE=code` (default) |
 | **github** | `github@claude-plugins-official` | GitHub operations — read/write repos, PRs, issues, branches, file contents, code search. Requires `GITHUB_PERSONAL_ACCESS_TOKEN` in `settings.local.json` |
 | **agent-sdk-dev** | `agent-sdk-dev@claude-plugins-official` | Agent scaffolding — creates Claude sub-agent definitions |
 | **claude-code-setup** | `claude-code-setup@claude-plugins-official` | Project bootstrapping and Claude Code automation recommendations |
