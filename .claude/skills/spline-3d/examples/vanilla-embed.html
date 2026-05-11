@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spline 3D Scene — Vanilla JS</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0a0a;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    /* The canvas MUST have explicit dimensions */
+    #canvas3d {
+      width: 100vw;
+      height: 100vh;
+      display: block;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    #canvas3d.loaded {
+      opacity: 1;
+    }
+
+    /* Loading overlay */
+    #loader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0a0a0a;
+      z-index: 10;
+      transition: opacity 0.4s ease;
+    }
+
+    #loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading overlay — shown while scene downloads -->
+  <div id="loader">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- The 3D canvas -->
+  <canvas id="canvas3d"></canvas>
+
+  <script type="module">
+    import { Application } from 'https://esm.sh/@splinetool/runtime';
+
+    const canvas = document.getElementById('canvas3d');
+    const loader = document.getElementById('loader');
+    const spline = new Application(canvas);
+
+    // ─── Load the scene ───────────────────────────────────────────
+    // Replace this URL with your own Spline scene URL.
+    // Get it from: Spline Editor → Export → Code → Vanilla JS
+    const SCENE_URL = 'https://prod.spline.design/YOUR_SCENE_ID/scene.splinecode';
+
+    spline.load(SCENE_URL).then(() => {
+      console.log('✅ Scene loaded');
+
+      // Hide loader, show canvas
+      loader.classList.add('hidden');
+      canvas.classList.add('loaded');
+
+      // ─── Example: Find objects ────────────────────────────────
+      // const cube = spline.findObjectByName('Cube');
+      // console.log('Found cube:', cube);
+
+      // ─── Example: Listen for clicks ───────────────────────────
+      // spline.addEventListener('mouseDown', (e) => {
+      //   console.log('Clicked:', e.target.name);
+      // });
+
+      // ─── Example: Set a variable ──────────────────────────────
+      // spline.setVariable('score', 42);
+
+      // ─── Example: Trigger a Spline event ──────────────────────
+      // spline.emitEvent('mouseDown', 'PlayButton');
+    });
+  </script>
+
+</body>
+</html>

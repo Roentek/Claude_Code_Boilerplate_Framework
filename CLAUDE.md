@@ -13,6 +13,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Trigger.dev automation | `workflows/` → `tools/` | [`trigger-workflow-builder.md`](.claude/rules/trigger-workflow-builder.md), [`trigger-api-reference.md`](.claude/docs/trigger-api-reference.md) |
 | Frontend UI | `/frontend-design` skill → `ui-ux-pro-max` design system | [`frontend-instructions.md`](.claude/rules/frontend-instructions.md) |
 | WebGPU / Three.js app | `/webgpu-threejs-tsl` skill | Three.js r171+ with WebGPU renderer, TSL shaders |
+| Spline 3D scene integration | `/spline-3d` skill | Embed Spline scenes in React or vanilla HTML; includes perf guide + examples |
 | Claude AI agent | `agent-sdk-dev` plugin → `.claude/agents/` | [`agent-instructions.md`](.claude/rules/agent-instructions.md) |
 | Autonomous ML research (overnight experiments) | `/autoresearch` skill → `tools/autoresearch/` | Modify GPT training code, run 5-min experiments, keep improvements — ~100 runs while you sleep |
 | AI-native CLI for existing software | `/cli-anything` plugin | Generate CLIs for GIMP, Blender, LibreOffice, Audacity, etc. — 50+ apps supported |
@@ -278,6 +279,7 @@ docs/                         ← Project-level documentation
 | `/caveman-review` | Single-line PR comments: "L42: 🔴 bug: user null. Add guard" |
 | `/cavecrew` | Compressed subagents (investigator/builder/reviewer with 60% fewer tokens) |
 | `/auto-stage-commit` | Stage all changes + generate lean commit message — outputs ready-to-run `git commit` command; **does not commit** (auto-triggers on commit intent) |
+| `/spline-3d` | Embed Spline 3D scenes in React or vanilla HTML — includes React wrapper, interactive scene examples, performance guide |
 
 **Superpowers skills** auto-trigger based on context (brainstorming, TDD, debugging, code review, planning, subagents, git worktrees). No manual invoke needed.
 
