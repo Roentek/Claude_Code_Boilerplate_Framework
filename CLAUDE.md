@@ -121,11 +121,11 @@ bash .claude/hooks/setup.sh
 # Step 7d:  Claude-Mem plugin (persistent memory across sessions; context survives session end/reconnect; web viewer at http://localhost:37777; requires Bun)
 # Step 8:   Project skills with cross-platform path detection (Windows $USERPROFILE fallback, Unix-style path conversion); creates destination directory; verifies each copy succeeded
 # Step 9:   npm install (all package.json deps: react, react-dom, @types/react, @splinetool/react-spline, @splinetool/runtime, Playwright) + Playwright Chromium browser
-# Step 11:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli
-# Step 13:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
-# Step 14:  lightrag dependencies in tools/lightrag/ (via uv sync)
-# Step 14a: Ollama install + llama3.2 pull (local LLM for LightRAG; Windows: shows winget command, Unix: auto-installs)
-# Step 15:  openspace submodule initialization + pip install -e . + dashboard frontend npm install + .env port alignment (3889 → 3789 to match package.json)
+# Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli
+# Step 11:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
+# Step 12:  lightrag dependencies in tools/lightrag/ (via uv sync)
+# Step 12a: Ollama install + llama3.2 pull (local LLM for LightRAG; Windows: shows winget command, Unix: auto-installs)
+# Step 13:  openspace submodule initialization + pip install -e . + dashboard frontend npm install + .env port alignment (3889 → 3789 to match package.json)
 
 # 3. Configure MCP credentials
 cp .claude/settings.local.json.example .claude/settings.local.json
