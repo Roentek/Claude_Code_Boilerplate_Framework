@@ -20,6 +20,18 @@ Spline is a **browser-based 3D design tool** — think of it as Figma, but for 3
 
 ---
 
+## Prerequisites
+
+Before using any React examples, install the required packages:
+
+```bash
+npm install @splinetool/react-spline @splinetool/runtime
+```
+
+> Always install both together — version mismatches cause blank screens or TypeErrors.
+
+---
+
 ## Integration Methods
 
 There are **3 ways** to embed a Spline scene. Choose based on your stack:

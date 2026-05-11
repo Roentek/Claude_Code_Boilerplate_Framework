@@ -521,6 +521,9 @@ if [ -f "$ROOT/package.json" ]; then
     else
       echo "⚠ Playwright Chromium install failed — run: npx playwright install chromium"
     fi
+
+    # Spline 3D + React deps (react, react-dom, @types/react, @splinetool/react-spline, @splinetool/runtime)
+    # are declared in package.json — already installed by the npm install above.
   else
     echo "✗ npm not found — install Node.js first, then run: npm install"
     ERRORS=$((ERRORS + 1))

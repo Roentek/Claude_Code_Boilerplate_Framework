@@ -1,6 +1,9 @@
 /**
  * SplineScene — Production-ready lazy-loaded Spline wrapper
  *
+ * INSTALL FIRST:
+ *   npm install @splinetool/react-spline @splinetool/runtime
+ *
  * Usage:
  *   <SplineScene
  *     scene="https://prod.spline.design/YOUR_ID/scene.splinecode"
@@ -17,7 +20,7 @@
 
 'use client';
 
-import { Suspense, lazy } from 'react';
+import React, { Suspense, lazy } from 'react';
 
 const Spline = lazy(() => import('@splinetool/react-spline'));
 

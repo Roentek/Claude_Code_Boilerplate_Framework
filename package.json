@@ -7,6 +7,13 @@
     "playwright:install": "playwright install chromium"
   },
   "devDependencies": {
+    "@types/react": "^18.3.0",
     "playwright": "^1.52.0"
+  },
+  "dependencies": {
+    "@splinetool/react-spline": "^4.1.0",
+    "@splinetool/runtime": "^1.12.92",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
   }
 }

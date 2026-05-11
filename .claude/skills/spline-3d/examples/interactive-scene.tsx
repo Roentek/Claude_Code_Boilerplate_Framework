@@ -1,6 +1,9 @@
 /**
  * InteractiveSplineScene — Full interactive example
  *
+ * INSTALL FIRST:
+ *   npm install @splinetool/react-spline @splinetool/runtime
+ *
  * Demonstrates:
  *   1. Lazy loading the Spline component
  *   2. Using onLoad to get a reference to the Spline app
