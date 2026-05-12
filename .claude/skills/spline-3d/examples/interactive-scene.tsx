@@ -26,21 +26,10 @@ import React, {
     useEffect,
     useCallback,
 } from 'react';
+import type { Application, SplineEventName } from '@splinetool/runtime';
 
 // ─── Lazy load the heavy Spline runtime ──────────────────────────
 const Spline = lazy(() => import('@splinetool/react-spline'));
-
-// ─── Types ───────────────────────────────────────────────────────
-interface SplineApp {
-    findObjectByName: (name: string) => any;
-    findObjectById: (id: string) => any;
-    getAllObjects: () => any[];
-    addEventListener: (event: string, callback: (e: any) => void) => void;
-    removeEventListener: (event: string, callback: (e: any) => void) => void;
-    emitEvent: (event: string, objectName: string) => void;
-    getVariable: (name: string) => any;
-    setVariable: (name: string, value: any) => void;
-}
 
 // ─── Configuration ───────────────────────────────────────────────
 const SCENE_URL = 'https://prod.spline.design/YOUR_SCENE_ID/scene.splinecode';
@@ -48,7 +37,7 @@ const MOBILE_FALLBACK_IMAGE = '/images/scene-fallback.png'; // Optional
 
 // ─── Main Component ──────────────────────────────────────────────
 export default function InteractiveSplineScene() {
-    const splineRef = useRef<SplineApp | null>(null);
+    const splineRef = useRef<Application | null>(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [activeObject, setActiveObject] = useState<string | null>(null);
@@ -63,7 +52,7 @@ export default function InteractiveSplineScene() {
     }, []);
 
     // ─── Scene loaded callback ───────────────────────────────────
-    const handleLoad = useCallback((app: SplineApp) => {
+    const handleLoad = useCallback((app: Application) => {
         splineRef.current = app;
         setIsLoaded(true);
 
@@ -75,32 +64,36 @@ export default function InteractiveSplineScene() {
             'Scene objects:',
             objects.map((o: any) => o.name)
         );
+    }, []);
 
-        // ─── Event Listeners ─────────────────────────────────────
-        app.addEventListener('mouseDown', (e: any) => {
+    // ─── Spline event listeners (with cleanup) ───────────────────
+    useEffect(() => {
+        const app = splineRef.current;
+        if (!isLoaded || !app) return;
+
+        const onMouseDown = (e: any) => {
             console.log('Clicked:', e.target.name);
             setActiveObject(e.target.name);
-
-            // Example: Increment score when a specific object is clicked
             if (e.target.name === 'Coin') {
                 setScore((prev) => prev + 1);
             }
-        });
-
-        app.addEventListener('mouseHover', (e: any) => {
-            // Change cursor on hover
-            document.body.style.cursor = 'pointer';
-        });
-
-        // Reset cursor when not hovering any object
-        // (mouseHover only fires when over an interactive object)
+        };
+        const onMouseHover = () => { document.body.style.cursor = 'pointer'; };
+        // mouseOut is not a SplineEventName — reset cursor via DOM mouseleave on canvas
         const canvas = document.querySelector('canvas');
-        canvas?.addEventListener('mousemove', () => {
-            // This fires on every mouse move over the canvas.
-            // The Spline mouseHover event will override cursor when
-            // hovering an interactive object.
-        });
-    }, []);
+        const onCanvasLeave = () => { document.body.style.cursor = ''; };
+        canvas?.addEventListener('mouseleave', onCanvasLeave);
+
+        app.addEventListener('mouseDown', onMouseDown);
+        app.addEventListener('mouseHover', onMouseHover);
+
+        return () => {
+            app.removeEventListener('mouseDown', onMouseDown);
+            app.removeEventListener('mouseHover', onMouseHover);
+            canvas?.removeEventListener('mouseleave', onCanvasLeave);
+            document.body.style.cursor = '';
+        };
+    }, [isLoaded]);
 
     // ─── Sync React state → Spline variables ─────────────────────
     useEffect(() => {
@@ -126,7 +119,7 @@ export default function InteractiveSplineScene() {
     }, [isLoaded]);
 
     // ─── External controls ───────────────────────────────────────
-    const triggerEvent = (eventType: string, objectName: string) => {
+    const triggerEvent = (eventType: SplineEventName, objectName: string) => {
         if (splineRef.current) {
             splineRef.current.emitEvent(eventType, objectName);
         }

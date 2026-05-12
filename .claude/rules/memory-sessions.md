@@ -109,3 +109,14 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-11 (auto-drafted — review before next session)
 - Only `main` remains.\n\n**Dep audit result:** one missing dep found and fixed â€” `python-dotenv` (`fbe21d8`).
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-12 (auto-drafted — review before next session)
+- {"session_id":"b18a2df0-3249-48fc-9e7c-80aaeae56751","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\b18a2df0-3249-48fc-9e7c-80aaeae56751.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"high"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Change is an example file bug fix â€” no project structure/config impact, no CLAUDE.md/README.md update needed.\n\n**Fixed 3 bugs in `examples/interactive-scene.tsx`:**\n\n1.
+- **Stuck cursor** â€” added `mouseOut` listener to reset `cursor` back to `''`; also resets in the effect cleanup"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-12 (auto-drafted — review before next session)
+- Can't run the full React render without a browser/bundler, but all type errors resolved."}
