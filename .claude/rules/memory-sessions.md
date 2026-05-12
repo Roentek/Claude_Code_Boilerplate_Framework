@@ -66,3 +66,8 @@ Summary of substantive work completed each session — what was built, what was 
 - **Apr 27:** Skill subdirectory fix — `~/.claude/skills/<name>/SKILL.md` required; Impeccable + skillui added
 - **Apr 22:** PDFs → .md in `.claude/docs/`; pre-commit.sh hook
 - **Apr 20:** Boilerplate sync scope locked — SYNC_PATHS excludes README.md, LICENSE, .env.example, etc.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-12 (auto-drafted — review before next session)
+- `2>/dev/null` in `stop.sh` silently swallowed the error, making it invisible\n\n**Fixes:**\n- `openspace-sync.sh` â€” added `cd \"$PROJECT_ROOT\"` at top using `dirname \"$0\"` to navigate from hooks dir; uses absolute paths throughout; no more fragile `cd -`\n- `stop.sh` â€” removed `2>/dev/null`, errors now visible\n- Removed stale `index.lock` manually\n- `settings.json` â€” added `openspace-sync.sh` to `SessionStart` hook so upstream changes are pulled at session open (not just on stop)"}

@@ -108,6 +108,11 @@
             "type": "command",
             "command": "bash -c 'dir=\"$(pwd)\"; while [ \"$dir\" != \"/\" ] && [ ! -f \"$dir/.claude/hooks/mcp-cleanup.sh\" ]; do dir=\"$(dirname \"$dir\")\"; done; if [ -f \"$dir/.claude/hooks/mcp-cleanup.sh\" ]; then bash \"$dir/.claude/hooks/mcp-cleanup.sh\"; fi'",
             "statusMessage": "Cleaning up stale MCP processes..."
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'dir=\"$(pwd)\"; while [ \"$dir\" != \"/\" ] && [ ! -f \"$dir/.claude/hooks/openspace-sync.sh\" ]; do dir=\"$(dirname \"$dir\")\"; done; if [ -f \"$dir/.claude/hooks/openspace-sync.sh\" ]; then bash \"$dir/.claude/hooks/openspace-sync.sh\"; fi'",
+            "statusMessage": "Syncing OpenSpace submodule..."
           }
         ]
       }

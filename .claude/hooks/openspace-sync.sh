@@ -1,6 +1,11 @@
 #!/bin/bash
 # Auto-sync OpenSpace submodule with upstream
-# Runs on every Stop hook to keep OpenSpace current
+# Runs on Stop hook and SessionStart to keep OpenSpace current
+
+# Navigate to project root regardless of CWD when hook fires
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+cd "$PROJECT_ROOT" || exit 1
 
 OPENSPACE_DIR="tools/openspace"
 UPSTREAM_REPO="https://github.com/HKUDS/OpenSpace.git"
@@ -21,11 +26,10 @@ if [ ! -d "$OPENSPACE_DIR/.git" ] && [ ! -f "$OPENSPACE_DIR/.git" ]; then
 fi
 
 # Check for uncommitted changes in submodule
-cd "$OPENSPACE_DIR" || exit 1
+cd "$PROJECT_ROOT/$OPENSPACE_DIR" || exit 1
 
 if [ -n "$(git status --porcelain)" ]; then
   echo "⚠ OpenSpace submodule has uncommitted changes — skipping sync"
-  cd - > /dev/null
   exit 0
 fi
 
@@ -34,11 +38,10 @@ git fetch origin "$UPSTREAM_BRANCH" --quiet
 
 # Get current and remote commit hashes
 LOCAL=$(git rev-parse HEAD)
-REMOTE=$(git rev-parse origin/$UPSTREAM_BRANCH)
+REMOTE=$(git rev-parse "origin/$UPSTREAM_BRANCH")
 
 if [ "$LOCAL" = "$REMOTE" ]; then
   # Already up to date — silent success
-  cd - > /dev/null
   exit 0
 fi
 
@@ -49,13 +52,10 @@ git pull --ff-only origin "$UPSTREAM_BRANCH" --quiet
 
 if [ $? -eq 0 ]; then
   echo "✓ OpenSpace submodule updated to latest"
-  cd - > /dev/null
-
-  # Update the parent repo to track the new submodule commit
+  cd "$PROJECT_ROOT" || exit 1
   git add "$OPENSPACE_DIR"
   echo "  (Submodule pointer updated in parent repo — commit when ready)"
 else
   echo "✗ Failed to sync OpenSpace submodule"
-  cd - > /dev/null
   exit 1
 fi

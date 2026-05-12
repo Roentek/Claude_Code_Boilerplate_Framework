@@ -12,7 +12,7 @@ CONTEXT=$(cat)
 bash "$(dirname "$0")/autoresearch-sync.sh" 2>/dev/null || true
 
 # ── Sync OpenSpace submodule with upstream ─────────────────
-bash "$(dirname "$0")/openspace-sync.sh" 2>/dev/null || true
+bash "$(dirname "$0")/openspace-sync.sh" || true
 
 # ── Auto-draft memory entries ───────────────────────────────
 DRAFT_MSG=$(echo "$CONTEXT" | python "$(dirname "$0")/../scripts/memory-drafter.py" 2>/dev/null || true)

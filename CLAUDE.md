@@ -349,13 +349,13 @@ uv run python -m lightrag.api.lightrag_server --port 9621
 
 | Hook | File | Behavior |
 | ---- | ---- | -------- |
-| `SessionStart` | [`.claude/hooks/mcp-cleanup.sh`](.claude/hooks/mcp-cleanup.sh) | Kills stale MCP node processes from previous sessions before new MCP servers start |
+| `SessionStart` | [`.claude/hooks/mcp-cleanup.sh`](.claude/hooks/mcp-cleanup.sh) + [`.claude/hooks/openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Kills stale MCP node processes; syncs OpenSpace submodule with upstream at session start |
 | `PreToolUse` (Read) | [`.claude/hooks/read-guard.py`](.claude/hooks/read-guard.py) | Warns when large files are read without `offset`+`limit` to save tokens |
 | `Stop` | [`.claude/hooks/stop.sh`](.claude/hooks/stop.sh) | Calls autoresearch-sync + openspace-sync; drafts memory entries; flags tracked-path doc changes |
 | `PostToolUse` (Write/Edit) | [`.claude/hooks/autosync-docs.sh`](.claude/hooks/autosync-docs.sh) | After edits to tracked paths, injects context to update CLAUDE.md/README.md |
 | `pre-commit` (git) | [`.claude/hooks/pre-commit.sh`](.claude/hooks/pre-commit.sh) | Auto-updates CLAUDE.md and README.md before commits that touch tracked paths |
 | `autoresearch-sync` | [`.claude/hooks/autoresearch-sync.sh`](.claude/hooks/autoresearch-sync.sh) | Auto-syncs `tools/autoresearch/` with upstream karpathy/autoresearch (called by stop hook) |
-| `openspace-sync` | [`.claude/hooks/openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Auto-syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace; pulls latest commits; updates submodule pointer in parent repo; skips if uncommitted changes exist (called by stop hook) |
+| `openspace-sync` | [`.claude/hooks/openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Auto-syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace; runs on both SessionStart and Stop; skips if uncommitted changes exist |
 
 > Add new hooks in [`.claude/settings.json`](.claude/settings.json) under `"hooks"`.
 
