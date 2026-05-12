@@ -177,19 +177,19 @@ CLAUDE.md                     ← You are here (routing only)
 tools/                        ← Deterministic execution scripts (Python/Node)
   playwright.js               ← Browser automation CLI wrapper
   autoresearch/               ← Autonomous ML research (prepare.py, train.py, program.md)
-  lightrag/                   ← LightRAG Enhanced (graph-based RAG with multimodal + multi-backend support)
-    src/                      ← Enhanced implementation
+  lightrag/                   ← LightRAG Plus (graph-based RAG with multimodal + multi-backend support)
+    src/                      ← Plus implementation
       config.py               ← Environment config + feature flags
-      lightrag_enhanced.py    ← Main wrapper class
+      lightrag_plus.py        ← Main wrapper class
       embedders/              ← OpenAI (text-only) + Gemini (multimodal) embeddings
       adapters/               ← Supabase + Pinecone vector mirrors (optional)
       ingestors/              ← Multimodal preprocessing (images, video, audio)
     schema/                   ← Backend setup scripts
       supabase_schema.sql     ← Supabase table definitions
     setup_backends.py         ← Backend validation script
-    pyproject.toml            ← Dependencies (lightrag-hku + server deps)
+    pyproject.toml            ← Dependencies (lightrag-hku + server + Plus deps)
     uv.lock                   ← Dependency lockfile
-    README.md                 ← Full LightRAG Enhanced documentation
+    README.md                 ← Full LightRAG Plus documentation
     .env                      ← Server config + API keys (gitignored)
     .env.example              ← Configuration template with all options
     .gitignore                ← Excludes .env, logs, rag_storage, build artifacts
