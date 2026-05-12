@@ -67,6 +67,7 @@ class Config:
         # Supabase
         self.SUPABASE_URL = os.getenv("SUPABASE_URL", "")
         self.SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
+        self.SUPABASE_MANAGEMENT_TOKEN = os.getenv("SUPABASE_MANAGEMENT_TOKEN", "")
 
         # Pinecone
         self.PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")

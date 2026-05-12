@@ -339,7 +339,8 @@ If you cloned OpenSpace before the submodule setup was added, see [`.claude/docs
 │   │   │   └── ingestors/           # Multimodal preprocessing (images, video, audio)
 │   │   ├── schema/                  # Backend setup scripts
 │   │   │   └── supabase_schema.sql  # Supabase table definitions
-│   │   ├── setup_backends.py        # Backend validation script
+│   │   ├── provision.py             # Auto-provision Supabase schema + Pinecone index (idempotent)
+│   │   ├── setup_backends.py        # Backend connection validation script
 │   │   ├── pyproject.toml           # Dependencies (lightrag-hku + server deps)
 │   │   ├── uv.lock                  # Dependency lockfile
 │   │   ├── README.md                # Full LightRAG Enhanced documentation

@@ -186,7 +186,8 @@ tools/                        ← Deterministic execution scripts (Python/Node)
       ingestors/              ← Multimodal preprocessing (images, video, audio)
     schema/                   ← Backend setup scripts
       supabase_schema.sql     ← Supabase table definitions
-    setup_backends.py         ← Backend validation script
+    provision.py              ← Auto-provision Supabase schema + Pinecone index (reads .env flags, idempotent)
+    setup_backends.py         ← Backend connection validation script
     pyproject.toml            ← Dependencies (lightrag-hku + server + Plus deps)
     uv.lock                   ← Dependency lockfile
     README.md                 ← Full LightRAG Plus documentation
@@ -336,9 +337,10 @@ Graph-based RAG with multimodal support. See [`tools/lightrag/README.md`](tools/
 
 ```bash
 cd tools/lightrag && uv sync && cp .env.example .env
-# Add OPENAI_API_KEY to .env, then:
+# Add OPENAI_API_KEY (+ SUPABASE_MANAGEMENT_TOKEN if ENABLE_SUPABASE=true) to .env, then:
+uv run python provision.py          # Auto-creates schema/index if backends enabled (idempotent)
 uv run python -m lightrag.api.lightrag_server --port 9621
-# Or: Press F5 → "LightRAG Server" (VSCode)
+# Or: Press F5 → "LightRAG Server" (VSCode) — start_server.bat runs provision.py automatically
 ```
 
 **Access:** [Web UI + API Docs](http://localhost:9621)

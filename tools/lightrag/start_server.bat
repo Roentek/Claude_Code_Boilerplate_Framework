@@ -20,6 +20,17 @@ for /f "usebackq tokens=1,2 delims== eol=#" %%a in (".env") do (
   if not "%%a"=="" if not "%%b"=="" set "%%a=%%b"
 )
 
+REM Provision backends if enabled (idempotent — skips if already done, fast if disabled)
+echo Checking backend provisioning...
+uv run python provision.py
+if %ERRORLEVEL% neq 0 (
+    echo.
+    echo Backend provisioning failed. Fix errors above then restart.
+    pause
+    exit /b 1
+)
+echo.
+
 REM Start the server (uv --env-file also works if uv >= 0.4)
 uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_storage
 

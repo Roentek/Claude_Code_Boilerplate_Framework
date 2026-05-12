@@ -45,6 +45,41 @@ class LightRAGPlus:
         self._pinecone = _pinecone
 
     @classmethod
+    async def _preflight(cls, cfg: Config) -> None:
+        """Health-check enabled backends before startup. Raises on failure."""
+        errors = []
+
+        if cfg.ENABLE_SUPABASE:
+            from .adapters.supabase_adapter import SupabaseAdapter
+            try:
+                ok = await SupabaseAdapter(cfg).health_check()
+            except Exception:
+                ok = False
+            if not ok:
+                errors.append(
+                    "Supabase table 'lightrag_vectors' missing.\n"
+                    "    Run: cd tools/lightrag && uv run python provision.py"
+                )
+
+        if cfg.ENABLE_PINECONE:
+            from .adapters.pinecone_adapter import PineconeAdapter
+            try:
+                ok = await PineconeAdapter(cfg).health_check()
+            except Exception:
+                ok = False
+            if not ok:
+                errors.append(
+                    f"Pinecone index '{cfg.PINECONE_INDEX}' missing.\n"
+                    "    Run: cd tools/lightrag && uv run python provision.py"
+                )
+
+        if errors:
+            raise RuntimeError(
+                "Backend preflight failed:\n" +
+                "\n".join(f"  • {e}" for e in errors)
+            )
+
+    @classmethod
     async def create(
         cls,
         working_dir: str = "./rag_storage",
@@ -52,6 +87,7 @@ class LightRAGPlus:
     ) -> "LightRAGPlus":
         """Async factory — initializes LightRAG and all enabled backends."""
         cfg = config or Config()
+        await cls._preflight(cfg)
         embedder = cls._build_embedder(cfg)
         supabase = cls._build_supabase(cfg)
         pinecone_ = cls._build_pinecone(cfg)
