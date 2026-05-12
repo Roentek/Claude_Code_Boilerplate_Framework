@@ -21,6 +21,22 @@ echo ""
 
 ERRORS=0
 
+# Cross-platform timeout — GNU timeout absent on Windows; fall back to
+# background-kill pattern using bash's $SECONDS built-in.
+# Usage: _timeout <seconds> <cmd> [args...]
+_timeout() {
+  local secs=$1; shift
+  "$@" &
+  local pid=$! deadline=$((SECONDS + secs))
+  while kill -0 "$pid" 2>/dev/null && [ "$SECONDS" -lt "$deadline" ]; do
+    sleep 1
+  done
+  if kill -0 "$pid" 2>/dev/null; then
+    kill "$pid" 2>/dev/null; wait "$pid" 2>/dev/null; return 124
+  fi
+  wait "$pid"
+}
+
 # ── 1. Make hooks executable (Unix / macOS only) ───────────
 if [[ "$OSTYPE" != "msys"* && "$OSTYPE" != "cygwin"* && "$OS" != "Windows_NT" ]]; then
   if [ -f "$ROOT/.claude/hooks/stop.sh" ]; then
@@ -160,7 +176,7 @@ if command -v claude &>/dev/null; then
 
   # ui-ux-pro-max — design intelligence (67 styles, 161 palettes, 57 fonts)
   # Source: https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
-  if claude plugins install ui-ux-pro-max@ui-ux-pro-max-skill 2>/dev/null; then
+  if _timeout 30 claude plugin install ui-ux-pro-max@ui-ux-pro-max-skill 2>/dev/null; then
     echo "  ✓ ui-ux-pro-max installed"
   else
     echo "  ⚠ ui-ux-pro-max auto-install failed — run these inside Claude Code:"
@@ -170,7 +186,7 @@ if command -v claude &>/dev/null; then
 
   # andrej-karpathy-skills — coding behavior guidelines
   # Source: https://github.com/forrestchang/andrej-karpathy-skills
-  if claude plugins install andrej-karpathy-skills@karpathy-skills 2>/dev/null; then
+  if _timeout 30 claude plugin install andrej-karpathy-skills@karpathy-skills 2>/dev/null; then
     echo "  ✓ andrej-karpathy-skills installed"
   else
     echo "  ⚠ andrej-karpathy-skills auto-install failed — run these inside Claude Code:"
@@ -180,7 +196,7 @@ if command -v claude &>/dev/null; then
 
   # impeccable — frontend design skill (23 commands + anti-pattern detection)
   # Source: https://github.com/pbakaus/impeccable
-  if claude plugins install impeccable@impeccable 2>/dev/null; then
+  if _timeout 30 claude plugin install impeccable@impeccable 2>/dev/null; then
     echo "  ✓ impeccable installed"
   else
     echo "  ⚠ impeccable auto-install failed — run these inside Claude Code:"
@@ -190,7 +206,7 @@ if command -v claude &>/dev/null; then
 
   # codex — OpenAI Codex plugin (rescue + diagnosis subagent via Codex CLI)
   # Source: https://github.com/openai/codex-plugin-cc
-  if claude plugins install codex@openai-codex 2>/dev/null; then
+  if _timeout 30 claude plugin install codex@openai-codex 2>/dev/null; then
     echo "  ✓ codex installed"
   else
     echo "  ⚠ codex auto-install failed — run these inside Claude Code:"
@@ -201,7 +217,7 @@ if command -v claude &>/dev/null; then
   # cc-gemini-plugin — Gemini bridge for large-context codebase exploration
   # Source: https://github.com/thepushkarp/cc-gemini-plugin
   # Requires: GEMINI_API_KEY in .claude/settings.local.json (get at aistudio.google.com/apikey)
-  if claude plugins install cc-gemini-plugin@cc-gemini-plugin 2>/dev/null; then
+  if _timeout 30 claude plugin install cc-gemini-plugin@cc-gemini-plugin 2>/dev/null; then
     echo "  ✓ cc-gemini-plugin installed"
   else
     echo "  ⚠ cc-gemini-plugin auto-install failed — run these inside Claude Code:"
@@ -212,7 +228,7 @@ if command -v claude &>/dev/null; then
   # cli-anything — Generate AI-native CLIs for any software (GIMP, Blender, LibreOffice, etc.)
   # Source: https://github.com/HKUDS/CLI-Anything
   # 50+ supported applications, 2,280+ passing tests
-  if claude plugins install cli-anything@cli-anything 2>/dev/null; then
+  if _timeout 30 claude plugin install cli-anything@cli-anything 2>/dev/null; then
     echo "  ✓ cli-anything installed"
   else
     echo "  ⚠ cli-anything auto-install failed — run these inside Claude Code:"
@@ -259,54 +275,46 @@ echo "── Apify Agent Skills (marketplace) ───────────�
 echo "   Source: https://github.com/apify/agent-skills"
 
 if command -v claude &>/dev/null; then
-  echo "  Attempting marketplace installation via CLI..."
-  echo "  (If installation hangs, press Ctrl+C and install manually in Claude Code)"
+  echo "  Attempting marketplace installation via CLI (30s timeout each)..."
   echo ""
 
-  # Check if timeout command is available for hang protection
-  TIMEOUT_CMD=""
-  if command -v timeout &>/dev/null; then
-    TIMEOUT_CMD="timeout 30"
-    echo "  Using 30-second timeout per skill"
-  fi
-
   # apify-ultimate-scraper — universal web scraper (130+ Actors)
-  if $TIMEOUT_CMD claude skill install apify-ultimate-scraper@apify-agent-skills 2>/dev/null; then
+  if _timeout 30 claude skill install apify-ultimate-scraper@apify-agent-skills 2>/dev/null; then
     echo "  ✓ apify-ultimate-scraper installed"
   else
-    echo "  ⚠ apify-ultimate-scraper — install manually:"
+    echo "  ⚠ apify-ultimate-scraper timed out or failed — install manually in Claude Code:"
     echo "      /skill install apify-ultimate-scraper@apify-agent-skills"
   fi
 
   # apify-actor-development — create, debug, deploy Actors
-  if $TIMEOUT_CMD claude skill install apify-actor-development@apify-agent-skills 2>/dev/null; then
+  if _timeout 30 claude skill install apify-actor-development@apify-agent-skills 2>/dev/null; then
     echo "  ✓ apify-actor-development installed"
   else
-    echo "  ⚠ apify-actor-development — install manually:"
+    echo "  ⚠ apify-actor-development timed out or failed — install manually in Claude Code:"
     echo "      /skill install apify-actor-development@apify-agent-skills"
   fi
 
   # apify-actorization — convert code to Actors
-  if $TIMEOUT_CMD claude skill install apify-actorization@apify-agent-skills 2>/dev/null; then
+  if _timeout 30 claude skill install apify-actorization@apify-agent-skills 2>/dev/null; then
     echo "  ✓ apify-actorization installed"
   else
-    echo "  ⚠ apify-actorization — install manually:"
+    echo "  ⚠ apify-actorization timed out or failed — install manually in Claude Code:"
     echo "      /skill install apify-actorization@apify-agent-skills"
   fi
 
   # apify-generate-output-schema — generate Actor output schemas
-  if $TIMEOUT_CMD claude skill install apify-generate-output-schema@apify-agent-skills 2>/dev/null; then
+  if _timeout 30 claude skill install apify-generate-output-schema@apify-agent-skills 2>/dev/null; then
     echo "  ✓ apify-generate-output-schema installed"
   else
-    echo "  ⚠ apify-generate-output-schema — install manually:"
+    echo "  ⚠ apify-generate-output-schema timed out or failed — install manually in Claude Code:"
     echo "      /skill install apify-generate-output-schema@apify-agent-skills"
   fi
 
   # apify-actor-commands — slash command pack (/create-actor, etc.)
-  if $TIMEOUT_CMD claude skill install apify-actor-commands@apify-agent-skills 2>/dev/null; then
+  if _timeout 30 claude skill install apify-actor-commands@apify-agent-skills 2>/dev/null; then
     echo "  ✓ apify-actor-commands installed"
   else
-    echo "  ⚠ apify-actor-commands — install manually:"
+    echo "  ⚠ apify-actor-commands timed out or failed — install manually in Claude Code:"
     echo "      /skill install apify-actor-commands@apify-agent-skills"
   fi
 
@@ -331,7 +339,7 @@ echo "── Caveman Plugin (75% token reduction) ──────────
 if command -v claude &>/dev/null; then
   echo "  Installing caveman plugin from JuliusBrussee/caveman..."
 
-  if claude plugin install caveman@caveman 2>/dev/null; then
+  if _timeout 30 claude plugin install caveman@caveman 2>/dev/null; then
     echo "  ✓ caveman plugin installed"
     echo "  Commands: /caveman, /caveman-commit, /caveman-review, /caveman-stats, /caveman-compress, /cavecrew"
     echo "  MCP proxy: memory-shrunk (wraps memory server for compressed descriptions)"
@@ -352,7 +360,7 @@ echo "── Context Mode Plugin (98% context reduction) ───────�
 if command -v claude &>/dev/null; then
   echo "  Installing context-mode plugin from mksglu/context-mode..."
 
-  if claude plugin install context-mode@context-mode 2>/dev/null; then
+  if _timeout 30 claude plugin install context-mode@context-mode 2>/dev/null; then
     echo "  ✓ context-mode plugin installed"
     echo "  Slash commands: /context-mode:ctx-stats, /context-mode:ctx-doctor, /context-mode:ctx-upgrade"
     echo "  Statusline: Shows $ saved this session · $ saved across sessions · % efficient"
@@ -364,9 +372,11 @@ if command -v claude &>/dev/null; then
     PLUGIN_DIR=""
     # Find installed plugin directory (marketplaces or cache location)
     for candidate in \
+      "$HOME/.claude/plugins/cache/context-mode/context-mode/"*/ \
       "$HOME/.claude/plugins/marketplaces/context-mode" \
+      "$USERPROFILE/.claude/plugins/cache/context-mode/context-mode/"*/ \
       "$USERPROFILE/.claude/plugins/marketplaces/context-mode" \
-      "$(cygpath "$USERPROFILE" 2>/dev/null)/.claude/plugins/marketplaces/context-mode"; do
+      "$(cygpath "$USERPROFILE" 2>/dev/null)/.claude/plugins/cache/context-mode/context-mode/"*/; do
       if [[ -f "$candidate/package.json" ]]; then
         PLUGIN_DIR="$candidate"
         break
@@ -434,7 +444,7 @@ echo "── Claude-Mem Plugin (persistent memory across sessions) ──"
 if command -v claude &>/dev/null; then
   echo "  Installing claude-mem plugin from thedotmack/claude-mem..."
 
-  if claude plugin install claude-mem@claude-mem 2>/dev/null; then
+  if _timeout 30 claude plugin install claude-mem@claude-mem 2>/dev/null; then
     echo "  ✓ claude-mem plugin installed"
     echo "  Context preserved across sessions via ~/.claude-mem/settings.json"
     echo "  Web viewer: http://localhost:37777 (requires Bun — restart terminal first)"
@@ -563,7 +573,7 @@ if command -v skillui &>/dev/null; then
   echo "✓ skillui already installed"
 elif command -v npm &>/dev/null; then
   echo "  Installing skillui globally..."
-  if npm install -g skillui --silent 2>/dev/null; then
+  if _timeout 120 npm install -g skillui --silent 2>/dev/null; then
     echo "✓ skillui installed (usage: skillui --url <url> | --dir <path> | --repo <github-url>)"
   else
     echo "⚠ skillui install failed — run manually: npm install -g skillui"
@@ -579,7 +589,7 @@ if command -v firecrawl &>/dev/null; then
   echo "✓ firecrawl already installed: $FC_VERSION"
 elif command -v npm &>/dev/null; then
   echo "  Installing firecrawl-cli globally..."
-  if npm install -g firecrawl-cli --silent 2>/dev/null; then
+  if _timeout 120 npm install -g firecrawl-cli --silent 2>/dev/null; then
     echo "✓ firecrawl-cli installed"
     echo "  ⚠ Add FIRECRAWL_API_KEY to .env — get it at: https://www.firecrawl.dev/app/api-keys"
   else
@@ -599,7 +609,7 @@ if command -v codex &>/dev/null; then
   echo "✓ codex-cli already installed: $CODEX_VERSION"
 elif command -v npm &>/dev/null; then
   echo "  Installing codex-cli globally..."
-  if npm install -g @openai/codex@latest --silent 2>/dev/null; then
+  if _timeout 120 npm install -g @openai/codex@latest --silent 2>/dev/null; then
     echo "✓ codex-cli installed"
     echo "  ⚠ Requires OpenAI API key — add OPENAI_API_KEY to .env and settings.local.json"
   else
@@ -617,7 +627,7 @@ if command -v gemini &>/dev/null; then
   echo "✓ gemini-cli already installed: $GEMINI_VERSION"
 elif command -v npm &>/dev/null; then
   echo "  Installing gemini-cli globally..."
-  if npm install -g @google/gemini-cli@latest --silent 2>/dev/null; then
+  if _timeout 120 npm install -g @google/gemini-cli@latest --silent 2>/dev/null; then
     echo "✓ gemini-cli installed"
     echo "  ⚠ Requires Gemini API key — add GEMINI_API_KEY to .env and settings.local.json"
     echo "  Get a free key at: https://aistudio.google.com/apikey"
@@ -637,7 +647,7 @@ if command -v nlm &>/dev/null; then
   echo "✓ notebooklm-mcp-cli already installed: $NLM_VERSION"
 elif command -v uv &>/dev/null; then
   echo "  Installing notebooklm-mcp-cli via uv tool..."
-  if uv tool install notebooklm-mcp-cli 2>/dev/null; then
+  if _timeout 120 uv tool install notebooklm-mcp-cli 2>/dev/null; then
     echo "✓ notebooklm-mcp-cli installed (CLI: nlm, MCP: notebooklm-mcp)"
     echo "  ⚠ Run 'nlm login' to authenticate with Google NotebookLM before first use"
   else
@@ -707,7 +717,7 @@ if [ -d "$AUTORESEARCH_DIR" ]; then
     echo "  Installing autoresearch dependencies (PyTorch download may take 5-10 minutes)..."
 
     # Run uv sync (suppress quiet flag to show progress)
-    if (cd "$AUTORESEARCH_DIR" && uv sync 2>&1 >/dev/null); then
+    if (cd "$AUTORESEARCH_DIR" && uv sync >/dev/null 2>&1); then
       echo "✓ autoresearch dependencies installed"
       echo ""
       echo "  Verifying installation..."
@@ -751,7 +761,7 @@ if [ -d "$LIGHTRAG_DIR" ]; then
   if command -v uv &>/dev/null; then
     echo "  Installing LightRAG dependencies..."
 
-    if (cd "$LIGHTRAG_DIR" && uv sync --quiet 2>&1 >/dev/null); then
+    if (cd "$LIGHTRAG_DIR" && uv sync --quiet >/dev/null 2>&1); then
       echo "✓ LightRAG Plus dependencies installed (lightrag-hku, openai, google-genai, supabase, pinecone, Pillow, python-dotenv)"
       echo ""
       echo "  Next steps:"
@@ -858,7 +868,7 @@ if [ -d "$OPENSPACE_DIR" ]; then
 
     if [ "$PYTHON_MAJOR" -ge 3 ] && [ "$PYTHON_MINOR" -ge 12 ]; then
       # Install in editable mode
-      if (cd "$OPENSPACE_DIR" && $PYTHON_CMD -m pip install -e . --quiet 2>&1 >/dev/null); then
+      if (cd "$OPENSPACE_DIR" && $PYTHON_CMD -m pip install -e . --quiet >/dev/null 2>&1); then
         echo "✓ OpenSpace installed successfully"
         # Verify installation
         if command -v openspace-mcp &>/dev/null; then
@@ -912,7 +922,7 @@ if [ -d "$OPENSPACE_DIR" ]; then
       if [ "$NODE_MAJOR" -ge 20 ]; then
         if [ ! -d "$OPENSPACE_FRONTEND/node_modules" ]; then
           echo "  Installing frontend dependencies (React/Vite)..."
-          if (cd "$OPENSPACE_FRONTEND" && npm install --silent 2>&1 >/dev/null); then
+          if (cd "$OPENSPACE_FRONTEND" && npm install --silent >/dev/null 2>&1); then
             echo "  ✓ Frontend dependencies installed"
             echo ""
             echo "  Dashboard ready — launch via VSCode:"
