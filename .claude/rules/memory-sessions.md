@@ -71,3 +71,8 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-12 (auto-drafted — review before next session)
 - `2>/dev/null` in `stop.sh` silently swallowed the error, making it invisible\n\n**Fixes:**\n- `openspace-sync.sh` â€” added `cd \"$PROJECT_ROOT\"` at top using `dirname \"$0\"` to navigate from hooks dir; uses absolute paths throughout; no more fragile `cd -`\n- `stop.sh` â€” removed `2>/dev/null`, errors now visible\n- Removed stale `index.lock` manually\n- `settings.json` â€” added `openspace-sync.sh` to `SessionStart` hook so upstream changes are pulled at session open (not just on stop)"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-12 (auto-drafted — review before next session)
+- CLAUDE.md has no step-by-step setup descriptions so no change needed there.\n\n**What changed in setup.sh (Ollama Windows path):**\n- Before: just printed `winget install` + `ollama pull` instructions, exited\n- After: runs `winget install --id Ollama.Ollama --accept-package-agreements --accept-source-agreements`, then checks `%LOCALAPPDATA%/Programs/Ollama/ollama.exe` (PATH not updated in-session after winget), pulls llama3.2 via the full path or `ollama` if it resolved; shows both bash + PowerShell fallback commands (`ollama pull llama3.2` â€” identical in both shells) if pull can't run"}

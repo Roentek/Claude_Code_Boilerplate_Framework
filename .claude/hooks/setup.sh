@@ -519,14 +519,16 @@ echo ""
 echo "── npm Dependencies + Playwright Browser ────────────────"
 if [ -f "$ROOT/package.json" ]; then
   if command -v npm &>/dev/null; then
-    if (cd "$ROOT" && npm install --silent 2>/dev/null); then
+    echo "  Installing project npm dependencies..."
+    if (cd "$ROOT" && npm install); then
       echo "✓ npm install complete"
     else
       echo "✗ npm install failed — run: npm install"
       ERRORS=$((ERRORS + 1))
     fi
     # Install Playwright Chromium browser for tools/playwright.js
-    if (cd "$ROOT" && npx playwright install chromium 2>/dev/null); then
+    echo "  Installing Playwright Chromium (~150MB)..."
+    if (cd "$ROOT" && npx playwright install chromium); then
       echo "✓ Playwright Chromium browser installed"
     else
       echo "⚠ Playwright Chromium install failed — run: npx playwright install chromium"
@@ -572,8 +574,8 @@ echo "── Global CLI Tools ────────────────�
 if command -v skillui &>/dev/null; then
   echo "✓ skillui already installed"
 elif command -v npm &>/dev/null; then
-  echo "  Installing skillui globally..."
-  if _timeout 120 npm install -g skillui --silent 2>/dev/null; then
+  echo "  Installing skillui globally (~5MB)..."
+  if _timeout 120 npm install -g skillui; then
     echo "✓ skillui installed (usage: skillui --url <url> | --dir <path> | --repo <github-url>)"
   else
     echo "⚠ skillui install failed — run manually: npm install -g skillui"
@@ -588,8 +590,8 @@ if command -v firecrawl &>/dev/null; then
   FC_VERSION=$(firecrawl --version 2>&1 | head -1)
   echo "✓ firecrawl already installed: $FC_VERSION"
 elif command -v npm &>/dev/null; then
-  echo "  Installing firecrawl-cli globally..."
-  if _timeout 120 npm install -g firecrawl-cli --silent 2>/dev/null; then
+  echo "  Installing firecrawl-cli globally (~10MB)..."
+  if _timeout 120 npm install -g firecrawl-cli; then
     echo "✓ firecrawl-cli installed"
     echo "  ⚠ Add FIRECRAWL_API_KEY to .env — get it at: https://www.firecrawl.dev/app/api-keys"
   else
@@ -608,8 +610,8 @@ if command -v codex &>/dev/null; then
   CODEX_VERSION=$(codex --version 2>&1 | head -1 || echo "unknown")
   echo "✓ codex-cli already installed: $CODEX_VERSION"
 elif command -v npm &>/dev/null; then
-  echo "  Installing codex-cli globally..."
-  if _timeout 120 npm install -g @openai/codex@latest --silent 2>/dev/null; then
+  echo "  Installing codex-cli globally (~50MB)..."
+  if _timeout 120 npm install -g @openai/codex@latest; then
     echo "✓ codex-cli installed"
     echo "  ⚠ Requires OpenAI API key — add OPENAI_API_KEY to .env and settings.local.json"
   else
@@ -626,8 +628,8 @@ if command -v gemini &>/dev/null; then
   GEMINI_VERSION=$(gemini --version 2>&1 | head -1 || echo "unknown")
   echo "✓ gemini-cli already installed: $GEMINI_VERSION"
 elif command -v npm &>/dev/null; then
-  echo "  Installing gemini-cli globally..."
-  if _timeout 120 npm install -g @google/gemini-cli@latest --silent 2>/dev/null; then
+  echo "  Installing gemini-cli globally (~50MB)..."
+  if _timeout 120 npm install -g @google/gemini-cli@latest; then
     echo "✓ gemini-cli installed"
     echo "  ⚠ Requires Gemini API key — add GEMINI_API_KEY to .env and settings.local.json"
     echo "  Get a free key at: https://aistudio.google.com/apikey"
@@ -647,7 +649,7 @@ if command -v nlm &>/dev/null; then
   echo "✓ notebooklm-mcp-cli already installed: $NLM_VERSION"
 elif command -v uv &>/dev/null; then
   echo "  Installing notebooklm-mcp-cli via uv tool..."
-  if _timeout 120 uv tool install notebooklm-mcp-cli 2>/dev/null; then
+  if _timeout 120 uv tool install notebooklm-mcp-cli; then
     echo "✓ notebooklm-mcp-cli installed (CLI: nlm, MCP: notebooklm-mcp)"
     echo "  ⚠ Run 'nlm login' to authenticate with Google NotebookLM before first use"
   else
@@ -714,10 +716,12 @@ AUTORESEARCH_DIR="$ROOT/tools/autoresearch"
 
 if [ -d "$AUTORESEARCH_DIR" ]; then
   if command -v uv &>/dev/null; then
-    echo "  Installing autoresearch dependencies (PyTorch download may take 5-10 minutes)..."
+    echo "  Installing autoresearch dependencies..."
+    echo "  ⚠ PyTorch download is ~3GB — this will take 5-15 minutes on first run."
+    echo "  Progress shown below:"
+    echo ""
 
-    # Run uv sync (suppress quiet flag to show progress)
-    if (cd "$AUTORESEARCH_DIR" && uv sync >/dev/null 2>&1); then
+    if (cd "$AUTORESEARCH_DIR" && uv sync); then
       echo "✓ autoresearch dependencies installed"
       echo ""
       echo "  Verifying installation..."
@@ -759,9 +763,10 @@ LIGHTRAG_DIR="$ROOT/tools/lightrag"
 
 if [ -d "$LIGHTRAG_DIR" ]; then
   if command -v uv &>/dev/null; then
-    echo "  Installing LightRAG dependencies..."
+    echo "  Installing LightRAG dependencies (~200MB, may take 2-5 minutes)..."
+    echo ""
 
-    if (cd "$LIGHTRAG_DIR" && uv sync --quiet >/dev/null 2>&1); then
+    if (cd "$LIGHTRAG_DIR" && uv sync); then
       echo "✓ LightRAG Plus dependencies installed (lightrag-hku, openai, google-genai, supabase, pinecone, Pillow, python-dotenv)"
       echo ""
       echo "  Next steps:"
@@ -809,11 +814,42 @@ if command -v ollama &>/dev/null; then
   fi
 else
   if [ "$IS_WIN" = true ]; then
-    echo "  Ollama not found. Install via winget:"
-    echo "    winget install Ollama.Ollama"
-    echo "  Then pull the model:"
-    echo "    ollama pull llama3.2"
-    echo "  Or download: https://ollama.com/download/OllamaSetup.exe"
+    if command -v winget &>/dev/null; then
+      echo "  Installing Ollama via winget..."
+      winget install --id Ollama.Ollama --accept-package-agreements --accept-source-agreements
+      # winget doesn't update PATH in the current session — check known install location
+      OLLAMA_BIN=""
+      if [ -n "$LOCALAPPDATA" ]; then
+        UNIX_LOCALAPPDATA="$(cygpath "$LOCALAPPDATA" 2>/dev/null || echo "$LOCALAPPDATA" | sed 's|\\|/|g' | sed 's|^\([A-Za-z]\):|/\1|')"
+        CANDIDATE="$UNIX_LOCALAPPDATA/Programs/Ollama/ollama.exe"
+        if [ -f "$CANDIDATE" ]; then
+          OLLAMA_BIN="$CANDIDATE"
+        fi
+      fi
+      if command -v ollama &>/dev/null; then
+        OLLAMA_BIN="ollama"
+      fi
+      if [ -n "$OLLAMA_BIN" ]; then
+        echo "✓ Ollama found"
+        echo "  Pulling llama3.2 (~2GB, this may take a few minutes)..."
+        if "$OLLAMA_BIN" pull llama3.2; then
+          echo "✓ llama3.2 pulled"
+        else
+          echo "⚠ Pull failed — run in bash or PowerShell (same command):"
+          echo "    ollama pull llama3.2"
+          ERRORS=$((ERRORS + 1))
+        fi
+      else
+        echo "  ⚠ Ollama installed but not in PATH yet — restart terminal then run:"
+        echo "  Bash:        ollama pull llama3.2"
+        echo "  PowerShell:  ollama pull llama3.2"
+      fi
+    else
+      echo "  winget not found. Install Ollama manually, then pull the model."
+      echo "  Download: https://ollama.com/download/OllamaSetup.exe"
+      echo "  Bash:        ollama pull llama3.2"
+      echo "  PowerShell:  ollama pull llama3.2"
+    fi
   else
     echo "  Installing Ollama..."
     if curl -fsSL https://ollama.com/install.sh | sh; then
@@ -921,8 +957,8 @@ if [ -d "$OPENSPACE_DIR" ]; then
 
       if [ "$NODE_MAJOR" -ge 20 ]; then
         if [ ! -d "$OPENSPACE_FRONTEND/node_modules" ]; then
-          echo "  Installing frontend dependencies (React/Vite)..."
-          if (cd "$OPENSPACE_FRONTEND" && npm install --silent >/dev/null 2>&1); then
+          echo "  Installing frontend dependencies (React/Vite, ~30MB)..."
+          if (cd "$OPENSPACE_FRONTEND" && npm install); then
             echo "  ✓ Frontend dependencies installed"
             echo ""
             echo "  Dashboard ready — launch via VSCode:"
