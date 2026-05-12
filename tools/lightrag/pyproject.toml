@@ -16,6 +16,11 @@ dependencies = [
     "ollama>=0.3.0"
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+]
+
 [tool.setuptools.packages.find]
 exclude = ["rag_storage*", "inputs*", "tests*"]
 
