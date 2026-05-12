@@ -184,8 +184,7 @@
     "apify-ultimate-scraper@apify-agent-skills": true,
     "caveman@caveman": true,
     "context-mode@context-mode": true,
-    "claude-mem@claude-mem": true,
-    "claude-mem@thedotmack": true
+    "claude-mem@claude-mem": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
