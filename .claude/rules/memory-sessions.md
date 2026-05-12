@@ -104,3 +104,8 @@ Summary of substantive work completed each session — what was built, what was 
 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-11 (auto-drafted — review before next session)
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-11 (auto-drafted — review before next session)
+- Only `main` remains.\n\n**Dep audit result:** one missing dep found and fixed â€” `python-dotenv` (`fbe21d8`).

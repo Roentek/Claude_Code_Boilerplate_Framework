@@ -752,13 +752,15 @@ if [ -d "$LIGHTRAG_DIR" ]; then
     echo "  Installing LightRAG dependencies..."
 
     if (cd "$LIGHTRAG_DIR" && uv sync --quiet 2>&1 >/dev/null); then
-      echo "✓ LightRAG dependencies installed (lightrag-hku)"
+      echo "✓ LightRAG Plus dependencies installed (lightrag-hku, openai, google-genai, supabase, pinecone, Pillow, python-dotenv)"
       echo ""
       echo "  Next steps:"
-      echo "    1. Add LLM API key to .env (OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY, or OLLAMA_HOST)"
-      echo "    2. Use /lightrag skill for setup + usage guide"
-      echo "    3. Optional: Start LightRAG Server for Web UI:"
-      echo "       cd tools/lightrag && python -m lightrag.server --port 9621"
+      echo "    1. Add API keys to tools/lightrag/.env (OPENAI_API_KEY or GEMINI_API_KEY)"
+      echo "    2. Optional: enable remote backends (ENABLE_SUPABASE / ENABLE_PINECONE) then:"
+      echo "       cd tools/lightrag && uv run python setup_backends.py"
+      echo "    3. Use /lightrag skill for setup + usage guide"
+      echo "    4. Optional: Start LightRAG Server for Web UI:"
+      echo "       cd tools/lightrag && uv run python -m lightrag.api.lightrag_server --port 9621"
     else
       echo "⚠ uv sync failed — complete it manually:"
       echo "    cd tools/lightrag && uv sync"
