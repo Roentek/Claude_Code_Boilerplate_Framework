@@ -4,6 +4,19 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-05-12 — LightRAG Plus (Phase 2) built and merged
+- **Decision:** Implemented full LightRAG Plus stack — renamed from "enhanced" to "plus" throughout.
+- **Why:** "Enhanced" is generic; "Plus" is distinctive. User explicitly requested the rename.
+- **Architecture (decisions from prior design sessions):**
+  - Multimodal: Hybrid — simple mode (text → graph only), advanced mode (text → graph + raw media → remote backends)
+  - Query routing: Mode-based (`mode="graph"` vs `mode="hybrid"`)
+  - Sync: Synchronous insert, log-warning-and-continue on remote failure
+  - LightRAG core untouched — `EmbeddingFunc` wrapper intercepts embeddings post-generation
+- **Files built:** `src/lightrag_plus.py`, `src/embedders/{openai,gemini}_embedder.py`, `src/adapters/{supabase,pinecone}_adapter.py`, `src/ingestors/{image,audio,video}_ingestor.py`, `schema/supabase_schema.sql`, `setup_backends.py`
+- **New deps:** `google-genai>=1.0.0`, `supabase>=2.0.0`, `pinecone>=3.0.0`, `Pillow>=10.0.0`
+- **Video note:** `VideoIngestor` requires `opencv-python-headless` (optional — not in pyproject.toml; graceful no-op if missing)
+- **Validate:** `uv run python setup_backends.py` — checks Supabase/Pinecone connections before use
+
 ## 2026-05-11 — Claude-Mem plugin integrated for persistent cross-session memory
 - **Decision:** Integrated `claude-mem@claude-mem` plugin (thedotmack/claude-mem) as an additional memory layer on top of the existing three-tier system.
 - **Why:** Existing memory (file-based + MCP graph) requires explicit writes. Claude-Mem automatically captures tool usage observations and generates semantic summaries passively — no manual update required. Complements the existing system rather than replacing it.

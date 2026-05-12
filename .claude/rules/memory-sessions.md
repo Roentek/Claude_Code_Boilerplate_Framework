@@ -100,3 +100,7 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-11 (auto-drafted — review before next session)
 - Doc-sync hook threw a warning â€” non-critical since the `src/` changes don't affect CLAUDE.md.\n\n---\n\n**Phase 2 summary â€” what needs to be built:**\n\nThe Config class is the foundation.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-11 (auto-drafted — review before next session)
