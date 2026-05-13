@@ -97,8 +97,9 @@ class LightRAGPlus:
             max_token_size=8192,
             func=lambda texts: _embed_and_mirror(texts, embedder, supabase, pinecone_),
         )
+        llm_func = cls._build_llm_func(cfg)
 
-        rag = LightRAG(working_dir=working_dir, embedding_func=embed_func)
+        rag = LightRAG(working_dir=working_dir, embedding_func=embed_func, llm_model_func=llm_func)
         await rag.initialize_storages()
 
         return cls(cfg, rag, embedder, supabase, pinecone_)
@@ -197,6 +198,55 @@ class LightRAGPlus:
         from .adapters.pinecone_adapter import PineconeAdapter
         return PineconeAdapter(config)
 
+    @staticmethod
+    def _build_llm_func(config: Config):
+        """Build LLM completion function for entity extraction based on configured provider."""
+        import os
+        provider = config.LIGHTRAG_LLM_PROVIDER.lower()
+        model = config.LIGHTRAG_LLM_MODEL
+
+        if provider == "ollama":
+            from lightrag.llm.ollama import ollama_model_complete
+
+            async def _ollama(prompt, system_prompt=None, history_messages=None, **kwargs):
+                if history_messages is None:
+                    history_messages = []
+                return await ollama_model_complete(
+                    prompt, system_prompt=system_prompt,
+                    history_messages=history_messages, **kwargs
+                )
+            return _ollama
+
+        elif provider == "gemini":
+            from lightrag.llm.gemini import gemini_complete_if_cache
+
+            async def _gemini(prompt, system_prompt=None, history_messages=None, **kwargs):
+                if history_messages is None:
+                    history_messages = []
+                return await gemini_complete_if_cache(
+                    model, prompt,
+                    system_prompt=system_prompt,
+                    history_messages=history_messages,
+                    api_key=config.GEMINI_API_KEY,
+                    **kwargs,
+                )
+            return _gemini
+
+        else:  # openai and compatible
+            from lightrag.llm.openai import openai_complete_if_cache
+
+            async def _openai(prompt, system_prompt=None, history_messages=None, keyword_extraction=False, **kwargs):
+                if history_messages is None:
+                    history_messages = []
+                return await openai_complete_if_cache(
+                    model, prompt,
+                    system_prompt=system_prompt,
+                    history_messages=history_messages,
+                    api_key=config.OPENAI_API_KEY,
+                    **kwargs,
+                )
+            return _openai
+
     def _has_remote_backends(self) -> bool:
         return self._supabase is not None or self._pinecone is not None
 
@@ -265,8 +315,9 @@ class LightRAGPlus:
 
 async def _embed_and_mirror(
     texts: list[str], embedder, supabase, pinecone_
-) -> list[list[float]]:
+):
     """Embedding func injected into LightRAG — mirrors to remote backends after embed."""
+    import numpy as np
     embeddings = await embedder.embed_text(texts)
 
     if supabase is not None or pinecone_ is not None:
@@ -277,8 +328,8 @@ async def _embed_and_mirror(
                 if adapter is None:
                     continue
                 try:
-                    await adapter.upsert(id_, emb, meta)
+                    await adapter.upsert(id_, list(emb) if hasattr(emb, "tolist") else emb, meta)
                 except Exception as e:
                     logger.warning("%s mirror failed (continuing): %s", name, e)
 
-    return embeddings
+    return np.array(embeddings)

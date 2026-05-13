@@ -25,10 +25,11 @@
       }
     },
     {
-      "name": "LightRAG Test Script",
+      "name": "LightRAG Integration Tests",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/tools/lightrag/test_lightrag.py",
+      "module": "pytest",
+      "args": ["tests/test_integration.py", "-v", "--tb=short"],
       "cwd": "${workspaceFolder}/tools/lightrag",
       "env": {
         "PYTHONIOENCODING": "utf-8"

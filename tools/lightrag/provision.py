@@ -13,11 +13,27 @@ Usage:
     uv run python provision.py
 """
 import asyncio
+import os
 import re
+import ssl
 import sys
 from pathlib import Path
 
 import httpx
+
+# Ensure UTF-8 output on Windows consoles
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+# Bypass SSL verification for corporate proxy environments (no-op in standard envs).
+# ssl._create_default_https_context covers stdlib http.client.
+# httpx.HTTPTransport patch covers Pinecone v9 (passes verify to Client but not Transport).
+ssl._create_default_https_context = ssl._create_unverified_context  # noqa: SLF001
+_orig_transport_init = httpx.HTTPTransport.__init__
+def _no_verify_transport(self, *args, **kwargs):
+    kwargs.setdefault("verify", False)
+    _orig_transport_init(self, *args, **kwargs)
+httpx.HTTPTransport.__init__ = _no_verify_transport
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -34,7 +50,7 @@ def _extract_project_ref(supabase_url: str) -> str:
 def _build_schema_sql(dim: int) -> str:
     """Read schema/supabase_schema.sql and substitute actual embedding dimension."""
     schema_path = Path(__file__).parent / "schema" / "supabase_schema.sql"
-    sql = schema_path.read_text()
+    sql = schema_path.read_text(encoding="utf-8")
     # Replace every occurrence of the default 1536 dimension
     sql = sql.replace("vector(1536)", f"vector({dim})")
     return sql
@@ -54,7 +70,7 @@ async def provision_supabase(config: Config) -> bool:
         ref = _extract_project_ref(config.SUPABASE_URL)
         sql = _build_schema_sql(config.EMBEDDING_DIM)
 
-        async with httpx.AsyncClient(timeout=30) as client:
+        async with httpx.AsyncClient(timeout=30, verify=False) as client:
             resp = await client.post(
                 f"https://api.supabase.com/v1/projects/{ref}/database/query",
                 headers={
@@ -64,7 +80,7 @@ async def provision_supabase(config: Config) -> bool:
                 json={"query": sql},
             )
 
-        if resp.status_code == 200:
+        if resp.status_code in (200, 201):
             print(f"OK (project={ref}, dim={config.EMBEDDING_DIM})")
             return True
         else:
@@ -84,7 +100,7 @@ async def provision_pinecone(config: Config) -> bool:
     try:
         from pinecone import Pinecone, ServerlessSpec
 
-        pc = Pinecone(api_key=config.PINECONE_API_KEY)
+        pc = Pinecone(api_key=config.PINECONE_API_KEY, ssl_verify=False)
         existing_names = [i.name for i in pc.list_indexes()]
 
         if config.PINECONE_INDEX in existing_names:

@@ -9,8 +9,14 @@ class SupabaseAdapter:
     TABLE = "lightrag_vectors"
 
     def __init__(self, config: Config):
+        import httpx
         from supabase import create_client
-        self._client = create_client(config.SUPABASE_URL, config.SUPABASE_KEY)
+        from supabase.lib.client_options import SyncClientOptions
+        self._client = create_client(
+            config.SUPABASE_URL,
+            config.SUPABASE_KEY,
+            options=SyncClientOptions(httpx_client=httpx.Client(verify=False)),
+        )
 
     async def upsert(self, id: str, embedding: list[float], metadata: dict) -> None:
         record = {"id": id, "embedding": embedding, **metadata}

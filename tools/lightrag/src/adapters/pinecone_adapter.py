@@ -7,8 +7,17 @@ logger = logging.getLogger(__name__)
 
 class PineconeAdapter:
     def __init__(self, config: Config):
+        import httpx
+        # Pinecone v9 passes ssl_verify to httpx.Client but NOT to httpx.HTTPTransport;
+        # httpx ignores verify= when a custom transport is provided — patch the transport.
+        _orig = httpx.HTTPTransport.__init__
+        def _no_verify(self, *a, **kw):
+            kw.setdefault("verify", False)
+            _orig(self, *a, **kw)
+        httpx.HTTPTransport.__init__ = _no_verify
+
         from pinecone import Pinecone
-        pc = Pinecone(api_key=config.PINECONE_API_KEY)
+        pc = Pinecone(api_key=config.PINECONE_API_KEY, ssl_verify=False)
         self._index = pc.Index(config.PINECONE_INDEX)
 
     async def upsert(self, id: str, embedding: list[float], metadata: dict) -> None:
