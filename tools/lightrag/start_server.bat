@@ -20,6 +20,15 @@ for /f "usebackq tokens=1,2 delims== eol=#" %%a in (".env") do (
   if not "%%a"=="" if not "%%b"=="" set "%%a=%%b"
 )
 
+REM Check for lightrag-hku updates (non-blocking — server starts regardless)
+echo Checking for LightRAG updates...
+uv run python check_update.py
+if %ERRORLEVEL% equ 2 (
+    echo.
+    echo [WARNING] Major update blocked by pin. See above for manual upgrade steps.
+)
+echo.
+
 REM Provision backends if enabled (idempotent — skips if already done, fast if disabled)
 echo Checking backend provisioning...
 uv run python provision.py

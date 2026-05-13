@@ -280,11 +280,12 @@ If you cloned OpenSpace before the submodule setup was added, see [`.claude/docs
 │   │   └── ui-ux-pro-max-instructions.md
 │   ├── hooks/
 │   │   ├── setup.sh                 # Setup hook: first-time machine bootstrapper
-│   │   ├── stop.sh                  # Stop hook: syncs autoresearch + openspace, drafts memory, checks doc updates
+│   │   ├── stop.sh                  # Stop hook: syncs autoresearch + openspace + lightrag, drafts memory, checks doc updates
 │   │   ├── pre-commit.sh            # Pre-commit hook: auto-updates CLAUDE.md/README.md for tracked-path changes
 │   │   ├── autosync-docs.sh         # PostToolUse hook: detects tracked-path edits, injects doc-sync reminder
 │   │   ├── autoresearch-sync.sh     # Autoresearch upstream sync (called by stop.sh every session)
 │   │   ├── openspace-sync.sh        # OpenSpace submodule sync (called by stop.sh every session)
+│   │   ├── lightrag-sync.sh         # lightrag-hku PyPI version check (called by stop.sh every session)
 │   │   └── read-guard.py            # PreToolUse hook: warns on unscoped reads of large files (>200 lines)
 │   ├── rules/                       # Auto-loaded Markdown instructions (every session)
 │   │   ├── agent-instructions.md
@@ -340,6 +341,7 @@ If you cloned OpenSpace before the submodule setup was added, see [`.claude/docs
 │   │   ├── schema/                  # Backend setup scripts
 │   │   │   └── supabase_schema.sql  # Supabase table definitions
 │   │   ├── provision.py             # Auto-provision Supabase schema + Pinecone index (idempotent)
+│   │   ├── check_update.py          # Check/apply lightrag-hku updates (PyPI diff, pin bump, verify)
 │   │   ├── setup_backends.py        # Backend connection validation script
 │   │   ├── pyproject.toml           # Dependencies (lightrag-hku + server deps)
 │   │   ├── uv.lock                  # Dependency lockfile
@@ -689,6 +691,7 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 | **pre-commit** (git) | [`pre-commit.sh`](.claude/hooks/pre-commit.sh) | Before every `git commit` | Detects staged changes to tracked paths; auto-runs `claude --print` to update CLAUDE.md and README.md, then stages the updated docs alongside the original changes |
 | **autoresearch-sync** | [`autoresearch-sync.sh`](.claude/hooks/autoresearch-sync.sh) | Called by stop.sh every session | Syncs `tools/autoresearch/` with upstream karpathy/autoresearch repo; runs silently if no changes; pulls updates if available; skips if local uncommitted changes exist |
 | **openspace-sync** | [`openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Called by stop.sh every session | Syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace repo; pulls latest commits; updates submodule pointer in parent repo; skips if uncommitted changes exist |
+| **lightrag-sync** | [`lightrag-sync.sh`](.claude/hooks/lightrag-sync.sh) | Called by stop.sh every session | Checks `lightrag-hku` PyPI version against pinned version; notifies if minor/patch or major update available; run `check_update.py --upgrade` to apply |
 
 **`stop.sh` logic:**
 

@@ -1,15 +1,17 @@
-# LightRAG Enhanced
+# LightRAG Plus
 
-**LightRAG Enhanced** extends the original LightRAG graph-based RAG system with:
+**LightRAG Plus** extends the original LightRAG graph-based RAG system with:
 
-- ✨ **Gemini multimodal embeddings** (text, images, video, audio) alongside OpenAI text embeddings
-- ✨ **Multi-backend vector storage** — mirror embeddings to Supabase and/or Pinecone for redundancy and advanced search
-- ✨ **Hybrid query modes** — search local graph only (fast) or all backends (comprehensive)
-- ✨ **Multimodal processing** — simple mode (text extraction) or advanced mode (raw multimodal embeddings)
+- **Gemini multimodal embeddings** (text, images, video, audio) alongside OpenAI text embeddings
+- **Multi-backend vector storage** — mirror embeddings to Supabase and/or Pinecone for redundancy and advanced search
+- **Hybrid query modes** — search local graph only (fast) or all backends (comprehensive)
+- **Multimodal processing** — simple mode (text extraction) or advanced mode (raw multimodal embeddings)
+- **Auto-provisioning** — `provision.py` creates Supabase schema and Pinecone index on first run
+- **Auto-update checks** — `check_update.py` notifies when `lightrag-hku` has a new release
 
 **Base System:** [github.com/HKUDS/LightRAG](https://github.com/HKUDS/LightRAG) (13K+ stars, EMNLP 2025)
 
-> **Key Principle:** LightRAG core remains unchanged and always functional. Enhanced features are bolt-ons that can be enabled/disabled via configuration flags.
+> **Key Principle:** LightRAG core is UNTOUCHED. Plus features bolt on after embeddings are generated. Disable all backends and it behaves identically to vanilla LightRAG.
 
 ---
 
@@ -22,17 +24,14 @@
 - **Storage backends** — Neo4J, MongoDB, PostgreSQL, OpenSearch, or default (nano-vectordb)
 - **Web UI + REST API** — optional LightRAG Server for visualization and programmatic access
 
-### Enhanced Features (New)
+### Plus Features
 
 - **Dual Embedding Providers** — Choose OpenAI (text-only, cost-effective) or Gemini (multimodal)
-- **Optional Vector Mirrors** — Enable Supabase and/or Pinecone to mirror embeddings for:
-  - Backup and redundancy
-  - Cross-backend search comparison
-  - Migration flexibility
+- **Optional Vector Mirrors** — Enable Supabase and/or Pinecone to mirror embeddings for backup, redundancy, and cross-backend search
 - **Multimodal RAG** — Process images, videos, and audio:
   - Simple mode: Extract text via OCR/transcription → LightRAG graph
   - Advanced mode: Extract text + embed raw media → searchable multimodal content
-- **Fail-Safe Architecture** — Remote backend failures never block local LightRAG operations
+- **Fail-Safe Architecture** — Remote backend failures log a warning but never block local LightRAG operations
 
 ---
 
@@ -40,272 +39,301 @@
 
 ### 1. Installation
 
-Handled by `setup.sh` step 14 — installs `lightrag-hku` via `uv` in this directory.
-
-**Manual install:**
+Handled by `setup.sh` step 14. Manual:
 
 ```bash
 cd tools/lightrag
-uv pip install lightrag-hku
+uv sync
+cp .env.example .env
 ```
 
 ### 2. Environment Variables
 
-**Copy the template:**
-
-```bash
-cp .env.example .env
-```
-
-**Edit `.env` and configure:**
-
-**Required — choose embedding provider based on content type:**
+Edit `.env` — choose embedding provider based on content type:
 
 | Content | Provider | Why |
-| --------- | ---------- | ----- |
-| Text only (PDFs, markdown, docs) | `openai` | Cheaper, faster, simpler — use this by default |
-| Images / video / audio | `gemini` | Only provider that can embed non-text files |
+| ------- | -------- | --- |
+| Text only (PDFs, markdown, docs) | `openai` | Cheaper, faster — use by default |
+| Images / video / audio | `gemini` | Only provider that embeds non-text |
 
 ```bash
 # LLM — local Ollama (free, private)
 LLM_BINDING=ollama
 LLM_MODEL=llama3.2
-LLM_BINDING_HOST=http://localhost:11434   # default, can omit
+LLM_BINDING_HOST=http://localhost:11434
 
-# Embedding — TEXT ONLY (documents, PDFs, markdown)
+# Embedding — TEXT ONLY (default)
 EMBEDDING_BINDING=openai
 EMBEDDING_BINDING_API_KEY=sk-...
-EMBEDDING_MODEL=text-embedding-3-small    # or text-embedding-3-large
+EMBEDDING_MODEL=text-embedding-3-small
 
-# Embedding — MULTIMODAL (images, video, audio — switch when needed)
+# Embedding — MULTIMODAL (switch when needed)
 # EMBEDDING_BINDING=gemini
 # EMBEDDING_BINDING_API_KEY=your-gemini-key
 # EMBEDDING_MODEL=gemini-embedding-2-preview
 ```
 
-> **Key vars:** `LLM_BINDING` / `LLM_MODEL` control the LLM. `EMBEDDING_BINDING` / `EMBEDDING_MODEL` control embeddings. These are separate — mix freely (e.g. Ollama LLM + OpenAI embeddings).
-
-**Optional (enable remote vector storage):**
+**Optional — remote vector mirrors:**
 
 ```bash
-# Enable Supabase mirror (requires SQL schema setup)
+# Supabase (auto-provisioned by provision.py)
 ENABLE_SUPABASE=true
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-service-role-key
+SUPABASE_MANAGEMENT_TOKEN=your-management-token   # required for auto-provisioning
 
-# Enable Pinecone mirror (auto-created by setup script)
+# Pinecone (auto-provisioned by provision.py)
 ENABLE_PINECONE=true
 PINECONE_API_KEY=...
 PINECONE_INDEX=lightrag-vectors
 PINECONE_ENVIRONMENT=us-east-1-aws
 ```
 
-**Optional (multimodal processing):**
+**Optional — multimodal mode:**
 
 ```bash
-# simple = text extraction only (OCR/transcription)
-# advanced = text extraction + raw multimodal embeddings (requires Gemini)
+# simple = text extraction only (default)
+# advanced = text extraction + raw multimodal embeddings (requires gemini + at least one remote backend)
 MULTIMODAL_MODE=simple
 ```
 
-> **Note:** Full `.env` template with all options is in `.env.example`
+### 3. Backend Provisioning
 
-### 3. Backend Setup (Optional)
-
-**Only needed if you enabled Supabase or Pinecone in `.env`**
+If `ENABLE_SUPABASE=true` or `ENABLE_PINECONE=true`, run once before first use:
 
 ```bash
-cd tools/lightrag
+uv run python provision.py
+```
+
+**What this does (idempotent — safe to re-run):**
+- Creates Supabase `lightrag_vectors` table with correct vector dimension
+- Creates Pinecone index if missing
+
+`start_server.bat` runs `provision.py` automatically on every server start.
+
+Validate connections after provisioning:
+
+```bash
 uv run python setup_backends.py
 ```
 
-**What this does:**
-
-- ✅ Validates Supabase connection and schema
-- ✅ Creates Pinecone index if it doesn't exist
-- ✅ Verifies embedding dimensions match across all backends
-
-**Supabase Setup:**
-
-If `ENABLE_SUPABASE=true`, you must run the SQL schema once:
-
-1. Open [Supabase SQL Editor](https://supabase.com/dashboard)
-2. Run `schema/supabase_schema.sql`
-3. **Important:** Update `VECTOR(3072)` to match your `EMBEDDING_DIM` if using a different dimension
-
-**Pinecone Setup:**
-
-Auto-created by `setup_backends.py` — no manual steps required!
-
----
-
 ### 4. File Ingestion
 
-LightRAG Enhanced supports three file ingestion methods:
-
-**Method 1: Programmatic API** (Recommended for scripts and automation)
+**Method 1: Python library** (scripts and automation)
 
 ```python
-from pathlib import Path
-from tools.lightrag.src.lightrag_enhanced import LightRAGEnhanced
+import asyncio
+import sys
+sys.path.insert(0, 'src')
+from lightrag_plus import LightRAGPlus
 
-rag = LightRAGEnhanced(
-    working_dir="./rag_storage",
-    embedding_provider="gemini",  # For multimodal support
-    multimodal_mode="advanced"
-)
+async def main():
+    plus = await LightRAGPlus.create(working_dir="./rag_storage")
 
-# Text documents (any provider)
-rag.insert("Plain text document content...")
+    # Text documents
+    await plus.insert("Plain text document content...")
 
-# Multimodal files (requires Gemini provider)
-rag.insert(Path("diagram.png"), content_type="image")
-rag.insert(Path("tutorial.mp4"), content_type="video")
-rag.insert(Path("podcast.mp3"), content_type="audio")
+    # Multimodal files (requires EMBEDDING_PROVIDER=gemini + MULTIMODAL_MODE=advanced)
+    from pathlib import Path
+    await plus.insert(Path("diagram.png"), content_type="image")
+    await plus.insert(Path("tutorial.mp4"), content_type="video")
+    await plus.insert(Path("podcast.mp3"), content_type="audio")
+
+asyncio.run(main())
 ```
 
-**Method 2: HTTP Upload API** (Recommended for web applications)
+**Method 2: REST API** (server must be running)
 
 ```bash
-# Upload via LightRAG Server (http://localhost:9621)
-curl -X POST http://localhost:9621/documents/upload \
-  -F "file=@diagram.png"
+# Upload a document
+curl -X POST http://localhost:9621/api/documents/text \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Document content here", "description": "my doc"}'
 
-# Multimodal files automatically routed to correct ingestor
-```
-
-**Method 3: Data Folder Monitoring** (Optional — Enable via `.env`)
-
-```bash
-# Enable in .env
-ENABLE_FILE_WATCHER=true
-
-# Drop files into organized folders
-cp *.png ./rag_storage/data/images/
-cp *.pdf ./rag_storage/data/text/
-cp *.mp4 ./rag_storage/data/video/
-
-# Files auto-ingested within 1.5 seconds
-# Server broadcasts real-time status via SSE
+# Upload a file
+curl -X POST http://localhost:9621/api/documents/upload \
+  -F "file=@document.pdf"
 ```
 
 **Supported File Types:**
 
 | Category | Extensions | Provider Required |
-| ---------- | ----------- | ------------------- |
-| **Text** | `.txt`, `.md`, `.pdf`, `.docx`, `.pptx`, `.html`, `.json`, `.py`, `.js`, etc. | OpenAI or Gemini |
-| **Images** | `.png`, `.jpg`, `.jpeg`, `.gif`, `.bmp`, `.tiff`, `.webp`, `.svg` | **Gemini only** |
-| **Video** | `.mp4`, `.avi`, `.mov`, `.wmv`, `.webm`, `.mkv` | **Gemini only** |
-| **Audio** | `.mp3`, `.wav`, `.m4a`, `.ogg`, `.flac`, `.aac` | **Gemini only** |
+| -------- | ---------- | ----------------- |
+| **Text** | `.txt`, `.md`, `.pdf`, `.docx`, `.html`, `.json`, `.py`, `.js`, etc. | OpenAI or Gemini |
+| **Images** | `.png`, `.jpg`, `.jpeg`, `.gif`, `.bmp`, `.tiff`, `.webp` | Gemini only |
+| **Video** | `.mp4`, `.avi`, `.mov`, `.wmv`, `.webm`, `.mkv` | Gemini only |
+| **Audio** | `.mp3`, `.wav`, `.m4a`, `.ogg`, `.flac`, `.aac` | Gemini only |
 
-> **Note:** Multimodal files (images, video, audio) require `EMBEDDING_PROVIDER=gemini`. OpenAI embeddings are text-only.
+### 5. Querying
+
+```python
+import asyncio
+import sys
+sys.path.insert(0, 'src')
+from lightrag_plus import LightRAGPlus
+
+async def main():
+    plus = await LightRAGPlus.create(working_dir="./rag_storage")
+
+    # graph mode — LightRAG knowledge graph only (fast, default)
+    result = await plus.query("What is the main topic?")
+    print(result["graph"])   # LightRAG answer string
+
+    # hybrid mode — graph + all enabled remote backends
+    result = await plus.query("Show me diagrams of X", mode="hybrid")
+    print(result["graph"])   # LightRAG answer
+    print(result["remote"])  # vector matches from Supabase/Pinecone
+
+asyncio.run(main())
+```
+
+**`plus.query()` parameters:**
+
+| Parameter | Default | Description |
+| --------- | ------- | ----------- |
+| `text` | — | Query string |
+| `mode` | `"graph"` | `"graph"` (local only, fast) or `"hybrid"` (graph + remote backends) |
+| `top_k` | `10` | Max remote results per backend |
+| `lightrag_mode` | `"hybrid"` | Passed to LightRAG: `naive`, `local`, `global`, `hybrid`, `mix` |
+
+**`plus.query()` return value:**
+
+```python
+{
+    "graph": "LightRAG answer string",
+    "remote": [   # empty list if mode="graph" or no remote backends enabled
+        {"id": "...", "score": 0.95, "text": "...", "content_type": "text"},
+        ...
+    ]
+}
+```
+
+### 6. Server (Web UI + REST API)
+
+**Windows:**
+```bat
+start_server.bat
+```
+
+**Any platform:**
+```bash
+uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_storage
+```
+
+**VSCode:** Press `F5` → select "LightRAG Server"
+
+Access: `http://localhost:9621` — Web UI, graph visualization, and `/docs` for API reference.
+
+The GUI is optional — the REST API endpoints work regardless of whether a browser is open. Run the server headlessly in any terminal and query via curl or Python `requests`.
 
 ---
 
-### 5. Basic Usage
+## Headless and Library Usage
 
-**Insert documents:**
+You do not need the GUI or even the server to use LightRAG Plus.
 
-```python
-from lightrag import LightRAG, QueryParam
-from lightrag.llm import openai_complete_if_cache, openai_embedding
-
-rag = LightRAG(
-    working_dir="./rag_storage",
-    llm_model_func=openai_complete_if_cache,
-    embedding_func=openai_embedding
-)
-
-# Insert document
-with open("document.txt") as f:
-    rag.insert(f.read())
-```
-
-**Query:**
+**Library mode** (no server, direct Python):
 
 ```python
-# Query modes: naive, local, global, hybrid, mix
-result = rag.query("What is the main topic?", param=QueryParam(mode="hybrid"))
-print(result)
+import asyncio, sys
+sys.path.insert(0, 'src')   # run from tools/lightrag/
+from lightrag_plus import LightRAGPlus
+
+async def main():
+    plus = await LightRAGPlus.create()
+    await plus.insert("Document text goes here")
+    result = await plus.query("Your question?")
+    print(result["graph"])
+
+asyncio.run(main())
 ```
 
-### 6. LightRAG Server (Web UI + API)
+**Headless server** (REST API without opening a browser):
 
-Start the server with visualization:
+```bash
+# Start server in background (Windows)
+start /B uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_storage
+
+# Query via curl
+curl -s -X POST http://localhost:9621/api/query \
+  -H "Content-Type: application/json" \
+  -d '{"query": "What is X?", "mode": "hybrid"}'
+
+# Insert text via curl
+curl -s -X POST http://localhost:9621/api/documents/text \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Document content", "description": "my doc"}'
+```
+
+---
+
+## Maintenance
+
+### Checking for Updates
+
+`check_update.py` tracks `lightrag-hku` releases against the pinned version in `pyproject.toml`.
 
 ```bash
 cd tools/lightrag
-python -m lightrag.server --port 9621 --working-dir ./rag_storage
+
+# Check only (no changes)
+uv run python check_update.py
+
+# Apply update (bumps pin, syncs, verifies imports, smoke-tests Plus layer)
+uv run python check_update.py --upgrade
 ```
 
-Access: `http://localhost:9621`
+**Automatic:** `lightrag-sync.sh` runs `check_update.py` at every Claude Code session end (via stop hook) and notifies if an update is available.
 
-Features:
-
-- Knowledge graph visualization
-- REST API endpoints for insert/query
-- Subgraph filtering and node queries
+**Major versions** are blocked by the `<X.0.0` pin — the script prints manual upgrade steps when a major version is detected.
 
 ---
 
-## Configuration
+## Configuration Reference
 
 ### Embedding Providers
 
 | Provider | Capabilities | Best For | Dimensions |
-| ---------- | ------------- | ---------- | ----------- |
-| **OpenAI** | Text only | Pure text RAG, cost-effective | 1536 (small) 3072 (large) |
-| **Gemini** | Text + multimodal | Images, videos, audio | 3072 (preview) 768 (stable) |
+| -------- | ------------ | -------- | ---------- |
+| **OpenAI** | Text only | Pure text RAG, cost-effective | 1536 (small), 3072 (large) |
+| **Gemini** | Text + multimodal | Images, videos, audio | 3072 (preview), 768 (stable) |
 
 **Default Models:**
+- OpenAI: `text-embedding-3-small` (1536 dims)
+- Gemini: `gemini-embedding-2-preview` (3072 dims)
 
-- OpenAI: `text-embedding-3-small` (1536 dims) — cost-effective
-- Gemini: `gemini-embedding-2-preview` (3072 dims) — highest quality
+> Must use the same embedding model for indexing and querying.
 
-> **Important:** Must use the same embedding model for indexing and querying
-
-### Backend Storage Options
+### Backend Storage
 
 | Backend | Mode | Use Case |
-| --------- | ------ | ---------- |
+| ------- | ---- | -------- |
 | **Local (nano-vectordb)** | Always active | Default, always works |
 | **Supabase** | Optional mirror | Postgres-native stack, backup |
 | **Pinecone** | Optional mirror | High-performance vector search |
 
-**You can enable:**
-
-- ❌ Neither → Pure LightRAG (local only)
-- ✅ Supabase only → Postgres backup
-- ✅ Pinecone only → Vector search mirror
-- ✅ Both → Dual redundancy
+Combinations:
+- Neither → Pure LightRAG (local only)
+- Supabase only → Postgres backup
+- Pinecone only → Vector search mirror
+- Both → Dual redundancy
 
 ### Query Modes
 
-| Mode | Searches | Speed | Use When |
-| ------ | ---------- | ------- | ---------- |
-| `graph` (default) | Local graph only | Fast | Text queries, normal use |
-| `hybrid` | All enabled backends | Slower | Multimodal queries, comprehensive search |
+| `mode` | Searches | Speed | Use When |
+| ------ | -------- | ----- | -------- |
+| `"graph"` (default) | LightRAG knowledge graph only | Fast | Text queries, normal use |
+| `"hybrid"` | LightRAG graph + all enabled remote backends | Slower | Multimodal queries, comprehensive search |
 
-**Example:**
+The `lightrag_mode` parameter controls LightRAG's internal query strategy independently:
 
-```python
-# Fast - local graph only
-result = rag.query("What is X?")  # mode="graph" default
-
-# Comprehensive - searches local + Supabase + Pinecone
-result = rag.query("Show me images of X", mode="hybrid")
-```
-
-### LLM Requirements
-
-- **Minimum:** 32B parameters, 32KB context
-- **Recommended:** 64KB context, non-reasoning models for indexing
-- **Query stage:** Use stronger models than indexing for best results
-
-### Reranker (Optional)
-
-- **Boosts performance** when enabled with "mix" query mode
-- **Recommended:** `BAAI/bge-reranker-v2-m3`, Jina reranker services
+| `lightrag_mode` | Behavior |
+| --------------- | -------- |
+| `"naive"` | Simple similarity search |
+| `"local"` | Entity-focused search |
+| `"global"` | Relationship-focused search |
+| `"hybrid"` | local + global (default) |
+| `"mix"` | hybrid + naive + reranker |
 
 ---
 
@@ -316,24 +344,19 @@ result = rag.query("Show me images of X", mode="hybrid")
 | Backend | Use When |
 | ------- | -------- |
 | **Default (nano-vectordb)** | Simple prototyping, small datasets |
-| **Neo4J** | Advanced graph queries, visualization, production scale |
+| **Neo4J** | Advanced graph queries, production scale |
 | **MongoDB** | Unified storage, existing MongoDB infrastructure |
 | **PostgreSQL** | SQL-based queries, pgvector support |
-| **OpenSearch** | Elasticsearch-style search, large-scale deployments |
+| **OpenSearch** | Elasticsearch-style search, large deployments |
 
-**Enhanced Vector Mirrors (Optional):**
+**Plus Vector Mirrors (Optional):**
 
-| Backend | Setup | Sync Behavior | Use When |
-| --------- | ------- | --------------- | ---------- |
-| **Supabase (pgvector)** | Manual SQL schema | Synchronous, fail-safe | Postgres-native stack, backup/redundancy |
-| **Pinecone** | Auto-created | Synchronous, fail-safe | High-performance vector search, scalability |
+| Backend | Setup | Sync Behavior |
+| ------- | ----- | ------------- |
+| **Supabase (pgvector)** | Auto via `provision.py` | Synchronous per insert, fail-safe |
+| **Pinecone** | Auto via `provision.py` | Synchronous per insert, fail-safe |
 
-**Sync Behavior:**
-
-- Embeddings are inserted to local graph first (always succeeds)
-- Then mirrored to enabled remote backends in parallel
-- If a remote backend fails, it logs a warning but doesn't block the operation
-- Manual retry available via `rag.sync_to_remotes()`
+Embeddings insert to local graph first (always succeeds), then mirror to enabled remote backends. Remote failures log a warning but don't block. Manual re-sync: `await plus.sync_to_remotes()` (currently a no-op — inserts sync immediately).
 
 ---
 
@@ -342,91 +365,87 @@ result = rag.query("Show me images of X", mode="hybrid")
 ### Example 1: Pure LightRAG (Text Only, Local)
 
 ```python
-from src.lightrag_enhanced import LightRAGEnhanced
+import asyncio, sys
+sys.path.insert(0, 'src')
+from lightrag_plus import LightRAGPlus
 
-rag = LightRAGEnhanced(
-    working_dir="./rag_storage",
-    embedding_provider="openai",
-    enable_supabase=False,
-    enable_pinecone=False
-)
+async def main():
+    plus = await LightRAGPlus.create(working_dir="./rag_storage")
+    await plus.insert("LightRAG is a graph-based RAG system.")
+    result = await plus.query("What is LightRAG?")
+    print(result["graph"])
 
-# Insert
-rag.insert("LightRAG is a graph-based RAG system.")
-
-# Query (graph mode - default, fast)
-result = rag.query("What is LightRAG?")
-print(result["answer"])
+asyncio.run(main())
 ```
 
-**Behavior:** Identical to vanilla LightRAG. Fastest, lowest cost.
+Behavior: identical to vanilla LightRAG. Fastest, lowest cost.
 
 ---
 
 ### Example 2: Text RAG with Dual Backend Mirrors
 
-```python
-rag = LightRAGEnhanced(
-    working_dir="./rag_storage",
-    embedding_provider="openai",
-    enable_supabase=True,  # Mirror to Supabase
-    enable_pinecone=True    # Mirror to Pinecone
-)
-
-# Insert (syncs to all 3: local + Supabase + Pinecone)
-result = rag.insert("Document text...")
-print(result)  # {"local": True, "supabase": True, "pinecone": True}
-
-# Query (graph mode still default - fast)
-answer = rag.query("What does the document say?")
+Set in `.env`:
+```bash
+ENABLE_SUPABASE=true
+ENABLE_PINECONE=true
 ```
 
-**Behavior:** Embeddings mirrored to remote backends for backup/redundancy. Queries still use local graph by default (fast).
+```python
+import asyncio, sys
+sys.path.insert(0, 'src')
+from lightrag_plus import LightRAGPlus
+
+async def main():
+    plus = await LightRAGPlus.create(working_dir="./rag_storage")
+
+    # Insert syncs to local + Supabase + Pinecone
+    await plus.insert("Document text...")
+
+    # Graph mode — fast (local only)
+    result = await plus.query("What does the document say?")
+    print(result["graph"])
+
+asyncio.run(main())
+```
 
 ---
 
 ### Example 3: Multimodal RAG (Advanced Mode)
 
-```python
-from pathlib import Path
-
-rag = LightRAGEnhanced(
-    working_dir="./rag_storage",
-    embedding_provider="gemini",  # REQUIRED for multimodal
-    enable_supabase=True,
-    multimodal_mode="advanced"
-)
-
-# Insert image
-rag.insert(Path("diagram.png"), content_type="image")
-# - Extracts text via OCR → LightRAG graph
-# - Embeds raw image → Supabase
-
-# Insert video
-rag.insert(Path("tutorial.mp4"), content_type="video")
-# - Transcribes audio → LightRAG graph
-# - Embeds keyframes → Supabase
-
-# Query in hybrid mode (searches graph + Supabase)
-result = rag.query("Show me diagrams about X", mode="hybrid")
-print(result["sources"])  # Includes both text and image sources
+Set in `.env`:
+```bash
+EMBEDDING_BINDING=gemini
+GEMINI_API_KEY=...
+MULTIMODAL_MODE=advanced
+ENABLE_SUPABASE=true
 ```
 
-**Behavior:** Full multimodal search. Text graph + visual embeddings.
+```python
+import asyncio, sys
+from pathlib import Path
+sys.path.insert(0, 'src')
+from lightrag_plus import LightRAGPlus
+
+async def main():
+    plus = await LightRAGPlus.create(working_dir="./rag_storage")
+
+    # Image: OCR text → LightRAG graph; raw embedding → Supabase
+    await plus.insert(Path("diagram.png"), content_type="image")
+
+    # Video: transcription → LightRAG graph; keyframe embedding → Supabase
+    await plus.insert(Path("tutorial.mp4"), content_type="video")
+
+    # Hybrid: searches graph + Supabase
+    result = await plus.query("Show me diagrams about X", mode="hybrid")
+    print(result["graph"])   # text answer from graph
+    print(result["remote"])  # vector matches including image embeddings
+
+asyncio.run(main())
+```
 
 ---
 
-## Vanilla LightRAG Examples
-
-See `examples/` in the LightRAG repo:
-
-- `lightrag_openai_demo.py` — basic OpenAI usage
-- `lightrag_openai_compatible_demo.py` — streaming responses
-- Integration examples for Azure, Gemini, Ollama, HuggingFace
-
----
-
-## Advanced Features
+## Advanced Features (Upstream LightRAG)
 
 - **Token tracking** — monitor API usage
 - **KG data export** — extract graph data for analysis
@@ -444,40 +463,42 @@ Full docs: [docs/AdvancedFeatures.md](https://github.com/HKUDS/LightRAG/blob/mai
 
 ```txt
 tools/lightrag/
-├── src/                          # Enhanced LightRAG implementation
+├── src/                          # LightRAG Plus implementation
 │   ├── config.py                 # Environment config + feature flags
-│   ├── lightrag_enhanced.py      # Main wrapper class
+│   ├── lightrag_plus.py          # Main wrapper class (LightRAGPlus)
 │   ├── embedders/
 │   │   ├── base.py               # Abstract embedder interface
-│   │   ├── openai_embedder.py    # OpenAI embedding wrapper
+│   │   ├── openai_embedder.py    # OpenAI text embeddings
 │   │   └── gemini_embedder.py    # Gemini multimodal embeddings
 │   ├── adapters/
 │   │   ├── base.py               # Abstract adapter interface
 │   │   ├── supabase_adapter.py   # Supabase vector mirroring
 │   │   └── pinecone_adapter.py   # Pinecone vector mirroring
 │   └── ingestors/                # Multimodal preprocessing
-│       ├── base.py               # Abstract ingestor
-│       ├── text_ingestor.py      # Text extraction
+│       ├── base.py
 │       ├── image_ingestor.py     # Image → text + raw embedding
 │       ├── video_ingestor.py     # Video → transcript + keyframes
 │       └── audio_ingestor.py     # Audio → transcript + raw embedding
 ├── schema/
-│   └── supabase_schema.sql       # Supabase table definitions
-├── setup_backends.py             # Backend validation script
-├── .env                          # Configuration (gitignored, populated with keys)
+│   └── supabase_schema.sql       # Supabase table definitions (applied by provision.py)
+├── provision.py                  # Auto-provision Supabase schema + Pinecone index (idempotent)
+├── check_update.py               # Check/apply lightrag-hku PyPI updates
+├── setup_backends.py             # Validate backend connections after provisioning
+├── start_server.bat              # Windows launcher (runs provision.py + server)
+├── .env                          # Configuration (gitignored)
 ├── .env.example                  # Configuration template
-├── pyproject.toml                # Dependencies
-├── uv.lock                       # Dependency lock file
-├── .gitignore                    # Excludes .venv, .env, rag_storage, build artifacts
-├── .venv/                        # Virtual environment (gitignored)
-└── rag_storage/                  # LightRAG working directory (gitignored)
+├── pyproject.toml                # Dependencies (lightrag-hku pinned to current major)
+├── uv.lock                       # Dependency lockfile
+├── .gitignore
+├── .venv/                        # Virtual environment (gitignored, recreated by uv sync)
+└── rag_storage/                  # LightRAG working directory (gitignored, auto-created)
 ```
 
 ---
 
 ## API Reference
 
-Complete Core API with init parameters, QueryParam options, LLM/embedding provider configs, reranker injection, and entity/relation management:
+Core API docs (QueryParam options, LLM/embedding provider configs, reranker, entity management):
 
 [docs/ProgramingWithCore.md](https://github.com/HKUDS/LightRAG/blob/main/docs/ProgramingWithCore.md)
 
@@ -485,28 +506,8 @@ Complete Core API with init parameters, QueryParam options, LLM/embedding provid
 
 ## Integration Recommendation
 
-From the official docs:
+From the official LightRAG docs:
 
-> ⚠️ **If you would like to integrate LightRAG into your project, we recommend utilizing the REST API provided by the LightRAG Server**. LightRAG Core is typically intended for embedded applications or for researchers who wish to conduct studies and evaluations.
+> If you would like to integrate LightRAG into your project, we recommend utilizing the **REST API provided by the LightRAG Server**. LightRAG Core is typically intended for embedded applications or for researchers.
 
-For production use, run LightRAG Server and call it via REST API rather than embedding the Python library directly.
-
----
-
-## Implementation Status
-
-**Current:** Base LightRAG (vanilla) is fully functional ✅
-
-**Enhanced Features:** Design complete, implementation pending
-
-See complete design specification: [`docs/superpowers/specs/2026-05-04-gemini-lightrag-integration-design.md`](../../docs/superpowers/specs/2026-05-04-gemini-lightrag-integration-design.md)
-
-**Implementation Phases:**
-
-1. Core infrastructure (Config, EmbeddingProvider, LightRAGEnhanced wrapper)
-2. Supabase adapter
-3. Pinecone adapter
-4. Gemini embeddings
-5. Multimodal ingestors
-6. Hybrid query mode
-7. Documentation & examples
+For production use, run the server and call it via REST API. For scripts and automation, the library mode (`LightRAGPlus.create()`) is simpler and avoids the network layer entirely.

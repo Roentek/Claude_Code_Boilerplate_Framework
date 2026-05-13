@@ -1,4 +1,4 @@
-"""Configuration management for LightRAG Enhanced"""
+"""Configuration management for LightRAG Plus"""
 
 import os
 from pathlib import Path

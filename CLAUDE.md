@@ -187,6 +187,7 @@ tools/                        ← Deterministic execution scripts (Python/Node)
     schema/                   ← Backend setup scripts
       supabase_schema.sql     ← Supabase table definitions
     provision.py              ← Auto-provision Supabase schema + Pinecone index (reads .env flags, idempotent)
+    check_update.py           ← Check/apply lightrag-hku updates (PyPI diff, pin bump, verify, smoke test)
     setup_backends.py         ← Backend connection validation script
     pyproject.toml            ← Dependencies (lightrag-hku + server + Plus deps)
     uv.lock                   ← Dependency lockfile
@@ -339,8 +340,9 @@ Graph-based RAG with multimodal support. See [`tools/lightrag/README.md`](tools/
 cd tools/lightrag && uv sync && cp .env.example .env
 # Add OPENAI_API_KEY (+ SUPABASE_MANAGEMENT_TOKEN if ENABLE_SUPABASE=true) to .env, then:
 uv run python provision.py          # Auto-creates schema/index if backends enabled (idempotent)
+uv run python check_update.py      # Check for lightrag-hku updates (add --upgrade to apply)
 uv run python -m lightrag.api.lightrag_server --port 9621
-# Or: Press F5 → "LightRAG Server" (VSCode) — start_server.bat runs provision.py automatically
+# Or: Press F5 → "LightRAG Server" (VSCode) — start_server.bat runs provision.py + check_update.py automatically
 ```
 
 **Access:** [Web UI + API Docs](http://localhost:9621)
@@ -353,11 +355,12 @@ uv run python -m lightrag.api.lightrag_server --port 9621
 | ---- | ---- | -------- |
 | `SessionStart` | [`.claude/hooks/mcp-cleanup.sh`](.claude/hooks/mcp-cleanup.sh) + [`.claude/hooks/openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Kills stale MCP node processes; syncs OpenSpace submodule with upstream at session start |
 | `PreToolUse` (Read) | [`.claude/hooks/read-guard.py`](.claude/hooks/read-guard.py) | Warns when large files are read without `offset`+`limit` to save tokens |
-| `Stop` | [`.claude/hooks/stop.sh`](.claude/hooks/stop.sh) | Calls autoresearch-sync + openspace-sync; drafts memory entries; flags tracked-path doc changes |
+| `Stop` | [`.claude/hooks/stop.sh`](.claude/hooks/stop.sh) | Calls autoresearch-sync + openspace-sync + lightrag-sync; drafts memory entries; flags tracked-path doc changes |
 | `PostToolUse` (Write/Edit) | [`.claude/hooks/autosync-docs.sh`](.claude/hooks/autosync-docs.sh) | After edits to tracked paths, injects context to update CLAUDE.md/README.md |
 | `pre-commit` (git) | [`.claude/hooks/pre-commit.sh`](.claude/hooks/pre-commit.sh) | Auto-updates CLAUDE.md and README.md before commits that touch tracked paths |
 | `autoresearch-sync` | [`.claude/hooks/autoresearch-sync.sh`](.claude/hooks/autoresearch-sync.sh) | Auto-syncs `tools/autoresearch/` with upstream karpathy/autoresearch (called by stop hook) |
 | `openspace-sync` | [`.claude/hooks/openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Auto-syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace; runs on both SessionStart and Stop; skips if uncommitted changes exist |
+| `lightrag-sync` | [`.claude/hooks/lightrag-sync.sh`](.claude/hooks/lightrag-sync.sh) | Checks `lightrag-hku` PyPI version against pin on every Stop; notifies if minor/patch or major update available; run `check_update.py --upgrade` to apply |
 
 > Add new hooks in [`.claude/settings.json`](.claude/settings.json) under `"hooks"`.
 
