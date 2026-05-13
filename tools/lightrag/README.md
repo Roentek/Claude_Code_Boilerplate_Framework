@@ -106,6 +106,7 @@ uv run python provision.py
 ```
 
 **What this does (idempotent — safe to re-run):**
+
 - Creates Supabase `lightrag_vectors` table with correct vector dimension
 - Creates Pinecone index if missing
 
@@ -211,11 +212,13 @@ asyncio.run(main())
 ### 6. Server (Web UI + REST API)
 
 **Windows:**
+
 ```bat
 start_server.bat
 ```
 
 **Any platform:**
+
 ```bash
 uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_storage
 ```
@@ -299,6 +302,7 @@ uv run python check_update.py --upgrade
 | **Gemini** | Text + multimodal | Images, videos, audio | 3072 (preview), 768 (stable) |
 
 **Default Models:**
+
 - OpenAI: `text-embedding-3-small` (1536 dims)
 - Gemini: `gemini-embedding-2-preview` (3072 dims)
 
@@ -313,6 +317,7 @@ uv run python check_update.py --upgrade
 | **Pinecone** | Optional mirror | High-performance vector search |
 
 Combinations:
+
 - Neither → Pure LightRAG (local only)
 - Supabase only → Postgres backup
 - Pinecone only → Vector search mirror
@@ -385,6 +390,7 @@ Behavior: identical to vanilla LightRAG. Fastest, lowest cost.
 ### Example 2: Text RAG with Dual Backend Mirrors
 
 Set in `.env`:
+
 ```bash
 ENABLE_SUPABASE=true
 ENABLE_PINECONE=true
@@ -413,6 +419,7 @@ asyncio.run(main())
 ### Example 3: Multimodal RAG (Advanced Mode)
 
 Set in `.env`:
+
 ```bash
 EMBEDDING_BINDING=gemini
 GEMINI_API_KEY=...
