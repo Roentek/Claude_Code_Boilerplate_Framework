@@ -300,8 +300,3 @@ Architectural and technical decisions made during sessions — with date and rat
 - **Decision:** Changed `memory-shrunk` upstream args in `.mcp.json` from `["npx", "-y", "@modelcontextprotocol/server-memory"]` to `["cmd", "/c", "npx", "-y", "@modelcontextprotocol/server-memory"]`.
 - **Why:** `caveman-shrink` calls `spawn(args[0], args.slice(1))` without `shell: true`. On Windows, `npx` is `npx.cmd` — a CMD script — which Node.js `spawn` cannot resolve without shell mode, causing `ENOENT`. Using `cmd /c npx ...` works because `cmd.exe` is a real executable, and it passes stdin through to npx correctly.
 - **How to apply:** Any `caveman-shrink` wrapper in `.mcp.json` on Windows must use `cmd /c npx` instead of bare `npx` as the upstream command.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-05-12 — edit or delete below -->
-- This shapes the architecture.\n\n---\n\n## Two-Layer Architecture\n\n### Layer 1: `provision.py` (new file â€” one-time setup)\n\nHandles actual resource creation.

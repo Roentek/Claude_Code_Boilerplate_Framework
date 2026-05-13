@@ -4,12 +4,27 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
-## 2026-05-12 — Spline interactive-scene.tsx + setup.sh overhaul + LightRAG Plus verification
-- **Fixed:** `interactive-scene.tsx` — 3 bugs: event listeners added in `handleLoad` with no cleanup (memory leak); cursor never reset (used invalid `mouseOut` Spline event); noop `canvas.mousemove` listener. 2 TS type errors: removed custom `SplineApp` interface (incompatible with `Application`), imported `Application` + `SplineEventName` from `@splinetool/runtime`; `'mouseOut'` replaced with DOM `canvas.addEventListener('mouseleave', ...)` for cursor reset; `triggerEvent` param typed as `SplineEventName`
-- **Fixed:** `setup.sh` — added pure-bash `_timeout()` function (no GNU timeout dependency); all `claude plugin install` calls wrapped in `_timeout 30`; all `npm install -g` / `uv tool install` calls wrapped in `_timeout 120`; fixed redirect order `2>&1 >/dev/null` → `>/dev/null 2>&1` (4 sites); fixed `claude plugins install` → `claude plugin install` (wrong subcommand); added `cache/` path to better-sqlite3 plugin dir search
-- **Fixed:** `tools/lightrag/start_server.bat` — added `.env` loading via `for /f "usebackq tokens=1,2 delims== eol=#"` batch loop before server start (LightRAG reads OS env vars, not `.env` natively)
-- **Verified:** LightRAG Plus branch merge complete — all Plus files present (`src/lightrag_plus.py`, `src/embedders/`, `src/adapters/`, `src/ingestors/`, `schema/supabase_schema.sql`, `setup_backends.py`); `python-dotenv` dep confirmed; server ready once Ollama installed
-- **Pending:** Ollama install (`winget install Ollama.Ollama` + `ollama pull llama3.2`) — user action required; then `start_server.bat` → GUI at http://localhost:9621
+## 2026-05-13 — LightRAG Plus integration tests: 0/35 → 35/35
+- **Root causes fixed:**
+  - `_embed_and_mirror` returned `list[list[float]]` → LightRAG `EmbeddingFunc.__call__` calls `.size` (numpy attr) → `AttributeError`; fix: `return np.array(embeddings)`
+  - Pinecone v9: `ssl_verify=False` silently ignored when custom `_RetryTransport` wraps `httpx.HTTPTransport`; fix: monkey-patch `httpx.HTTPTransport.__init__` to `kwargs.setdefault("verify", False)` before import
+  - Supabase adapter: `SyncClientOptions(httpx_client=httpx.Client(verify=False))` — `ClientOptions(verify=False)` doesn't exist in supabase-py v2.30.0
+  - `provision.py` treating HTTP 201 as failure (Supabase Management API returns 201 Created); fix: `if resp.status_code in (200, 201)`
+  - `conftest.py` only patched sync transport; OpenAI/Gemini async SDK hit SSL errors; fix: patch `httpx.AsyncHTTPTransport.__init__` too
+  - Ollama LLM wrapper passed `model` via `kwargs.setdefault` but `ollama_model_complete` already injects model from `hashing_kv` → "multiple values for argument 'model'"; fix: removed redundant kwargs
+  - Tests loaded `.env` with `LLM_BINDING=ollama` → entity extraction failed (Ollama can't run gpt-4o-mini); fix: `_apply_env` forces `LIGHTRAG_LLM_PROVIDER=openai` + `LIGHTRAG_LLM_MODEL=gpt-4o-mini`
+- **Files modified:** `tests/conftest.py`, `tests/test_integration.py`, `provision.py`, `src/adapters/pinecone_adapter.py`, `src/adapters/supabase_adapter.py`, `src/lightrag_plus.py`
+- **Commit:** `e272f55`
+
+## 2026-05-12 — LightRAG Plus Phase 2: provision, check_update, README, hooks fixes
+- **Built:** `provision.py` — auto-creates Supabase schema + Pinecone index from `.env` credentials; idempotent; `SUPABASE_MANAGEMENT_TOKEN` required; called by `start_server.bat` before server start
+- **Built:** `check_update.py` — checks PyPI for lightrag-hku updates; `--upgrade` bumps pin, runs `uv sync`, smoke-tests imports; called by `start_server.bat` before provision
+- **Fixed:** `start_server.bat` — added `.env` loading via batch loop (LightRAG reads OS env vars, not `.env` natively)
+- **Fixed:** `openspace-sync.sh` — added `cd "$PROJECT_ROOT"` via `dirname "$0"` to fix fragile `cd -`; `stop.sh` removed `2>/dev/null` to make errors visible; `settings.json` added `openspace-sync.sh` to SessionStart hook
+- **Fixed:** `setup.sh` — pure-bash `_timeout()` (no GNU timeout dep); all plugin installs wrapped; redirect order fixed `2>&1 >/dev/null` → `>/dev/null 2>&1`; fixed `claude plugins install` → `claude plugin install`
+- **Fixed:** `interactive-scene.tsx` — memory leak (event listeners in handleLoad), cursor reset via `canvas.addEventListener('mouseleave')`, TS type errors
+- **Rewrote:** `tools/lightrag/README.md` — full "LightRAG Plus" rewrite; removed fake ENABLE_FILE_WATCHER method; corrected async API examples; updated file structure
+- **Added:** `tests/conftest.py` + `tests/test_integration.py` — 35 parametrized tests across 7 backend scenarios
 
 ## 2026-05-07 — Environment fixes, context-mode integration, OpenSpace MCP repair
 - **Fixed:** MCP env audit — added `ANTHROPIC_API_KEY` to `settings.local.json`; updated `SUPABASE_KEY` in `tools/lightrag/.env` (was PAT token, needed service role JWT)
@@ -26,15 +41,12 @@ Summary of substantive work completed each session — what was built, what was 
 - **Token savings:** 75% outputs, ~46% memory files, ~50% MCP metadata, 65% avg overall
 - **Files modified:** `.claude/settings.json`, `.mcp.json`, `settings.local.json.example`, `setup.sh` (step 7b), `memory-guidelines.md`, `CLAUDE.md`, `README.md`
 
-## 2026-05-05 (session 14) — OpenSpace launch config verification + setup.sh port fix
-- **Verified:** All 5 VSCode launch configs work with git submodule architecture (backend Python, frontend React/Vite, compound full-stack)
-- **Fixed:** Port mismatch 3888 vs 3789 — setup.sh aligns `.env` port with `package.json` via `sed` after `.env` creation
-
 ---
 
 ## Archive
 
-**May 2026 (continued):**
+**May 2026:**
+- **May 12 (s1):** setup.sh step 14a — Ollama Windows auto-install via winget + `%LOCALAPPDATA%/Programs/Ollama/ollama.exe` path fallback (PATH not updated in-session after winget)
 - **May 11 (s3):** spline-3d prereqs fixed — `react`, `react-dom`, `@types/react` added to `package.json`; React default import added to `react-spline-wrapper.tsx`; `setup.sh` step 9 simplified
 - **May 11 (s3):** Bun winget broken — winget installs empty dir; `setup.sh` updated to use official PS script (`irm bun.sh/install.ps1 | iex`); CLAUDE.md step 7d-pre updated
 - **May 11 (s2):** VSCode launch configs added for claude-mem web viewer (Edge + Chrome variants)
@@ -45,6 +57,7 @@ Summary of substantive work completed each session — what was built, what was 
 - **May 7 (s3):** auto-stage-commit skill created + installed globally
 - **May 7 (s2):** FTS5/better-sqlite3 fixed via `NODE_TLS_REJECT_UNAUTHORIZED=0` (corporate proxy TLS interception)
 - **May 7 (s1):** CLAUDE.md audited to 97/100; global `~/.claude/CLAUDE.md` created; `settings.local.json.example` completed
+- **May 5 (s14):** OpenSpace launch config verification + setup.sh port fix (3888 → 3789 via sed)
 - **May 5 (s13):** OpenSpace git submodule + auto-sync via `openspace-sync.sh` every session
 - **May 4 (s12):** OpenSpace CLI-first pattern — saves ~200-500 tokens/call vs MCP
 - **May 3 (s11):** LightRAG — HKUDS/LightRAG in `tools/lightrag/`; 5 query modes; Web UI + REST API port 9621; `/lightrag` skill
@@ -66,38 +79,3 @@ Summary of substantive work completed each session — what was built, what was 
 - **Apr 27:** Skill subdirectory fix — `~/.claude/skills/<name>/SKILL.md` required; Impeccable + skillui added
 - **Apr 22:** PDFs → .md in `.claude/docs/`; pre-commit.sh hook
 - **Apr 20:** Boilerplate sync scope locked — SYNC_PATHS excludes README.md, LICENSE, .env.example, etc.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-12 (auto-drafted — review before next session)
-- `2>/dev/null` in `stop.sh` silently swallowed the error, making it invisible\n\n**Fixes:**\n- `openspace-sync.sh` â€” added `cd \"$PROJECT_ROOT\"` at top using `dirname \"$0\"` to navigate from hooks dir; uses absolute paths throughout; no more fragile `cd -`\n- `stop.sh` â€” removed `2>/dev/null`, errors now visible\n- Removed stale `index.lock` manually\n- `settings.json` â€” added `openspace-sync.sh` to `SessionStart` hook so upstream changes are pulled at session open (not just on stop)"}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-12 (auto-drafted — review before next session)
-- CLAUDE.md has no step-by-step setup descriptions so no change needed there.\n\n**What changed in setup.sh (Ollama Windows path):**\n- Before: just printed `winget install` + `ollama pull` instructions, exited\n- After: runs `winget install --id Ollama.Ollama --accept-package-agreements --accept-source-agreements`, then checks `%LOCALAPPDATA%/Programs/Ollama/ollama.exe` (PATH not updated in-session after winget), pulls llama3.2 via the full path or `ollama` if it resolved; shows both bash + PowerShell fallback commands (`ollama pull llama3.2` â€” identical in both shells) if pull can't run"}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-12 (auto-drafted — review before next session)
-- Full summary of what was built:\n\n**New file: `tools/lightrag/provision.py`**\n- Reads `Config` â€” acts on `ENABLE_SUPABASE` / `ENABLE_PINECONE` flags\n- Supabase: extracts project ref from `SUPABASE_URL`, POSTs schema SQL to `api.supabase.com/v1/projects/{ref}/database/query` with your management token â€” substitutes actual `EMBEDDING_DIM` into `vector(N)` automatically\n- Pinecone: calls `pc.list_indexes()`, creates index if missing with correct dimension + cosine metric\n- Idempotent â€” `CREATE TABLE IF NOT EXISTS` + index existence check means safe to run every startup\n\n**`src/config.py`** â€” added `SUPABASE_MANAGEMENT_TOKEN` field\n\n**`src/lightrag_plus.py`** â€” added `_preflight()` called from `create()`:\n- Health-checks each enabled backend on startup\n- Raises `RuntimeError` with clear `provision.py` pointer if table/index missing\n\n**`start_server.bat`** â€” runs `provision.py` before server start; aborts if it fails\n\n**`.env`** â€” token injected, **`.env.example`** â€” placeholder added\n\n**`CLAUDE.md` + `README.md`** â€” project structure and quick-start updated\n\nTo test now: set `ENABLE_SUPABASE=true` in `.env` and run `start_server.bat` â€” it should auto-deploy the schema on first run."}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-13 (auto-drafted — review before next session)
-- Summary of everything built:\n\n**`check_update.py`** â€” two modes:\n- `uv run python check_update.py` â€” checks PyPI, reports if update available, exits 0/2 (non-blocking)\n- `uv run python check_update.py --upgrade` â€” bumps pin in `pyproject.toml`, runs `uv sync`, verifies 3 core imports (`LightRAG`, `QueryParam`, `EmbeddingFunc`), smoke-tests `LightRAGPlus` import\n\n**`start_server.bat`** â€” now runs check before provision on every server start.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-13 (auto-drafted — review before next session)
-- Everything fixed:\n\n- README fully rewritten as \"LightRAG Plus\" â€” no \"Enhanced\" anywhere\n- All `LightRAGEnhanced` â†’ `LightRAGPlus`, `lightrag_enhanced.py` â†’ `lightrag_plus.py`\n- All examples use correct async API (`await LightRAGPlus.create()`, `await plus.insert()`, `await plus.query()`)\n- Return values corrected: `result[\"graph\"]` not `result[\"answer\"]`; `insert()` is void\n- Fake Method 3 (file watcher / `ENABLE_FILE_WATCHER`) removed â€” not implemented\n- Server command corrected: `python -m lightrag.api.lightrag_server`\n- `provision.py` and `check_update.py` documented with correct usage\n- New \"Headless and Library Usage\" section added\n- \"Implementation Status â€” pending\" section removed (it's complete)\n- File structure updated to match actual `src/` contents\n- `config.py` docstring fixed"}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-13 (auto-drafted — review before next session)
-- Provisioning is independent â€” credentials present = schema gets created.\n\n**Bottom line:** Set `SUPABASE_URL` + `SUPABASE_MANAGEMENT_TOKEN` in `.env`, run `start_server.bat`, schema deploys automatically before the server comes up."}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-13 (auto-drafted — review before next session)
-- **New capability added** â†’ must wire a step into `setup.sh` before it's \"done\"\n2.
