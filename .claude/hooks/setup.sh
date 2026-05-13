@@ -769,12 +769,17 @@ if [ -d "$LIGHTRAG_DIR" ]; then
     if (cd "$LIGHTRAG_DIR" && uv sync); then
       echo "✓ LightRAG Plus dependencies installed (lightrag-hku, openai, google-genai, supabase, pinecone, Pillow, python-dotenv)"
       echo ""
+      echo "  Provisioning backends (skips if no credentials in .env)..."
+      if [ -f "$LIGHTRAG_DIR/.env" ]; then
+        (cd "$LIGHTRAG_DIR" && uv run python provision.py) || echo "⚠ Backend provisioning failed — run manually: cd tools/lightrag && uv run python provision.py"
+      else
+        echo "  (.env not found — copy .env.example, add credentials, then run: cd tools/lightrag && uv run python provision.py)"
+      fi
+      echo ""
       echo "  Next steps:"
       echo "    1. Add API keys to tools/lightrag/.env (OPENAI_API_KEY or GEMINI_API_KEY)"
-      echo "    2. Optional: enable remote backends (ENABLE_SUPABASE / ENABLE_PINECONE) then:"
-      echo "       cd tools/lightrag && uv run python setup_backends.py"
-      echo "    3. Use /lightrag skill for setup + usage guide"
-      echo "    4. Optional: Start LightRAG Server for Web UI:"
+      echo "    2. Use /lightrag skill for setup + usage guide"
+      echo "    3. Optional: Start LightRAG Server for Web UI:"
       echo "       cd tools/lightrag && uv run python -m lightrag.api.lightrag_server --port 9621"
     else
       echo "⚠ uv sync failed — complete it manually:"

@@ -91,3 +91,13 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-13 (auto-drafted — review before next session)
 - Everything fixed:\n\n- README fully rewritten as \"LightRAG Plus\" â€” no \"Enhanced\" anywhere\n- All `LightRAGEnhanced` â†’ `LightRAGPlus`, `lightrag_enhanced.py` â†’ `lightrag_plus.py`\n- All examples use correct async API (`await LightRAGPlus.create()`, `await plus.insert()`, `await plus.query()`)\n- Return values corrected: `result[\"graph\"]` not `result[\"answer\"]`; `insert()` is void\n- Fake Method 3 (file watcher / `ENABLE_FILE_WATCHER`) removed â€” not implemented\n- Server command corrected: `python -m lightrag.api.lightrag_server`\n- `provision.py` and `check_update.py` documented with correct usage\n- New \"Headless and Library Usage\" section added\n- \"Implementation Status â€” pending\" section removed (it's complete)\n- File structure updated to match actual `src/` contents\n- `config.py` docstring fixed"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-13 (auto-drafted — review before next session)
+- Provisioning is independent â€” credentials present = schema gets created.\n\n**Bottom line:** Set `SUPABASE_URL` + `SUPABASE_MANAGEMENT_TOKEN` in `.env`, run `start_server.bat`, schema deploys automatically before the server comes up."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-13 (auto-drafted — review before next session)
+- **New capability added** â†’ must wire a step into `setup.sh` before it's \"done\"\n2.

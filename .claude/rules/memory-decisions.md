@@ -4,6 +4,11 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-05-13 — setup.sh is the idempotent boot loader for the agentic OS layer
+- **Decision:** `setup.sh` is not a one-time installer — it is the canonical boot for the entire project. Every new capability added to the framework must be wired into `setup.sh` so re-running it brings any environment (fresh clone, new machine, updated repo) fully current.
+- **Why:** The framework is designed to be reused as a standard agentic OS base. Idempotency is required — all steps must be safe to re-run (e.g., `provision.py` skips if already provisioned, `uv sync` is a no-op if deps current, plugin installs check before installing).
+- **How to apply:** When adding any new tool, MCP server, CLI, skill, or backend integration — always add a corresponding step to `setup.sh`. If the step can't be made idempotent, add a guard check. Never leave a capability that requires manual setup undocumented in setup.sh.
+
 ## 2026-05-12 — LightRAG Plus (Phase 2) built and merged
 - **Decision:** Implemented full LightRAG Plus stack — renamed from "enhanced" to "plus" throughout.
 - **Why:** "Enhanced" is generic; "Plus" is distinctive. User explicitly requested the rename.

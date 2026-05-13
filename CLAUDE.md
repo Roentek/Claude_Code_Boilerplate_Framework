@@ -123,7 +123,7 @@ bash .claude/hooks/setup.sh
 # Step 9:   npm install (all package.json deps: react, react-dom, @types/react, @splinetool/react-spline, @splinetool/runtime, Playwright) + Playwright Chromium browser
 # Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli
 # Step 11:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
-# Step 12:  lightrag dependencies in tools/lightrag/ (via uv sync)
+# Step 12:  lightrag dependencies in tools/lightrag/ (via uv sync); auto-runs provision.py if .env exists (idempotent — skips if no credentials)
 # Step 12a: Ollama install + llama3.2 pull (local LLM for LightRAG; Windows: shows winget command, Unix: auto-installs)
 # Step 13:  openspace submodule initialization + pip install -e . + dashboard frontend npm install + .env port alignment (3889 → 3789 to match package.json)
 
