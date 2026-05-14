@@ -9,7 +9,6 @@ Run:
 Scenarios that require remote credentials are auto-skipped when those
 vars are absent from tools/lightrag/.env.
 """
-import io
 import logging
 import os
 from pathlib import Path
@@ -26,17 +25,6 @@ DUMMY_TEXT = (
     "It extracts entities and relationships from documents to build a knowledge graph."
 )
 DUMMY_QUERY = "What is LightRAG?"
-
-
-def _make_jpeg() -> bytes:
-    """Generate a minimal valid 1×1 white JPEG using Pillow."""
-    from PIL import Image
-    buf = io.BytesIO()
-    Image.new("RGB", (1, 1), color=(255, 255, 255)).save(buf, format="JPEG")
-    return buf.getvalue()
-
-
-SYNTHETIC_JPEG = _make_jpeg()
 
 # ── Scenario definitions ─────────────────────────────────────────────────────
 
@@ -221,7 +209,7 @@ async def test_simple_rejects_nontext(scenario, monkeypatch, tmp_path, caplog):
     [s for s in SCENARIOS if s["group"] == "B"],
     ids=[s["id"] for s in SCENARIOS if s["group"] == "B"],
 )
-async def test_advanced_insert_image(scenario, monkeypatch, tmp_path):
+async def test_advanced_insert_image(scenario, monkeypatch, tmp_path, sample_image_bytes):
     """Advanced mode: insert image bytes → Gemini embeds → pushed to remote backend."""
     skip_if_missing(*scenario["required"])
     _apply_env(monkeypatch, scenario)
@@ -229,14 +217,32 @@ async def test_advanced_insert_image(scenario, monkeypatch, tmp_path):
     from src.lightrag_plus import LightRAGPlus
     plus = await LightRAGPlus.create(working_dir=str(tmp_path))
 
-    # Insert text first so query has something in the graph
     await plus.insert(DUMMY_TEXT)
+    await plus.insert(sample_image_bytes, content_type="image")
 
-    # Insert synthetic image — Gemini embeds it and attempts push to remote backend
-    # (no exception = pass; remote upsert may fail silently if backend dim != Gemini dim)
-    await plus.insert(SYNTHETIC_JPEG, content_type="image")
+    result = await plus.query(DUMMY_QUERY, mode="hybrid", lightrag_mode="hybrid")
+    assert "graph" in result
+    assert "remote" in result
+    assert isinstance(result["remote"], list)
 
-    # Hybrid query must run without exception and return correct structure
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "scenario",
+    [s for s in SCENARIOS if s["group"] == "B"],
+    ids=[s["id"] for s in SCENARIOS if s["group"] == "B"],
+)
+async def test_advanced_insert_image_path(scenario, monkeypatch, tmp_path, sample_image_path):
+    """Advanced mode: insert image via Path → exercises Path code path in insert()."""
+    skip_if_missing(*scenario["required"])
+    _apply_env(monkeypatch, scenario)
+
+    from src.lightrag_plus import LightRAGPlus
+    plus = await LightRAGPlus.create(working_dir=str(tmp_path))
+
+    await plus.insert(DUMMY_TEXT)
+    await plus.insert(sample_image_path, content_type="image")
+
     result = await plus.query(DUMMY_QUERY, mode="hybrid", lightrag_mode="hybrid")
     assert "graph" in result
     assert "remote" in result

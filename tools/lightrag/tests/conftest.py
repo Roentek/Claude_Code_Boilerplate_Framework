@@ -66,6 +66,40 @@ def skip_if_missing(*keys: str) -> None:
         pytest.skip(f"Missing .env vars: {', '.join(missing)}")
 
 
+# ── Fixture image ─────────────────────────────────────────────────────────────
+
+FIXTURES_DIR = Path(__file__).parent / "fixtures"
+
+
+def _generate_sample_image(path: Path) -> None:
+    """Generate a 128×128 gradient JPEG — varied enough for Gemini multimodal embedding."""
+    from PIL import Image, ImageDraw
+    img = Image.new("RGB", (128, 128))
+    px = img.load()
+    for y in range(128):
+        for x in range(128):
+            px[x, y] = (x * 2, y * 2, 128)
+    draw = ImageDraw.Draw(img)
+    draw.text((4, 4), "LightRAG Test", fill=(255, 255, 255))
+    img.save(path, format="JPEG", quality=85)
+
+
+@pytest.fixture(scope="session")
+def sample_image_path() -> Path:
+    """Return tests/fixtures/sample.jpg, auto-generating it if absent."""
+    FIXTURES_DIR.mkdir(exist_ok=True)
+    path = FIXTURES_DIR / "sample.jpg"
+    if not path.exists():
+        _generate_sample_image(path)
+    return path
+
+
+@pytest.fixture(scope="session")
+def sample_image_bytes(sample_image_path: Path) -> bytes:
+    """Return raw bytes of the fixture JPEG."""
+    return sample_image_path.read_bytes()
+
+
 # ── Cloud ID tracking for post-run cleanup ───────────────────────────────────
 
 _SUPA_IDS: set[str] = set()
