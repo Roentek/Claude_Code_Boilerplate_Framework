@@ -33,6 +33,13 @@ class SupabaseAdapter:
         )
         return result.data or []
 
+    async def delete(self, ids: list[str]) -> None:
+        if not ids:
+            return
+        await asyncio.to_thread(
+            lambda: self._client.table(self.TABLE).delete().in_("id", ids).execute()
+        )
+
     async def health_check(self) -> bool:
         try:
             await asyncio.to_thread(

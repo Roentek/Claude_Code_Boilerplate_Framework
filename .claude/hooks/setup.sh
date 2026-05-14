@@ -767,7 +767,35 @@ if [ -d "$LIGHTRAG_DIR" ]; then
     echo ""
 
     if (cd "$LIGHTRAG_DIR" && uv sync); then
-      echo "✓ LightRAG Plus dependencies installed (lightrag-hku, openai, google-genai, supabase, pinecone, Pillow, python-dotenv)"
+      echo "✓ LightRAG Plus dependencies installed"
+
+      # Integrity check — guards against OneDrive deleting transitive dep files mid-install
+      if ! (cd "$LIGHTRAG_DIR" && uv pip check >/dev/null 2>&1); then
+        echo "  ⚠ Incomplete transitive dependencies detected — auto-repairing..."
+        # Remove dist-info dirs whose METADATA was deleted (OneDrive signature)
+        _site=$(find "$LIGHTRAG_DIR/.venv" -name "site-packages" -type d 2>/dev/null | head -1)
+        if [ -n "$_site" ]; then
+          for _d in "$_site/"*dist-info; do
+            [ -d "$_d" ] && [ ! -f "$_d/METADATA" ] && rm -rf "$_d"
+          done
+        fi
+        # Re-sync then force-install known transitive deps OneDrive tends to delete
+        (cd "$LIGHTRAG_DIR" && uv sync >/dev/null 2>&1) || true
+        (cd "$LIGHTRAG_DIR" && uv pip install \
+          "pydantic>=2.0.0" "json-repair" propcache requests \
+          "google-auth>=2.14.1" idna iniconfig pluggy >/dev/null 2>&1) || true
+        echo "  ✓ Repair complete"
+      fi
+
+      # Final import verification — catches any remaining breakage
+      if (cd "$LIGHTRAG_DIR" && uv run python -c \
+          "from lightrag import LightRAG, QueryParam" >/dev/null 2>&1); then
+        echo "✓ LightRAG import verified"
+      else
+        echo "⚠ LightRAG import check failed after install"
+        echo "    Run: cd tools/lightrag && uv pip check"
+      fi
+
       echo ""
       echo "  Provisioning backends (skips if no credentials in .env)..."
       if [ -f "$LIGHTRAG_DIR/.env" ]; then

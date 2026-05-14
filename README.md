@@ -312,6 +312,7 @@ If you cloned OpenSpace before the submodule setup was added, see [`.claude/docs
 │       ├── notebooklm/SKILL.md      # Google NotebookLM: create notebooks, add sources, generate podcasts/videos/briefings
 │       ├── three-brain/SKILL.md     # Multi-model router: Claude (standard), Codex (review/rescue), Gemini (multimodal)
 │       ├── compact-memory/SKILL.md  # Memory hygiene: compress sessions, prune decisions, sync to knowledge graph
+│       ├── update-all/SKILL.md      # Update all npm globals, uv tools, Python venvs, submodules; self-heals broken venvs
 │       ├── autoresearch/SKILL.md    # Autonomous ML research: modify GPT code, run 5-min experiments, iterate overnight
 │       ├── lightrag/SKILL.md        # Graph-based RAG: knowledge extraction, entity-relationship Q&A, multimodal docs
 │       ├── openspace/SKILL.md       # Self-evolving skill system: auto-fix, auto-improve, auto-learn, cloud sharing
@@ -535,6 +536,7 @@ Skills are Markdown files that expand into full instructions when invoked. Proje
 | `/claude-api` | Scaffolds an app using the Anthropic SDK or Claude Agent SDK with prompt caching. |
 | `/simplify` | Reviews recently changed code for reuse, quality, and efficiency — then fixes issues found. |
 | `/compact-memory` | Full memory hygiene — compresses old sessions, prunes obsolete decisions, syncs facts to knowledge graph. Run monthly or when memory files exceed ~200 lines. |
+| `/update-all` | Update all npm globals, uv tools, Python venvs, npm deps, and git submodules. Self-heals broken venvs (OneDrive pattern). New tool dirs auto-register. |
 | `/schedule` | Creates cron-scheduled remote agents via Trigger.dev. |
 | `/loop [interval] [command]` | Runs a prompt or command on a recurring interval (e.g. `/loop 5m /command`). |
 | `/update-config` | Configures hooks, permissions, and automated behaviors in `settings.json`. |
@@ -692,6 +694,7 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 | **autoresearch-sync** | [`autoresearch-sync.sh`](.claude/hooks/autoresearch-sync.sh) | Called by stop.sh every session | Syncs `tools/autoresearch/` with upstream karpathy/autoresearch repo; runs silently if no changes; pulls updates if available; skips if local uncommitted changes exist |
 | **openspace-sync** | [`openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Called by stop.sh every session | Syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace repo; pulls latest commits; updates submodule pointer in parent repo; skips if uncommitted changes exist |
 | **lightrag-sync** | [`lightrag-sync.sh`](.claude/hooks/lightrag-sync.sh) | Called by stop.sh every session | Checks `lightrag-hku` PyPI version against pinned version; notifies if minor/patch or major update available; run `check_update.py --upgrade` to apply |
+| **update-all** | [`update-all.sh`](.claude/hooks/update-all.sh) | Manual (run via `/update-all`) | Updates npm globals, uv tools, Python venvs, npm deps, submodules; repairs broken venvs via `uv pip check` + dist-info cleanup |
 
 **`stop.sh` logic:**
 

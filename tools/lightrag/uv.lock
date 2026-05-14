@@ -1046,7 +1046,7 @@ wheels = [
 
 [[package]]
 name = "lightrag-hku"
-version = "1.4.16"
+version = "1.4.15"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -1070,9 +1070,9 @@ dependencies = [
     { name = "tiktoken" },
     { name = "xlsxwriter" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/91/ee/a56df1e6ffcc597a82aadb5bbab40b3b99b0b6359f19ada744402adfe561/lightrag_hku-1.4.16.tar.gz", hash = "sha256:4453582e2c82f91c7c675aa3e09939b8a66816775da3370cb11eea94776aa77e", size = 3655047, upload-time = "2026-05-07T19:35:11.081Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/af/ac/3c3d404cb0957fd571bdc1e910b2a5f85d0d3479686fa75eec0e9b3b5f66/lightrag_hku-1.4.15.tar.gz", hash = "sha256:50a2c26612c96dec1816150d39c121b8f090ff6bb00b485bc867e008923a858c", size = 3650948, upload-time = "2026-04-19T08:41:14.702Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/eb/6c/f340c272846010ce3152d698e597350b37d6c0b876b3adbf4906c99fb453/lightrag_hku-1.4.16-py3-none-any.whl", hash = "sha256:ce8536411f1c8b329fea1c1e86ed3357456a76d3057120b0886e60b2233f8bda", size = 3623523, upload-time = "2026-05-07T19:35:08.847Z" },
+    { url = "https://files.pythonhosted.org/packages/90/be/9c3b7c598e6ce1e59d949126f4f45fa58fffd10e3ff1c36ae15feabdf2b9/lightrag_hku-1.4.15-py3-none-any.whl", hash = "sha256:0cbc122dadc3d19758927ef2f060ab26db84ccc9e55c1836fd3799f76a36b23c", size = 3627556, upload-time = "2026-04-19T08:41:12.664Z" },
 ]
 
 [[package]]
@@ -1090,6 +1090,7 @@ dependencies = [
     { name = "passlib" },
     { name = "pillow" },
     { name = "pinecone" },
+    { name = "pydantic" },
     { name = "pyjwt" },
     { name = "python-dotenv" },
     { name = "python-multipart" },
@@ -1115,6 +1116,7 @@ requires-dist = [
     { name = "passlib", specifier = ">=1.7.4" },
     { name = "pillow", specifier = ">=10.0.0" },
     { name = "pinecone", specifier = ">=3.0.0" },
+    { name = "pydantic", specifier = ">=2.0.0" },
     { name = "pyjwt", specifier = ">=2.0.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23" },

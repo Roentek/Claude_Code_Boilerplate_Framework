@@ -267,6 +267,7 @@ docs/                         ← Project-level documentation
 | `/notebooklm` | Google NotebookLM — create notebooks, add sources, generate podcasts/videos/briefings via `nlm` CLI |
 | `/playwright` | Browser automation — screenshots, scraping, PDFs, link extraction via Playwright CLI |
 | `/compact-memory` | Full memory hygiene — compress sessions, prune decisions, sync facts to MCP graph |
+| `/update-all` | Update all npm globals, uv tools, Python venvs, npm deps, and submodules; repairs broken venvs automatically |
 | `/three-brain` | Auto-route work to Codex (review/rescue) or Gemini (multimodal/long-context) — requires codex-cli + gemini-cli |
 | `/autoresearch` | Autonomous ML research — modify GPT training code, run 5-min experiments, keep improvements (~12 exp/hour, ~100 overnight) |
 | `/lightrag` | Graph-based RAG — knowledge extraction, entity-relationship Q&A, multimodal docs (PDFs, images), Web UI + REST API |
@@ -361,6 +362,7 @@ uv run python -m lightrag.api.lightrag_server --port 9621
 | `autoresearch-sync` | [`.claude/hooks/autoresearch-sync.sh`](.claude/hooks/autoresearch-sync.sh) | Auto-syncs `tools/autoresearch/` with upstream karpathy/autoresearch (called by stop hook) |
 | `openspace-sync` | [`.claude/hooks/openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Auto-syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace; runs on both SessionStart and Stop; skips if uncommitted changes exist |
 | `lightrag-sync` | [`.claude/hooks/lightrag-sync.sh`](.claude/hooks/lightrag-sync.sh) | Checks `lightrag-hku` PyPI version against pin on every Stop; notifies if minor/patch or major update available; run `check_update.py --upgrade` to apply |
+| `update-all` | [`.claude/hooks/update-all.sh`](.claude/hooks/update-all.sh) | Manual update script — npm globals, uv tools, Python venvs, npm deps, submodules; self-heals broken venvs. Run via `/update-all` skill |
 
 > Add new hooks in [`.claude/settings.json`](.claude/settings.json) under `"hooks"`.
 

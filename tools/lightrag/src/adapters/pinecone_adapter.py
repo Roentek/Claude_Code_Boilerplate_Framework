@@ -38,6 +38,11 @@ class PineconeAdapter:
             for m in result.matches
         ]
 
+    async def delete(self, ids: list[str]) -> None:
+        if not ids:
+            return
+        await asyncio.to_thread(self._index.delete, ids=ids)
+
     async def health_check(self) -> bool:
         try:
             await asyncio.to_thread(self._index.describe_index_stats)
