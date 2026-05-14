@@ -346,6 +346,21 @@ uv run python -m lightrag.api.lightrag_server --port 9621
 # Or: Press F5 → "LightRAG Server" (VSCode) — start_server.bat runs provision.py + check_update.py automatically
 ```
 
+**Running integration tests (Windows):**
+
+```bash
+# Step 1: sync venv once (do NOT use `uv run pytest` — it re-syncs on every call and hits Windows file locks)
+cd tools/lightrag && uv sync --extra dev
+
+# Step 2: run tests directly via venv python (repeatable, no re-sync)
+.venv\Scripts\python.exe -m pytest tests/test_integration.py -v
+
+# If uv sync fails with "Access is denied" or missing RECORD files — self-heal first:
+Remove-Item -Force -Recurse .venv\Lib\site-packages\regex-*.dist-info -ErrorAction SilentlyContinue
+Remove-Item -Force -Recurse .venv\Lib\site-packages\proto_plus-*.dist-info -ErrorAction SilentlyContinue
+uv sync --extra dev
+```
+
 **Access:** [Web UI + API Docs](http://localhost:9621)
 
 ---

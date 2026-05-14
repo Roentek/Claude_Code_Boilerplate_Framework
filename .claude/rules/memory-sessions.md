@@ -46,6 +46,7 @@ Summary of substantive work completed each session — what was built, what was 
 ## Archive
 
 **May 2026:**
+- **May 14 (s1):** update-all skill + hook built; setup.sh hardened with self-healing venv logic for OneDrive corruption
 - **May 12 (s1):** setup.sh step 14a — Ollama Windows auto-install via winget + `%LOCALAPPDATA%/Programs/Ollama/ollama.exe` path fallback (PATH not updated in-session after winget)
 - **May 11 (s3):** spline-3d prereqs fixed — `react`, `react-dom`, `@types/react` added to `package.json`; React default import added to `react-spline-wrapper.tsx`; `setup.sh` step 9 simplified
 - **May 11 (s3):** Bun winget broken — winget installs empty dir; `setup.sh` updated to use official PS script (`irm bun.sh/install.ps1 | iex`); CLAUDE.md step 7d-pre updated
@@ -80,28 +81,16 @@ Summary of substantive work completed each session — what was built, what was 
 - **Apr 22:** PDFs → .md in `.claude/docs/`; pre-commit.sh hook
 - **Apr 20:** Boilerplate sync scope locked — SYNC_PATHS excludes README.md, LICENSE, .env.example, etc.
 
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-14 (auto-drafted — review before next session)
-- {"session_id":"78335356-e3f4-462a-a483-b95d7c4ac0f9","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\78335356-e3f4-462a-a483-b95d7c4ac0f9.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"high"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"**Step 4: Summary**\n\n| | Before | After | Delta |\n|---|---|---|---|\n| sessions lines | 109 | 76 | **âˆ’33** |\n| decisions entries | 21 | 20 | **âˆ’1** |\n| entities synced | â€” | 5 | **+5** |\n\n**Removed:**\n- Decisions: 1 corrupted DRAFT block (garbled stop-hook output, lines 305â€“307)\n- Sessions: 8 DRAFT auto-drafted blocks collapsed into proper session entries; `2026-05-13` session added; `2026-05-05 s14` demoted to Archive\n\n**Entities written to graph:**\n- `LightRAG-Plus` â€” SSL fixes, test status, adapter quirks\n- `Claude-Code-Boilerplate-Framework` â€” WAT arch, setup.sh rule, CLI-first pattern\n- `Token-Compression-Stack` â€” Caveman + context-mode combined savings\n- `Setup-sh-Steps` â€” all 13 steps with key gotchas\n- `Corporate-SSL-Proxy-Pattern` â€” 5-layer SSL bypass pattern"}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-14 (auto-drafted — review before next session)
-- Here's the full rundown:\n\n---\n\n## Why test data didn't appear in the Web UI\n\nTests use `tmp_path` (pytest's built-in temp fixture) as `working_dir`:\n\n```python\nplus = await LightRAGPlus.create(working_dir=str(tmp_path))\n```\n\n`tmp_path` = OS temp dir (e.g.
+## 2026-05-14 — LightRAG test runner fix + test idempotency
+- **Root cause:** `uv run --extra dev pytest` re-syncs the venv on every invocation. On second run, Windows holds file locks on venv files left by the previous pytest process (Windows Defender or delayed file release). `uv sync` hits `Access is denied (os error 5)` on `regex-*.dist-info\licenses`, exits code 2 before pytest starts.
+- **Immediate fix:** Delete corrupted/locked dist-info dirs (`regex`, `proto_plus`, `pytz`), then `uv sync --extra dev`.
+- **Structural fix:** Run tests via `.venv\Scripts\python.exe -m pytest` (not `uv run pytest`). Skips venv sync entirely. Do `uv sync --extra dev` once, then pytest directly — repeatable N times.
+- **Config fix:** Added `asyncio_mode = "auto"` to `[tool.pytest.ini_options]` in `pyproject.toml`.
+- **CLAUDE.md updated:** LightRAG Server Setup section now documents two-step test command + self-heal recipe.
+- **Pattern (Windows):** Always separate `uv sync` (once) from test execution (direct python). Never `uv run pytest` in a loop.
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-14 (auto-drafted — review before next session)
-- Skipping CLAUDE.md update.\n\nHere's what was built:\n\n**Spinner** (`conftest.py:pytest_runtest_logstart` + `pytest_runtest_logreport`):\n- `pytest_runtest_logstart` â†’ starts background thread writing `â ‹ test::name [0.3s]` to stderr with `\\r` overwrite\n- `hookwrapper(tryfirst=True)` on `pytest_runtest_logreport` â†’ clears spinner line *before* pytest's terminal reporter prints PASSED/FAILED.
-- WHERE id IN (...)` on Supabase and `index.delete(ids=[...])` on Pinecone\n- **Adapter `delete()` methods** also added to both adapters for general use\n\n**Expected terminal output:**\n```\n  â ¼ tests/test_integration.py::test_insert_text[supabase]  [4.2s]\ntests/test_integration.py::test_insert_text[supabase] PASSED   [ 28%]\n\nâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n[cleanup] Pruning test vectors from cloud backends\n          Supabase: 42 | Pinecone: 42\n[cleanup] âœ“ Supabase: deleted 42 rows from lightrag_vectors\n[cleanup] âœ“ Pinecone: deleted 42 vectors from 'lightrag-vectors'\nâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n```"}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-14 (auto-drafted — review before next session)
-- {"session_id":"a02457c8-31d1-4de5-9241-7838639f7ed7","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--Users-MorarMonil-OneDrive---TK-Elevator-Documents-GIT-Claude-Code-Boilerplate-Framework\\a02457c8-31d1-4de5-9241-7838639f7ed7.jsonl","cwd":"C:\\Users\\MorarMonil\\OneDrive - TK Elevator\\Documents\\GIT\\Claude_Code_Boilerplate_Framework\\tools\\lightrag","permission_mode":"bypassPermissions","effort":{"level":"high"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"**35/35 passed, clean exit.**\n\nRoot causes fixed:\n- `google-genai` not installed (OneDrive deleted files during prior `uv sync`) â€” reinstalled via pip directly\n- `json_repair`, `propcache`, `googleapis-common-protos` also missing â€” `pip check` caught all, batch-installed\n- `lightrag_integration` + `websockets` dist-infos corrupted (missing METADATA) â€” deleted broken dirs, reinstalled\n\nUnicode cleanup: replaced `â”€`, `âœ“`, `âœ—` in `conftest.py` print statements (cp1252 can't encode them on Windows).\n\n**Ongoing risk:** This venv is on OneDrive.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-14 (auto-drafted — review before next session)
-- Here's what was built:\n\n**`/update-all` skill** (`.claude/skills/update-all/SKILL.md` â†’ installed globally)\n- Run it anytime: `/update-all`\n\n**`.claude/hooks/update-all.sh`** â€” what it updates:\n\n| Category | How | Auto-registers new items?
+- Summary of what was found and fixed:\n\n**Root cause:** `uv run --extra dev pytest` triggers a venv sync on every invocation.
+- `uv` fails with `Access is denied (os error 5)` on `regex-*.dist-info\\licenses` and exits before pytest starts.\n\n**Fixes applied:**\n\n| What | Change |\n|------|--------|\n| Immediate | Deleted `regex`, `proto_plus`, `pytz` dist-info dirs, re-ran `uv sync` |\n| Structural | Use `.venv\\Scripts\\python.exe -m pytest` â€” no sync on each call |\n| Config | Added `asyncio_mode = \"auto\"` to `pyproject.toml` |\n| Docs | CLAUDE.md LightRAG section updated with correct 2-step test command + self-heal recipe |\n\n**Correct test command going forward:**\n```powershell\n# Once (or after any uv.lock change):\ncd tools/lightrag && uv sync --extra dev\n\n# Every test run (repeatable, no re-sync):\n.venv\\Scripts\\python.exe -m pytest tests/test_integration.py -v\n```"}

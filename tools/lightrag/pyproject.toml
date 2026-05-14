@@ -28,6 +28,9 @@ dev = [
     "pytest-asyncio>=0.23",
 ]
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
 [tool.setuptools.packages.find]
 exclude = ["rag_storage*", "inputs*", "tests*"]
 
