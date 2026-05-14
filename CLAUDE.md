@@ -342,9 +342,24 @@ cd tools/lightrag && uv sync && cp .env.example .env
 # Add OPENAI_API_KEY (+ SUPABASE_MANAGEMENT_TOKEN if ENABLE_SUPABASE=true) to .env, then:
 uv run python provision.py          # Auto-creates schema/index if backends enabled (idempotent)
 uv run python check_update.py      # Check for lightrag-hku updates (add --upgrade to apply)
-uv run python -m lightrag.api.lightrag_server --port 9621
-# Or: Press F5 → "LightRAG Server" (VSCode) — start_server.bat runs provision.py + check_update.py automatically
+uv run python src/server.py --port 9621 --working-dir ./rag_storage --embedding-binding-host https://api.openai.com/v1
+# Or: Press F5 → "LightRAG Server" (VSCode) / run start_server.bat — both use src/server.py automatically
 ```
+
+**LightRAGPlus server (`src/server.py`) vs vanilla server:**
+
+| | `src/server.py` (default) | `lightrag.api.lightrag_server` (bypass) |
+| --- | --- | --- |
+| Text uploads (PDF/MD/TXT) | local graph + cloud mirror | local graph only |
+| Media uploads | `/api/plus/insert-media` endpoint | not supported |
+| Embedding host bug fix | `--embedding-binding-host` baked in | requires manual flag |
+
+**Extra endpoints added by `src/server.py`:**
+
+- `GET /api/plus/status` — backend config + health check
+- `POST /api/plus/insert-media` — image/audio/video → cloud backends only (requires `MULTIMODAL_MODE=advanced` + `EMBEDDING_PROVIDER=gemini`)
+
+**Known gotcha — embedding 404:** `LLM_BINDING_HOST=http://localhost:11434` (Ollama) bleeds into OpenAI embedding calls via `get_default_host("openai")`. Fix: always pass `--embedding-binding-host https://api.openai.com/v1` (baked into `start_server.bat` and `src/server.py` launch command above).
 
 **Running integration tests (Windows):**
 

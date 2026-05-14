@@ -40,7 +40,9 @@ if %ERRORLEVEL% neq 0 (
 )
 echo.
 
-REM Start the server (uv --env-file also works if uv >= 0.4)
-uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_storage
+REM Start via LightRAGPlus server (mirrors text embeddings to cloud backends,
+REM adds /api/plus/insert-media for multimodal uploads).
+REM --embedding-binding-host bypasses LLM_BINDING_HOST bleed into OpenAI embedding.
+uv run python src/server.py --port 9621 --working-dir ./rag_storage --embedding-binding-host https://api.openai.com/v1
 
 pause
