@@ -125,7 +125,7 @@ bash .claude/hooks/setup.sh
 # Step 11:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
 # Step 12:  lightrag dependencies in tools/lightrag/ (via uv sync); auto-runs provision.py if .env exists (idempotent — skips if no credentials)
 # Step 12a: Ollama install + llama3.2 pull (local LLM for LightRAG; Windows: shows winget command, Unix: auto-installs)
-# Step 13:  openspace submodule initialization + pip install -e . + dashboard frontend npm install + .env port alignment (3889 → 3789 to match package.json)
+# Step 13:  openspace submodule initialization + uv pip install -e ".[<platform>]" (windows/linux/macos extras; avoids uv sync cross-version pyatspi resolution failure) + dashboard frontend npm install + .env port alignment (3889 → 3789 to match package.json)
 
 # 3. Configure MCP credentials
 cp .claude/settings.local.json.example .claude/settings.local.json

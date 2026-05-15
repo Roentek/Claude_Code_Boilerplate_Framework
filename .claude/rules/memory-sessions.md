@@ -94,3 +94,8 @@ Summary of substantive work completed each session — what was built, what was 
 ## 2026-05-14 (auto-drafted — review before next session)
 - Summary of what was found and fixed:\n\n**Root cause:** `uv run --extra dev pytest` triggers a venv sync on every invocation.
 - `uv` fails with `Access is denied (os error 5)` on `regex-*.dist-info\\licenses` and exits before pytest starts.\n\n**Fixes applied:**\n\n| What | Change |\n|------|--------|\n| Immediate | Deleted `regex`, `proto_plus`, `pytz` dist-info dirs, re-ran `uv sync` |\n| Structural | Use `.venv\\Scripts\\python.exe -m pytest` â€” no sync on each call |\n| Config | Added `asyncio_mode = \"auto\"` to `pyproject.toml` |\n| Docs | CLAUDE.md LightRAG section updated with correct 2-step test command + self-heal recipe |\n\n**Correct test command going forward:**\n```powershell\n# Once (or after any uv.lock change):\ncd tools/lightrag && uv sync --extra dev\n\n# Every test run (repeatable, no re-sync):\n.venv\\Scripts\\python.exe -m pytest tests/test_integration.py -v\n```"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-14 (auto-drafted — review before next session)
+- Changes:\n\n- **setup.sh** â€” OpenSpace now installs via `uv pip install -e \".[windows]\"` (platform-aware, correct extras from first boot); uv-not-found falls back to system pip with warning\n- **update-all.sh** â€” already fixed (uses `uv pip install -e .` skipping `uv sync`)\n- **CLAUDE.md** â€” step 13 comment updated\n\nBoth paths now consistent: `uv pip install` instead of `uv sync`, platform extras on first install."}

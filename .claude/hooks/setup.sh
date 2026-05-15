@@ -918,46 +918,44 @@ if [ -f "$ROOT/.gitmodules" ] && grep -q "path = tools/openspace" "$ROOT/.gitmod
 fi
 
 if [ -d "$OPENSPACE_DIR" ]; then
-  echo "  Installing OpenSpace from tools/openspace/ via pip..."
-  if command -v python3 &>/dev/null; then
-    PYTHON_CMD="python3"
-  elif command -v py &>/dev/null; then
-    PYTHON_CMD="py"
-  elif command -v python &>/dev/null; then
-    PYTHON_CMD="python"
-  else
-    PYTHON_CMD=""
-  fi
+  echo "  Installing OpenSpace from tools/openspace/ via uv pip..."
+  # Detect platform extra — uv pip install avoids cross-version lockfile resolution
+  # (uv sync fails: pyatspi has no Python 3.15+ release, breaks [all] extra on Windows)
+  case "$(uname -s 2>/dev/null)" in
+    Darwin*)  OS_EXTRA="macos" ;;
+    Linux*)   OS_EXTRA="linux" ;;
+    *)        OS_EXTRA="windows" ;;  # Git Bash / MSYS / Windows
+  esac
 
-  if [ -n "$PYTHON_CMD" ]; then
-    # Check Python version (requires 3.12+)
-    PYTHON_VERSION=$($PYTHON_CMD --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
-    PYTHON_MAJOR=$(echo "$PYTHON_VERSION" | cut -d. -f1)
-    PYTHON_MINOR=$(echo "$PYTHON_VERSION" | cut -d. -f2)
-
-    if [ "$PYTHON_MAJOR" -ge 3 ] && [ "$PYTHON_MINOR" -ge 12 ]; then
-      # Install in editable mode
-      if (cd "$OPENSPACE_DIR" && $PYTHON_CMD -m pip install -e . --quiet >/dev/null 2>&1); then
-        echo "✓ OpenSpace installed successfully"
-        # Verify installation
-        if command -v openspace-mcp &>/dev/null; then
-          echo "✓ openspace-mcp command available"
-        else
-          echo "⚠ openspace-mcp not found in PATH — may need to restart shell or add Python scripts dir to PATH"
-        fi
+  if command -v uv &>/dev/null; then
+    if (cd "$OPENSPACE_DIR" && uv pip install -e ".[$OS_EXTRA]" 2>&1 | tail -3); then
+      echo "✓ OpenSpace installed ([$OS_EXTRA] extras)"
+      if command -v openspace-mcp &>/dev/null; then
+        echo "✓ openspace-mcp command available"
       else
-        echo "⚠ OpenSpace installation failed — complete it manually:"
+        echo "⚠ openspace-mcp not in PATH — restart shell or add uv venv Scripts dir to PATH"
+      fi
+    else
+      echo "⚠ OpenSpace installation failed — complete manually:"
+      echo "    cd tools/openspace && uv pip install -e '.[$OS_EXTRA]'"
+    fi
+  else
+    # uv not available — fall back to system pip (no platform extras, no venv)
+    if command -v python3 &>/dev/null; then PYTHON_CMD="python3"
+    elif command -v py &>/dev/null; then PYTHON_CMD="py"
+    elif command -v python &>/dev/null; then PYTHON_CMD="python"
+    else PYTHON_CMD=""; fi
+
+    if [ -n "$PYTHON_CMD" ]; then
+      if (cd "$OPENSPACE_DIR" && $PYTHON_CMD -m pip install -e . --quiet 2>&1); then
+        echo "✓ OpenSpace installed via pip (no platform extras — install uv for full deps)"
+      else
+        echo "⚠ OpenSpace installation failed — complete manually:"
         echo "    cd tools/openspace && pip install -e ."
       fi
     else
-      echo "⚠ OpenSpace requires Python 3.12+ (found $PYTHON_VERSION)"
-      echo "  Install Python 3.12+ then run:"
-      echo "    cd tools/openspace && pip install -e ."
+      echo "⚠ uv and Python not found — install uv first: https://docs.astral.sh/uv/getting-started/installation/"
     fi
-  else
-    echo "⚠ Python not found — OpenSpace requires Python 3.12+"
-    echo "  Install Python 3.12+, then run:"
-    echo "    cd tools/openspace && pip install -e ."
   fi
 
   # Set up OpenSpace frontend (optional dashboard — requires Node.js ≥ 20)

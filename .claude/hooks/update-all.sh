@@ -103,7 +103,17 @@ if command -v uv &>/dev/null; then
 
     # lightrag-hku is pinned ==1.4.15 in uv.lock due to OneDrive upgrade
     # corruption risk — sync from lockfile only, do NOT --upgrade.
+    # openspace: uv sync fails cross-version resolution (pyatspi has no py3.15+
+    # release); use uv pip install -e . which skips lockfile resolution entirely.
     echo "  $tool_name..."
+    if [ "$tool_name" = "openspace" ]; then
+      if (cd "$tool_dir" && uv pip install -e . >/dev/null 2>&1); then
+        _ok "venv: $tool_name"
+      else
+        _warn "venv: $tool_name (uv pip install -e . failed)"
+      fi
+      continue
+    fi
     if (cd "$tool_dir" && uv sync 2>/dev/null); then
       # Integrity check — catches OneDrive deletions mid-install
       if ! (cd "$tool_dir" && uv pip check >/dev/null 2>&1); then
