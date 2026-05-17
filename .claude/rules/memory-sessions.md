@@ -99,3 +99,9 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-14 (auto-drafted — review before next session)
 - Changes:\n\n- **setup.sh** â€” OpenSpace now installs via `uv pip install -e \".[windows]\"` (platform-aware, correct extras from first boot); uv-not-found falls back to system pip with warning\n- **update-all.sh** â€” already fixed (uses `uv pip install -e .` skipping `uv sync`)\n- **CLAUDE.md** â€” step 13 comment updated\n\nBoth paths now consistent: `uv pip install` instead of `uv sync`, platform extras on first install."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-15 (auto-drafted — review before next session)
+- Summary of what was found and fixed:\n\n**Root cause:** 4 binary document processing libraries were missing from the venv â€” `pypdf`, `python-docx`, `python-pptx`, `openpyxl`.
+- Only plain UTF-8 text files worked before (`.txt`, `.md`, `.py`, `.html`, `.json`, etc.).\n\n**Fixed:**\n- Installed `pypdf`, `python-docx`, `python-pptx`, `openpyxl` (+ `lxml` pulled as dep)\n- Added all 4 to `pyproject.toml` so `uv sync` keeps them on fresh setups\n\n**File type support now:**\n\n| Type | Files | Status |\n|------|-------|--------|\n| Plain text | `.txt .md .mdx .html .csv .json .xml .yaml .py .js .ts .go .rb ...` | Always worked |\n| PDF | `.pdf` | Fixed (pypdf) |\n| Word | `.docx` | Fixed (python-docx) |\n| PowerPoint | `.pptx` | Fixed (python-pptx) |\n| Excel | `.xlsx` | Fixed (openpyxl) |\n\n**Cloud flags off** â†’ all uploads go to local LightRAG graph only.
