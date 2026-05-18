@@ -18,6 +18,10 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "python": "${workspaceFolder}/tools/lightrag/.venv/Scripts/python.exe",
+      "presentation": {
+        "group": "lightrag",
+        "order": 1
+      },
       "serverReadyAction": {
         "pattern": "Uvicorn running on",
         "uriFormat": "http://localhost:9621",
@@ -37,7 +41,11 @@
       "envFile": "${workspaceFolder}/tools/lightrag/.env",
       "console": "integratedTerminal",
       "justMyCode": false,
-      "python": "${workspaceFolder}/tools/lightrag/.venv/Scripts/python.exe"
+      "python": "${workspaceFolder}/tools/lightrag/.venv/Scripts/python.exe",
+      "presentation": {
+        "group": "lightrag",
+        "order": 2
+      }
     },
     {
       "name": "OpenSpace Integration Tests",
@@ -59,7 +67,11 @@
       "envFile": "${workspaceFolder}/tools/openspace/.env",
       "console": "integratedTerminal",
       "justMyCode": false,
-      "python": "${workspaceFolder}/tools/openspace/.venv/Scripts/python.exe"
+      "python": "${workspaceFolder}/tools/openspace/.venv/Scripts/python.exe",
+      "presentation": {
+        "group": "openspace",
+        "order": 4
+      }
     },
     {
       "name": "OpenSpace Backend Server",
@@ -76,6 +88,10 @@
       },
       "console": "integratedTerminal",
       "justMyCode": false,
+      "presentation": {
+        "group": "openspace",
+        "order": 2
+      },
       "serverReadyAction": {
         "pattern": "Running on",
         "uriFormat": "http://127.0.0.1:7788",
@@ -91,6 +107,10 @@
       "cwd": "${workspaceFolder}/tools/openspace/frontend",
       "console": "integratedTerminal",
       "preLaunchTask": "OpenSpace: Check Frontend Dependencies",
+      "presentation": {
+        "group": "openspace",
+        "order": 3
+      },
       "serverReadyAction": {
         "pattern": "Local:.*http://127\\.0\\.0\\.1:(\\d+)",
         "uriFormat": "http://127.0.0.1:$1",
@@ -98,7 +118,7 @@
       }
     },
     {
-      "name": "Claude-Mem Web Viewer",
+      "name": "Claude-Mem Web Viewer (Edge)",
       "type": "msedge",
       "request": "launch",
       "url": "http://localhost:37777",
