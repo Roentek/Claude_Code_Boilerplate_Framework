@@ -383,6 +383,26 @@ uv sync --extra dev
 
 ---
 
+## OpenSpace Integration Tests
+
+Tests live at `tests/openspace/` (outside the submodule — preserves auto-sync). Three tiers: Tier 1 no key, Tier 2 any LLM key, Tier 3 `OPENSPACE_API_KEY`.
+
+```bash
+# Step 1: install pytest into openspace venv (one-time)
+cd tools/openspace && uv pip install pytest pytest-asyncio python-dotenv
+
+# Step 2: run from project root (repeatable)
+cd C:\GIT\Claude_Code_Boilerplate_Framework
+tools\openspace\.venv\Scripts\python.exe -m pytest tests\openspace\ -v
+
+# Tier 1 only (no API key needed):
+tools\openspace\.venv\Scripts\python.exe -m pytest tests\openspace\ -v -k "not TestOpenSpaceInit and not TestCloudRegistry"
+```
+
+Tier 2 tests (`TestOpenSpaceInit`) read LLM key from `tools/openspace/.env` or OS env — they call `initialize()` with shell-only backend (no task execution, no token cost). Tier 3 tests (`TestCloudRegistry`) require `OPENSPACE_API_KEY`.
+
+---
+
 ## Hooks
 
 | Hook | File | Behavior |

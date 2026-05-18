@@ -40,6 +40,28 @@
       "python": "${workspaceFolder}/tools/lightrag/.venv/Scripts/python.exe"
     },
     {
+      "name": "OpenSpace Integration Tests",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "${workspaceFolder}/tests/openspace",
+        "-v",
+        "--tb=short",
+        "--junit-xml=${workspaceFolder}/.tmp/openspace-test-report.xml",
+        "--log-cli-level=WARNING"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUTF8": "1"
+      },
+      "envFile": "${workspaceFolder}/tools/openspace/.env",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/tools/openspace/.venv/Scripts/python.exe"
+    },
+    {
       "name": "OpenSpace Backend Server",
       "type": "debugpy",
       "request": "launch",

@@ -97,3 +97,25 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-18 (auto-drafted — review before next session)
 - `inputs/` added to `tools/lightrag/.gitignore`.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-18 (auto-drafted — review before next session)
+- Here's what was built:\n\n**Files created:**\n- `tests/openspace/conftest.py` â€” fixtures + env loader (`tools/openspace/.env` auto-loaded)\n- `tests/openspace/test_integration.py` â€” 44 tests across 3 tiers\n- `tests/openspace/pytest.ini` â€” `asyncio_mode = auto`\n\n**Key design decisions:**\n\n1.
+- LLM client is created but makes no API calls during init â€” zero token cost.\n\n3.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-18 (auto-drafted — review before next session)
+- **No fallback** to top-level `.env` if missing â€” single load, silent skip.\n\n**OpenSpace** â€” `tools/openspace/.env` now created.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-18 (auto-drafted — review before next session)
+- Summary of state:\n\n**`tools/openspace/.env`** â€” follows `.env.example` structure with:\n- `OPENROUTER_API_KEY` + `OPENSPACE_MODEL=openrouter/auto` + `OPENSPACE_LLM_API_BASE` (Option B override takes priority)\n- `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY` as fallbacks (Option A)\n- `OPENSPACE_API_KEY` for cloud registry\n\n**Top-level `.env`** â€” `OPENROUTER_API_KEY` now added alongside existing `OPENROUTER_BASE_URL`/`OPENROUTER_MODEL`\n\n**Model behavior:** `openrouter/auto` lets OpenRouter pick the best model per request based on cost/capability.
+- If you want a fixed default instead, swap to e.g.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-18 (auto-drafted — review before next session)
+- Three test files added, `.pytest_cache/` now ignored.\n\n**Summary:** No sync interference was ever a risk â€” paths are entirely separate.
