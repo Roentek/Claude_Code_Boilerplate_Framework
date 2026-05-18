@@ -92,3 +92,8 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-18 (auto-drafted — review before next session)
 - It's a built-in web UI that ships with the plugin and runs automatically when the plugin's background worker starts.\n\nTo use it:\n1.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-18 (auto-drafted — review before next session)
+- `inputs/` added to `tools/lightrag/.gitignore`.

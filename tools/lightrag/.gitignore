@@ -21,6 +21,9 @@ vdb_*.json
 # Environment configuration (contains API keys)
 .env
 
+# User input files (personal, not shared)
+inputs/
+
 # Server logs
 server.log
 lightrag.log
