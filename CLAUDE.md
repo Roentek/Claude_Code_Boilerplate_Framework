@@ -75,7 +75,7 @@ cd tools/lightrag && uv sync && cp .env.example .env  # First-time setup
 # OpenSpace — self-evolving skill system (CLI first, MCP backup)
 # Git submodule — auto-syncs with upstream every session via openspace-sync.sh hook
 cd tools/openspace
-pip install -e .                           # Install OpenSpace (done by setup.sh)
+uv pip install -e ".[windows]"             # Install OpenSpace (done by setup.sh; use linux/macos on those platforms)
 
 # CLI (primary — token-free execution)
 openspace --query "Create a monitoring dashboard for Docker containers"
@@ -195,7 +195,10 @@ tools/                        ← Deterministic execution scripts (Python/Node)
     .env                      ← Server config + API keys (gitignored)
     .env.example              ← Configuration template with all options
     .gitignore                ← Excludes .env, logs, rag_storage, build artifacts
-    test_lightrag.py          ← Test script (insert/query example)
+    tests/                    ← Integration tests (35 tests, 7 backend scenarios)
+      conftest.py             ← SSL + env fixtures
+      test_integration.py     ← Parametrized backend tests
+      fixtures/               ← Sample media files
     start_server.bat          ← Windows quick launcher
     .venv/                    ← Virtual environment (gitignored)
     rag_storage/              ← Knowledge graph data (gitignored, auto-created)

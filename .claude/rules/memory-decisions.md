@@ -309,11 +309,11 @@ Architectural and technical decisions made during sessions — with date and rat
 
 
 ## 2026-05-07 — memory-shrunk Windows fix: use cmd /c npx as upstream command
-- **Decision:** Changed `memory-shrunk` upstream args in `.mcp.json` from `["npx", "-y", "@modelcontextprotocol/server-memory"]` to `["cmd", "/c", "npx", "-y", "@modelcontextprotocol/server-memory"]`.
+- **Decision:** Changed `memory-shrunk` upstream args in `.mcp.json` from `[“npx”, “-y”, “@modelcontextprotocol/server-memory”]` to `[“cmd”, “/c”, “npx”, “-y”, “@modelcontextprotocol/server-memory”]`.
 - **Why:** `caveman-shrink` calls `spawn(args[0], args.slice(1))` without `shell: true`. On Windows, `npx` is `npx.cmd` — a CMD script — which Node.js `spawn` cannot resolve without shell mode, causing `ENOENT`. Using `cmd /c npx ...` works because `cmd.exe` is a real executable, and it passes stdin through to npx correctly.
 - **How to apply:** Any `caveman-shrink` wrapper in `.mcp.json` on Windows must use `cmd /c npx` instead of bare `npx` as the upstream command.
 
 
 <!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-05-14 — edit or delete below -->
-- **Tests intentionally isolate from production storage.**\n\n---\n\n## Architecture: how it all connects\n\n```\nWeb UI (browser)\n    â†“ HTTP\nLightRAG Server (lightrag_server, port 9621)\n    â†“\nLightRAGPlus.create(working_dir=\"./rag_storage\")\n    â†“                    â†“                    â†“\nLightRAG core       SupabaseAdapter      PineconeAdapter\n(local files)       (if ENABLE=true)     (if ENABLE=true)\n```\n\nThe server is the bridge.
+<!-- Drafted 2026-05-18 — edit or delete below -->
+- All 5 entities synced.\n\n**Step 4 â€” Summary:**\n\n| Metric | Before | After | Delta |\n|--------|--------|-------|-------|\n| sessions.md lines | 130 | 80 | âˆ’50 |\n| decisions.md lines | 330 | 316 | âˆ’14 |\n| Decisions pruned | â€” | 0 | 3 drafts removed |\n| Graph entities written | â€” | 5 | LightRAG-Plus, TokenCompressionStack, WindowsGotchas, SetupBootstrap, CLIFirstPattern |\n\n**Removed (restorable):**\n- `memory-decisions.md`: 3 draft blocks â€” LightRAG architecture diagram fragment (redundant with README), 2Ã— CLAUDE.md quality report noise (not decisions)\n\n**Sessions archived:**\n- May 05 Caveman integration â†’ one-liner\n- May 14/15/17/18 draft entries â†’ clean archive one-liners"}

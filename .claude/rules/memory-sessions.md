@@ -4,6 +4,14 @@ Summary of substantive work completed each session — what was built, what was 
 
 ---
 
+## 2026-05-14 — LightRAG test runner fix + test idempotency
+- **Root cause:** `uv run --extra dev pytest` re-syncs the venv on every invocation. On second run, Windows holds file locks on venv files left by the previous pytest process (Windows Defender or delayed file release). `uv sync` hits `Access is denied (os error 5)` on `regex-*.dist-info\licenses`, exits code 2 before pytest starts.
+- **Immediate fix:** Delete corrupted/locked dist-info dirs (`regex`, `proto_plus`, `pytz`), then `uv sync --extra dev`.
+- **Structural fix:** Run tests via `.venv\Scripts\python.exe -m pytest` (not `uv run pytest`). Skips venv sync entirely. Do `uv sync --extra dev` once, then pytest directly — repeatable N times.
+- **Config fix:** Added `asyncio_mode = "auto"` to `[tool.pytest.ini_options]` in `pyproject.toml`.
+- **CLAUDE.md updated:** LightRAG Server Setup section now documents two-step test command + self-heal recipe.
+- **Pattern (Windows):** Always separate `uv sync` (once) from test execution (direct python). Never `uv run pytest` in a loop.
+
 ## 2026-05-13 — LightRAG Plus integration tests: 0/35 → 35/35
 - **Root causes fixed:**
   - `_embed_and_mirror` returned `list[list[float]]` → LightRAG `EmbeddingFunc.__call__` calls `.size` (numpy attr) → `AttributeError`; fix: `return np.array(embeddings)`
@@ -34,18 +42,15 @@ Summary of substantive work completed each session — what was built, what was 
 - **Created:** `.claude/scripts/advanced-statusline.py` — merges context-monitor.py + context-mode statusline; graceful fallbacks
 - **Completed:** `settings.local.json.example` — CAVEMAN_SHRINK_* env vars; permissions for supabase-mcp (8 tools), context7 (2 tools), notebooklm-mcp (45 tools), 8 skills, 3 WebFetch domains
 
-## 2026-05-05 (session 15) — Caveman token compression layer integration
-- **Integrated:** `caveman@caveman` plugin + `caveman-shrink` MCP proxy as Tier 3 compression across existing memory system
-- **MCP change:** `memory` → `memory-shrunk` in `.mcp.json` (caveman-shrink stdio proxy, ~50% metadata reduction)
-- **New commands:** `/caveman` (75% response compression), `/caveman-stats`, `/caveman-compress` (46% file reduction), `/caveman-commit`, `/caveman-review`, `/cavecrew`
-- **Token savings:** 75% outputs, ~46% memory files, ~50% MCP metadata, 65% avg overall
-- **Files modified:** `.claude/settings.json`, `.mcp.json`, `settings.local.json.example`, `setup.sh` (step 7b), `memory-guidelines.md`, `CLAUDE.md`, `README.md`
-
 ---
 
 ## Archive
 
 **May 2026:**
+- **May 18:** CLAUDE.md audit 89→94/100 — fixed test_lightrag.py stale, uv pip install, tests/ dir; global `~/.claude/CLAUDE.md` uv run pytest Windows gotcha added; compact-memory run
+- **May 17:** LightRAG `EMBEDDING_BINDING_HOST` — added to `.env` + `.env.example` (CRITICAL comment); setup.sh auto-copies `.env.example` → `.env` on fresh clones
+- **May 15:** LightRAG file type support — `pypdf`, `python-docx`, `python-pptx`, `openpyxl` added to `pyproject.toml`; PDF/Word/PowerPoint/Excel uploads now work
+- **May 14 (s2):** setup.sh + update-all.sh — OpenSpace install updated to `uv pip install -e ".[<platform>]"` (platform extras; fixes pyatspi on non-Windows)
 - **May 14 (s1):** update-all skill + hook built; setup.sh hardened with self-healing venv logic for OneDrive corruption
 - **May 12 (s1):** setup.sh step 14a — Ollama Windows auto-install via winget + `%LOCALAPPDATA%/Programs/Ollama/ollama.exe` path fallback (PATH not updated in-session after winget)
 - **May 11 (s3):** spline-3d prereqs fixed — `react`, `react-dom`, `@types/react` added to `package.json`; React default import added to `react-spline-wrapper.tsx`; `setup.sh` step 9 simplified
@@ -53,11 +58,12 @@ Summary of substantive work completed each session — what was built, what was 
 - **May 11 (s2):** VSCode launch configs added for claude-mem web viewer (Edge + Chrome variants)
 - **May 11 (s1):** find-skills skill created + installed globally; three-brain synced to `~/.claude/skills/`; claude-mem requires Bun to start worker
 - **May 9 (s2):** setup.sh step 14a added — Ollama install (Windows: winget instructions, Unix: auto-install); `tools/lightrag/.env` reset to `ollama`/`llama3.2`
-- **May 9 (s1):** LightRAG enhanced branch (Gemini multimodal, Supabase/Pinecone mirrors) not merged to `main`; vanilla LightRAG + Ollama is active setup
+- **May 9 (s1):** LightRAG enhanced branch — merged to main as LightRAG Plus by May 12; 35/35 integration tests passing
 - **May 7 (s4):** caveman-shrink: added `-y` flag; removed duplicate `memory` from `.mcp.json`; `cmd /c npx` required on Windows
 - **May 7 (s3):** auto-stage-commit skill created + installed globally
 - **May 7 (s2):** FTS5/better-sqlite3 fixed via `NODE_TLS_REJECT_UNAUTHORIZED=0` (corporate proxy TLS interception)
 - **May 7 (s1):** CLAUDE.md audited to 97/100; global `~/.claude/CLAUDE.md` created; `settings.local.json.example` completed
+- **May 5 (s15):** Caveman token compression integrated — `caveman@caveman` plugin + `memory-shrunk` MCP proxy; 75% output, 46% file, 50% MCP metadata reduction
 - **May 5 (s14):** OpenSpace launch config verification + setup.sh port fix (3888 → 3789 via sed)
 - **May 5 (s13):** OpenSpace git submodule + auto-sync via `openspace-sync.sh` every session
 - **May 4 (s12):** OpenSpace CLI-first pattern — saves ~200-500 tokens/call vs MCP
@@ -80,39 +86,3 @@ Summary of substantive work completed each session — what was built, what was 
 - **Apr 27:** Skill subdirectory fix — `~/.claude/skills/<name>/SKILL.md` required; Impeccable + skillui added
 - **Apr 22:** PDFs → .md in `.claude/docs/`; pre-commit.sh hook
 - **Apr 20:** Boilerplate sync scope locked — SYNC_PATHS excludes README.md, LICENSE, .env.example, etc.
-
-## 2026-05-14 — LightRAG test runner fix + test idempotency
-- **Root cause:** `uv run --extra dev pytest` re-syncs the venv on every invocation. On second run, Windows holds file locks on venv files left by the previous pytest process (Windows Defender or delayed file release). `uv sync` hits `Access is denied (os error 5)` on `regex-*.dist-info\licenses`, exits code 2 before pytest starts.
-- **Immediate fix:** Delete corrupted/locked dist-info dirs (`regex`, `proto_plus`, `pytz`), then `uv sync --extra dev`.
-- **Structural fix:** Run tests via `.venv\Scripts\python.exe -m pytest` (not `uv run pytest`). Skips venv sync entirely. Do `uv sync --extra dev` once, then pytest directly — repeatable N times.
-- **Config fix:** Added `asyncio_mode = "auto"` to `[tool.pytest.ini_options]` in `pyproject.toml`.
-- **CLAUDE.md updated:** LightRAG Server Setup section now documents two-step test command + self-heal recipe.
-- **Pattern (Windows):** Always separate `uv sync` (once) from test execution (direct python). Never `uv run pytest` in a loop.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-14 (auto-drafted — review before next session)
-- Summary of what was found and fixed:\n\n**Root cause:** `uv run --extra dev pytest` triggers a venv sync on every invocation.
-- `uv` fails with `Access is denied (os error 5)` on `regex-*.dist-info\\licenses` and exits before pytest starts.\n\n**Fixes applied:**\n\n| What | Change |\n|------|--------|\n| Immediate | Deleted `regex`, `proto_plus`, `pytz` dist-info dirs, re-ran `uv sync` |\n| Structural | Use `.venv\\Scripts\\python.exe -m pytest` â€” no sync on each call |\n| Config | Added `asyncio_mode = \"auto\"` to `pyproject.toml` |\n| Docs | CLAUDE.md LightRAG section updated with correct 2-step test command + self-heal recipe |\n\n**Correct test command going forward:**\n```powershell\n# Once (or after any uv.lock change):\ncd tools/lightrag && uv sync --extra dev\n\n# Every test run (repeatable, no re-sync):\n.venv\\Scripts\\python.exe -m pytest tests/test_integration.py -v\n```"}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-14 (auto-drafted — review before next session)
-- Changes:\n\n- **setup.sh** â€” OpenSpace now installs via `uv pip install -e \".[windows]\"` (platform-aware, correct extras from first boot); uv-not-found falls back to system pip with warning\n- **update-all.sh** â€” already fixed (uses `uv pip install -e .` skipping `uv sync`)\n- **CLAUDE.md** â€” step 13 comment updated\n\nBoth paths now consistent: `uv pip install` instead of `uv sync`, platform extras on first install."}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-15 (auto-drafted — review before next session)
-- Summary of what was found and fixed:\n\n**Root cause:** 4 binary document processing libraries were missing from the venv â€” `pypdf`, `python-docx`, `python-pptx`, `openpyxl`.
-- Only plain UTF-8 text files worked before (`.txt`, `.md`, `.py`, `.html`, `.json`, etc.).\n\n**Fixed:**\n- Installed `pypdf`, `python-docx`, `python-pptx`, `openpyxl` (+ `lxml` pulled as dep)\n- Added all 4 to `pyproject.toml` so `uv sync` keeps them on fresh setups\n\n**File type support now:**\n\n| Type | Files | Status |\n|------|-------|--------|\n| Plain text | `.txt .md .mdx .html .csv .json .xml .yaml .py .js .ts .go .rb ...` | Always worked |\n| PDF | `.pdf` | Fixed (pypdf) |\n| Word | `.docx` | Fixed (python-docx) |\n| PowerPoint | `.pptx` | Fixed (python-pptx) |\n| Excel | `.xlsx` | Fixed (openpyxl) |\n\n**Cloud flags off** â†’ all uploads go to local LightRAG graph only.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-17 (auto-drafted — review before next session)
-- `.env` â€” added `EMBEDDING_BINDING_HOST=https://api.openai.com/v1`\n2.
-- `CLAUDE.md` â€” updated the gotcha note to describe `.env` as the primary fix\n\n**To verify:** Restart the server (`start_server.bat` or F5) and re-upload one of the failing `.md` files.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-## 2026-05-17 (auto-drafted — review before next session)
-- Once done, restart the server and retry uploads.\n\n**All changes made:**\n\n| Issue | Fix |\n|-------|-----|\n| `404` on OpenAI embeddings | `EMBEDDING_BINDING_HOST=https://api.openai.com/v1` added to `.env` |\n| Same fix missing from template | Added to `.env.example` with `CRITICAL` comment |\n| CLAUDE.md gotcha note stale | Updated to describe `.env` as primary fix |\n| Fresh clones missing lightrag `.env` | `setup.sh` step 14 now auto-copies `.env.example` â†’ `.env` |\n| `llama3.2` not pulled | `ollama pull llama3.2` running now; setup.sh already handles this on first run |\n\nAfter the pull completes you'll be notified.
