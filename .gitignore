@@ -157,3 +157,5 @@ __pycache__/
 venv/
 env/
 *.egg-info/
+.pytest_cache/
+**/.pytest_cache/
