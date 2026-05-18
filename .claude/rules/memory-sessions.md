@@ -86,3 +86,8 @@ Summary of substantive work completed each session — what was built, what was 
 - **Apr 27:** Skill subdirectory fix — `~/.claude/skills/<name>/SKILL.md` required; Impeccable + skillui added
 - **Apr 22:** PDFs → .md in `.claude/docs/`; pre-commit.sh hook
 - **Apr 20:** Boilerplate sync scope locked — SYNC_PATHS excludes README.md, LICENSE, .env.example, etc.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-18 (auto-drafted — review before next session)
+- {"session_id":"7be9d810-7578-4ea4-b34a-6b22491c2a3a","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\7be9d810-7578-4ea4-b34a-6b22491c2a3a.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework\\tools\\openspace","permission_mode":"bypassPermissions","effort":{"level":"high"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"All done:\n\n- **llama3.2** pulled (2.0 GB) â€” Ollama now has the model\n- **lightrag** venv: already current, no changes needed  \n- **openspace** venv: created fresh + installed `.[windows]` extras\n\nRestart the LightRAG server and document uploads should work now."}
