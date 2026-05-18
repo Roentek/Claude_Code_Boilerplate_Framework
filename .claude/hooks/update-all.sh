@@ -114,12 +114,12 @@ if command -v uv &>/dev/null; then
       fi
       continue
     fi
-    if (cd "$tool_dir" && UV_NATIVE_TLS=true uv sync 2>/dev/null); then
+    if (cd "$tool_dir" && UV_NATIVE_TLS=true uv sync --all-extras 2>/dev/null); then
       # Integrity check — catches OneDrive deletions mid-install
       if ! (cd "$tool_dir" && uv pip check >/dev/null 2>&1); then
         echo "    ⚠ Broken deps detected — repairing..."
         _repair_venv "$tool_dir"
-        (cd "$tool_dir" && UV_NATIVE_TLS=true uv sync >/dev/null 2>&1) || true
+        (cd "$tool_dir" && UV_NATIVE_TLS=true uv sync --all-extras >/dev/null 2>&1) || true
       fi
       _ok "venv: $tool_name"
     else

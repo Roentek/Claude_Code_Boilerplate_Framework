@@ -721,7 +721,7 @@ if [ -d "$AUTORESEARCH_DIR" ]; then
     echo "  Progress shown below:"
     echo ""
 
-    if (cd "$AUTORESEARCH_DIR" && uv sync); then
+    if (cd "$AUTORESEARCH_DIR" && UV_NATIVE_TLS=true uv sync --all-extras); then
       echo "✓ autoresearch dependencies installed"
       echo ""
       echo "  Verifying installation..."
@@ -737,19 +737,19 @@ if [ -d "$AUTORESEARCH_DIR" ]; then
       else
         echo ""
         echo "⚠ Verification failed — some dependencies may be missing"
-        echo "  Re-run: cd tools/autoresearch && uv sync"
+        echo "  Re-run: cd tools/autoresearch && UV_NATIVE_TLS=true uv sync --all-extras"
         echo "  Then verify: uv run python verify_setup.py"
       fi
     else
       echo "⚠ uv sync may need to run — complete it manually:"
-      echo "    cd tools/autoresearch && uv sync"
+      echo "    cd tools/autoresearch && UV_NATIVE_TLS=true uv sync --all-extras"
       echo "  Then verify:"
       echo "    uv run python verify_setup.py"
     fi
   else
     echo "⚠ uv not found — autoresearch requires uv to install dependencies"
     echo "  Install uv (see step 5 above), then run:"
-    echo "    cd tools/autoresearch && uv sync"
+    echo "    cd tools/autoresearch && UV_NATIVE_TLS=true uv sync --all-extras"
     echo "    uv run python verify_setup.py"
   fi
 else
@@ -772,7 +772,7 @@ if [ -d "$LIGHTRAG_DIR" ]; then
     echo "  Installing LightRAG dependencies (~200MB, may take 2-5 minutes)..."
     echo ""
 
-    if (cd "$LIGHTRAG_DIR" && uv sync); then
+    if (cd "$LIGHTRAG_DIR" && UV_NATIVE_TLS=true uv sync --all-extras); then
       echo "✓ LightRAG Plus dependencies installed"
 
       # Integrity check — guards against OneDrive deleting transitive dep files mid-install
@@ -786,7 +786,7 @@ if [ -d "$LIGHTRAG_DIR" ]; then
           done
         fi
         # Re-sync then force-install known transitive deps OneDrive tends to delete
-        (cd "$LIGHTRAG_DIR" && uv sync >/dev/null 2>&1) || true
+        (cd "$LIGHTRAG_DIR" && UV_NATIVE_TLS=true uv sync --all-extras >/dev/null 2>&1) || true
         (cd "$LIGHTRAG_DIR" && uv pip install \
           "pydantic>=2.0.0" "json-repair" propcache requests \
           "google-auth>=2.14.1" idna iniconfig pluggy >/dev/null 2>&1) || true
@@ -817,12 +817,12 @@ if [ -d "$LIGHTRAG_DIR" ]; then
       echo "       cd tools/lightrag && uv run python -m lightrag.api.lightrag_server --port 9621"
     else
       echo "⚠ uv sync failed — complete it manually:"
-      echo "    cd tools/lightrag && uv sync"
+      echo "    cd tools/lightrag && UV_NATIVE_TLS=true uv sync --all-extras"
     fi
   else
     echo "⚠ uv not found — LightRAG requires uv to install dependencies"
     echo "  Install uv (see step 5 above), then run:"
-    echo "    cd tools/lightrag && uv sync"
+    echo "    cd tools/lightrag && UV_NATIVE_TLS=true uv sync --all-extras"
   fi
 else
   echo "  (tools/lightrag/ directory not found — skipping)"

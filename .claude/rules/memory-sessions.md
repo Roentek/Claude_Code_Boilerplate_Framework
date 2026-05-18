@@ -129,3 +129,13 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-18 (auto-drafted — review before next session)
 - Summary:\n\n- **update-all.sh**: `UV_NATIVE_TLS=true` added to all `uv sync` calls â€” fixes corporate proxy cert issue\n- **CLAUDE.md**: troubleshooting row added for `uv sync UnknownIssuer`\n- **lightrag**: healthy (import OK, exit 0)\n- **autoresearch**: PyTorch 2.9.1+cu128 installed successfully"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-18 (auto-drafted — review before next session)
+- {"session_id":"4460c3cc-78c3-4384-8010-fd4ea131f21a","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\4460c3cc-78c3-4384-8010-fd4ea131f21a.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework\\tools\\lightrag","permission_mode":"bypassPermissions","effort":{"level":"high"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Fixed.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-18 (auto-drafted — review before next session)
+- {"session_id":"4460c3cc-78c3-4384-8010-fd4ea131f21a","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\4460c3cc-78c3-4384-8010-fd4ea131f21a.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework\\tools\\lightrag","permission_mode":"bypassPermissions","effort":{"level":"high"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"All fixed.

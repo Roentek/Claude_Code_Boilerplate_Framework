@@ -70,7 +70,7 @@ uv run train.py                # Test baseline run (~5 min)
 # Then use /autoresearch skill to start autonomous research loop
 
 # LightRAG — graph-based RAG (see LightRAG Server Setup section below for full start options)
-cd tools/lightrag && uv sync && cp .env.example .env  # First-time setup
+cd tools/lightrag && UV_NATIVE_TLS=true uv sync --all-extras && cp .env.example .env  # First-time setup
 
 # OpenSpace — self-evolving skill system (CLI first, MCP backup)
 # Git submodule — auto-syncs with upstream every session via openspace-sync.sh hook
@@ -341,7 +341,7 @@ Graph-based RAG with multimodal support. See [`tools/lightrag/README.md`](tools/
 **Quick start:**
 
 ```bash
-cd tools/lightrag && uv sync && cp .env.example .env
+cd tools/lightrag && UV_NATIVE_TLS=true uv sync --all-extras && cp .env.example .env
 # Add OPENAI_API_KEY (+ SUPABASE_MANAGEMENT_TOKEN if ENABLE_SUPABASE=true) to .env, then:
 uv run python provision.py          # Auto-creates schema/index if backends enabled (idempotent)
 uv run python check_update.py      # Check for lightrag-hku updates (add --upgrade to apply)
@@ -368,7 +368,7 @@ uv run python src/server.py --port 9621 --working-dir ./rag_storage --embedding-
 
 ```bash
 # Step 1: sync venv once (do NOT use `uv run pytest` — it re-syncs on every call and hits Windows file locks)
-cd tools/lightrag && uv sync --extra dev
+cd tools/lightrag && UV_NATIVE_TLS=true uv sync --all-extras
 
 # Step 2: run tests directly via venv python (repeatable, no re-sync)
 .venv\Scripts\python.exe -m pytest tests/test_integration.py -v
@@ -376,7 +376,7 @@ cd tools/lightrag && uv sync --extra dev
 # If uv sync fails with "Access is denied" or missing RECORD files — self-heal first:
 Remove-Item -Force -Recurse .venv\Lib\site-packages\regex-*.dist-info -ErrorAction SilentlyContinue
 Remove-Item -Force -Recurse .venv\Lib\site-packages\proto_plus-*.dist-info -ErrorAction SilentlyContinue
-uv sync --extra dev
+UV_NATIVE_TLS=true uv sync --all-extras
 ```
 
 **Access:** [Web UI + API Docs](http://localhost:9621)
