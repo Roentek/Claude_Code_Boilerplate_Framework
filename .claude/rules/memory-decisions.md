@@ -11,10 +11,10 @@ Architectural and technical decisions made during sessions — with date and rat
 - **Self-healing pattern in setup.sh:** `uv sync` → `uv pip check` → if broken: remove dist-info dirs missing METADATA → `uv sync` again → force-install 8 known transitive deps → final import verification.
 - **Not auto-updated:** Claude plugins (reinstall via CLI), MCP servers (restart Claude Code for `@latest` refresh), `lightrag-hku` (governed by `uv.lock` pin, use `check_update.py`).
 
-## 2026-05-14 — lightrag-hku pinned to ==1.4.15 (OneDrive upgrade corruption)
-- **Decision:** `lightrag-hku` pinned to `==1.4.15` in `tools/lightrag/pyproject.toml`. Do not widen the constraint without manual verification.
-- **Why:** OneDrive path causes pip/uv upgrades to delete source `.py` files mid-install while leaving `.pyc` files in `__pycache__`. Upgrading to 1.4.16 broke all imports (`ImportError: cannot import name 'LightRAG'`). Fix: manually delete broken `lightrag_hku-*.dist-info` dirs + `lightrag/` dir, then `pip3 install lightrag-hku==1.4.15`.
-- **How to apply:** To upgrade, do it on a non-OneDrive path (e.g., WSL or a local non-synced dir), verify imports work, then copy the venv or pin the new version.
+## 2026-05-14 — lightrag-hku pin constraint (OneDrive upgrade corruption)
+- **Decision:** `lightrag-hku` pinned to `>=1.4.15,<2.0.0` in `tools/lightrag/pyproject.toml`. Do not upgrade to a new minor without manual verification.
+- **Why:** OneDrive path causes pip/uv upgrades to delete source `.py` files mid-install while leaving `.pyc` files in `__pycache__`. Upgrading to 1.4.16 broke all imports (`ImportError: cannot import name 'LightRAG'`). Fix: manually delete broken `lightrag_hku-*.dist-info` dirs + `lightrag/` dir, then reinstall pinned version.
+- **How to apply:** To upgrade, do it on a non-OneDrive path (e.g., WSL or a local non-synced dir), verify imports work, then widen the pin.
 
 ## 2026-05-13 — setup.sh is the idempotent boot loader for the agentic OS layer
 - **Decision:** `setup.sh` is not a one-time installer — it is the canonical boot for the entire project. Every new capability added to the framework must be wired into `setup.sh` so re-running it brings any environment (fresh clone, new machine, updated repo) fully current.
@@ -313,7 +313,3 @@ Architectural and technical decisions made during sessions — with date and rat
 - **Why:** `caveman-shrink` calls `spawn(args[0], args.slice(1))` without `shell: true`. On Windows, `npx` is `npx.cmd` — a CMD script — which Node.js `spawn` cannot resolve without shell mode, causing `ENOENT`. Using `cmd /c npx ...` works because `cmd.exe` is a real executable, and it passes stdin through to npx correctly.
 - **How to apply:** Any `caveman-shrink` wrapper in `.mcp.json` on Windows must use `cmd /c npx` instead of bare `npx` as the upstream command.
 
-
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-05-18 — edit or delete below -->
-- All 5 entities synced.\n\n**Step 4 â€” Summary:**\n\n| Metric | Before | After | Delta |\n|--------|--------|-------|-------|\n| sessions.md lines | 130 | 80 | âˆ’50 |\n| decisions.md lines | 330 | 316 | âˆ’14 |\n| Decisions pruned | â€” | 0 | 3 drafts removed |\n| Graph entities written | â€” | 5 | LightRAG-Plus, TokenCompressionStack, WindowsGotchas, SetupBootstrap, CLIFirstPattern |\n\n**Removed (restorable):**\n- `memory-decisions.md`: 3 draft blocks â€” LightRAG architecture diagram fragment (redundant with README), 2Ã— CLAUDE.md quality report noise (not decisions)\n\n**Sessions archived:**\n- May 05 Caveman integration â†’ one-liner\n- May 14/15/17/18 draft entries â†’ clean archive one-liners"}

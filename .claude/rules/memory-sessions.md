@@ -47,7 +47,8 @@ Summary of substantive work completed each session — what was built, what was 
 ## Archive
 
 **May 2026:**
-- **May 18:** CLAUDE.md audit 89→94/100 — fixed test_lightrag.py stale, uv pip install, tests/ dir; global `~/.claude/CLAUDE.md` uv run pytest Windows gotcha added; compact-memory run
+- **May 18 (s2):** LightRAG + OpenSpace setup — pulled llama3.2 (2.0 GB) into Ollama; created openspace venv + installed `.[windows]`; lightrag venv already current; compact-memory run
+- **May 18 (s1):** CLAUDE.md audit 89→94/100 — fixed test_lightrag.py stale, uv pip install, tests/ dir; global `~/.claude/CLAUDE.md` uv run pytest Windows gotcha added
 - **May 17:** LightRAG `EMBEDDING_BINDING_HOST` — added to `.env` + `.env.example` (CRITICAL comment); setup.sh auto-copies `.env.example` → `.env` on fresh clones
 - **May 15:** LightRAG file type support — `pypdf`, `python-docx`, `python-pptx`, `openpyxl` added to `pyproject.toml`; PDF/Word/PowerPoint/Excel uploads now work
 - **May 14 (s2):** setup.sh + update-all.sh — OpenSpace install updated to `uv pip install -e ".[<platform>]"` (platform extras; fixes pyatspi on non-Windows)
@@ -90,4 +91,4 @@ Summary of substantive work completed each session — what was built, what was 
 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-18 (auto-drafted — review before next session)
-- {"session_id":"7be9d810-7578-4ea4-b34a-6b22491c2a3a","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\7be9d810-7578-4ea4-b34a-6b22491c2a3a.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework\\tools\\openspace","permission_mode":"bypassPermissions","effort":{"level":"high"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"All done:\n\n- **llama3.2** pulled (2.0 GB) â€” Ollama now has the model\n- **lightrag** venv: already current, no changes needed  \n- **openspace** venv: created fresh + installed `.[windows]` extras\n\nRestart the LightRAG server and document uploads should work now."}
+- It's a built-in web UI that ships with the plugin and runs automatically when the plugin's background worker starts.\n\nTo use it:\n1.
