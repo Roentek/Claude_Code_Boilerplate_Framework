@@ -762,6 +762,12 @@ echo "── LightRAG (Graph-Based RAG) ─────────────�
 LIGHTRAG_DIR="$ROOT/tools/lightrag"
 
 if [ -d "$LIGHTRAG_DIR" ]; then
+  # Auto-create .env from .env.example so EMBEDDING_BINDING_HOST and defaults are set
+  if [ ! -f "$LIGHTRAG_DIR/.env" ] && [ -f "$LIGHTRAG_DIR/.env.example" ]; then
+    cp "$LIGHTRAG_DIR/.env.example" "$LIGHTRAG_DIR/.env"
+    echo "✓ tools/lightrag/.env created from .env.example — add OPENAI_API_KEY to enable uploads"
+  fi
+
   if command -v uv &>/dev/null; then
     echo "  Installing LightRAG dependencies (~200MB, may take 2-5 minutes)..."
     echo ""

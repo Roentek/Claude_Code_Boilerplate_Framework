@@ -123,7 +123,7 @@ bash .claude/hooks/setup.sh
 # Step 9:   npm install (all package.json deps: react, react-dom, @types/react, @splinetool/react-spline, @splinetool/runtime, Playwright) + Playwright Chromium browser
 # Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli
 # Step 11:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
-# Step 12:  lightrag dependencies in tools/lightrag/ (via uv sync); auto-runs provision.py if .env exists (idempotent — skips if no credentials)
+# Step 12:  lightrag dependencies in tools/lightrag/ (via uv sync); auto-creates tools/lightrag/.env from .env.example if missing (so EMBEDDING_BINDING_HOST is set on first boot); auto-runs provision.py if .env exists (idempotent — skips if no credentials)
 # Step 12a: Ollama install + llama3.2 pull (local LLM for LightRAG; Windows: shows winget command, Unix: auto-installs)
 # Step 13:  openspace submodule initialization + uv pip install -e ".[<platform>]" (windows/linux/macos extras; avoids uv sync cross-version pyatspi resolution failure) + dashboard frontend npm install + .env port alignment (3889 → 3789 to match package.json)
 
@@ -359,7 +359,7 @@ uv run python src/server.py --port 9621 --working-dir ./rag_storage --embedding-
 - `GET /api/plus/status` — backend config + health check
 - `POST /api/plus/insert-media` — image/audio/video → cloud backends only (requires `MULTIMODAL_MODE=advanced` + `EMBEDDING_PROVIDER=gemini`)
 
-**Known gotcha — embedding 404:** `LLM_BINDING_HOST=http://localhost:11434` (Ollama) bleeds into OpenAI embedding calls via `get_default_host("openai")`. Fix: always pass `--embedding-binding-host https://api.openai.com/v1` (baked into `start_server.bat` and `src/server.py` launch command above).
+**Known gotcha — embedding 404:** `LLM_BINDING_HOST=http://localhost:11434` (Ollama) bleeds into OpenAI embedding calls via `get_default_host("openai")`. Primary fix: `EMBEDDING_BINDING_HOST=https://api.openai.com/v1` in `.env` (already set). The `--embedding-binding-host` flag in `start_server.bat` is a secondary layer for when `.env` isn't loaded.
 
 **Running integration tests (Windows):**
 

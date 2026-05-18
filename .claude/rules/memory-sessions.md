@@ -105,3 +105,14 @@ Summary of substantive work completed each session — what was built, what was 
 ## 2026-05-15 (auto-drafted — review before next session)
 - Summary of what was found and fixed:\n\n**Root cause:** 4 binary document processing libraries were missing from the venv â€” `pypdf`, `python-docx`, `python-pptx`, `openpyxl`.
 - Only plain UTF-8 text files worked before (`.txt`, `.md`, `.py`, `.html`, `.json`, etc.).\n\n**Fixed:**\n- Installed `pypdf`, `python-docx`, `python-pptx`, `openpyxl` (+ `lxml` pulled as dep)\n- Added all 4 to `pyproject.toml` so `uv sync` keeps them on fresh setups\n\n**File type support now:**\n\n| Type | Files | Status |\n|------|-------|--------|\n| Plain text | `.txt .md .mdx .html .csv .json .xml .yaml .py .js .ts .go .rb ...` | Always worked |\n| PDF | `.pdf` | Fixed (pypdf) |\n| Word | `.docx` | Fixed (python-docx) |\n| PowerPoint | `.pptx` | Fixed (python-pptx) |\n| Excel | `.xlsx` | Fixed (openpyxl) |\n\n**Cloud flags off** â†’ all uploads go to local LightRAG graph only.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-17 (auto-drafted — review before next session)
+- `.env` â€” added `EMBEDDING_BINDING_HOST=https://api.openai.com/v1`\n2.
+- `CLAUDE.md` â€” updated the gotcha note to describe `.env` as the primary fix\n\n**To verify:** Restart the server (`start_server.bat` or F5) and re-upload one of the failing `.md` files.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-17 (auto-drafted — review before next session)
+- Once done, restart the server and retry uploads.\n\n**All changes made:**\n\n| Issue | Fix |\n|-------|-----|\n| `404` on OpenAI embeddings | `EMBEDDING_BINDING_HOST=https://api.openai.com/v1` added to `.env` |\n| Same fix missing from template | Added to `.env.example` with `CRITICAL` comment |\n| CLAUDE.md gotcha note stale | Updated to describe `.env` as primary fix |\n| Fresh clones missing lightrag `.env` | `setup.sh` step 14 now auto-copies `.env.example` â†’ `.env` |\n| `llama3.2` not pulled | `ollama pull llama3.2` running now; setup.sh already handles this on first run |\n\nAfter the pull completes you'll be notified.

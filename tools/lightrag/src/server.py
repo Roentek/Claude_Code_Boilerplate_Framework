@@ -35,6 +35,48 @@ logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
+# _patch_embedding_config — fix max_token_size not flowing to openai_embed
+# ---------------------------------------------------------------------------
+
+def _patch_embedding_config():
+    """
+    Patch openai_embed to default max_token_size=8192, fixing text truncation.
+
+    Root cause: lightrag_server.py's optimized_embedding_function has signature
+    (texts, embedding_dim=None) — no max_token_size param — so EmbeddingFunc
+    cannot inject it into the call. As a result, openai_embed receives
+    max_token_size=None and skips truncation. Any text chunk, entity, or
+    relation description that exceeds 8192 tokens causes the OpenAI API to
+    return an error that exhausts the tenacity retry budget and fails the upload.
+
+    Fix: replace openai_embed.func (the retry-wrapped inner function captured
+    by optimized_embedding_function via `actual_func = openai_embed.func`)
+    with a wrapper that supplies max_token_size=8192 as a default, ensuring
+    truncation always happens before the API call.
+    """
+    try:
+        from lightrag.utils import EmbeddingFunc
+        import lightrag.llm.openai as _openai_mod
+        from functools import wraps
+
+        embed_wrapper = _openai_mod.openai_embed
+        if not isinstance(embed_wrapper, EmbeddingFunc):
+            logger.warning("_patch_embedding_config: openai_embed is not EmbeddingFunc — skipping")
+            return
+
+        retry_wrapped = embed_wrapper.func
+
+        @wraps(retry_wrapped)
+        async def _with_truncation(texts, max_token_size=8192, **kwargs):
+            return await retry_wrapped(texts, max_token_size=max_token_size, **kwargs)
+
+        embed_wrapper.func = _with_truncation
+        logger.info("_patch_embedding_config: openai_embed wrapped — max_token_size=8192 now defaults")
+    except Exception as e:
+        logger.warning("_patch_embedding_config: patch failed (non-fatal): %s", e)
+
+
+# ---------------------------------------------------------------------------
 # MirroringLightRAG — wraps the server's embedding_func with backend mirroring
 # ---------------------------------------------------------------------------
 
@@ -218,6 +260,10 @@ def main():
     from src.config import Config
 
     cfg = Config()
+
+    # Patch openai_embed FIRST — before lightrag_server is imported, so
+    # optimized_embedding_function captures the patched func reference.
+    _patch_embedding_config()
 
     import lightrag.api.lightrag_server as _server
 
