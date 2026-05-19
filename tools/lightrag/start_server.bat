@@ -43,6 +43,8 @@ echo.
 REM Start via LightRAGPlus server (mirrors text embeddings to cloud backends,
 REM adds /api/plus/insert-media for multimodal uploads).
 REM --embedding-binding-host bypasses LLM_BINDING_HOST bleed into OpenAI embedding.
-uv run python src/server.py --port 9621 --working-dir ./rag_storage --embedding-binding-host https://api.openai.com/v1
+REM LLM_TIMEOUT and EMBEDDING_TIMEOUT are set in .env (600s and 60s).
+REM EMBEDDING_BINDING_HOST is set in .env — no CLI flag needed (removed in newer lightrag-hku).
+uv run python src/server.py --port 9621 --working-dir ./rag_storage
 
 pause

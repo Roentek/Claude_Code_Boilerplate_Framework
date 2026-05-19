@@ -144,3 +144,33 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-05-18 (auto-drafted — review before next session)
 - {"session_id":"effc66e0-c7b1-46a0-9777-78f660a33a89","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\effc66e0-c7b1-46a0-9777-78f660a33a89.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework\\tools\\lightrag","permission_mode":"bypassPermissions","effort":{"level":"high"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Fixed.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-18 (auto-drafted — review before next session)
+- No files added, removed, or renamed â€” just upstream sync.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-18 (auto-drafted — review before next session)
+- Added tenacity retry to `GeminiEmbedder._call_embed` â€” 3 attempts, 1â†’8s exponential backoff, logs a WARNING before each retry.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-18 (auto-drafted — review before next session)
+- LightRAG's internal `asyncio.wait_for` defaults to 180s for LLM calls; `llama3.2` processing large markdown chunks exceeds this and gets cancelled, surfacing as `ReadTimeout`.\n\n**Fix applied:**\n- `start_server.bat` â€” added `--timeout 0` (maps to infinite internally)\n- `CLAUDE.md` â€” updated manual command + troubleshooting table row\n\nRestart the server and the uploads should process fully."}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-18 (auto-drafted — review before next session)
+- Three files updated with the correct fix:\n\n- **`.env` + `.env.example`**: Added `LLM_TIMEOUT=600` (10 min) and `EMBEDDING_TIMEOUT=60` (1 min) with a note that `asyncio.wait_for` treats `0` as \"timeout immediately\" â€” so `0` is wrong\n- **`start_server.bat`**: Removed `--timeout 0`; added comment clarifying it only affects gunicorn, not uvicorn, and that the real fix is the env vars\n- **`CLAUDE.md`**: Fixed both the manual command (removed `--timeout 0`) and the troubleshooting entry (now points to `LLM_TIMEOUT=600` in `.env`)"}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-18 (auto-drafted — review before next session)
+- So **LightRAG's asyncio timeout didn't fire** â€” the Ollama client's own httpx read timeout fired first.\n\n**Why:** `LLM_TIMEOUT=600` was just added to `.env` this session.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-05-18 (auto-drafted — review before next session)
+- {"session_id":"65d9369b-f4e2-45b8-903a-f8e1f7c96902","transcript_path":"C:\\Users\\mdmor\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\65d9369b-f4e2-45b8-903a-f8e1f7c96902.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework\\tools\\lightrag","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"CLAUDE.md updated â€” removed all three `--embedding-binding-host` references, updated the comparison table and the gotcha note to reflect env-var-only fix in newer lightrag-hku."}

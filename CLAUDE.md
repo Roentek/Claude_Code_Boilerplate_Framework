@@ -345,8 +345,10 @@ cd tools/lightrag && UV_NATIVE_TLS=true uv sync --all-extras && cp .env.example 
 # Add OPENAI_API_KEY (+ SUPABASE_MANAGEMENT_TOKEN if ENABLE_SUPABASE=true) to .env, then:
 uv run python provision.py          # Auto-creates schema/index if backends enabled (idempotent)
 uv run python check_update.py      # Check for lightrag-hku updates (add --upgrade to apply)
-uv run python src/server.py --port 9621 --working-dir ./rag_storage --embedding-binding-host https://api.openai.com/v1
+uv run python src/server.py --port 9621 --working-dir ./rag_storage
 # Or: Press F5 → "LightRAG Server" (VSCode) / run start_server.bat — both use src/server.py automatically
+# LLM_TIMEOUT=600 + EMBEDDING_TIMEOUT=60 in .env extend Ollama timeouts (defaults 180s/30s are too short for large chunks)
+# EMBEDDING_BINDING_HOST in .env fixes the LLM_BINDING_HOST bleed-into-OpenAI-embedding bug (--embedding-binding-host CLI flag removed in newer lightrag-hku)
 ```
 
 **LightRAGPlus server (`src/server.py`) vs vanilla server:**
@@ -355,14 +357,14 @@ uv run python src/server.py --port 9621 --working-dir ./rag_storage --embedding-
 | --- | --- | --- |
 | Text uploads (PDF/MD/TXT) | local graph + cloud mirror | local graph only |
 | Media uploads | `/api/plus/insert-media` endpoint | not supported |
-| Embedding host bug fix | `--embedding-binding-host` baked in | requires manual flag |
+| Embedding host bug fix | `EMBEDDING_BINDING_HOST` in `.env` (CLI flag removed in newer lightrag-hku) | requires env var |
 
 **Extra endpoints added by `src/server.py`:**
 
 - `GET /api/plus/status` — backend config + health check
 - `POST /api/plus/insert-media` — image/audio/video → cloud backends only (requires `MULTIMODAL_MODE=advanced` + `EMBEDDING_PROVIDER=gemini`)
 
-**Known gotcha — embedding 404:** `LLM_BINDING_HOST=http://localhost:11434` (Ollama) bleeds into OpenAI embedding calls via `get_default_host("openai")`. Primary fix: `EMBEDDING_BINDING_HOST=https://api.openai.com/v1` in `.env` (already set). The `--embedding-binding-host` flag in `start_server.bat` is a secondary layer for when `.env` isn't loaded.
+**Known gotcha — embedding 404:** `LLM_BINDING_HOST=http://localhost:11434` (Ollama) bleeds into OpenAI embedding calls via `get_default_host("openai")`. Fix: `EMBEDDING_BINDING_HOST=https://api.openai.com/v1` in `.env` (already set). The `--embedding-binding-host` CLI flag was removed in newer lightrag-hku — env var is the only fix.
 
 **Running integration tests (Windows):**
 
@@ -432,6 +434,7 @@ Tier 2 tests (`TestOpenSpaceInit`) read LLM key from `tools/openspace/.env` or O
 | setup.sh hangs at skill install | Press Ctrl+C, run manual `/skill install` commands shown |
 | `better-sqlite3` build fails (corporate proxy) | `NODE_TLS_REJECT_UNAUTHORIZED=0 npm install better-sqlite3 --build-from-source` — or re-run setup.sh (step 7c applies this fix automatically) |
 | `uv sync` fails with `UnknownIssuer` / `invalid peer certificate` | Corporate proxy intercepts TLS. Fix: `UV_NATIVE_TLS=true uv sync` — uses Windows cert store. Already baked into `update-all.sh`. |
+| LightRAG uploads fail: `httpx.ReadTimeout` during entity extraction | Ollama LLM exceeds 180s default timeout on large chunks. Fix: `LLM_TIMEOUT=600` in `tools/lightrag/.env` (already set). `--timeout` CLI arg only affects gunicorn, not uvicorn — do NOT use it. |
 
 ---
 
