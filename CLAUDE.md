@@ -347,7 +347,7 @@ uv run python provision.py          # Auto-creates schema/index if backends enab
 uv run python check_update.py      # Check for lightrag-hku updates (add --upgrade to apply)
 uv run python src/server.py --port 9621 --working-dir ./rag_storage
 # Or: Press F5 → "LightRAG Server" (VSCode) / run start_server.bat — both use src/server.py automatically
-# LLM_TIMEOUT=600 + EMBEDDING_TIMEOUT=60 in .env extend Ollama timeouts (defaults 180s/30s are too short for large chunks)
+# LLM_TIMEOUT=1800 + EMBEDDING_TIMEOUT=60 in .env extend Ollama timeouts (defaults 180s/30s are too short for large chunks; 1800s required on slow hardware)
 # EMBEDDING_BINDING_HOST in .env fixes the LLM_BINDING_HOST bleed-into-OpenAI-embedding bug (--embedding-binding-host CLI flag removed in newer lightrag-hku)
 ```
 
@@ -434,7 +434,7 @@ Tier 2 tests (`TestOpenSpaceInit`) read LLM key from `tools/openspace/.env` or O
 | setup.sh hangs at skill install | Press Ctrl+C, run manual `/skill install` commands shown |
 | `better-sqlite3` build fails (corporate proxy) | `NODE_TLS_REJECT_UNAUTHORIZED=0 npm install better-sqlite3 --build-from-source` — or re-run setup.sh (step 7c applies this fix automatically) |
 | `uv sync` fails with `UnknownIssuer` / `invalid peer certificate` | Corporate proxy intercepts TLS. Fix: `UV_NATIVE_TLS=true uv sync` — uses Windows cert store. Already baked into `update-all.sh`. |
-| LightRAG uploads fail: `httpx.ReadTimeout` during entity extraction | Ollama LLM exceeds 180s default timeout on large chunks. Fix: `LLM_TIMEOUT=600` in `tools/lightrag/.env` (already set). `--timeout` CLI arg only affects gunicorn, not uvicorn — do NOT use it. |
+| LightRAG uploads fail: `httpx.ReadTimeout` during entity extraction | Ollama LLM exceeds default timeout on large chunks. Fix: increase `LLM_TIMEOUT` in `tools/lightrag/.env` — set `1800` (30 min) for slow hardware. Both `asyncio.wait_for` and httpx client use this value. `--timeout` CLI arg only affects gunicorn, not uvicorn — do NOT use it. |
 
 ---
 
