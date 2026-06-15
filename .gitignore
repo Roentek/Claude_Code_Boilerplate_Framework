@@ -159,3 +159,9 @@ env/
 *.egg-info/
 .pytest_cache/
 **/.pytest_cache/
+
+# Playwright MCP
+.playwright-mcp/
+
+# Superpowers
+.superpowers/
