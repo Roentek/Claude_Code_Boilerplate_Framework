@@ -30,7 +30,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Convert code to Apify Actor | `/apify-actorization` skill | Transform existing scripts into Actors (JS/TS SDK, Python async, CLI wrappers) |
 | Generate Actor output schemas | `/apify-generate-output-schema` skill | Auto-generate `dataset_schema.json`, `output_schema.json`, `key_value_store_schema.json` from Actor source |
 | Vector search / RAG | `pinecone-mcp` tools | Upsert, search, rerank records |
-| Graph-based RAG / knowledge extraction | `/lightrag` skill → `tools/lightrag/` | Knowledge graph RAG, entity-relationship Q&A, multimodal docs — Web UI + REST API |
+| Graph-based RAG / knowledge extraction | `/lightrag` skill → `tools/lightrag-plus/` | Knowledge graph RAG, entity-relationship Q&A, multimodal docs — Web UI + REST API |
 | UI component search | `monet-mcp` tools | Search landing page components, get React/TS code |
 | UI component inspiration / SVG logos | `21st-dev-magic` tools | Search UI components, SVG brand logos, generate variants |
 | AI image/video (cinematic, managed) | `higgsfield` MCP | No API key — browser OAuth; cinematic video, media library |
@@ -70,7 +70,7 @@ uv run train.py                # Test baseline run (~5 min)
 # Then use /autoresearch skill to start autonomous research loop
 
 # LightRAG — graph-based RAG (see LightRAG Server Setup section below for full start options)
-cd tools/lightrag && UV_NATIVE_TLS=true uv sync --all-extras && cp .env.example .env  # First-time setup
+cd tools/lightrag-plus && UV_NATIVE_TLS=true uv sync --all-extras && cp .env.example .env  # First-time setup
 
 # OpenSpace — self-evolving skill system (CLI first, MCP backup)
 # Git submodule — auto-syncs with upstream every session via openspace-sync.sh hook
@@ -123,7 +123,7 @@ bash .claude/hooks/setup.sh
 # Step 9:   npm install (all package.json deps: react, react-dom, @types/react, @splinetool/react-spline, @splinetool/runtime, Playwright) + Playwright Chromium browser
 # Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli
 # Step 11:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
-# Step 12:  lightrag dependencies in tools/lightrag/ (via uv sync); auto-creates tools/lightrag/.env from .env.example if missing (so EMBEDDING_BINDING_HOST is set on first boot); auto-runs provision.py if .env exists (idempotent — skips if no credentials)
+# Step 12:  lightrag dependencies in tools/lightrag-plus/ (via uv sync); auto-creates tools/lightrag-plus/.env from .env.example if missing (so EMBEDDING_BINDING_HOST is set on first boot); auto-runs provision.py if .env exists (idempotent — skips if no credentials)
 # Step 12a: Ollama install + llama3.2 pull (local LLM for LightRAG; Windows: shows winget command, Unix: auto-installs)
 # Step 13:  openspace submodule initialization + uv pip install -e ".[<platform>]" (windows/linux/macos extras; avoids uv sync cross-version pyatspi resolution failure) + dashboard frontend npm install + .env port alignment (3889 → 3789 to match package.json)
 
@@ -336,12 +336,12 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 
 ## LightRAG Server Setup
 
-Graph-based RAG with multimodal support. See [`tools/lightrag/README.md`](tools/lightrag/README.md).
+Graph-based RAG with multimodal support. See [`tools/lightrag-plus/README.md`](tools/lightrag-plus/README.md).
 
 **Quick start:**
 
 ```bash
-cd tools/lightrag && UV_NATIVE_TLS=true uv sync --all-extras && cp .env.example .env
+cd tools/lightrag-plus && UV_NATIVE_TLS=true uv sync --all-extras && cp .env.example .env
 # Add OPENAI_API_KEY (+ SUPABASE_MANAGEMENT_TOKEN if ENABLE_SUPABASE=true) to .env, then:
 uv run python provision.py          # Auto-creates schema/index if backends enabled (idempotent)
 uv run python check_update.py      # Check for lightrag-hku updates (add --upgrade to apply)
@@ -370,7 +370,7 @@ uv run python src/server.py --port 9621 --working-dir ./rag_storage
 
 ```bash
 # Step 1: sync venv once (do NOT use `uv run pytest` — it re-syncs on every call and hits Windows file locks)
-cd tools/lightrag && UV_NATIVE_TLS=true uv sync --all-extras
+cd tools/lightrag-plus && UV_NATIVE_TLS=true uv sync --all-extras
 
 # Step 2: run tests directly via venv python (repeatable, no re-sync)
 .venv\Scripts\python.exe -m pytest tests/test_integration.py -v
@@ -434,7 +434,7 @@ Tier 2 tests (`TestOpenSpaceInit`) read LLM key from `tools/openspace/.env` or O
 | setup.sh hangs at skill install | Press Ctrl+C, run manual `/skill install` commands shown |
 | `better-sqlite3` build fails (corporate proxy) | `NODE_TLS_REJECT_UNAUTHORIZED=0 npm install better-sqlite3 --build-from-source` — or re-run setup.sh (step 7c applies this fix automatically) |
 | `uv sync` fails with `UnknownIssuer` / `invalid peer certificate` | Corporate proxy intercepts TLS. Fix: `UV_NATIVE_TLS=true uv sync` — uses Windows cert store. Already baked into `update-all.sh`. |
-| LightRAG uploads fail: `httpx.ReadTimeout` during entity extraction | Ollama LLM exceeds default timeout on large chunks. Fix: increase `LLM_TIMEOUT` in `tools/lightrag/.env` — set `1800` (30 min) for slow hardware. Both `asyncio.wait_for` and httpx client use this value. `--timeout` CLI arg only affects gunicorn, not uvicorn — do NOT use it. |
+| LightRAG uploads fail: `httpx.ReadTimeout` during entity extraction | Ollama LLM exceeds default timeout on large chunks. Fix: increase `LLM_TIMEOUT` in `tools/lightrag-plus/.env` — set `1800` (30 min) for slow hardware. Both `asyncio.wait_for` and httpx client use this value. `--timeout` CLI arg only affects gunicorn, not uvicorn — do NOT use it. |
 
 ---
 

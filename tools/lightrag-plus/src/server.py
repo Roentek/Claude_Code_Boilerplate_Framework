@@ -28,7 +28,7 @@ import os
 import sys
 from pathlib import Path
 
-# tools/lightrag/ must be in path so `src.*` imports resolve
+# tools/lightrag-plus/ must be in path so `src.*` imports resolve
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 logger = logging.getLogger(__name__)

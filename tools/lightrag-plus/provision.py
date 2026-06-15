@@ -9,7 +9,7 @@ so flipping the flags later "just works" with no extra setup step.
 Idempotent — safe to run on every startup (skips if already provisioned).
 
 Usage:
-    cd tools/lightrag
+    cd tools/lightrag-plus
     uv run python provision.py
 """
 import asyncio

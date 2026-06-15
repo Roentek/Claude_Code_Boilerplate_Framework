@@ -759,13 +759,13 @@ fi
 # ── 14. Install LightRAG dependencies ───────────────────────
 echo ""
 echo "── LightRAG (Graph-Based RAG) ───────────────────────────"
-LIGHTRAG_DIR="$ROOT/tools/lightrag"
+LIGHTRAG_DIR="$ROOT/tools/lightrag-plus"
 
 if [ -d "$LIGHTRAG_DIR" ]; then
   # Auto-create .env from .env.example so EMBEDDING_BINDING_HOST and defaults are set
   if [ ! -f "$LIGHTRAG_DIR/.env" ] && [ -f "$LIGHTRAG_DIR/.env.example" ]; then
     cp "$LIGHTRAG_DIR/.env.example" "$LIGHTRAG_DIR/.env"
-    echo "✓ tools/lightrag/.env created from .env.example — add OPENAI_API_KEY to enable uploads"
+    echo "✓ tools/lightrag-plus/.env created from .env.example — add OPENAI_API_KEY to enable uploads"
   fi
 
   if command -v uv &>/dev/null; then
@@ -799,33 +799,33 @@ if [ -d "$LIGHTRAG_DIR" ]; then
         echo "✓ LightRAG import verified"
       else
         echo "⚠ LightRAG import check failed after install"
-        echo "    Run: cd tools/lightrag && uv pip check"
+        echo "    Run: cd tools/lightrag-plus && uv pip check"
       fi
 
       echo ""
       echo "  Provisioning backends (skips if no credentials in .env)..."
       if [ -f "$LIGHTRAG_DIR/.env" ]; then
-        (cd "$LIGHTRAG_DIR" && uv run python provision.py) || echo "⚠ Backend provisioning failed — run manually: cd tools/lightrag && uv run python provision.py"
+        (cd "$LIGHTRAG_DIR" && uv run python provision.py) || echo "⚠ Backend provisioning failed — run manually: cd tools/lightrag-plus && uv run python provision.py"
       else
-        echo "  (.env not found — copy .env.example, add credentials, then run: cd tools/lightrag && uv run python provision.py)"
+        echo "  (.env not found — copy .env.example, add credentials, then run: cd tools/lightrag-plus && uv run python provision.py)"
       fi
       echo ""
       echo "  Next steps:"
-      echo "    1. Add API keys to tools/lightrag/.env (OPENAI_API_KEY or GEMINI_API_KEY)"
+      echo "    1. Add API keys to tools/lightrag-plus/.env (OPENAI_API_KEY or GEMINI_API_KEY)"
       echo "    2. Use /lightrag skill for setup + usage guide"
       echo "    3. Optional: Start LightRAG Server for Web UI:"
-      echo "       cd tools/lightrag && uv run python -m lightrag.api.lightrag_server --port 9621"
+      echo "       cd tools/lightrag-plus && uv run python -m lightrag.api.lightrag_server --port 9621"
     else
       echo "⚠ uv sync failed — complete it manually:"
-      echo "    cd tools/lightrag && UV_NATIVE_TLS=true uv sync --all-extras"
+      echo "    cd tools/lightrag-plus && UV_NATIVE_TLS=true uv sync --all-extras"
     fi
   else
     echo "⚠ uv not found — LightRAG requires uv to install dependencies"
     echo "  Install uv (see step 5 above), then run:"
-    echo "    cd tools/lightrag && UV_NATIVE_TLS=true uv sync --all-extras"
+    echo "    cd tools/lightrag-plus && UV_NATIVE_TLS=true uv sync --all-extras"
   fi
 else
-  echo "  (tools/lightrag/ directory not found — skipping)"
+  echo "  (tools/lightrag-plus/ directory not found — skipping)"
 fi
 
 # ── 14a. Install Ollama (local LLM for LightRAG) ────────────

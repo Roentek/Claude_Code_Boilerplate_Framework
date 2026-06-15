@@ -3,7 +3,7 @@
 Validate LightRAG Plus backend connections.
 
 Usage:
-    cd tools/lightrag
+    cd tools/lightrag-plus
     uv run python setup_backends.py
 """
 import asyncio

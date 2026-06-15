@@ -58,7 +58,7 @@ class LightRAGPlus:
             if not ok:
                 errors.append(
                     "Supabase table 'lightrag_vectors' missing.\n"
-                    "    Run: cd tools/lightrag && uv run python provision.py"
+                    "    Run: cd tools/lightrag-plus && uv run python provision.py"
                 )
 
         if cfg.ENABLE_PINECONE:
@@ -70,7 +70,7 @@ class LightRAGPlus:
             if not ok:
                 errors.append(
                     f"Pinecone index '{cfg.PINECONE_INDEX}' missing.\n"
-                    "    Run: cd tools/lightrag && uv run python provision.py"
+                    "    Run: cd tools/lightrag-plus && uv run python provision.py"
                 )
 
         if errors:

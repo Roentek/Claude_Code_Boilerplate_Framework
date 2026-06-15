@@ -42,7 +42,7 @@
 Handled by `setup.sh` step 14. Manual:
 
 ```bash
-cd tools/lightrag
+cd tools/lightrag-plus
 uv sync
 cp .env.example .env
 ```
@@ -239,7 +239,7 @@ You do not need the GUI or even the server to use LightRAG Plus.
 
 ```python
 import asyncio, sys
-sys.path.insert(0, 'src')   # run from tools/lightrag/
+sys.path.insert(0, 'src')   # run from tools/lightrag-plus/
 from lightrag_plus import LightRAGPlus
 
 async def main():
@@ -277,7 +277,7 @@ curl -s -X POST http://localhost:9621/api/documents/text \
 `check_update.py` tracks `lightrag-hku` releases against the pinned version in `pyproject.toml`.
 
 ```bash
-cd tools/lightrag
+cd tools/lightrag-plus
 
 # Check only (no changes)
 uv run python check_update.py
@@ -469,7 +469,7 @@ Full docs: [docs/AdvancedFeatures.md](https://github.com/HKUDS/LightRAG/blob/mai
 ## File Structure
 
 ```txt
-tools/lightrag/
+tools/lightrag-plus/
 ├── src/                          # LightRAG Plus implementation
 │   ├── config.py                 # Environment config + feature flags
 │   ├── lightrag_plus.py          # Main wrapper class (LightRAGPlus)

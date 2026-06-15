@@ -17,7 +17,7 @@ description: Graph-based RAG system for knowledge extraction and Q&A
 
 ### 1. Install Dependencies
 ```bash
-cd tools/lightrag
+cd tools/lightrag-plus
 uv sync
 ```
 
@@ -107,7 +107,7 @@ print(result)
 
 **Start server:**
 ```bash
-cd tools/lightrag
+cd tools/lightrag-plus
 python -m lightrag.server --port 9621 --working-dir ./rag_storage
 ```
 
@@ -228,7 +228,7 @@ Full docs: [docs/AdvancedFeatures.md](https://github.com/HKUDS/LightRAG/blob/mai
 ## File Structure
 
 ```txt
-tools/lightrag/
+tools/lightrag-plus/
   pyproject.toml        ← Dependencies (lightrag-hku)
   README.md             ← Full documentation
   uv.lock               ← Dependency lock file
@@ -243,13 +243,13 @@ tools/lightrag/
 
 ```bash
 # Install
-cd tools/lightrag && uv sync
+cd tools/lightrag-plus && uv sync
 
 # Start server
-cd tools/lightrag && python -m lightrag.server --port 9621 --working-dir ./rag_storage
+cd tools/lightrag-plus && python -m lightrag.server --port 9621 --working-dir ./rag_storage
 
 # Test insert/query via Python
-cd tools/lightrag && uv run python -c "
+cd tools/lightrag-plus && uv run python -c "
 from lightrag import LightRAG, QueryParam
 rag = LightRAG(working_dir='./rag_storage')
 rag.insert('The capital of France is Paris.')

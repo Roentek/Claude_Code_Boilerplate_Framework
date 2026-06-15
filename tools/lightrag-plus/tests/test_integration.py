@@ -2,12 +2,12 @@
 LightRAG Plus — end-to-end integration tests.
 
 Run:
-    cd tools/lightrag
+    cd tools/lightrag-plus
     uv sync --extra dev
     uv run --extra dev pytest tests/test_integration.py -v --tb=short
 
 Scenarios that require remote credentials are auto-skipped when those
-vars are absent from tools/lightrag/.env.
+vars are absent from tools/lightrag-plus/.env.
 """
 import logging
 import os

@@ -230,7 +230,7 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 11. **Installs global CLI tools** — `skillui` (design system extractor for `/skillui` skill), `firecrawl-cli` (web scraping CLI for `/firecrawl` skill), `codex-cli` (OpenAI Codex CLI for `/three-brain` auto-router and `codex` plugin), `gemini-cli` (Google Gemini CLI for `/three-brain` multimodal routes and `cc-gemini-plugin`), and `notebooklm-mcp-cli` (Google NotebookLM CLI + MCP for `/notebooklm` skill via `uv tool install`)
 12. **Prints authentication reminders** — lists integrations requiring a manual one-time auth step: NotebookLM (`nlm login`), Trigger.dev (`npx trigger.dev@latest login`), Google Workspace (browser OAuth), Canva (browser OAuth), Higgsfield (browser OAuth via `npx mcp-remote`), GitHub CLI (`gh auth login`), Gemini plugin (`GEMINI_API_KEY` at aistudio.google.com), and Codex plugin (`npm install -g @openai/codex`)
 13. **Installs autoresearch dependencies** — runs `uv sync` in the `tools/autoresearch/` directory to install PyTorch and ML dependencies for autonomous research experiments
-14. **Installs LightRAG dependencies** — runs `uv sync` in `tools/lightrag/`; then auto-runs `provision.py` if `.env` exists (creates Supabase schema + Pinecone index if credentials present; idempotent no-op if not)
+14. **Installs LightRAG dependencies** — runs `uv sync` in `tools/lightrag-plus/`; then auto-runs `provision.py` if `.env` exists (creates Supabase schema + Pinecone index if credentials present; idempotent no-op if not)
 14a. **Installs Ollama** — local LLM runtime for LightRAG (free, private, no API key); on Windows auto-installs via `winget install Ollama.Ollama`, finds ollama at known install path (`%LOCALAPPDATA%\Programs\Ollama\`), and pulls model; on Unix auto-installs via install script; pulls `llama3.2` (3B, ~2GB) automatically on both platforms; shows bash + PowerShell fallback commands if PATH not updated
 15. **Initializes OpenSpace submodule and installs** — checks if `tools/openspace/` is a git submodule and initializes it via `git submodule update --init --recursive` if not already done; then runs `pip install -e .` to install the self-evolving skill system (requires Python 3.12+); sets up the optional dashboard frontend by copying `.env.example` → `.env`, aligning port to 3789 (matches package.json `--port` flag), and running `npm install` in `tools/openspace/frontend/` (requires Node.js ≥ 20)
 16. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
@@ -823,7 +823,7 @@ The framework includes several automated features to minimize token consumption:
 
 ```bash
 # 1. Navigate to LightRAG directory
-cd tools/lightrag
+cd tools/lightrag-plus
 
 # 2. Install dependencies
 uv sync
@@ -847,14 +847,14 @@ cp .env.example .env
 **Method 2: Quick Start Script (Windows)**  
 
 ```bash
-cd tools/lightrag
+cd tools/lightrag-plus
 ./start_server.bat
 ```
 
 **Method 3: Command Line**  
 
 ```bash
-cd tools/lightrag
+cd tools/lightrag-plus
 uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_storage
 ```
 
@@ -866,7 +866,7 @@ uv run python -m lightrag.api.lightrag_server --port 9621 --working-dir ./rag_st
 
 ### Configuration
 
-The `tools/lightrag/.env` file controls all server settings:
+The `tools/lightrag-plus/.env` file controls all server settings:
 
 ```ini
 # Required
@@ -901,7 +901,7 @@ PORT=9621
 1. **LightRAG Server**
    - Starts web server on port 9621
    - Auto-opens browser when ready
-   - Loads environment from `tools/lightrag/.env`
+   - Loads environment from `tools/lightrag-plus/.env`
    - UTF-8 encoding enabled (fixes Windows Unicode issues)
 
 2. **LightRAG Test Script**
@@ -933,7 +933,7 @@ PORT=9621
 Run the test script to verify everything works:
 
 ```bash
-cd tools/lightrag
+cd tools/lightrag-plus
 uv run python test_lightrag.py
 ```
 
@@ -982,7 +982,7 @@ Get-NetTCPConnection -LocalPort 9621 | Select-Object -ExpandProperty OwningProce
 
 **API key not found:**
 
-- Verify `OPENAI_API_KEY` is set in `tools/lightrag/.env`
+- Verify `OPENAI_API_KEY` is set in `tools/lightrag-plus/.env`
 - Check that `.env` file exists (not just `.env.example`)
 - Restart the server after editing `.env`
 

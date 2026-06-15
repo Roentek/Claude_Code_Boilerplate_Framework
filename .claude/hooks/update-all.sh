@@ -162,12 +162,12 @@ fi
 # ── 6. LightRAG import verification ──────────────────────────
 echo ""
 echo "── LightRAG verification ────────────────────────────────"
-if [ -d "$ROOT/tools/lightrag/.venv" ]; then
-  if (cd "$ROOT/tools/lightrag" && uv run python -c \
+if [ -d "$ROOT/tools/lightrag-plus/.venv" ]; then
+  if (cd "$ROOT/tools/lightrag-plus" && uv run python -c \
       "from lightrag import LightRAG, QueryParam" >/dev/null 2>&1); then
     _ok "LightRAG import"
   else
-    _warn "LightRAG import failed — run: cd tools/lightrag && uv pip check"
+    _warn "LightRAG import failed — run: cd tools/lightrag-plus && uv pip check"
   fi
 else
   _skip "LightRAG venv (not found)"
@@ -187,5 +187,5 @@ echo ""
 echo "  Not auto-updated (manual steps):"
 echo "    Plugins  — claude plugin install <name>@<marketplace>"
 echo "    MCP      — restart Claude Code (npx @latest packages refresh automatically)"
-echo "    lightrag — uv.lock governs version; cd tools/lightrag && python check_update.py"
+echo "    lightrag — uv.lock governs version; cd tools/lightrag-plus && python check_update.py"
 echo "══════════════════════════════════════════════════════════"
