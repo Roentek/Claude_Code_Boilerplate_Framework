@@ -4,6 +4,12 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-22 — codeburn integrated for AI spend analytics
+- **Decision:** Added `codeburn` (npm package, getagentseal/codeburn) as a global CLI tool for tracking AI token cost and spend across 31 AI tools including Claude Code.
+- **Why:** Provides per-task, per-model, per-tool, per-project cost breakdowns by reading session files already on disk — no data leaves the machine. Fills the gap between Caveman's session token stats (output-focused) and full cross-session budget tracking.
+- **Integration points:** `setup.sh` step 11 installs via `npm install -g codeburn`; `update-all.sh` NPM_GLOBALS includes `"codeburn"`; `/codeburn` skill at `.claude/skills/codeburn/SKILL.md` installed globally; routing table + Skills section in `CLAUDE.md` updated.
+- **No MCP server** — codeburn is CLI-only; reads `~/.claude/projects/**/*.jsonl` directly. Run `codeburn` for TUI dashboard, `codeburn status` for one-liner, `codeburn optimize` for waste scan.
+
 ## 2026-05-14 — update-all.sh + self-healing lightrag install
 - **Decision:** Created `.claude/hooks/update-all.sh` as a unified updater + `/update-all` skill. Also hardened `setup.sh` step 14 with self-healing logic after `uv sync`.
 - **Why:** OneDrive repeatedly deletes transitive deps from `.venv` mid-install. Needed both (a) a way to keep all tools current and (b) setup that never requires manual troubleshooting.

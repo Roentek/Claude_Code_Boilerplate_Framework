@@ -660,6 +660,24 @@ else
   echo "  Install uv first (see step 5 above), then run: uv tool install notebooklm-mcp-cli"
 fi
 
+# codeburn — AI spend analytics CLI (tracks token cost across 31 AI tools)
+# Source: https://github.com/getagentseal/codeburn
+# Used by: /codeburn skill — dashboard, cost breakdown, model/task analysis
+if command -v codeburn &>/dev/null; then
+  CB_VERSION=$(codeburn --version 2>&1 | head -1)
+  echo "✓ codeburn already installed: $CB_VERSION"
+elif command -v npm &>/dev/null; then
+  echo "  Installing codeburn globally (~5MB)..."
+  if _timeout 120 npm install -g codeburn; then
+    echo "✓ codeburn installed (usage: codeburn)"
+    echo "  ⚠ Run 'codeburn' after your first Claude Code session to see spend data"
+  else
+    echo "⚠ codeburn install failed — run manually: npm install -g codeburn"
+  fi
+else
+  echo "⚠ npm not found — cannot install codeburn (run: npm install -g codeburn)"
+fi
+
 # ── 12. Authentication reminders (interactive — cannot automate) ──
 echo ""
 echo "── Authentication Reminders ─────────────────────────────"

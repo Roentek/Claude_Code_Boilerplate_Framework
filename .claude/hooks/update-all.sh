@@ -55,6 +55,7 @@ NPM_GLOBALS=(
   "firecrawl-cli"
   "@openai/codex"
   "@google/gemini-cli"
+  "codeburn"
 )
 
 if command -v npm &>/dev/null; then
