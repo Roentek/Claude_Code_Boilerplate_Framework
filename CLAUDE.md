@@ -23,7 +23,8 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | NotebookLM research / podcasts | `/notebooklm` skill → `nlm` CLI | Create notebooks, add sources, generate podcasts/videos/briefings — CLI first; `notebooklm-mcp` as backup |
 | n8n workflow | `n8n-mcp` tools | Search nodes, validate, build via MCP |
 | Voice AI (Vapi) | `vapi-mcp` tools | Create assistants, calls, phone numbers |
-| Browser automation | `/playwright` skill → `tools/playwright.js` | `workflows/browser-automation.md` — CLI first; `playwright-mcp` as backup |
+| Browser automation (real Chrome, CDP) | `/browser-harness` skill → `browser-harness` CLI | Direct CDP control of your real Chrome — coordinate clicks, screenshots, JS eval; `--doctor` for setup; cloud via `browser-harness auth login` |
+| Browser automation (headless/scripted) | `/playwright` skill → `tools/playwright.js` | `workflows/browser-automation.md` — CLI first; `playwright-mcp` as backup |
 | Web scraping (single page / crawl) | `/firecrawl` skill → `firecrawl` CLI | `workflows/web-scraping.md` — CLI first; `firecrawl-mcp` backup for batch/schema |
 | Web scraping (large-scale / actors) | `/apify-ultimate-scraper` skill → `apify` CLI + MCP | 130+ curated Actors for Instagram, TikTok, LinkedIn, Google, Reddit, Amazon, etc. — skill routes to CLI or MCP based on task |
 | Apify Actor development | `/apify-actor-development` skill | Create, debug, deploy Actors in JS/TS/Python with bundled config schemas |
@@ -122,7 +123,7 @@ bash .claude/hooks/setup.sh
 # Step 7d:  Claude-Mem plugin (persistent memory across sessions; context survives session end/reconnect; web viewer at http://localhost:37777; requires Bun)
 # Step 8:   Project skills with cross-platform path detection (Windows $USERPROFILE fallback, Unix-style path conversion); creates destination directory; verifies each copy succeeded
 # Step 9:   npm install (all package.json deps: react, react-dom, @types/react, @splinetool/react-spline, @splinetool/runtime, Playwright) + Playwright Chromium browser
-# Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli, codeburn
+# Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli, codeburn, browser-harness
 # Step 11:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
 # Step 12:  lightrag dependencies in tools/lightrag-plus/ (via uv sync); auto-creates tools/lightrag-plus/.env from .env.example if missing (so EMBEDDING_BINDING_HOST is set on first boot); auto-runs provision.py if .env exists (idempotent — skips if no credentials)
 # Step 12a: Ollama install + llama3.2 pull (local LLM for LightRAG; Windows: shows winget command, Unix: auto-installs)
@@ -269,6 +270,7 @@ docs/                         ← Project-level documentation
 | `/taste-skill` | Anti-slop frontend enforcement — bans generic patterns, enforces Bento 2.0 |
 | `/firecrawl` | Scrape pages, search, crawl sites, map URLs via Firecrawl CLI |
 | `/notebooklm` | Google NotebookLM — create notebooks, add sources, generate podcasts/videos/briefings via `nlm` CLI |
+| `/browser-harness` | Real Chrome CDP automation — coordinate clicks, screenshots, JS eval, drag-drop, iframes, downloads; `browser-harness --doctor` for setup |
 | `/playwright` | Browser automation — screenshots, scraping, PDFs, link extraction via Playwright CLI |
 | `/compact-memory` | Full memory hygiene — compress sessions, prune decisions, sync facts to MCP graph |
 | `/update-all` | Update all npm globals, uv tools, Python venvs, npm deps, and submodules; repairs broken venvs automatically |

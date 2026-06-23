@@ -678,6 +678,33 @@ else
   echo "⚠ npm not found — cannot install codeburn (run: npm install -g codeburn)"
 fi
 
+# browser-harness — CDP browser automation CLI (controls real Chrome via DevTools Protocol)
+# Source: https://github.com/browser-use/browser-harness
+# Used by: /browser-harness skill — web automation, scraping, screenshots, form fills
+# Requires: uv, Chrome/Chromium with remote debugging enabled
+if command -v browser-harness &>/dev/null; then
+  BH_VERSION=$(browser-harness --version 2>&1 | head -1)
+  echo "✓ browser-harness already installed: $BH_VERSION"
+elif command -v uv &>/dev/null; then
+  echo "  Installing browser-harness via uv tool (~10MB)..."
+  if UV_NATIVE_TLS=true _timeout 180 uv tool install --python 3.12 --upgrade --force browser-harness; then
+    echo "✓ browser-harness installed"
+    # Generate the live SKILL.md from the CLI (content updates with each release)
+    BH_SKILL_DIR="${HOME}/.claude/skills/browser-harness"
+    mkdir -p "$BH_SKILL_DIR"
+    if browser-harness skill > "$BH_SKILL_DIR/SKILL.md" 2>/dev/null; then
+      echo "  ✓ browser-harness skill registered at $BH_SKILL_DIR/SKILL.md"
+    fi
+    echo "  ⚠ Enable Chrome remote debugging: chrome://inspect/#remote-debugging"
+    echo "    → Tick 'Allow remote debugging for this browser instance'"
+  else
+    echo "⚠ browser-harness install failed — run manually: UV_NATIVE_TLS=true uv tool install --python 3.12 browser-harness"
+  fi
+else
+  echo "⚠ uv not found — cannot install browser-harness"
+  echo "  Install uv first, then run: uv tool install --python 3.12 browser-harness"
+fi
+
 # ── 12. Authentication reminders (interactive — cannot automate) ──
 echo ""
 echo "── Authentication Reminders ─────────────────────────────"

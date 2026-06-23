@@ -4,6 +4,13 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-22 — browser-harness integrated for real Chrome CDP automation
+- **Decision:** Added `browser-harness` (browser-use/browser-harness, Python uv tool) as real-Chrome CDP automation layer alongside existing Playwright CLI.
+- **Why:** Complements Playwright (headless/scripted) with live-Chrome control — coordinate clicks, screenshots, JS eval, drag-drop, iframes, shadow DOM, downloads, cloud browsers. Particularly useful for sites that block headless or require authenticated sessions already in Chrome. Has 100+ domain skills (Amazon, LinkedIn, Reddit, GitHub, etc.) and 17 interaction-skill guides.
+- **Integration:** `uv tool install --python 3.12 --upgrade --force browser-harness`; skill generated from CLI via `browser-harness skill > ~/.claude/skills/browser-harness/SKILL.md`; setup.sh step 11 auto-installs + auto-generates skill; CLAUDE.md routing table distinguishes CDP (browser-harness) vs headless (playwright).
+- **Chrome setup required:** `chrome://inspect/#remote-debugging` → tick "Allow remote debugging"; `browser-harness --doctor` for diagnostics. Cloud mode optional (`BROWSER_USE_API_KEY`).
+- **Skill is dynamic:** Content comes from `browser-harness skill` CLI output — updates with each release. setup.sh regenerates on install.
+
 ## 2026-06-22 — codeburn integrated for AI spend analytics
 - **Decision:** Added `codeburn` (npm package, getagentseal/codeburn) as a global CLI tool for tracking AI token cost and spend across 31 AI tools including Claude Code.
 - **Why:** Provides per-task, per-model, per-tool, per-project cost breakdowns by reading session files already on disk — no data leaves the machine. Fills the gap between Caveman's session token stats (output-focused) and full cross-session budget tracking.
