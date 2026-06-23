@@ -35,7 +35,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | UI component search | `monet-mcp` tools | Search landing page components, get React/TS code |
 | UI component inspiration / SVG logos | `21st-dev-magic` tools | Search UI components, SVG brand logos, generate variants |
 | AI image/video (cinematic, managed) | `higgsfield` MCP | No API key — browser OAuth; cinematic video, media library |
-| AI image/video/audio (specific model) | `kie-ai` MCP | Midjourney, Sora, ElevenLabs, Kling, Suno, etc. Requires API key |
+| AI image/video/audio (specific model) | `/kie-ai` skill → `kie-cli` CLI (primary) → `kie-ai` MCP (fallback) | Midjourney, Sora, ElevenLabs, Kling, Suno, etc. CLI = zero context tokens; auto-switches to MCP if needed |
 | Self-evolving AI skills / collective intelligence | `/openspace` skill → `openspace` CLI | Skills that auto-fix, auto-improve, auto-learn; 46% token reduction; cloud skill sharing — **CLI first; MCP backup** |
 | AI spend tracking / token cost analysis | `/codeburn` skill → `codeburn` CLI | Token + dollar breakdown by task, model, tool, project across 31 AI tools — `codeburn` for TUI dashboard, `codeburn status` for one-liner |
 | Extract design tokens from any website | `/extract-design` skill → `designlang` CLI + plugin | DTCG tokens, Tailwind config, shadcn theme, Figma vars, CSS vars, WCAG scores — 13 slash commands (/extract /site /grade /battle /remix /pack /theme-swap /brand /pair /studio /verify /fidelity /gallery) |
@@ -124,7 +124,7 @@ bash .claude/hooks/setup.sh
 # Step 7d:  Claude-Mem plugin (persistent memory across sessions; context survives session end/reconnect; web viewer at http://localhost:37777; requires Bun)
 # Step 8:   Project skills with cross-platform path detection (Windows $USERPROFILE fallback, Unix-style path conversion); creates destination directory; verifies each copy succeeded
 # Step 9:   npm install (all package.json deps: react, react-dom, @types/react, @splinetool/react-spline, @splinetool/runtime, Playwright) + Playwright Chromium browser
-# Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli, codeburn, browser-harness, designlang
+# Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli, codeburn, browser-harness, designlang, kie-cli (@felores/kie-cli)
 # Step 11:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
 # Step 12:  lightrag dependencies in tools/lightrag-plus/ (via uv sync); auto-creates tools/lightrag-plus/.env from .env.example if missing (so EMBEDDING_BINDING_HOST is set on first boot); auto-runs provision.py if .env exists (idempotent — skips if no credentials)
 # Step 12a: Ollama install + llama3.2 pull (local LLM for LightRAG; Windows: shows winget command, Unix: auto-installs)
@@ -289,6 +289,7 @@ docs/                         ← Project-level documentation
 | `/apify-generate-output-schema` | Generate Actor output schemas — auto-create `dataset_schema.json`, `output_schema.json`, `key_value_store_schema.json` |
 | `/create-actor` | Guided Actor scaffolding — from apify-actor-commands pack |
 | `/caveman` | Activate 75% token reduction (lite/full/ultra modes) — telegraphic responses without context loss |
+| `/kie-ai` | AI media generation — 29 models (Midjourney, Veo3, Suno, ElevenLabs, Kling, Flux, etc.); CLI-first (`kie-cli`), auto-falls back to MCP; async task polling |
 | `/codeburn` | AI spend analytics — token + dollar breakdown by task/model/tool/project across 31 AI tools; `codeburn` opens TUI dashboard, `codeburn status` for one-liner |
 | `/caveman-stats` | Show actual session token usage, savings, and USD costs from JSONL logs |
 | `/caveman-compress` | Shrink memory files (memory-*.md, CLAUDE.md) by ~46% — preserves code/URLs/paths exactly |
@@ -327,7 +328,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `zep-mcp` | Zep long-term memory documentation |
 | `alpaca-mcp` | Algorithmic trading (paper mode) |
 | `canva-dev` | Canva app SDK and CLI docs |
-| `kie-ai` | Multi-provider AI media — Midjourney, Sora, ElevenLabs, Kling, Suno, etc. |
+| `kie-ai` | Multi-provider AI media — Midjourney, Sora, ElevenLabs, Kling, Suno, etc. **CLI-first:** use `kie-cli` (zero context tokens); MCP is fallback. Auto-switches on failure. |
 | `higgsfield` | Cinematic AI video/images — browser OAuth, no API key |
 | `context7` | Live SDK/library documentation lookup — fetch on demand instead of loading static reference files |
 | `monet-mcp` | Landing page UI components — search + retrieve React/TS code |

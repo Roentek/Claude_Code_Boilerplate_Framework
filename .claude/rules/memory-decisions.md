@@ -4,6 +4,13 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-23 — kie-ai CLI-first integration with MCP fallback
+- **Decision:** Added `@felores/kie-cli` as primary interface for kie.ai media generation; `kie-ai` MCP becomes fallback.
+- **Why:** MCP loads all 29 tool schemas into context every turn — significant token overhead. `kie-cli` costs zero context tokens; auto-switch rule in `/kie-ai` skill triggers on any MCP failure.
+- **Integration:** `npm install -g @felores/kie-cli`; `/kie-ai` skill at `.claude/skills/kie-ai/SKILL.md` (installed globally); `setup.sh` step 11 installs CLI; `update-all.sh` NPM_GLOBALS includes `@felores/kie-cli`; `Bash/PowerShell(kie-cli *)` permissions added to `settings.json`.
+- **API verified:** `kie-cli list_tasks --json` returns `{"success":true,"tasks":[],"count":0}` — connection confirmed.
+- **Separate packages:** `@felores/kie-ai-mcp-server` (MCP, bin: `kie-ai-mcp-server`) and `@felores/kie-cli` (CLI, bin: `kie-cli`) — both installed.
+
 ## 2026-06-23 — designlang integrated for design language extraction
 - **Decision:** Added `designlang` (Manavarya09/design-extract, npm `designlang`) as global CLI + Claude plugin for extracting complete design languages from any website.
 - **Why:** Fills a gap between `skillui` (design system → SKILL.md tokens) and `stitch` (screen DNA). Produces 8 simultaneous output formats: DTCG tokens, Tailwind config, shadcn theme, Figma vars, CSS vars, React theme, HTML preview, WCAG scores. Plugin adds 13 slash commands (/extract /site /grade /battle /remix /pack /theme-swap /brand /pair /studio /verify /fidelity /gallery).

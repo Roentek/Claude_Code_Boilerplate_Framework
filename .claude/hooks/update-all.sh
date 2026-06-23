@@ -57,6 +57,7 @@ NPM_GLOBALS=(
   "@google/gemini-cli"
   "codeburn"
   "designlang"
+  "@felores/kie-cli"
 )
 
 if command -v npm &>/dev/null; then

@@ -731,6 +731,24 @@ if command -v claude &>/dev/null; then
     echo "  ⚠ Plugin install failed — run manually: claude plugin install designlang@designlang"
 fi
 
+# kie-cli — standalone CLI for kie.ai AI media generation (images, video, music, speech)
+# Source: https://github.com/felores/kie-cli-mcp
+# Used by: /kie-ai skill — CLI-first fallback when MCP unavailable; zero context tokens
+# Requires: KIE_AI_API_KEY in settings.local.json or OS environment
+if command -v kie-cli &>/dev/null; then
+  echo "✓ kie-cli already installed"
+elif command -v npm &>/dev/null; then
+  echo "  Installing @felores/kie-cli globally..."
+  if _timeout 120 npm install -g @felores/kie-cli; then
+    echo "✓ kie-cli installed (usage: kie-cli <tool> --prompt '...' --json)"
+    echo "  ⚠ Set KIE_AI_API_KEY in .claude/settings.local.json or OS env"
+  else
+    echo "⚠ kie-cli install failed — run manually: npm install -g @felores/kie-cli"
+  fi
+else
+  echo "⚠ npm not found — cannot install kie-cli (run: npm install -g @felores/kie-cli)"
+fi
+
 # ── 12. Authentication reminders (interactive — cannot automate) ──
 echo ""
 echo "── Authentication Reminders ─────────────────────────────"
