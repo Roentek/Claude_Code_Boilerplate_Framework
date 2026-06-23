@@ -38,6 +38,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | AI image/video/audio (specific model) | `kie-ai` MCP | Midjourney, Sora, ElevenLabs, Kling, Suno, etc. Requires API key |
 | Self-evolving AI skills / collective intelligence | `/openspace` skill → `openspace` CLI | Skills that auto-fix, auto-improve, auto-learn; 46% token reduction; cloud skill sharing — **CLI first; MCP backup** |
 | AI spend tracking / token cost analysis | `/codeburn` skill → `codeburn` CLI | Token + dollar breakdown by task, model, tool, project across 31 AI tools — `codeburn` for TUI dashboard, `codeburn status` for one-liner |
+| Extract design tokens from any website | `/extract-design` skill → `designlang` CLI + plugin | DTCG tokens, Tailwind config, shadcn theme, Figma vars, CSS vars, WCAG scores — 13 slash commands (/extract /site /grade /battle /remix /pack /theme-swap /brand /pair /studio /verify /fidelity /gallery) |
 
 ---
 
@@ -123,7 +124,7 @@ bash .claude/hooks/setup.sh
 # Step 7d:  Claude-Mem plugin (persistent memory across sessions; context survives session end/reconnect; web viewer at http://localhost:37777; requires Bun)
 # Step 8:   Project skills with cross-platform path detection (Windows $USERPROFILE fallback, Unix-style path conversion); creates destination directory; verifies each copy succeeded
 # Step 9:   npm install (all package.json deps: react, react-dom, @types/react, @splinetool/react-spline, @splinetool/runtime, Playwright) + Playwright Chromium browser
-# Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli, codeburn, browser-harness
+# Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli, codeburn, browser-harness, designlang
 # Step 11:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
 # Step 12:  lightrag dependencies in tools/lightrag-plus/ (via uv sync); auto-creates tools/lightrag-plus/.env from .env.example if missing (so EMBEDDING_BINDING_HOST is set on first boot); auto-runs provision.py if .env exists (idempotent — skips if no credentials)
 # Step 12a: Ollama install + llama3.2 pull (local LLM for LightRAG; Windows: shows winget command, Unix: auto-installs)
@@ -265,6 +266,7 @@ docs/                         ← Project-level documentation
 | ------- | -------- |
 | `/site-teardown [url]` | Reverse engineer a website into a build blueprint |
 | `/skillui` | Extract a design system from any site, dir, or GitHub repo |
+| `/extract-design` | Extract complete design language from any URL → DTCG tokens, Tailwind, shadcn, Figma, CSS vars, WCAG; 13 plugin commands |
 | `/webgpu-threejs-tsl` | WebGPU + Three.js TSL — renderer, node materials, compute shaders |
 | `/design-md` | Load a ready-made brand DESIGN.md for 73 brands via `npx getdesign@latest add <brand>` |
 | `/taste-skill` | Anti-slop frontend enforcement — bans generic patterns, enforces Bento 2.0 |
@@ -333,6 +335,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `21st-dev-magic` | UI component search + SVG brand logos |
 | `playwright-mcp` | Interactive browser sessions (backup — prefer `node tools/playwright.js`) |
 | `firecrawl-mcp` | Batch scraping / schema-driven extraction (backup — prefer `firecrawl` CLI) |
+| `designlang-mcp` | Expose extracted design tokens via MCP after running `designlang <url>` — no API key; reads `./design-extract-output/` |
 
 > **Setup:** Copy [`.claude/settings.local.json.example`](.claude/settings.local.json.example) → `.claude/settings.local.json`. The `__activation_guide` inside lists where to get each credential.
 

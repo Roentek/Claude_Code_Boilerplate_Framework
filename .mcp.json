@@ -187,6 +187,10 @@
         "PYTHONUTF8": "1"
       }
     },
+    "designlang-mcp": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "designlang", "mcp", "--output-dir", "./design-extract-output"]
+    },
     "memory-shrunk": {
       "command": "npx",
       "args": [

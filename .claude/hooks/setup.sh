@@ -705,6 +705,32 @@ else
   echo "  Install uv first, then run: uv tool install --python 3.12 browser-harness"
 fi
 
+# designlang — design language extraction CLI (tokens, Tailwind, Figma, shadcn)
+# Source: https://github.com/Manavarya09/design-extract
+# Used by: /extract-design skill + designlang Claude plugin (13 slash commands)
+if command -v designlang &>/dev/null; then
+  DL_VERSION=$(designlang --version 2>&1 | head -1)
+  echo "✓ designlang already installed: $DL_VERSION"
+elif command -v npm &>/dev/null; then
+  echo "  Installing designlang globally..."
+  if _timeout 120 npm install -g designlang --ignore-scripts; then
+    echo "✓ designlang installed (usage: designlang <url>)"
+    echo "  Note: Playwright browser skipped (--ignore-scripts). Run: npx playwright install chromium"
+  else
+    echo "⚠ designlang install failed — run manually: npm install -g designlang --ignore-scripts"
+  fi
+else
+  echo "⚠ npm not found — cannot install designlang (run: npm install -g designlang)"
+fi
+
+# Install designlang Claude plugin (13 slash commands: /extract /site /grade /battle etc.)
+if command -v claude &>/dev/null; then
+  echo "  Installing designlang Claude plugin..."
+  _timeout 60 claude plugin install designlang@designlang 2>/dev/null && \
+    echo "✓ designlang plugin installed" || \
+    echo "  ⚠ Plugin install failed — run manually: claude plugin install designlang@designlang"
+fi
+
 # ── 12. Authentication reminders (interactive — cannot automate) ──
 echo ""
 echo "── Authentication Reminders ─────────────────────────────"

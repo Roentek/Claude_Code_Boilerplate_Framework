@@ -39,6 +39,8 @@
       "Bash(openspace *)",
       "Bash(openspace-download-skill *)",
       "Bash(openspace-upload-skill *)",
+      "Bash(designlang *)",
+      "Bash(npx designlang *)",
       "Bash(openspace-dashboard *)",
       "Bash(bash .claude/hooks/setup.sh)",
       "Bash(echo \"exit: $?\")",
@@ -64,6 +66,8 @@
       "PowerShell(openspace *)",
       "PowerShell(openspace-download-skill *)",
       "PowerShell(openspace-upload-skill *)",
+      "PowerShell(designlang *)",
+      "PowerShell(npx designlang *)",
       "PowerShell(openspace-dashboard *)",
       "PowerShell(npm install *)",
       "PowerShell(Get-Process *)",
@@ -98,7 +102,8 @@
     "higgsfield",
     "context7",
     "notebooklm-mcp",
-    "openspace"
+    "openspace",
+    "designlang-mcp"
   ],
   "hooks": {
     "SessionStart": [
@@ -190,7 +195,8 @@
     "caveman@caveman": true,
     "context-mode@context-mode": true,
     "claude-mem@claude-mem": true,
-    "claude-mem@thedotmack": true
+    "claude-mem@thedotmack": true,
+    "designlang@design-extract": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -268,6 +274,19 @@
         "repo": "thedotmack/claude-mem"
       },
       "autoUpdate": true
+    },
+    "design-extract": {
+      "source": {
+        "source": "github",
+        "repo": "Manavarya09/design-extract"
+      },
+      "autoUpdate": true
+    },
+    "designlang": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/Manavarya09/design-extract.git"
+      }
     }
   }
 }

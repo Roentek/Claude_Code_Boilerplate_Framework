@@ -4,6 +4,13 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-23 — designlang integrated for design language extraction
+- **Decision:** Added `designlang` (Manavarya09/design-extract, npm `designlang`) as global CLI + Claude plugin for extracting complete design languages from any website.
+- **Why:** Fills a gap between `skillui` (design system → SKILL.md tokens) and `stitch` (screen DNA). Produces 8 simultaneous output formats: DTCG tokens, Tailwind config, shadcn theme, Figma vars, CSS vars, React theme, HTML preview, WCAG scores. Plugin adds 13 slash commands (/extract /site /grade /battle /remix /pack /theme-swap /brand /pair /studio /verify /fidelity /gallery).
+- **Integration:** `setup.sh` step 11 installs via `npm install -g designlang --ignore-scripts`; `update-all.sh` NPM_GLOBALS includes `"designlang"`; Claude plugin `designlang@designlang` installed; `designlang-mcp` in `.mcp.json` uses `cmd /c npx` Windows pattern; `/extract-design` skill installed globally.
+- **Corporate SSL gotcha:** postinstall runs `npx playwright install chromium` → SSL cert failure on corporate proxy. `--ignore-scripts` skips it. Base CLI works without the Playwright browser.
+- **Plugin marketplace:** key is `designlang` (from `.claude-plugin/marketplace.json`), NOT `design-extract` (the repo slug). Install: `claude plugin install designlang@designlang`.
+
 ## 2026-06-22 — browser-harness integrated for real Chrome CDP automation
 - **Decision:** Added `browser-harness` (browser-use/browser-harness, Python uv tool) as real-Chrome CDP automation layer alongside existing Playwright CLI.
 - **Why:** Complements Playwright (headless/scripted) with live-Chrome control — coordinate clicks, screenshots, JS eval, drag-drop, iframes, shadow DOM, downloads, cloud browsers. Particularly useful for sites that block headless or require authenticated sessions already in Chrome. Has 100+ domain skills (Amazon, LinkedIn, Reddit, GitHub, etc.) and 17 interaction-skill guides.

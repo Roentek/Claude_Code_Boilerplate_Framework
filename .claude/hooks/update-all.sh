@@ -56,6 +56,7 @@ NPM_GLOBALS=(
   "@openai/codex"
   "@google/gemini-cli"
   "codeburn"
+  "designlang"
 )
 
 if command -v npm &>/dev/null; then
