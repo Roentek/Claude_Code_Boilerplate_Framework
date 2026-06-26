@@ -4,6 +4,12 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-26 — setup.sh modularized into .claude/hooks/install/ scripts
+- **Decision:** Broke monolithic `setup.sh` (1148 lines) into 35 standalone scripts under `.claude/hooks/install/`. `setup.sh` now orchestrates by calling each via `_run`. Any script can be run standalone: `bash .claude/hooks/install/cli-firecrawl.sh`.
+- **Why:** Agentic OS goal — install individual elements (plugin, CLI, skill, tool) selectively on new machines without running everything. Full install still works via `setup.sh`. Fresh-clone path unchanged.
+- **Structure:** `lib.sh` (shared helpers: `_timeout`, `_is_windows`, `_user_home`, `_install_plugin`, `_install_skill`), `sys-*.sh` (prereqs), `plugin-*.sh` (plugins), `skill-apify-*.sh` + `skills-project.sh` (skills), `cli-*.sh` (global CLIs), `tool-*.sh` (heavy tools: autoresearch/lightrag/ollama/openspace), `auth-reminders.sh`.
+- **mcp-cleanup.sh:** Added `*kie-ai-mcp-server*` and `*designlang*mcp*` orphan-kill patterns (two servers missing from previous version).
+
 ## 2026-06-23 — kie-ai CLI-first integration with MCP fallback
 - **Decision:** Added `@felores/kie-cli` as primary interface for kie.ai media generation; `kie-ai` MCP becomes fallback.
 - **Why:** MCP loads all 29 tool schemas into context every turn — significant token overhead. `kie-cli` costs zero context tokens; auto-switch rule in `/kie-ai` skill triggers on any MCP failure.

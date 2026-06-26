@@ -16,7 +16,6 @@ Get-Process -Name 'node' -ErrorAction SilentlyContinue | ForEach-Object {
 
         \$cmd = \$wmi.CommandLine
         \$isMcp = \$cmd -and (
-            \$cmd -like '*_npx*mcp*' -or
             \$cmd -like '*n8n-mcp*' -or
             \$cmd -like '*firecrawl-mcp*' -or
             \$cmd -like '*@playwright/mcp*' -or
@@ -33,6 +32,8 @@ Get-Process -Name 'node' -ErrorAction SilentlyContinue | ForEach-Object {
             \$cmd -like '*@canva/cli*mcp*' -or
             \$cmd -like '*mcp-remote*' -or
             \$cmd -like '*trigger.dev*mcp*' -or
+            \$cmd -like '*kie-ai-mcp-server*' -or
+            \$cmd -like '*designlang*mcp*' -or
             \$cmd -like '*stdio-wrapper*'
         )
 

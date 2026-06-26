@@ -51,6 +51,11 @@ npx trigger.dev@latest dev
 # Re-run first-time setup (e.g. fresh clone)
 rm -f .claude/.setup-complete && bash .claude/hooks/setup.sh
 
+# Install a single component (modular — no marker needed)
+bash .claude/hooks/install/cli-firecrawl.sh      # example: just firecrawl CLI
+bash .claude/hooks/install/plugin-caveman.sh     # example: just caveman plugin
+bash .claude/hooks/install/tool-lightrag.sh      # example: just LightRAG
+
 # Reinstall context-monitor statusline
 npx claude-code-templates@latest --setting statusline/context-monitor
 
@@ -171,6 +176,15 @@ CLAUDE.md                     ← You are here (routing only)
   agents/                     ← Custom sub-agent definitions
   skills/                     ← Project skills (<name>/SKILL.md) — setup.sh installs to ~/.claude/skills/
   hooks/                      ← Lifecycle shell scripts (Stop, PostToolUse, pre-commit)
+    install/                  ← Modular install scripts — one per plugin/CLI/tool/skill; run standalone or via setup.sh
+      lib.sh                  ← Shared helpers (_timeout, _is_windows, _user_home, _install_plugin, _install_skill)
+      sys-*.sh                ← System prerequisites (python, node, uvx, bun, env, npm-deps, pre-commit, github-cli)
+      plugin-*.sh             ← Claude plugins (ui-ux-pro-max, impeccable, caveman, context-mode, claude-mem, designlang…)
+      skill-apify-*.sh        ← Apify marketplace skills (ultimate-scraper, actor-development, actorization…)
+      skills-project.sh       ← Copies .claude/skills/* → ~/.claude/skills/
+      cli-*.sh                ← Global CLI tools (firecrawl, codex, gemini, notebooklm, codeburn, browser-harness, kie…)
+      tool-*.sh               ← Heavy tools (autoresearch, lightrag, ollama, openspace)
+      auth-reminders.sh       ← Prints one-time manual auth steps (NotebookLM, Trigger, Google, GitHub…)
   scripts/                    ← Utility scripts (statusline, context monitor)
   docs/                       ← Reference docs
   settings.local.json         ← Machine-local credentials + permissions (gitignored)
