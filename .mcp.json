@@ -191,6 +191,13 @@
       "command": "cmd",
       "args": ["/c", "npx", "-y", "designlang", "mcp", "--output-dir", "./design-extract-output"]
     },
+    "graphify-mcp": {
+      "command": "python",
+      "args": ["-m", "graphify.serve", "graphify-out/graph.json"],
+      "env": {
+        "GRAPHIFY_API_KEY": "${GRAPHIFY_API_KEY}"
+      }
+    },
     "memory-shrunk": {
       "command": "npx",
       "args": [

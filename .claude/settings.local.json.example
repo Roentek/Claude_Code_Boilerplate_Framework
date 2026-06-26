@@ -31,6 +31,8 @@
     "caveman@caveman":                   "NO KEY NEEDED — 75% token reduction on Claude responses. Commands: /caveman (activate), /caveman-commit (terse commits), /caveman-review (single-line PR comments), /caveman-stats (session token analysis), /caveman-compress (shrink memory files by 46%), /cavecrew (compressed subagents). CAVEMAN_STATUSLINE_SAVINGS=1 shows lifetime token savings in statusline.",
     "context-mode@context-mode":         "NO KEY NEEDED — 98% context window reduction via sandboxing. Slash commands: /context-mode:ctx-stats, /context-mode:ctx-doctor, /context-mode:ctx-upgrade, /context-mode:ctx-purge, /context-mode:ctx-insight. Statusline shows: $ saved this session · $ saved across sessions · % efficient. Sandboxes tool output (315 KB → 5.4 KB), tracks session continuity in SQLite FTS5, output compression ~65-75%.",
     "claude-mem@claude-mem":             "NO KEY NEEDED — persistent memory across sessions. Automatically captures tool usage observations and generates semantic summaries available to future sessions. Config auto-created at ~/.claude-mem/settings.json on first run. Web viewer at http://localhost:37777. Set CLAUDE_MEM_MODE in .env to change language/workflow mode (default: code).",
+    "graphify-mcp":                      "GRAPHIFY_API_KEY (optional) — only needed for HTTP MCP server auth mode. Local stdio mode (default) needs no key. Run /graphify . in Claude Code to build graphify-out/graph.json first; MCP server serves that graph. Install: uv tool install 'graphifyy[mcp]', then: graphify install.",
+    "watch@claude-video":                "NO KEY NEEDED for captioned videos. Optional: GROQ_API_KEY (console.groq.com → API Keys) for Whisper transcription; OPENAI_API_KEY as fallback. Keys go in ~/.config/watch/.env (auto-scaffolded on first /watch run). Requires ffmpeg + yt-dlp binaries (Windows: winget install ffmpeg + pip install yt-dlp).",
 
     "__note_cli_tools": "The keys below are for global CLI tools installed by setup.sh (codex-cli, gemini-cli). These run locally via Bash, not through MCP servers. Set them here AND in .env so both Claude Code and local shell scripts can access them.",
     "codex-cli (three-brain)":  "OPENAI_API_KEY — platform.openai.com → API Keys → Create new secret key. Required by codex-cli for /three-brain review/rescue routes and codex plugin.",
@@ -60,8 +62,8 @@
   },
 
   "env": {
-    "SUPABASE_API_PAT":             "",
-    "OPENROUTER_API_KEY":           "",
+    "SUPABASE_API_PAT":           "",
+    "OPENROUTER_API_KEY":         "",
     "KIE_AI_API_KEY":             "",
     "TAVILY_API_KEY":             "",
     "GOOGLE_OAUTH_CLIENT_ID":     "",
@@ -80,6 +82,7 @@
     "GITHUB_PERSONAL_ACCESS_TOKEN": "",
     "FIRECRAWL_API_KEY":          "",
     "CONTEXT7_API_KEY":           "",
+    "GRAPHIFY_API_KEY":           "",
     "OPENSPACE_HOST_SKILL_DIRS":  "",
     "OPENSPACE_WORKSPACE":        "",
     "OPENSPACE_API_KEY":          "",
@@ -693,6 +696,8 @@
       "Skill(caveman-review)",
       "Skill(cavecrew)",
       "Skill(caveman-help)",
+      "Skill(graphify)",
+      "Skill(watch)",
 
       "WebFetch(domain:docs.n8n.io)",
       "WebFetch(domain:docs.trigger.dev)",

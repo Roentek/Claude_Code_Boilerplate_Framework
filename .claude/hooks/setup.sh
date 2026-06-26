@@ -55,6 +55,7 @@ _run plugin-impeccable.sh
 _run plugin-codex.sh
 _run plugin-gemini.sh
 _run plugin-cli-anything.sh
+_run plugin-claude-video.sh
 echo ""
 echo "  Marketplace sources pre-configured in .claude/settings.json → extraKnownMarketplaces"
 
@@ -128,6 +129,10 @@ _run tool-ollama.sh
 echo ""
 echo "── OpenSpace (Self-Evolving Skill System) ───────────────"
 _run tool-openspace.sh
+
+echo ""
+echo "── Graphify (Codebase Knowledge Graph) ─────────────────"
+_run tool-graphify.sh
 
 # ── Git pre-commit hook ──────────────────────────────────────
 echo ""

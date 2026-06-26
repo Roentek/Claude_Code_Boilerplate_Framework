@@ -42,6 +42,10 @@
       "Bash(designlang *)",
       "Bash(npx designlang *)",
       "Bash(kie-cli *)",
+      "Bash(graphify *)",
+      "Bash(graphify-mcp *)",
+      "Bash(ffmpeg *)",
+      "Bash(yt-dlp *)",
       "Bash(openspace-dashboard *)",
       "Bash(bash .claude/hooks/setup.sh)",
       "Bash(echo \"exit: $?\")",
@@ -70,6 +74,8 @@
       "PowerShell(designlang *)",
       "PowerShell(npx designlang *)",
       "PowerShell(kie-cli *)",
+      "PowerShell(graphify *)",
+      "PowerShell(yt-dlp *)",
       "PowerShell(openspace-dashboard *)",
       "PowerShell(npm install *)",
       "PowerShell(Get-Process *)",
@@ -105,7 +111,8 @@
     "context7",
     "notebooklm-mcp",
     "openspace",
-    "designlang-mcp"
+    "designlang-mcp",
+    "graphify-mcp"
   ],
   "hooks": {
     "SessionStart": [
@@ -198,7 +205,8 @@
     "context-mode@context-mode": true,
     "claude-mem@claude-mem": true,
     "claude-mem@thedotmack": true,
-    "designlang@design-extract": true
+    "designlang@design-extract": true,
+    "watch@claude-video": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -281,6 +289,13 @@
       "source": {
         "source": "github",
         "repo": "Manavarya09/design-extract"
+      },
+      "autoUpdate": true
+    },
+    "claude-video": {
+      "source": {
+        "source": "github",
+        "repo": "bradautomates/claude-video"
       },
       "autoUpdate": true
     },

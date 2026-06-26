@@ -39,6 +39,8 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Self-evolving AI skills / collective intelligence | `/openspace` skill → `openspace` CLI | Skills that auto-fix, auto-improve, auto-learn; 46% token reduction; cloud skill sharing — **CLI first; MCP backup** |
 | AI spend tracking / token cost analysis | `/codeburn` skill → `codeburn` CLI | Token + dollar breakdown by task, model, tool, project across 31 AI tools — `codeburn` for TUI dashboard, `codeburn status` for one-liner |
 | Extract design tokens from any website | `/extract-design` skill → `designlang` CLI + plugin | DTCG tokens, Tailwind config, shadcn theme, Figma vars, CSS vars, WCAG scores — 13 slash commands (/extract /site /grade /battle /remix /pack /theme-swap /brand /pair /studio /verify /fidelity /gallery) |
+| Query codebase as knowledge graph | `/graphify` skill → `graphify` CLI + `graphify-mcp` | AST-parse 25+ languages → queryable graph; answers "what calls X?", "what depends on Y?"; run `/graphify .` once per repo to build; MCP for persistent tool access |
+| Watch / analyze video content | `/watch` plugin → `claude-video` | Analyze YouTube, TikTok, Vimeo, local video — extracts frames + transcript; `/watch <url> <question>`; needs ffmpeg + yt-dlp |
 
 ---
 
@@ -179,11 +181,11 @@ CLAUDE.md                     ← You are here (routing only)
     install/                  ← Modular install scripts — one per plugin/CLI/tool/skill; run standalone or via setup.sh
       lib.sh                  ← Shared helpers (_timeout, _is_windows, _user_home, _install_plugin, _install_skill)
       sys-*.sh                ← System prerequisites (python, node, uvx, bun, env, npm-deps, pre-commit, github-cli)
-      plugin-*.sh             ← Claude plugins (ui-ux-pro-max, impeccable, caveman, context-mode, claude-mem, designlang…)
+      plugin-*.sh             ← Claude plugins (ui-ux-pro-max, impeccable, caveman, context-mode, claude-mem, designlang, claude-video…)
       skill-apify-*.sh        ← Apify marketplace skills (ultimate-scraper, actor-development, actorization…)
       skills-project.sh       ← Copies .claude/skills/* → ~/.claude/skills/
       cli-*.sh                ← Global CLI tools (firecrawl, codex, gemini, notebooklm, codeburn, browser-harness, kie…)
-      tool-*.sh               ← Heavy tools (autoresearch, lightrag, ollama, openspace)
+      tool-*.sh               ← Heavy tools (autoresearch, lightrag, ollama, openspace, graphify)
       auth-reminders.sh       ← Prints one-time manual auth steps (NotebookLM, Trigger, Google, GitHub…)
   scripts/                    ← Utility scripts (statusline, context monitor)
   docs/                       ← Reference docs
@@ -252,6 +254,7 @@ docs/                         ← Project-level documentation
 | `impeccable` | Frontend critique/polish/audit — 23 commands + anti-pattern detection |
 | `github` | Reading private repos, reviewing PRs — requires `GITHUB_PERSONAL_ACCESS_TOKEN` |
 | `cli-anything` | Generating AI-native CLIs for existing software (GIMP, Blender, LibreOffice, etc.) — 50+ apps, 2,280+ tests |
+| `claude-video` | Watch + analyze video — `/watch <url> <question>`; extracts frames + transcript; YouTube, TikTok, Vimeo, 500+ sites; needs ffmpeg + yt-dlp |
 | `caveman` | Token compression — 75% reduction on responses, 46% on memory files; terse commits/reviews; session tracking |
 | `context-mode` | Context window optimization — 98% reduction via sandboxing (315 KB → 5.4 KB); session continuity via SQLite FTS5; output compression ~65-75% |
 | `claude-mem` | Persistent memory across sessions — captures tool usage observations, generates semantic summaries, [web viewer](http://localhost:37777) |
@@ -312,6 +315,8 @@ docs/                         ← Project-level documentation
 | `/cavecrew` | Compressed subagents (investigator/builder/reviewer with 60% fewer tokens) |
 | `/auto-stage-commit` | Stage all changes + generate lean commit message — outputs ready-to-run `git commit` command; **does not commit** (auto-triggers on commit intent) |
 | `/spline-3d` | Embed Spline 3D scenes in React or vanilla HTML — includes React wrapper, interactive scene examples, performance guide |
+| `/graphify` | AST-parse codebase (25+ languages) → queryable knowledge graph; answers "what calls X?", "what depends on Y?"; run once per repo; `graphify-mcp` for persistent access |
+| `/watch` | Watch + analyze video — frames + transcript fed to Claude; `/watch <url> <question>`; `--start`/`--end` window; optional Whisper transcription (Groq/OpenAI) |
 
 **Superpowers skills** auto-trigger based on context (brainstorming, TDD, debugging, code review, planning, subagents, git worktrees). No manual invoke needed.
 
@@ -351,6 +356,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `playwright-mcp` | Interactive browser sessions (backup — prefer `node tools/playwright.js`) |
 | `firecrawl-mcp` | Batch scraping / schema-driven extraction (backup — prefer `firecrawl` CLI) |
 | `designlang-mcp` | Expose extracted design tokens via MCP after running `designlang <url>` — no API key; reads `./design-extract-output/` |
+| `graphify-mcp` | Query codebase knowledge graph — `query_graph`, `get_node`, `get_neighbors`, `shortest_path`, `list_prs`, `get_pr_impact`; requires `graphify-out/graph.json` (build with `/graphify .`); optional `GRAPHIFY_API_KEY` for HTTP auth |
 
 > **Setup:** Copy [`.claude/settings.local.json.example`](.claude/settings.local.json.example) → `.claude/settings.local.json`. The `__activation_guide` inside lists where to get each credential.
 

@@ -8,7 +8,7 @@
 #   • npm globals  — add to NPM_GLOBALS below
 #   • uv tools     — auto: uv tool upgrade --all covers all
 #   • Python venvs — auto: scans tools/*/pyproject.toml
-#   • plugins      — add to PLUGINS below + setup.sh step 7
+#   • plugins      — manual: claude plugin install <name>@<marketplace>
 # ============================================================
 
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
@@ -66,7 +66,14 @@ if command -v npm &>/dev/null; then
     # Check if installed (scope-aware)
     if npm list -g --depth=0 "${pkg}" &>/dev/null 2>&1; then
       printf "  Updating %-30s" "$pkg..."
-      if npm install -g "${pkg}@latest" >/dev/null 2>&1; then
+      # designlang postinstall runs `npx playwright install chromium` which fails
+      # on corporate proxy (TLS interception). --ignore-scripts skips it safely.
+      if [ "$pkg" = "designlang" ]; then
+        npm_flags="--ignore-scripts"
+      else
+        npm_flags=""
+      fi
+      if npm install -g "${pkg}@latest" $npm_flags >/dev/null 2>&1; then
         echo "✓"; UPDATED+=("npm: $label")
       else
         echo "⚠"; FAILED+=("npm: $label")
@@ -133,7 +140,29 @@ else
   _skip "Python venvs (uv not found)"
 fi
 
-# ── 4. npm project dependencies ───────────────────────────────
+# ── 4. Ollama ─────────────────────────────────────────────────
+echo ""
+echo "── Ollama ───────────────────────────────────────────────"
+if command -v ollama &>/dev/null; then
+  echo "  Checking for Ollama updates..."
+  # Ollama has no `ollama update` CLI — re-run the installer to update binary
+  if _is_windows; then
+    _skip "Ollama (Windows: update via winget: winget upgrade Ollama.Ollama)"
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
+    _skip "Ollama (macOS: update via brew: brew upgrade ollama)"
+  else
+    # Linux: re-run the official install script (idempotent, updates binary)
+    if curl -fsSL https://ollama.ai/install.sh 2>/dev/null | sh >/dev/null 2>&1; then
+      _ok "Ollama binary updated"
+    else
+      _skip "Ollama (auto-update failed — run: curl -fsSL https://ollama.ai/install.sh | sh)"
+    fi
+  fi
+else
+  _skip "Ollama (not installed — run setup.sh to install)"
+fi
+
+# ── 5. npm project dependencies ──────────────────────────────
 echo ""
 echo "── npm project deps ─────────────────────────────────────"
 if [ -f "$ROOT/package.json" ] && command -v npm &>/dev/null; then
@@ -147,7 +176,7 @@ else
   _skip "npm project deps (no package.json or npm not found)"
 fi
 
-# ── 5. git submodules ─────────────────────────────────────────
+# ── 6. git submodules ─────────────────────────────────────────
 echo ""
 echo "── git submodules ───────────────────────────────────────"
 if git -C "$ROOT" submodule status >/dev/null 2>&1 && \
@@ -162,7 +191,7 @@ else
   _skip "git submodules (none configured)"
 fi
 
-# ── 6. LightRAG import verification ──────────────────────────
+# ── 7. LightRAG import verification ──────────────────────────
 echo ""
 echo "── LightRAG verification ────────────────────────────────"
 if [ -d "$ROOT/tools/lightrag-plus/.venv" ]; then

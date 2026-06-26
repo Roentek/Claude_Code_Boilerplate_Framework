@@ -4,6 +4,18 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-26 — graphify integrated for codebase knowledge graph
+- **Decision:** Added `graphifyy[mcp]` (PyPI: graphifyy, CLI: graphify) as a uv tool install under `tool-graphify.sh`. Installs graphify with MCP support and auto-runs `graphify install` to register the skill globally.
+- **Why:** AST-parses 25+ languages into a queryable knowledge graph — answers "what calls X?", "what depends on Y?" instantly. 72K stars, YC S26. Skill mode (no API key) + optional `graphify-mcp` MCP server for persistent access.
+- **Integration:** `tool-graphify.sh`; `setup.sh` heavy tools section; `graphify-mcp` in `.mcp.json` + `enabledMcpjsonServers`; `GRAPHIFY_API_KEY` in `.env.example` + `settings.local.json.example` (optional); Bash/PowerShell/Skill permissions in `settings.json`/`settings.local.json.example`; routing table + plugins/skills/MCP tables in `CLAUDE.md`.
+- **Usage:** Run `/graphify .` once per repo → builds `graphify-out/graph.json` → MCP server serves that graph.
+
+## 2026-06-26 — claude-video plugin integrated for video analysis
+- **Decision:** Added `watch@claude-video` (bradautomates/claude-video) as a Claude plugin via `plugin-claude-video.sh`.
+- **Why:** Gives Claude the ability to watch and analyze any video (YouTube, TikTok, Vimeo, local). Downloads via yt-dlp, extracts frames via ffmpeg, pulls captions or transcribes with Whisper. Usage: `/watch <url> <question>`.
+- **Integration:** `plugin-claude-video.sh`; `setup.sh` marketplace plugins; `claude-video` marketplace in `settings.json` `extraKnownMarketplaces`; `watch@claude-video: true` in `enabledPlugins`; `GROQ_API_KEY` in `.env.example`; routing + plugins + skills tables in `CLAUDE.md`.
+- **System deps:** ffmpeg + yt-dlp (Windows: winget; plugin prints install instructions on first `/watch` run). API keys optional — native captions work without any key.
+
 ## 2026-06-26 — setup.sh modularized into .claude/hooks/install/ scripts
 - **Decision:** Broke monolithic `setup.sh` (1148 lines) into 35 standalone scripts under `.claude/hooks/install/`. `setup.sh` now orchestrates by calling each via `_run`. Any script can be run standalone: `bash .claude/hooks/install/cli-firecrawl.sh`.
 - **Why:** Agentic OS goal — install individual elements (plugin, CLI, skill, tool) selectively on new machines without running everything. Full install still works via `setup.sh`. Fresh-clone path unchanged.
