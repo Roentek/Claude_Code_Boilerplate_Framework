@@ -206,7 +206,8 @@
     "claude-mem@claude-mem": true,
     "claude-mem@thedotmack": true,
     "designlang@design-extract": true,
-    "watch@claude-video": true
+    "watch@claude-video": true,
+    "ponytail@ponytail": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -296,6 +297,13 @@
       "source": {
         "source": "github",
         "repo": "bradautomates/claude-video"
+      },
+      "autoUpdate": true
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
       },
       "autoUpdate": true
     },

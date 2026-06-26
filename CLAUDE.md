@@ -255,6 +255,7 @@ docs/                         ← Project-level documentation
 | `github` | Reading private repos, reviewing PRs — requires `GITHUB_PERSONAL_ACCESS_TOKEN` |
 | `cli-anything` | Generating AI-native CLIs for existing software (GIMP, Blender, LibreOffice, etc.) — 50+ apps, 2,280+ tests |
 | `claude-video` | Watch + analyze video — `/watch <url> <question>`; extracts frames + transcript; YouTube, TikTok, Vimeo, 500+ sites; needs ffmpeg + yt-dlp |
+| `ponytail` | YAGNI/minimal-code discipline — always-on; -54% LOC, -22% tokens, -20% cost; `/ponytail [lite\|full\|ultra\|off]`, `/ponytail-review`, `/ponytail-audit` |
 | `caveman` | Token compression — 75% reduction on responses, 46% on memory files; terse commits/reviews; session tracking |
 | `context-mode` | Context window optimization — 98% reduction via sandboxing (315 KB → 5.4 KB); session continuity via SQLite FTS5; output compression ~65-75% |
 | `claude-mem` | Persistent memory across sessions — captures tool usage observations, generates semantic summaries, [web viewer](http://localhost:37777) |

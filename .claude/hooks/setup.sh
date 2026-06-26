@@ -56,6 +56,7 @@ _run plugin-codex.sh
 _run plugin-gemini.sh
 _run plugin-cli-anything.sh
 _run plugin-claude-video.sh
+_run plugin-ponytail.sh
 echo ""
 echo "  Marketplace sources pre-configured in .claude/settings.json → extraKnownMarketplaces"
 

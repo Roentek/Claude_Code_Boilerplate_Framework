@@ -4,6 +4,12 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-26 — ponytail plugin integrated for YAGNI/minimal-code discipline
+- **Decision:** Added `ponytail@ponytail` (DietrichGebert/ponytail) as a Claude plugin via `plugin-ponytail.sh`. Always-on after install — no per-session activation needed.
+- **Why:** Measured -54% LOC, -22% tokens, -20% cost, -27% time vs baseline on agentic benchmarks. Enforces YAGNI + platform-native + stdlib-first discipline without dropping validation/security/a11y. Complements Caveman (output compression) at the code-generation discipline layer.
+- **Integration:** `plugin-ponytail.sh`; `setup.sh` marketplace plugins; `ponytail` marketplace in `settings.json` `extraKnownMarketplaces`; `ponytail@ponytail: true` in `enabledPlugins`; `PONYTAIL_DEFAULT_MODE=full` in `.env.example`; activation guide + Skill permissions in `settings.local.json.example`; Plugins table in `CLAUDE.md`.
+- **Levels:** `lite` (suggest only), `full` (default — enforce), `ultra` (strict), `off`. Set via `PONYTAIL_DEFAULT_MODE` env or `/ponytail [level]` per session.
+
 ## 2026-06-26 — graphify integrated for codebase knowledge graph
 - **Decision:** Added `graphifyy[mcp]` (PyPI: graphifyy, CLI: graphify) as a uv tool install under `tool-graphify.sh`. Installs graphify with MCP support and auto-runs `graphify install` to register the skill globally.
 - **Why:** AST-parses 25+ languages into a queryable knowledge graph — answers "what calls X?", "what depends on Y?" instantly. 72K stars, YC S26. Skill mode (no API key) + optional `graphify-mcp` MCP server for persistent access.
