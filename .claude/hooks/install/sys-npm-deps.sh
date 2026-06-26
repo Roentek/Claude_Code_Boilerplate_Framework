@@ -22,8 +22,8 @@ else
 fi
 
 echo "  Installing Playwright Chromium (~150MB)..."
-if (cd "$ROOT" && npx playwright install chromium); then
+if (cd "$ROOT" && NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright install chromium); then
   echo "✓ Playwright Chromium installed"
 else
-  echo "⚠ Playwright Chromium install failed — run: npx playwright install chromium"
+  echo "⚠ Playwright Chromium install failed — run: NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright install chromium"
 fi

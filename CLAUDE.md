@@ -455,6 +455,7 @@ Tier 2 tests (`TestOpenSpaceInit`) read LLM key from `tools/openspace/.env` or O
 | `OPENAI_API_KEY not set` | Add to both `.env` AND OS environment (`setx` on Windows) |
 | setup.sh hangs at skill install | Press Ctrl+C, run manual `/skill install` commands shown |
 | `better-sqlite3` build fails (corporate proxy) | `NODE_TLS_REJECT_UNAUTHORIZED=0 npm install better-sqlite3 --build-from-source` — or re-run setup.sh (step 7c applies this fix automatically) |
+| Playwright Chromium download fails: `UNABLE_TO_GET_ISSUER_CERT_LOCALLY` | Corporate proxy intercepts TLS. Fix: `NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright install chromium` — baked into `sys-npm-deps.sh` automatically |
 | `uv sync` fails with `UnknownIssuer` / `invalid peer certificate` | Corporate proxy intercepts TLS. Fix: `UV_NATIVE_TLS=true uv sync` — uses Windows cert store. Already baked into `update-all.sh`. |
 | LightRAG uploads fail: `httpx.ReadTimeout` during entity extraction | Ollama LLM exceeds default timeout on large chunks. Fix: increase `LLM_TIMEOUT` in `tools/lightrag-plus/.env` — set `1800` (30 min) for slow hardware. Both `asyncio.wait_for` and httpx client use this value. `--timeout` CLI arg only affects gunicorn, not uvicorn — do NOT use it. |
 
