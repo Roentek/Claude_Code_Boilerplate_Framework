@@ -404,3 +404,8 @@ Architectural and technical decisions made during sessions — with date and rat
 <!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-06-27 — edit or delete below -->
 - Four files written:\n\n- `CLAUDE.md` â€” `## Agent skills` block appended\n- `docs/agents/issue-tracker.md` â€” GitHub Issues, no PR triage\n- `docs/agents/triage-labels.md` â€” default 5-label vocabulary\n- `docs/agents/domain.md` â€” single-context, `CONTEXT.md` + `docs/adr/` at root\n\nSkills now fully configured: `/triage`, `/to-issues`, `/to-prd`, `/grill-with-docs`, `/improve-codebase-architecture`, `/diagnosing-bugs`, `/tdd`, `/domain-modeling` all read from `docs/agents/`.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-06-27 — edit or delete below -->
+- {"session_id":"e1821470-e7b7-429b-ba21-8a8efc747242","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\e1821470-e7b7-429b-ba21-8a8efc747242.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"```\nfeat(skills): integrate mattpocock-skills + per-repo agent config\n\n35 engineering skills installed (mattpocock/skills); docs/agents/\nscaffolded for issue tracker, triage labels, and domain docs so\n/triage, /to-issues, /to-prd, and architecture skills know where\nto read/write without human re-briefing each session.\n\n- GitHub Issues as tracker, PRs not a triage surface\n- Default 5-label triage vocabulary\n- Single-context domain layout (CONTEXT.md + docs/adr/)\n```","background_tasks":[],"session_crons":[]}
