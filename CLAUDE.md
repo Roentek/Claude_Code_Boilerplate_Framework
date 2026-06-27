@@ -318,6 +318,8 @@ docs/                         ← Project-level documentation
 | `/spline-3d` | Embed Spline 3D scenes in React or vanilla HTML — includes React wrapper, interactive scene examples, performance guide |
 | `/graphify` | AST-parse codebase (25+ languages) → queryable knowledge graph; answers "what calls X?", "what depends on Y?"; run once per repo; `graphify-mcp` for persistent access |
 | `/watch` | Watch + analyze video — frames + transcript fed to Claude; `/watch <url> <question>`; `--start`/`--end` window; optional Whisper transcription (Groq/OpenAI) |
+| `/roast` | 5-persona adversarial council (Contrarian, Expansionist, Logician, Researcher, Buyer) attacks an idea in parallel → Judge returns GO / RESHAPE / KILL verdict + cheapest 48-hour validation test |
+| `/session-handoff` | Structured end-of-session summary (decisions, shipped files, running state, verification, deferrals) for zero-context-rot `/clear` handoffs — chat-only output |
 
 **Superpowers skills** auto-trigger based on context (brainstorming, TDD, debugging, code review, planning, subagents, git worktrees). No manual invoke needed.
 
