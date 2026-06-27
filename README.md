@@ -218,7 +218,7 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 4. **Creates `.env`** — copies `.env.example` → `.env` if none exists, then auto-configures OpenSpace paths (`OPENSPACE_HOST_SKILL_DIRS` and `OPENSPACE_WORKSPACE`) based on your platform (detects home directory automatically — works on Windows, macOS, Linux)
 5. **Verifies uvx** — required for `google-workspace-mcp`, `alpaca`, and `notebooklm-mcp` MCP servers
 6. **Verifies Node.js / npx** — required by all 17 npx-based MCP servers (memory, supabase, openrouter, kie-ai, tavily, trigger, pinecone, vapi, n8n, apify, zep, canva, 21st-dev, playwright-mcp, firecrawl-mcp, higgsfield, context7)
-7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max`, `andrej-karpathy-skills`, `impeccable`, `codex`, `cc-gemini-plugin`, and `cli-anything` via CLI
+7. **Installs marketplace plugins** — attempts to auto-install `ui-ux-pro-max`, `andrej-karpathy-skills`, `impeccable`, `codex`, `cc-gemini-plugin`, `cli-anything`, `claude-video`, and `ponytail` via CLI
 7a. **Installs Apify agent skills from marketplace** — attempts automated installation of 5 skills from [apify/agent-skills](https://github.com/apify/agent-skills) repo: `apify-ultimate-scraper` (130+ Actors for Instagram, TikTok, LinkedIn, Google, Reddit, Amazon, etc.), `apify-actor-development` (Actor creation/debugging), `apify-actorization` (convert code to Actors), `apify-generate-output-schema` (auto-generate Actor schemas), and `apify-actor-commands` (slash command pack). Uses 30-second timeout protection per skill if `timeout` command is available. If installation times out or fails, displays manual `/skill install <name>@apify-agent-skills` commands for Claude Code chat. Marketplace is pre-configured in `settings.json` → `extraKnownMarketplaces`
 7b. **Installs Caveman plugin** — installs `caveman@caveman` for 75% token reduction on responses and 46% reduction on memory files; includes commands: `/caveman` (activate compression), `/caveman-stats` (session token tracking), `/caveman-compress` (shrink memory files), `/caveman-commit` (terse commits), `/caveman-review` (single-line PR comments), `/cavecrew` (compressed subagents)
 7c. **Installs Context Mode plugin** — installs `context-mode@context-mode` for 98% context reduction via sandboxing (315 KB → 5.4 KB); tracks session continuity in SQLite FTS5; output compression ~65-75%; combined statusline shows $ saved this session, $ saved across sessions, % efficiency in real time
@@ -227,12 +227,13 @@ On first open, a `Setup` hook automatically runs `.claude/hooks/setup.sh`, which
 8. **Installs project skills** — copies `.claude/skills/*/` to `~/.claude/skills/` where Claude Code reads them (full directory, not just SKILL.md — preserves supporting docs and examples). Uses cross-platform path detection with explicit `$USERPROFILE` fallback for Windows and Unix-style path conversion via `cygpath` or sed. Creates destination directory if missing, verifies each copy succeeded by checking for SKILL.md file, adds verbose output showing source and destination paths
 9. **Installs npm dependencies + Playwright browser** — runs `npm install` for the `playwright` package, then `npx playwright install chromium` for the browser binary used by `tools/playwright.js`
 10. **Verifies GitHub CLI** — checks `gh` is installed; required by `github@claude-plugins-official` for `Bash(gh ...)` tool calls; prints platform-specific install instructions if missing
-11. **Installs global CLI tools** — `skillui` (design system extractor for `/skillui` skill), `firecrawl-cli` (web scraping CLI for `/firecrawl` skill), `codex-cli` (OpenAI Codex CLI for `/three-brain` auto-router and `codex` plugin), `gemini-cli` (Google Gemini CLI for `/three-brain` multimodal routes and `cc-gemini-plugin`), `notebooklm-mcp-cli` (Google NotebookLM CLI + MCP for `/notebooklm` skill via `uv tool install`), `codeburn` (AI spend analytics TUI for `/codeburn` skill), `browser-harness` (real Chrome CDP automation for `/browser-harness` skill), and `designlang` (design language extractor for `/extract-design` skill — installed with `--ignore-scripts` to skip Playwright browser download on corporate proxies)
+11. **Installs global CLI tools** — `skillui` (design system extractor for `/skillui` skill), `firecrawl-cli` (web scraping CLI for `/firecrawl` skill), `codex-cli` (OpenAI Codex CLI for `/three-brain` auto-router and `codex` plugin), `gemini-cli` (Google Gemini CLI for `/three-brain` multimodal routes and `cc-gemini-plugin`), `notebooklm-mcp-cli` (Google NotebookLM CLI + MCP for `/notebooklm` skill via `uv tool install`), `codeburn` (AI spend analytics TUI for `/codeburn` skill), `browser-harness` (real Chrome CDP automation for `/browser-harness` skill), `kie-cli` (`@felores/kie-cli` for AI media generation via `/kie-ai` skill — zero context tokens vs MCP), and `designlang` (design language extractor for `/extract-design` skill — installed with `--ignore-scripts` to skip Playwright browser download on corporate proxies)
 12. **Prints authentication reminders** — lists integrations requiring a manual one-time auth step: NotebookLM (`nlm login`), Trigger.dev (`npx trigger.dev@latest login`), Google Workspace (browser OAuth), Canva (browser OAuth), Higgsfield (browser OAuth via `npx mcp-remote`), GitHub CLI (`gh auth login`), Gemini plugin (`GEMINI_API_KEY` at aistudio.google.com), and Codex plugin (`npm install -g @openai/codex`)
 13. **Installs autoresearch dependencies** — runs `uv sync` in the `tools/autoresearch/` directory to install PyTorch and ML dependencies for autonomous research experiments
 14. **Installs LightRAG dependencies** — runs `uv sync` in `tools/lightrag-plus/`; then auto-runs `provision.py` if `.env` exists (creates Supabase schema + Pinecone index if credentials present; idempotent no-op if not)
 14a. **Installs Ollama** — local LLM runtime for LightRAG (free, private, no API key); on Windows auto-installs via `winget install Ollama.Ollama`, finds ollama at known install path (`%LOCALAPPDATA%\Programs\Ollama\`), and pulls model; on Unix auto-installs via install script; pulls `llama3.2` (3B, ~2GB) automatically on both platforms; shows bash + PowerShell fallback commands if PATH not updated
 15. **Initializes OpenSpace submodule and installs** — checks if `tools/openspace/` is a git submodule and initializes it via `git submodule update --init --recursive` if not already done; then runs `pip install -e .` to install the self-evolving skill system (requires Python 3.12+); sets up the optional dashboard frontend by copying `.env.example` → `.env`, aligning port to 3789 (matches package.json `--port` flag), and running `npm install` in `tools/openspace/frontend/` (requires Node.js ≥ 20)
+15a. **Installs Graphify** — installs `graphifyy[mcp]` via `uv tool install` for AST-based codebase knowledge graph (25+ languages); runs `graphify install` to register the skill globally. Run `/graphify .` once per repo to build `graphify-out/graph.json`, then use `graphify-mcp` for persistent query access. Optional `GRAPHIFY_API_KEY` for HTTP server auth (local stdio mode needs no key).
 16. **Installs pre-commit hook** — writes a thin wrapper to `.git/hooks/pre-commit` pointing to `.claude/hooks/pre-commit.sh`
 17. **Writes a marker** — creates `.claude/.setup-complete` so setup only runs once per machine
 
@@ -434,6 +435,8 @@ Two registries are configured in `extraKnownMarketplaces`:
 | `caveman` | `github.com/JuliusBrussee/caveman` |
 | `context-mode` | `github.com/mksglu/context-mode` |
 | `claude-mem` | `github.com/thedotmack/claude-mem` |
+| `claude-video` | `github.com/bradautomates/claude-video` |
+| `ponytail` | `github.com/DietrichGebert/ponytail` |
 
 ### Installing Third-Party Marketplace Plugins
 
@@ -488,6 +491,20 @@ The three third-party plugins below are enabled in `settings.json` but must be i
 /plugin install claude-mem@claude-mem
 ```
 
+**Claude-Video** — watch and analyze any video (YouTube, TikTok, Vimeo, 500+ sites, local files). Downloads via yt-dlp, extracts frames via ffmpeg, pulls captions or transcribes with Whisper. Usage: `/watch <url> <question>`. Requires ffmpeg + yt-dlp (plugin prints install instructions on first `/watch` run):
+
+```bash
+/plugin marketplace add bradautomates/claude-video
+/plugin install watch@claude-video
+```
+
+**Ponytail** — YAGNI/minimal-code discipline plugin. Always-on after install — enforces stdlib-first, platform-native, dependency-last decision ladder. Measured -54% LOC, -22% tokens, -20% cost vs baseline without compromising safety, validation, or accessibility. Commands: `/ponytail [lite|full|ultra|off]`, `/ponytail-review`, `/ponytail-audit`:
+
+```bash
+/plugin marketplace add DietrichGebert/ponytail
+/plugin install ponytail@ponytail
+```
+
 > The marketplace sources are already registered in `extraKnownMarketplaces` inside `.claude/settings.json`, so no separate marketplace registration step is needed when using the CLI: `claude plugins install ui-ux-pro-max@ui-ux-pro-max-skill`.
 
 Install or update official plugins via CLI:
@@ -508,6 +525,8 @@ claude plugins install <plugin-name>
 | **caveman** | `caveman@caveman` | Token compression: 75% reduction on responses, 46% on memory files. Session tracking + terse commits/reviews. Commands: `/caveman`, `/caveman-stats`, `/caveman-compress`, `/caveman-commit`, `/caveman-review`, `/cavecrew`. MCP proxy: `memory-shrunk` (wraps memory server) |
 | **context-mode** | `context-mode@context-mode` | Context window optimization: 98% reduction via sandboxing (315 KB → 5.4 KB), session continuity (SQLite FTS5), output compression ~65-75%. Commands: `/context-mode:ctx-stats`, `/context-mode:ctx-doctor`, `/context-mode:ctx-upgrade`, `/context-mode:ctx-purge`, `/context-mode:ctx-insight`. Statusline shows: $ saved session · $ saved total · % efficient |
 | **claude-mem** | `claude-mem@claude-mem` | Persistent memory across sessions — captures tool usage, generates semantic summaries, [web viewer](http://localhost:37777). Config: `~/.claude-mem/settings.json`. Mode: `CLAUDE_MEM_MODE=code` (default) |
+| **claude-video** | `watch@claude-video` | Watch + analyze any video — YouTube, TikTok, Vimeo, 500+ sites, local files. Extracts frames via ffmpeg, pulls captions or Whisper transcription. Usage: `/watch <url> <question>`. Requires ffmpeg + yt-dlp. Optional `GROQ_API_KEY` for Whisper. |
+| **ponytail** | `ponytail@ponytail` | YAGNI/minimal-code discipline — always-on after install. Enforces stdlib-first decision ladder. Measured -54% LOC, -22% tokens, -20% cost. Commands: `/ponytail [lite\|full\|ultra\|off]`, `/ponytail-review`, `/ponytail-audit`. Config: `PONYTAIL_DEFAULT_MODE=full` |
 | **github** | `github@claude-plugins-official` | GitHub operations — read/write repos, PRs, issues, branches, file contents, code search. Requires `GITHUB_PERSONAL_ACCESS_TOKEN` in `settings.local.json` |
 | **agent-sdk-dev** | `agent-sdk-dev@claude-plugins-official` | Agent scaffolding — creates Claude sub-agent definitions |
 | **claude-code-setup** | `claude-code-setup@claude-plugins-official` | Project bootstrapping and Claude Code automation recommendations |
@@ -592,6 +611,8 @@ Source files live in `.claude/skills/<name>/SKILL.md`. `setup.sh` installs them 
 | `/extract-design` | Extracts the complete design language from any website URL via the `designlang` CLI. Produces 8 simultaneous output files: DTCG tokens, Tailwind config, shadcn/ui theme, Figma variables, CSS custom properties, React theme, visual HTML preview, and WCAG accessibility scores. Also available as a plugin with 13 slash commands (`/extract`, `/site`, `/grade`, `/battle`, `/remix`, `/pack`, `/theme-swap`, `/brand`, `/pair`, `/studio`, `/verify`, `/fidelity`, `/gallery`). Requires `npm install -g designlang --ignore-scripts`. Source: [Manavarya09/design-extract](https://github.com/Manavarya09/design-extract). |
 | `/codeburn` | AI spend analytics — token and dollar breakdown by task, model, tool, and project across 31 AI tools including Claude Code. Reads session files from `~/.claude/projects/` directly (no data leaves the machine). Run `codeburn` for TUI dashboard (last 7 days), `codeburn status` for one-liner, `codeburn optimize` for waste scan, `codeburn web` for browser dashboard at `localhost:4747`. Requires `npm install -g codeburn`. Source: [getagentseal/codeburn](https://github.com/getagentseal/codeburn). |
 | `/browser-harness` | Real Chrome CDP automation via the `browser-harness` CLI. Controls your actual Chrome browser (not headless) — coordinate clicks, fill forms, take screenshots, evaluate JS, drag-drop, handle iframes, shadow DOM, file downloads, and cloud browsers. 100+ domain-specific skills (Amazon, LinkedIn, Reddit, GitHub, etc.) and 17 interaction guides. Run `browser-harness --doctor` to verify setup. Requires Chrome with remote debugging enabled (`chrome://inspect/#remote-debugging` → tick "Allow remote debugging"). Source: [browser-use/browser-harness](https://github.com/browser-use/browser-harness). |
+| `/graphify` | AST-parse any codebase (25+ languages) into a queryable knowledge graph. Answers "what calls X?", "what depends on Y?", shortest-path between any two symbols. Run `/graphify .` once per repo to build `graphify-out/graph.json`, then use `graphify-mcp` for persistent tool access across sessions. Optional `GRAPHIFY_API_KEY` for HTTP server auth — local stdio mode needs no key. Requires `uv tool install 'graphifyy[mcp]'` (installed by setup.sh step 15a). Source: [safishamsi/graphify](https://github.com/safishamsi/graphify). |
+| `/watch` | Watch and analyze any video via the `claude-video` plugin. Feeds frames + transcript directly to Claude. Usage: `/watch <url> <question>`. Supports YouTube, TikTok, Vimeo, 500+ sites, and local files. Optional `--start`/`--end` time window. Whisper transcription via `GROQ_API_KEY` or `OPENAI_API_KEY` (native captions work without any key). Requires ffmpeg + yt-dlp. Source: [bradautomates/claude-video](https://github.com/bradautomates/claude-video). |
 
 ### Apify Agent Skills (`.agents/skills/`)
 
@@ -643,6 +664,7 @@ All servers are defined in `.mcp.json` and enabled in `.claude/settings.json`. C
 | **firecrawl-mcp** | `npx firecrawl-mcp` | `FIRECRAWL_API_KEY` | Firecrawl MCP — backup for batch scraping and schema-driven LLM extraction (`firecrawl_scrape`, `firecrawl_batch_scrape`, `firecrawl_search`, `firecrawl_crawl`, `firecrawl_map`, `firecrawl_agent`, `firecrawl_extract`). **CLI (`firecrawl`) is always the primary tool** — see `/firecrawl` skill and `workflows/web-scraping.md`. |
 | **context7** | `npx @upstash/context7-mcp@latest` | `CONTEXT7_API_KEY` | Live SDK/library documentation lookup — fetch on demand instead of loading static reference files |
 | **designlang-mcp** | `cmd /c npx designlang mcp` | — | Exposes extracted design tokens via MCP after running `designlang <url>`. Reads from `./design-extract-output/`. No API key required — install CLI first with `npm install -g designlang --ignore-scripts`. |
+| **graphify-mcp** | `python -m graphify.serve graphify-out/graph.json` (via `uv tool install 'graphifyy[mcp]'`) | `GRAPHIFY_API_KEY` (optional) | Codebase knowledge graph — query tool `query_graph`, `get_node`, `get_neighbors`, `shortest_path`, `list_prs`, `get_pr_impact`. Requires `graphify-out/graph.json` to exist (build with `/graphify .` inside Claude Code first). Local stdio mode needs no key; HTTP mode uses `GRAPHIFY_API_KEY`. Source: [safishamsi/graphify](https://github.com/safishamsi/graphify). |
 
 ### Google Workspace Setup
 
@@ -698,7 +720,7 @@ Hooks are shell commands wired to Claude Code lifecycle events, configured in `.
 | **autoresearch-sync** | [`autoresearch-sync.sh`](.claude/hooks/autoresearch-sync.sh) | Called by stop.sh every session | Syncs `tools/autoresearch/` with upstream karpathy/autoresearch repo; runs silently if no changes; pulls updates if available; skips if local uncommitted changes exist |
 | **openspace-sync** | [`openspace-sync.sh`](.claude/hooks/openspace-sync.sh) | Called by stop.sh every session | Syncs `tools/openspace/` git submodule with upstream HKUDS/OpenSpace repo; pulls latest commits; updates submodule pointer in parent repo; skips if uncommitted changes exist |
 | **lightrag-sync** | [`lightrag-sync.sh`](.claude/hooks/lightrag-sync.sh) | Called by stop.sh every session | Checks `lightrag-hku` PyPI version against pinned version; notifies if minor/patch or major update available; run `check_update.py --upgrade` to apply |
-| **update-all** | [`update-all.sh`](.claude/hooks/update-all.sh) | Manual (run via `/update-all`) | Updates npm globals, uv tools, Python venvs, npm deps, submodules; repairs broken venvs via `uv pip check` + dist-info cleanup |
+| **update-all** | [`update-all.sh`](.claude/hooks/update-all.sh) | Manual (run via `/update-all`) | Updates npm globals (with `--ignore-scripts` for designlang to skip Playwright postinstall on corporate proxies), uv tools, Python venvs, npm deps, submodules, and Ollama (Windows/macOS: prints manual command; Linux: auto-installs). Repairs broken venvs via `uv pip check` + dist-info cleanup |
 
 **`stop.sh` logic:**
 
