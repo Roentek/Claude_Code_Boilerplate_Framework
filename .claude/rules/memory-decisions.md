@@ -4,6 +4,12 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-26 — tools/ffmpeg.js integrated for programmatic video/audio processing
+- **Decision:** Created `tools/ffmpeg.js` — thin Node.js CLI wrapper around system ffmpeg using `child_process.spawnSync`. No npm dependency (fluent-ffmpeg archived May 2025; ffmpeg.wasm 10-20x slower). Follows same pattern as `tools/playwright.js`.
+- **Why:** Distinct from claude-video (`/watch`) which is video *understanding*. This covers video *manipulation* — trim, transcode, thumbnail, extract-audio, probe, concat — needed for Trigger.dev automations and batch processing pipelines. User confirmed use case.
+- **Integration:** `tools/ffmpeg.js` (6 commands, all JSON output); `sys-ffmpeg.sh` (auto-installs system ffmpeg via winget/brew/apt); `setup.sh` calls `sys-ffmpeg.sh` in Runtime Checks section; `/ffmpeg` skill at `.claude/skills/ffmpeg/SKILL.md`; CLAUDE.md routing table, key commands, project structure, skills table updated.
+- **Commands:** `probe`, `transcode`, `trim`, `thumbnail`, `extract-audio`, `concat`
+
 ## 2026-06-26 — ponytail plugin integrated for YAGNI/minimal-code discipline
 - **Decision:** Added `ponytail@ponytail` (DietrichGebert/ponytail) as a Claude plugin via `plugin-ponytail.sh`. Always-on after install — no per-session activation needed.
 - **Why:** Measured -54% LOC, -22% tokens, -20% cost, -27% time vs baseline on agentic benchmarks. Enforces YAGNI + platform-native + stdlib-first discipline without dropping validation/security/a11y. Complements Caveman (output compression) at the code-generation discipline layer.

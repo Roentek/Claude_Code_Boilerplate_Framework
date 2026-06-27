@@ -45,6 +45,7 @@ echo ""
 echo "── Runtime Checks ───────────────────────────────────────"
 _run sys-uvx.sh
 _run sys-node.sh
+_run sys-ffmpeg.sh
 
 # ── Marketplace plugins ─────────────────────────────────────
 echo ""

@@ -27,3 +27,8 @@ Stated preferences about how Claude should behave, communicate, and structure wo
 <!-- DRAFT: review and edit before treating as permanent -->
 <!-- Drafted 2026-05-12 — edit or delete below -->
 - `ENABLE_*` flags no longer affect provisioning â€” they only control runtime mirroring.\n- **`test_lightrag.py`** â€” deleted.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-06-26 — edit or delete below -->
+- {"session_id":"a09ed320-eb8a-4ede-ae08-ec60c31daaa0","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\a09ed320-eb8a-4ede-ae08-ec60c31daaa0.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Here's the landscape:\n\n- **`fluent-ffmpeg`** â€” the long-time standard; **archived May 2025**, no longer maintained\n- **`@ffmpeg/ffmpeg` (ffmpeg.wasm)** â€” WebAssembly port; runs without system ffmpeg but 10-20x slower\n- **Direct `child_process`** â€” spawn system ffmpeg directly; most reliable, no deps\n\nThis project already installs ffmpeg as a system dep (claude-video uses it).

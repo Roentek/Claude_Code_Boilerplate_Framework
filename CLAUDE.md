@@ -42,6 +42,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Query codebase as knowledge graph | `/graphify` skill → `graphify` CLI + `graphify-mcp` | AST-parse 25+ languages → queryable graph; answers "what calls X?", "what depends on Y?"; run `/graphify .` once per repo to build; MCP for persistent tool access |
 | GitHub operations (issues, PRs, releases, repos) | `gh` CLI (primary) → `github` plugin MCP (fallback) | `gh issue list`, `gh pr create`, `gh repo clone`, `gh release create` — CLI-first; plugin MCP for reading private repo content in-context |
 | Watch / analyze video content | `/watch` plugin → `claude-video` | Analyze YouTube, TikTok, Vimeo, local video — extracts frames + transcript; `/watch <url> <question>`; needs ffmpeg + yt-dlp |
+| Process / manipulate video files (trim, transcode, thumbnail, extract audio, concat) | `node tools/ffmpeg.js` | All output JSON; requires system ffmpeg (auto-installed via `sys-ffmpeg.sh`); see `/ffmpeg` skill |
 | Validate / stress-test an idea before building | `/roast` skill | 5-persona adversarial council attacks from every angle → GO / RESHAPE / KILL verdict + cheapest 48-hour test. **Auto-invoke** when user says "I'm thinking of building X", "what do you think of this idea", "should I build this", or "pressure-test this" — run *before* any significant build starts |
 | End a session / hand off to a fresh context | `/session-handoff` skill | Structured handoff (decisions, files, running state, deferrals) so `/clear` loses nothing. **Auto-invoke** when user says "wrap up", "hand off", "summarize before I clear", or context exceeds ~250K tokens |
 
@@ -66,6 +67,14 @@ npx claude-code-templates@latest --setting statusline/context-monitor
 
 # Browser automation (WAT Tools layer example)
 node tools/playwright.js screenshot https://example.com
+
+# FFmpeg — video/audio processing
+node tools/ffmpeg.js probe video.mp4                              # inspect metadata
+node tools/ffmpeg.js trim input.mp4 --start 00:00:30 --end 00:01:00
+node tools/ffmpeg.js thumbnail input.mp4 --at 00:00:10 --width 1280
+node tools/ffmpeg.js extract-audio input.mp4 --format mp3
+node tools/ffmpeg.js transcode input.avi --format mp4 --resolution 1280x720
+node tools/ffmpeg.js concat a.mp4 b.mp4 --output merged.mp4
 
 # NotebookLM — authenticate and create research notebook
 nlm login
@@ -206,6 +215,7 @@ CLAUDE.md                     ← You are here (routing only)
 .env / .env.example           ← API keys (gitignored — never commit)
 tools/                        ← Deterministic execution scripts (Python/Node)
   playwright.js               ← Browser automation CLI wrapper
+  ffmpeg.js                   ← FFmpeg video/audio processing CLI wrapper
   autoresearch/               ← Autonomous ML research (prepare.py, train.py, program.md)
   lightrag-plus/              ← LightRAG Plus (graph-based RAG with multimodal + multi-backend support)
     src/                      ← Plus implementation
@@ -329,6 +339,7 @@ docs/                         ← Project-level documentation
 | `/spline-3d` | Embed Spline 3D scenes in React or vanilla HTML — includes React wrapper, interactive scene examples, performance guide |
 | `/graphify` | AST-parse codebase (25+ languages) → queryable knowledge graph; answers "what calls X?", "what depends on Y?"; run once per repo; `graphify-mcp` for persistent access |
 | `/watch` | Watch + analyze video — frames + transcript fed to Claude; `/watch <url> <question>`; `--start`/`--end` window; optional Whisper transcription (Groq/OpenAI) |
+| `/ffmpeg` | Process / manipulate video files — `node tools/ffmpeg.js`; transcode, trim, thumbnail, extract-audio, probe, concat; all output JSON; requires system ffmpeg |
 | `/roast` | When user says "roast", "pressure-test", "should I build this?", "what do you think of this idea?" — or before any unvalidated build starts. 5-persona council → GO / RESHAPE / KILL + cheapest 48-hour test |
 | `/session-handoff` | When user says "wrap up", "hand off", "summarize before I clear", "session handoff" — or before any `/clear`. Chat-only structured summary, never writes a file |
 
