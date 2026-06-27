@@ -164,7 +164,34 @@ else
   _skip "gh (not installed — run: bash .claude/hooks/install/sys-github-cli.sh)"
 fi
 
-# ── 5. Ollama ─────────────────────────────────────────────────
+# ── 5. Supabase CLI ──────────────────────────────────────────
+echo ""
+echo "── Supabase CLI ─────────────────────────────────────────"
+if command -v supabase &>/dev/null; then
+  if _is_windows; then
+    if command -v scoop &>/dev/null; then
+      scoop update supabase >/dev/null 2>&1 && _ok "supabase (scoop)" || _skip "supabase (scoop up-to-date)"
+    else
+      _skip "supabase (Windows: scoop update supabase  OR  npm install -g supabase@latest)"
+    fi
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
+    if command -v brew &>/dev/null && brew upgrade supabase >/dev/null 2>&1; then
+      _ok "supabase (brew)"
+    else
+      _skip "supabase (already at latest or brew unavailable)"
+    fi
+  else
+    if command -v npm &>/dev/null && npm install -g supabase@latest >/dev/null 2>&1; then
+      _ok "supabase (npm)"
+    else
+      _skip "supabase (npm update failed)"
+    fi
+  fi
+else
+  _skip "supabase (not installed — run: bash .claude/hooks/install/sys-supabase-cli.sh)"
+fi
+
+# ── 6. Ollama ─────────────────────────────────────────────────
 echo ""
 echo "── Ollama ───────────────────────────────────────────────"
 if command -v ollama &>/dev/null; then

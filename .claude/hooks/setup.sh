@@ -100,6 +100,11 @@ echo ""
 echo "── GitHub CLI ───────────────────────────────────────────"
 _run sys-github-cli.sh
 
+# ── Supabase CLI ─────────────────────────────────────────────
+echo ""
+echo "── Supabase CLI ─────────────────────────────────────────"
+_run sys-supabase-cli.sh
+
 # ── Global CLI tools ────────────────────────────────────────
 echo ""
 echo "── Global CLI Tools ─────────────────────────────────────"

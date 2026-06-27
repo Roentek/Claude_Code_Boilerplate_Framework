@@ -19,6 +19,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | AI-native CLI for existing software | `/cli-anything` plugin | Generate CLIs for GIMP, Blender, LibreOffice, Audacity, etc. — 50+ apps supported |
 | Slash-command skill | `~/.claude/skills/<name>/SKILL.md` | Skills must be subdirectory + `SKILL.md`; `setup.sh` auto-installs |
 | MCP server integration | `.mcp.json` + `.claude/settings.local.json` | Copy `settings.local.json.example` → `settings.local.json`, fill keys, restart |
+| Supabase local dev (migrations, local stack, type gen, edge functions) | `supabase` CLI (primary) → `supabase-mcp` (in-context queries) | `supabase login` once; `supabase start` needs Docker; CLI-first for migrations + type gen |
 | Claude API / SDK app | `/claude-api` skill | Scaffolds Anthropic SDK boilerplate |
 | NotebookLM research / podcasts | `/notebooklm` skill → `nlm` CLI | Create notebooks, add sources, generate podcasts/videos/briefings — CLI first; `notebooklm-mcp` as backup |
 | n8n workflow | `n8n-mcp` tools | Search nodes, validate, build via MCP |
@@ -75,6 +76,16 @@ node tools/ffmpeg.js thumbnail input.mp4 --at 00:00:10 --width 1280
 node tools/ffmpeg.js extract-audio input.mp4 --format mp3
 node tools/ffmpeg.js transcode input.avi --format mp4 --resolution 1280x720
 node tools/ffmpeg.js concat a.mp4 b.mp4 --output merged.mp4
+
+# Supabase CLI — local dev, migrations, type generation
+supabase login                                                     # one-time browser OAuth
+supabase init                                                      # init project (first time)
+supabase start                                                     # start local stack (Docker required)
+supabase db push                                                   # push migrations to remote
+supabase migration new <name>                                      # create a new migration file
+supabase gen types typescript --project-id <id> > types/db.ts     # generate TypeScript types
+supabase functions deploy <function-name>                          # deploy edge function
+supabase stop                                                      # stop local stack
 
 # NotebookLM — authenticate and create research notebook
 nlm login
@@ -363,7 +374,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | Server | Use For |
 | ------ | ------- |
 | `memory-shrunk` | **Replaces `memory`** — Caveman-compressed knowledge graph; ~50% metadata reduction on tool descriptions |
-| `supabase-mcp` | Postgres database + Supabase platform |
+| `supabase-mcp` | Postgres database + Supabase platform — in-context queries/migrations; **CLI-first:** prefer `supabase` CLI for local dev, migrations, type gen, edge functions |
 | `openrouter-mcp` | Multi-model LLM routing, benchmarking |
 | `tavily-mcp` | Web search and content extraction |
 | `google-workspace-mcp` | Gmail, Drive, Sheets, Docs, Calendar, Forms |

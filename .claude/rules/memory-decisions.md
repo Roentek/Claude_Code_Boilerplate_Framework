@@ -4,6 +4,13 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-26 — Supabase CLI integrated for local dev, migrations, and type generation
+- **Decision:** Added `supabase` CLI (`sys-supabase-cli.sh`) as primary interface for local Supabase dev. `supabase-mcp` remains active for in-context database queries.
+- **Why:** CLI-first pattern — `db push`, `migration new`, `gen types typescript`, `functions deploy` are CLI operations. MCP better for schema introspection + running queries inside the conversation.
+- **Install:** Windows: scoop → npm fallback; macOS: `brew install supabase/tap/supabase`; Linux: `npm install -g supabase`. Auth: `supabase login` (browser OAuth, one-time).
+- **Integration:** `sys-supabase-cli.sh`; `setup.sh` after GitHub CLI section; `update-all.sh` section 5 (platform-aware); `auth-reminders.sh` login step; CLAUDE.md routing table, key commands, MCP Servers table note.
+- **Docker note:** `supabase start` requires Docker — not auto-started by setup.sh.
+
 ## 2026-06-26 — tools/ffmpeg.js integrated for programmatic video/audio processing
 - **Decision:** Created `tools/ffmpeg.js` — thin Node.js CLI wrapper around system ffmpeg using `child_process.spawnSync`. No npm dependency (fluent-ffmpeg archived May 2025; ffmpeg.wasm 10-20x slower). Follows same pattern as `tools/playwright.js`.
 - **Why:** Distinct from claude-video (`/watch`) which is video *understanding*. This covers video *manipulation* — trim, transcode, thumbnail, extract-audio, probe, concat — needed for Trigger.dev automations and batch processing pipelines. User confirmed use case.

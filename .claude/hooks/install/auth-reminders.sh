@@ -28,6 +28,10 @@ cat <<'AUTH'
   GitHub CLI  →  gh auth login
     Required by: github@claude-plugins-official plugin.
 
+  Supabase CLI  →  supabase login
+    Browser OAuth — links CLI to your Supabase account.
+    Required for: supabase db push, gen types, edge functions deploy.
+
   Gemini Plugin  →  add GEMINI_API_KEY to settings.local.json
     Free key: https://aistudio.google.com/apikey
 
