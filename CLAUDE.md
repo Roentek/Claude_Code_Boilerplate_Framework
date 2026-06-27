@@ -41,6 +41,8 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Extract design tokens from any website | `/extract-design` skill → `designlang` CLI + plugin | DTCG tokens, Tailwind config, shadcn theme, Figma vars, CSS vars, WCAG scores — 13 slash commands (/extract /site /grade /battle /remix /pack /theme-swap /brand /pair /studio /verify /fidelity /gallery) |
 | Query codebase as knowledge graph | `/graphify` skill → `graphify` CLI + `graphify-mcp` | AST-parse 25+ languages → queryable graph; answers "what calls X?", "what depends on Y?"; run `/graphify .` once per repo to build; MCP for persistent tool access |
 | Watch / analyze video content | `/watch` plugin → `claude-video` | Analyze YouTube, TikTok, Vimeo, local video — extracts frames + transcript; `/watch <url> <question>`; needs ffmpeg + yt-dlp |
+| Validate / stress-test an idea before building | `/roast` skill | 5-persona adversarial council attacks from every angle → GO / RESHAPE / KILL verdict + cheapest 48-hour test. **Auto-invoke** when user says "I'm thinking of building X", "what do you think of this idea", "should I build this", or "pressure-test this" — run *before* any significant build starts |
+| End a session / hand off to a fresh context | `/session-handoff` skill | Structured handoff (decisions, files, running state, deferrals) so `/clear` loses nothing. **Auto-invoke** when user says "wrap up", "hand off", "summarize before I clear", or context exceeds ~250K tokens |
 
 ---
 
@@ -123,7 +125,7 @@ npm install
 
 # 2. Run initial setup (hooks, skills, permissions, CLI tools, git submodules)
 bash .claude/hooks/setup.sh
-# Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything, caveman, context-mode, claude-mem)
+# Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything, caveman, context-mode, claude-mem, claude-video, ponytail)
 # Step 7a:  Apify agent skills (5 skills from apify/agent-skills marketplace) with 30-sec timeout protection; displays manual /skill install commands if timeout/failure occurs
 # Step 7b:  Caveman plugin (token compression — 75% response reduction, 46% memory file reduction)
 # Step 7c:  Context Mode plugin (98% context reduction via sandboxing; statusline shows session/total savings + efficiency %); auto-installs better-sqlite3 with NODE_TLS_REJECT_UNAUTHORIZED=0 (corporate SSL proxy fix) for FTS5 session continuity
@@ -196,7 +198,7 @@ CLAUDE.md                     ← You are here (routing only)
 tools/                        ← Deterministic execution scripts (Python/Node)
   playwright.js               ← Browser automation CLI wrapper
   autoresearch/               ← Autonomous ML research (prepare.py, train.py, program.md)
-  lightrag/                   ← LightRAG Plus (graph-based RAG with multimodal + multi-backend support)
+  lightrag-plus/              ← LightRAG Plus (graph-based RAG with multimodal + multi-backend support)
     src/                      ← Plus implementation
       config.py               ← Environment config + feature flags
       lightrag_plus.py        ← Main wrapper class
@@ -260,7 +262,7 @@ docs/                         ← Project-level documentation
 | `context-mode` | Context window optimization — 98% reduction via sandboxing (315 KB → 5.4 KB); session continuity via SQLite FTS5; output compression ~65-75% |
 | `claude-mem` | Persistent memory across sessions — captures tool usage observations, generates semantic summaries, [web viewer](http://localhost:37777) |
 
-> Disabled: `pinecone`, `supabase`, `plugin-dev` — enable in [`.claude/settings.json`](.claude/settings.json) → `enabledPlugins`.
+> Disabled Claude *plugins* (MCP servers for pinecone/supabase are still active — see MCP Servers table): `pinecone`, `supabase`, `plugin-dev` — enable in [`.claude/settings.json`](.claude/settings.json) → `enabledPlugins`.
 
 ---
 
@@ -283,8 +285,8 @@ docs/                         ← Project-level documentation
 | Command | Use When |
 | ------- | -------- |
 | `/site-teardown [url]` | Reverse engineer a website into a build blueprint |
-| `/skillui` | Extract a design system from any site, dir, or GitHub repo |
-| `/extract-design` | Extract complete design language from any URL → DTCG tokens, Tailwind, shadcn, Figma, CSS vars, WCAG; 13 plugin commands |
+| `/skillui` | Prepping to match an existing site's design in a build session — extracts tokens into SKILL.md/DESIGN.md for session use. Use *before* writing any UI code that should match an existing site |
+| `/extract-design` | When the extracted tokens/configs are themselves the deliverable (DTCG, Tailwind, shadcn, Figma vars, CSS vars, WCAG report). 13 plugin commands for export formats |
 | `/webgpu-threejs-tsl` | WebGPU + Three.js TSL — renderer, node materials, compute shaders |
 | `/design-md` | Load a ready-made brand DESIGN.md for 73 brands via `npx getdesign@latest add <brand>` |
 | `/taste-skill` | Anti-slop frontend enforcement — bans generic patterns, enforces Bento 2.0 |
@@ -292,7 +294,7 @@ docs/                         ← Project-level documentation
 | `/notebooklm` | Google NotebookLM — create notebooks, add sources, generate podcasts/videos/briefings via `nlm` CLI |
 | `/browser-harness` | Real Chrome CDP automation — coordinate clicks, screenshots, JS eval, drag-drop, iframes, downloads; `browser-harness --doctor` for setup |
 | `/playwright` | Browser automation — screenshots, scraping, PDFs, link extraction via Playwright CLI |
-| `/compact-memory` | Full memory hygiene — compress sessions, prune decisions, sync facts to MCP graph |
+| `/compact-memory` | When `memory-sessions.md` exceeds ~200 lines, monthly, or before a major new project phase. Compresses sessions, prunes decisions, syncs facts to MCP graph |
 | `/update-all` | Update all npm globals, uv tools, Python venvs, npm deps, and submodules; repairs broken venvs automatically |
 | `/three-brain` | Auto-route work to Codex (review/rescue) or Gemini (multimodal/long-context) — requires codex-cli + gemini-cli |
 | `/autoresearch` | Autonomous ML research — modify GPT training code, run 5-min experiments, keep improvements (~12 exp/hour, ~100 overnight) |
@@ -318,10 +320,15 @@ docs/                         ← Project-level documentation
 | `/spline-3d` | Embed Spline 3D scenes in React or vanilla HTML — includes React wrapper, interactive scene examples, performance guide |
 | `/graphify` | AST-parse codebase (25+ languages) → queryable knowledge graph; answers "what calls X?", "what depends on Y?"; run once per repo; `graphify-mcp` for persistent access |
 | `/watch` | Watch + analyze video — frames + transcript fed to Claude; `/watch <url> <question>`; `--start`/`--end` window; optional Whisper transcription (Groq/OpenAI) |
-| `/roast` | 5-persona adversarial council (Contrarian, Expansionist, Logician, Researcher, Buyer) attacks an idea in parallel → Judge returns GO / RESHAPE / KILL verdict + cheapest 48-hour validation test |
-| `/session-handoff` | Structured end-of-session summary (decisions, shipped files, running state, verification, deferrals) for zero-context-rot `/clear` handoffs — chat-only output |
+| `/roast` | When user says "roast", "pressure-test", "should I build this?", "what do you think of this idea?" — or before any unvalidated build starts. 5-persona council → GO / RESHAPE / KILL + cheapest 48-hour test |
+| `/session-handoff` | When user says "wrap up", "hand off", "summarize before I clear", "session handoff" — or before any `/clear`. Chat-only structured summary, never writes a file |
 
 **Superpowers skills** auto-trigger based on context (brainstorming, TDD, debugging, code review, planning, subagents, git worktrees). No manual invoke needed.
+
+**Additional auto-trigger rules:**
+- `/roast` — invoke before any significant feature or product build when the idea is unvalidated. Fire on: "I'm thinking of building X", "what do you think of this idea?", "should I build this?", "pressure-test this", "roast this". Do not skip just because the user seems excited — sycophancy is the failure mode.
+- `/session-handoff` — invoke when user says "wrap up", "hand off", "summarize before I clear", "session handoff", or is about to `/clear`. Also invoke proactively when context approaches ~250K tokens without a handoff having been run.
+- `/auto-stage-commit` — invoke when user says "commit", "stage this", "let's commit", or shows intent to commit changes. Outputs the ready-to-run `git commit` command; does not execute it.
 
 > Add skills: create `<name>/SKILL.md` in `.claude/skills/` → re-run `setup.sh` or restart Claude Code.
 

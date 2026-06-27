@@ -567,8 +567,8 @@ Skills are Markdown files that expand into full instructions when invoked. Proje
 | `/caveman-review` | Single-line PR comments in format: "L42: 🔴 bug: user null. Add guard" — no unnecessary context. |
 | `/cavecrew` | Compressed subagents (investigator, builder, reviewer) that emit ~60% fewer tokens than vanilla equivalents. |
 | `/auto-stage-commit` | Stages all changes + generates lean Conventional Commits message — outputs ready-to-run `git commit` command without committing. Auto-triggers on commit intent. |
-| `/roast` | 5-persona adversarial council (Contrarian, Expansionist, Logician, Researcher, Buyer) attacks an idea in parallel → Judge returns GO / RESHAPE / KILL verdict + cheapest 48-hour validation test. |
-| `/session-handoff` | Structured end-of-session summary (decisions, shipped files, running state, verification, deferrals) for zero-context-rot `/clear` handoffs — chat-only output, never writes a file. |
+| `/roast` | **Auto-invokes before any significant build** when the idea is unvalidated. Triggers on: "I'm thinking of building X", "should I build this?", "pressure-test this". 5-persona adversarial council (Contrarian, Expansionist, Logician, Researcher, Buyer) → GO / RESHAPE / KILL verdict + cheapest 48-hour test to validate the riskiest assumption before building. |
+| `/session-handoff` | **Auto-invokes before `/clear`** or when context approaches ~250K tokens. Triggers on: "wrap up", "hand off", "summarize before I clear". Structured summary covering decisions locked, key files, running state, verification steps, and deferrals — chat-only output, never writes a file. |
 
 ### Superpowers Skills (auto-trigger based on context)
 

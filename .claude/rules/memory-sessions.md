@@ -219,3 +219,10 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-06-26 (auto-drafted — review before next session)
 - Summary of what changed:\n\n- **Step 7**: added `claude-video`, `ponytail` to marketplace plugins list\n- **Step 11**: added `kie-cli` to global CLI tools list\n- **Step 15a**: new step for Graphify (`uv tool install 'graphifyy[mcp]'`, skill registration, `/graphify .` per-repo build instruction)\n- **Plugin Marketplaces table**: added `claude-video` + `ponytail` rows\n- **Installing Third-Party Plugins**: added Claude-Video and Ponytail install entries with slash commands\n- **Enabled Plugins table**: added `watch@claude-video` and `ponytail@ponytail` rows\n- **Project Skills table**: added `/graphify` and `/watch` rows\n- **MCP Servers table**: added `graphify-mcp` row\n- **update-all hook**: noted Ollama update step and designlang `--ignore-scripts` fix","background_tasks":[],"session_crons":[]}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-06-26 (auto-drafted — review before next session)
+- Here's what changed and why:\n\n**Routing table (top)** â€” Added `/roast` and `/session-handoff` rows with explicit auto-invoke trigger phrases.
+- Also fixed `/skillui` vs `/extract-design` ambiguity (session-prep vs deliverable-export) and `/compact-memory` (explicit size/timing trigger).\n\n**Auto-trigger block** â€” Three explicit rules now: `/roast`, `/session-handoff`, `/auto-stage-commit`.
+- Trigger phrases are consistent across routing table, skills table, and this block (ðŸ”´ was inconsistent \"what do you think?\" vs \"what do you think of this idea?\").\n\n**Stale fixes** â€” `tools/lightrag/` â†’ `tools/lightrag-plus/` in project structure; added `claude-video` + `ponytail` to setup.sh comment; clarified disabled plugins note to prevent MCP/plugin confusion.","background_tasks":[],"session_crons":[]}
