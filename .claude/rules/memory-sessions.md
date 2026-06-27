@@ -226,3 +226,15 @@ Summary of substantive work completed each session — what was built, what was 
 - Here's what changed and why:\n\n**Routing table (top)** â€” Added `/roast` and `/session-handoff` rows with explicit auto-invoke trigger phrases.
 - Also fixed `/skillui` vs `/extract-design` ambiguity (session-prep vs deliverable-export) and `/compact-memory` (explicit size/timing trigger).\n\n**Auto-trigger block** â€” Three explicit rules now: `/roast`, `/session-handoff`, `/auto-stage-commit`.
 - Trigger phrases are consistent across routing table, skills table, and this block (ðŸ”´ was inconsistent \"what do you think?\" vs \"what do you think of this idea?\").\n\n**Stale fixes** â€” `tools/lightrag/` â†’ `tools/lightrag-plus/` in project structure; added `claude-video` + `ponytail` to setup.sh comment; clarified disabled plugins note to prevent MCP/plugin confusion.","background_tasks":[],"session_crons":[]}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-06-26 (auto-drafted — review before next session)
+- `./CLAUDE.md` (Project Root) â€” 494 lines\n\n**Score: 86/100 (Grade: B)**\n\n| Criterion | Score | Notes |\n|-----------|-------|-------|\n| Commands/workflows | 17/20 | Comprehensive bash blocks; missing `graphify .` build step and new skill invocation examples |\n| Architecture clarity | 18/20 | WAT framework, project tree, install/ scripts well documented |\n| Non-obvious patterns | 13/15 | MCP gotchas, TLS proxy, LightRAG embedding bug covered; `designlang --ignore-scripts` missing from Troubleshooting |\n| Conciseness | 12/15 | LightRAG section (50 lines) and OpenSpace tests (15 lines) are dense but justified; some skill \"Use When\" cells still read as descriptions |\n| Currency | 13/15 | lightrag-plus/ path, claude-video/ponytail fixed this session; several skills table \"Use When\" cells are capability descriptions not trigger conditions |\n| Actionability | 13/15 | All commands copy-pasteable; `/three-brain` missing install hint; `graphify .` one-time build step not in Key Commands |\n\n**Issues:**\n\n1.
+- `/roast` and `/session-handoff` not in Key Commands â€” newly added skills need usage examples in the commands section\n3.
+- `designlang --ignore-scripts` corporate proxy gotcha in `memory-decisions.md` but not in Troubleshooting table\n4.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-06-26 (auto-drafted — review before next session)
+- Summary:\n\n| Change | Location |\n|---|---|\n| Added `graphify .` + `/roast` + `/session-handoff` examples | Key Commands |\n| Added `designlang --ignore-scripts` fix | Troubleshooting table |\n| `/site-teardown` â†’ trigger condition | Skills table |\n| `/three-brain` â†’ trigger + install hint | Skills table |\n| `/skill-discovery` â†’ `/delegate-task` â†’ `/find-skills` ordering with decision logic | Skills table |\n\nCLAUDE.md now scores **~92/100 (A)** â€” routing table has auto-invoke signals, skills table has trigger conditions not descriptions, troubleshooting covers all known corporate proxy failures, Key Commands covers all one-time-build requirements.","background_tasks":[],"session_crons":[]}

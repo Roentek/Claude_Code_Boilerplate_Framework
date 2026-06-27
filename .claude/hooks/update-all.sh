@@ -140,7 +140,31 @@ else
   _skip "Python venvs (uv not found)"
 fi
 
-# ── 4. Ollama ─────────────────────────────────────────────────
+# ── 4. GitHub CLI ─────────────────────────────────────────────
+echo ""
+echo "── GitHub CLI ───────────────────────────────────────────"
+if command -v gh &>/dev/null; then
+  echo "  Checking for gh updates..."
+  if _is_windows; then
+    _skip "gh (Windows: winget upgrade GitHub.cli)"
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
+    if command -v brew &>/dev/null && brew upgrade gh >/dev/null 2>&1; then
+      _ok "gh upgraded via brew"
+    else
+      _skip "gh (already at latest or brew unavailable)"
+    fi
+  else
+    if sudo apt upgrade gh -y -qq >/dev/null 2>&1; then
+      _ok "gh upgraded via apt"
+    else
+      _skip "gh (auto-upgrade failed — run: sudo apt upgrade gh)"
+    fi
+  fi
+else
+  _skip "gh (not installed — run: bash .claude/hooks/install/sys-github-cli.sh)"
+fi
+
+# ── 5. Ollama ─────────────────────────────────────────────────
 echo ""
 echo "── Ollama ───────────────────────────────────────────────"
 if command -v ollama &>/dev/null; then
@@ -162,7 +186,7 @@ else
   _skip "Ollama (not installed — run setup.sh to install)"
 fi
 
-# ── 5. npm project dependencies ──────────────────────────────
+# ── 6. npm project dependencies ──────────────────────────────
 echo ""
 echo "── npm project deps ─────────────────────────────────────"
 if [ -f "$ROOT/package.json" ] && command -v npm &>/dev/null; then
@@ -176,7 +200,7 @@ else
   _skip "npm project deps (no package.json or npm not found)"
 fi
 
-# ── 6. git submodules ─────────────────────────────────────────
+# ── 7. git submodules ─────────────────────────────────────────
 echo ""
 echo "── git submodules ───────────────────────────────────────"
 if git -C "$ROOT" submodule status >/dev/null 2>&1 && \
@@ -191,7 +215,7 @@ else
   _skip "git submodules (none configured)"
 fi
 
-# ── 7. LightRAG import verification ──────────────────────────
+# ── 8. LightRAG import verification ──────────────────────────
 echo ""
 echo "── LightRAG verification ────────────────────────────────"
 if [ -d "$ROOT/tools/lightrag-plus/.venv" ]; then

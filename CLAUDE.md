@@ -40,6 +40,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | AI spend tracking / token cost analysis | `/codeburn` skill → `codeburn` CLI | Token + dollar breakdown by task, model, tool, project across 31 AI tools — `codeburn` for TUI dashboard, `codeburn status` for one-liner |
 | Extract design tokens from any website | `/extract-design` skill → `designlang` CLI + plugin | DTCG tokens, Tailwind config, shadcn theme, Figma vars, CSS vars, WCAG scores — 13 slash commands (/extract /site /grade /battle /remix /pack /theme-swap /brand /pair /studio /verify /fidelity /gallery) |
 | Query codebase as knowledge graph | `/graphify` skill → `graphify` CLI + `graphify-mcp` | AST-parse 25+ languages → queryable graph; answers "what calls X?", "what depends on Y?"; run `/graphify .` once per repo to build; MCP for persistent tool access |
+| GitHub operations (issues, PRs, releases, repos) | `gh` CLI (primary) → `github` plugin MCP (fallback) | `gh issue list`, `gh pr create`, `gh repo clone`, `gh release create` — CLI-first; plugin MCP for reading private repo content in-context |
 | Watch / analyze video content | `/watch` plugin → `claude-video` | Analyze YouTube, TikTok, Vimeo, local video — extracts frames + transcript; `/watch <url> <question>`; needs ffmpeg + yt-dlp |
 | Validate / stress-test an idea before building | `/roast` skill | 5-persona adversarial council attacks from every angle → GO / RESHAPE / KILL verdict + cheapest 48-hour test. **Auto-invoke** when user says "I'm thinking of building X", "what do you think of this idea", "should I build this", or "pressure-test this" — run *before* any significant build starts |
 | End a session / hand off to a fresh context | `/session-handoff` skill | Structured handoff (decisions, files, running state, deferrals) so `/clear` loses nothing. **Auto-invoke** when user says "wrap up", "hand off", "summarize before I clear", or context exceeds ~250K tokens |
@@ -100,6 +101,14 @@ openspace-upload-skill /path/to/skill/dir # Upload to cloud (requires OPENSPACE_
 
 # Submodule updates (automatic via stop hook, or manual)
 git submodule update --remote tools/openspace  # Manual: pull latest from upstream
+
+# Graphify — one-time per repo (must build before /graphify or graphify-mcp work)
+graphify .                                          # Parse codebase → graphify-out/graph.json
+graphify query "what calls authMiddleware?"         # Query without MCP
+
+# Session management
+/roast <idea>                     # Pressure-test idea before building (5-persona council)
+/session-handoff                  # Structured wrap-up before /clear — chat-only
 
 # Caveman — token compression (75% reduction on responses, 46% on memory files)
 /caveman                          # Activate compression mode (lite/full/ultra)
@@ -254,7 +263,7 @@ docs/                         ← Project-level documentation
 | `superpowers` | Any non-trivial feature or fix — triggers automatically based on context |
 | `skill-creator` | Building or refining slash-command skills |
 | `impeccable` | Frontend critique/polish/audit — 23 commands + anti-pattern detection |
-| `github` | Reading private repos, reviewing PRs — requires `GITHUB_PERSONAL_ACCESS_TOKEN` |
+| `github` | Reading private repo content in-context, reviewing PRs via MCP — **CLI-first:** prefer `gh` CLI for all GitHub operations; plugin is fallback for in-context repo reads. Requires `GITHUB_PERSONAL_ACCESS_TOKEN` |
 | `cli-anything` | Generating AI-native CLIs for existing software (GIMP, Blender, LibreOffice, etc.) — 50+ apps, 2,280+ tests |
 | `claude-video` | Watch + analyze video — `/watch <url> <question>`; extracts frames + transcript; YouTube, TikTok, Vimeo, 500+ sites; needs ffmpeg + yt-dlp |
 | `ponytail` | YAGNI/minimal-code discipline — always-on; -54% LOC, -22% tokens, -20% cost; `/ponytail [lite\|full\|ultra\|off]`, `/ponytail-review`, `/ponytail-audit` |
@@ -284,7 +293,7 @@ docs/                         ← Project-level documentation
 
 | Command | Use When |
 | ------- | -------- |
-| `/site-teardown [url]` | Reverse engineer a website into a build blueprint |
+| `/site-teardown [url]` | User provides a URL and asks to clone, match, or understand a site's structure/design before building |
 | `/skillui` | Prepping to match an existing site's design in a build session — extracts tokens into SKILL.md/DESIGN.md for session use. Use *before* writing any UI code that should match an existing site |
 | `/extract-design` | When the extracted tokens/configs are themselves the deliverable (DTCG, Tailwind, shadcn, Figma vars, CSS vars, WCAG report). 13 plugin commands for export formats |
 | `/webgpu-threejs-tsl` | WebGPU + Three.js TSL — renderer, node materials, compute shaders |
@@ -296,13 +305,13 @@ docs/                         ← Project-level documentation
 | `/playwright` | Browser automation — screenshots, scraping, PDFs, link extraction via Playwright CLI |
 | `/compact-memory` | When `memory-sessions.md` exceeds ~200 lines, monthly, or before a major new project phase. Compresses sessions, prunes decisions, syncs facts to MCP graph |
 | `/update-all` | Update all npm globals, uv tools, Python venvs, npm deps, and submodules; repairs broken venvs automatically |
-| `/three-brain` | Auto-route work to Codex (review/rescue) or Gemini (multimodal/long-context) — requires codex-cli + gemini-cli |
+| `/three-brain` | Task needs deep code review or rescue (→ Codex) OR multimodal/large-context analysis (→ Gemini). Requires both CLIs installed (`codex-cli` + `gemini-cli`) |
 | `/autoresearch` | Autonomous ML research — modify GPT training code, run 5-min experiments, keep improvements (~12 exp/hour, ~100 overnight) |
 | `/lightrag` | Graph-based RAG — knowledge extraction, entity-relationship Q&A, multimodal docs (PDFs, images), Web UI + REST API |
 | `/openspace` | Self-evolving skill system — skills auto-fix, auto-improve, auto-learn; 46% token reduction; cloud skill sharing |
-| `/delegate-task` | Delegate complex tasks to OpenSpace's grounding agent — auto skill evolution, search, fix, upload |
-| `/skill-discovery` | Search local + cloud skills before starting work — decide: follow, delegate, or skip |
-| `/find-skills` | Inventory all installed skills (global + project) and enabled plugins — shows gaps and orphans |
+| `/skill-discovery` | **Run first** before any non-trivial task — searches local + cloud skills to decide: follow existing skill, delegate, or proceed manually |
+| `/delegate-task` | After `/skill-discovery` when task is complex and an OpenSpace agent should own it — auto skill evolution + upload |
+| `/find-skills` | Auditing what's installed: gap analysis, orphaned skills, plugin inventory |
 | `/apify-ultimate-scraper` | Universal web scraper — 130+ Actors for Instagram, TikTok, YouTube, LinkedIn, Google, Reddit, Amazon, Airbnb, Yelp; lead generation, brand monitoring, competitor analysis, trend research |
 | `/apify-actor-development` | Create and deploy Apify Actors — JS/TS/Python Actor development with config schemas and logging |
 | `/apify-actorization` | Convert existing code to Apify Actors — JS/TS SDK, Python async, CLI wrappers |
@@ -474,6 +483,7 @@ Tier 2 tests (`TestOpenSpaceInit`) read LLM key from `tools/openspace/.env` or O
 | Playwright Chromium download fails: `UNABLE_TO_GET_ISSUER_CERT_LOCALLY` | Corporate proxy intercepts TLS. Fix: `NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright install chromium` — baked into `sys-npm-deps.sh` automatically |
 | `uv sync` fails with `UnknownIssuer` / `invalid peer certificate` | Corporate proxy intercepts TLS. Fix: `UV_NATIVE_TLS=true uv sync` — uses Windows cert store. Already baked into `update-all.sh`. |
 | LightRAG uploads fail: `httpx.ReadTimeout` during entity extraction | Ollama LLM exceeds default timeout on large chunks. Fix: increase `LLM_TIMEOUT` in `tools/lightrag-plus/.env` — set `1800` (30 min) for slow hardware. Both `asyncio.wait_for` and httpx client use this value. `--timeout` CLI arg only affects gunicorn, not uvicorn — do NOT use it. |
+| `designlang` postinstall fails with Playwright/SSL error | Corporate proxy blocks Playwright browser download. Fix: `npm install -g designlang --ignore-scripts` — CLI works fully without the Playwright browser |
 
 ---
 
