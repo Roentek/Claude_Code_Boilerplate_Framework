@@ -207,7 +207,8 @@
     "claude-mem@thedotmack": true,
     "designlang@design-extract": true,
     "watch@claude-video": true,
-    "ponytail@ponytail": true
+    "ponytail@ponytail": true,
+    "mattpocock-skills@mattpocock-skills": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -304,6 +305,13 @@
       "source": {
         "source": "github",
         "repo": "DietrichGebert/ponytail"
+      },
+      "autoUpdate": true
+    },
+    "mattpocock-skills": {
+      "source": {
+        "source": "github",
+        "repo": "mattpocock/skills"
       },
       "autoUpdate": true
     },

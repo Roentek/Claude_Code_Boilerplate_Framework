@@ -4,6 +4,12 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-26 — mattpocock-skills plugin integrated for real-engineering workflows
+- **Decision:** Added `mattpocock-skills@mattpocock-skills` (mattpocock/skills) as a Claude plugin via `plugin-mattpocock-skills.sh`.
+- **Why:** Provides 16 composable engineering skills designed to fix core AI agent failure modes — misalignment (`/grill-with-docs`), ball-of-mud architecture (`/improve-codebase-architecture`), broken code (`/tdd`, `/diagnosing-bugs`), verbosity (`/domain-modeling` + `CONTEXT.md`). Skills are small, model-agnostic, and hackable. Install via `npx skills@latest add mattpocock/skills`.
+- **Integration:** `plugin-mattpocock-skills.sh`; `setup.sh` after ponytail; `mattpocock-skills@mattpocock-skills: true` in `enabledPlugins`; `mattpocock-skills` marketplace in `extraKnownMarketplaces`; activation guide + 16 Skill permissions in `settings.local.json.example`; Plugins table + 16-row Skills section in `CLAUDE.md`.
+- **First-run required:** `/setup-matt-pocock-skills` must be run once per repo to configure issue tracker (GitHub/Linear/local) and triage labels before other engineering skills work correctly.
+
 ## 2026-06-26 — Supabase CLI integrated for local dev, migrations, and type generation
 - **Decision:** Added `supabase` CLI (`sys-supabase-cli.sh`) as primary interface for local Supabase dev. `supabase-mcp` remains active for in-context database queries.
 - **Why:** CLI-first pattern — `db push`, `migration new`, `gen types typescript`, `functions deploy` are CLI operations. MCP better for schema introspection + running queries inside the conversation.
@@ -383,3 +389,18 @@ Architectural and technical decisions made during sessions — with date and rat
 <!-- Drafted 2026-06-26 — edit or delete below -->
 - `./CLAUDE.md` (Project Root) â€” 494 lines\n\n**Score: 86/100 (Grade: B)**\n\n| Criterion | Score | Notes |\n|-----------|-------|-------|\n| Commands/workflows | 17/20 | Comprehensive bash blocks; missing `graphify .` build step and new skill invocation examples |\n| Architecture clarity | 18/20 | WAT framework, project tree, install/ scripts well documented |\n| Non-obvious patterns | 13/15 | MCP gotchas, TLS proxy, LightRAG embedding bug covered; `designlang --ignore-scripts` missing from Troubleshooting |\n| Conciseness | 12/15 | LightRAG section (50 lines) and OpenSpace tests (15 lines) are dense but justified; some skill \"Use When\" cells still read as descriptions |\n| Currency | 13/15 | lightrag-plus/ path, claude-video/ponytail fixed this session; several skills table \"Use When\" cells are capability descriptions not trigger conditions |\n| Actionability | 13/15 | All commands copy-pasteable; `/three-brain` missing install hint; `graphify .` one-time build step not in Key Commands |\n\n**Issues:**\n\n1.
 - `~/.claude/CLAUDE.md` (Global Defaults)\n\n**Score: 93/100 (Grade: A)**\n\n| Criterion | Score | Notes |\n|-----------|-------|-------|\n| Commands/workflows | 18/20 | No commands section â€” correct for a global defaults file |\n| Architecture clarity | 19/20 | Clear sections: Communication, Platform, Python, Git, Code Style |\n| Non-obvious patterns | 14/15 | uv run pytest Windows file lock, MCP env var gotcha, Git Bash crash all present |\n| Conciseness | 15/15 | Tight, no bloat |\n| Currency | 14/15 | Current; no stale references found |\n| Actionability | 13/15 | All rules executable; minor: `setx` command not shown inline for MCP gotcha |\n\n**Issues:** No significant issues.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-06-26 — edit or delete below -->
+- Summary of all changes:\n\n**Files created/modified:**\n\n| File | Change |\n|------|--------|\n| `.claude/hooks/install/plugin-mattpocock-skills.sh` | New install script |\n| `.claude/hooks/setup.sh` | `_run plugin-mattpocock-skills.sh` after ponytail |\n| `.claude/settings.json` | `mattpocock-skills@mattpocock-skills: true` in `enabledPlugins`; marketplace in `extraKnownMarketplaces` |\n| `.claude/settings.local.json.example` | Activation guide + 16 Skill permissions |\n| `CLAUDE.md` | Plugins table row + 16-row Skills section + setup comment |\n| `.claude/rules/memory-decisions.md` | Decision logged |\n\n**Install:** `npx skills@latest add mattpocock/skills` (or `setup.sh` on fresh clone)\n\n**First-run required:** `/setup-matt-pocock-skills` once per repo â€” configures issue tracker + triage labels before other skills work.\n\n**Key skills added:** `/grill-with-docs`, `/tdd`, `/to-prd`, `/to-issues`, `/triage`, `/improve-codebase-architecture`, `/prototype`, `/diagnosing-bugs`, `/domain-modeling`, `/codebase-design`, `/grill-me`, `/handoff`, `/ask-matt`","background_tasks":[],"session_crons":[]}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-06-27 — edit or delete below -->
+- {"session_id":"e1821470-e7b7-429b-ba21-8a8efc747242","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\e1821470-e7b7-429b-ba21-8a8efc747242.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"**Section C â€” Domain docs**\n\nSkills like `/improve-codebase-architecture`, `/diagnosing-bugs`, and `/tdd` read `CONTEXT.md` for the project's domain language, and `docs/adr/` for past architectural decisions.\n\nNo `CONTEXT.md` or `docs/adr/` found â€” they'll be created empty as placeholders (you fill them over time as you use those skills).\n\nLayout options:\n1.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+<!-- Drafted 2026-06-27 — edit or delete below -->
+- Four files written:\n\n- `CLAUDE.md` â€” `## Agent skills` block appended\n- `docs/agents/issue-tracker.md` â€” GitHub Issues, no PR triage\n- `docs/agents/triage-labels.md` â€” default 5-label vocabulary\n- `docs/agents/domain.md` â€” single-context, `CONTEXT.md` + `docs/adr/` at root\n\nSkills now fully configured: `/triage`, `/to-issues`, `/to-prd`, `/grill-with-docs`, `/improve-codebase-architecture`, `/diagnosing-bugs`, `/tdd`, `/domain-modeling` all read from `docs/agents/`.

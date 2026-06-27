@@ -154,7 +154,7 @@ npm install
 
 # 2. Run initial setup (hooks, skills, permissions, CLI tools, git submodules)
 bash .claude/hooks/setup.sh
-# Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything, caveman, context-mode, claude-mem, claude-video, ponytail)
+# Installs: marketplace plugins (ui-ux-pro-max, impeccable, codex, gemini, cli-anything, caveman, context-mode, claude-mem, claude-video, ponytail, mattpocock-skills)
 # Step 7a:  Apify agent skills (5 skills from apify/agent-skills marketplace) with 30-sec timeout protection; displays manual /skill install commands if timeout/failure occurs
 # Step 7b:  Caveman plugin (token compression — 75% response reduction, 46% memory file reduction)
 # Step 7c:  Context Mode plugin (98% context reduction via sandboxing; statusline shows session/total savings + efficiency %); auto-installs better-sqlite3 with NODE_TLS_REJECT_UNAUTHORIZED=0 (corporate SSL proxy fix) for FTS5 session continuity
@@ -288,6 +288,7 @@ docs/                         ← Project-level documentation
 | `cli-anything` | Generating AI-native CLIs for existing software (GIMP, Blender, LibreOffice, etc.) — 50+ apps, 2,280+ tests |
 | `claude-video` | Watch + analyze video — `/watch <url> <question>`; extracts frames + transcript; YouTube, TikTok, Vimeo, 500+ sites; needs ffmpeg + yt-dlp |
 | `ponytail` | YAGNI/minimal-code discipline — always-on; -54% LOC, -22% tokens, -20% cost; `/ponytail [lite\|full\|ultra\|off]`, `/ponytail-review`, `/ponytail-audit` |
+| `mattpocock-skills` | Real-engineering skills: grilling sessions, TDD, PRDs, issue decomposition, architecture improvement, domain modeling — run `/setup-matt-pocock-skills` once per repo |
 | `caveman` | Token compression — 75% reduction on responses, 46% on memory files; terse commits/reviews; session tracking |
 | `context-mode` | Context window optimization — 98% reduction via sandboxing (315 KB → 5.4 KB); session continuity via SQLite FTS5; output compression ~65-75% |
 | `claude-mem` | Persistent memory across sessions — captures tool usage observations, generates semantic summaries, [web viewer](http://localhost:37777) |
@@ -353,10 +354,25 @@ docs/                         ← Project-level documentation
 | `/ffmpeg` | Process / manipulate video files — `node tools/ffmpeg.js`; transcode, trim, thumbnail, extract-audio, probe, concat; all output JSON; requires system ffmpeg |
 | `/roast` | When user says "roast", "pressure-test", "should I build this?", "what do you think of this idea?" — or before any unvalidated build starts. 5-persona council → GO / RESHAPE / KILL + cheapest 48-hour test |
 | `/session-handoff` | When user says "wrap up", "hand off", "summarize before I clear", "session handoff" — or before any `/clear`. Chat-only structured summary, never writes a file |
+| `/setup-matt-pocock-skills` | **Run once per repo first** — configures issue tracker (GitHub/Linear/local) + triage labels for all other mattpocock skills |
+| `/grill-with-docs` | Starting any non-trivial feature — grilling session that builds domain model, updates `CONTEXT.md` + ADRs inline; eliminates agent misalignment |
+| `/grill-me` | Non-code planning/design — relentless interview until every branch of the decision tree is resolved |
+| `/tdd` | Red-green-refactor TDD loop — write failing test first, then fix; one vertical slice at a time |
+| `/to-prd` | Turn current conversation into a PRD and publish to issue tracker |
+| `/to-issues` | Break a plan/spec/PRD into independently-grabbable vertical-slice issues |
+| `/triage` | Move issues through a triage state machine (uses labels configured by `/setup-matt-pocock-skills`) |
+| `/improve-codebase-architecture` | Scan codebase for deepening opportunities → HTML report → grill through chosen area; run every few days |
+| `/prototype` | Build throwaway prototype — terminal app for logic questions or multiple radical UI variations |
+| `/diagnosing-bugs` | Hard bugs / perf regressions — reproduce → minimise → hypothesise → instrument → fix → regression-test |
+| `/domain-modeling` | Build + sharpen project domain model; challenge terms against glossary; update `CONTEXT.md` + ADRs |
+| `/codebase-design` | Deep module discipline — lots of behaviour behind a small interface at a clean seam |
+| `/handoff` | Compact conversation into handoff doc so another agent can continue |
+| `/ask-matt` | Router — "which skill fits my situation?" over all mattpocock user-invoked skills |
 
 **Superpowers skills** auto-trigger based on context (brainstorming, TDD, debugging, code review, planning, subagents, git worktrees). No manual invoke needed.
 
 **Additional auto-trigger rules:**
+
 - `/roast` — invoke before any significant feature or product build when the idea is unvalidated. Fire on: "I'm thinking of building X", "what do you think of this idea?", "should I build this?", "pressure-test this", "roast this". Do not skip just because the user seems excited — sycophancy is the failure mode.
 - `/session-handoff` — invoke when user says "wrap up", "hand off", "summarize before I clear", "session handoff", or is about to `/clear`. Also invoke proactively when context approaches ~250K tokens without a handoff having been run.
 - `/auto-stage-commit` — invoke when user says "commit", "stage this", "let's commit", or shows intent to commit changes. Outputs the ready-to-run `git commit` command; does not execute it.
@@ -523,3 +539,19 @@ Update memory files **as you go**, not at session end. Do not ask — just updat
 **Maintenance:** Run `/compact-memory` monthly (or when `memory-sessions.md` exceeds ~200 lines) to compress old entries, prune obsolete decisions, and sync key facts to the knowledge graph.
 
 Full rules: [`memory-guidelines.md`](.claude/rules/memory-guidelines.md)
+
+---
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues (`mdmorar/Claude_Code_Boilerplate_Framework`). External PRs are not a triage surface. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default mattpocock/skills label vocabulary — no overrides. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context repo: one `CONTEXT.md` + `docs/adr/` at repo root. See `docs/agents/domain.md`.
