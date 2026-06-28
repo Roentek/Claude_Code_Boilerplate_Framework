@@ -299,7 +299,7 @@ vault/                        ← Obsidian wiki vault (dual-layer)
 | `ponytail` | YAGNI/minimal-code discipline — always-on; -54% LOC, -22% tokens, -20% cost; `/ponytail [lite\|full\|ultra\|off]`, `/ponytail-review`, `/ponytail-audit` |
 | `mattpocock-skills` | Real-engineering skills: grilling sessions, TDD, PRDs, issue decomposition, architecture improvement, domain modeling — run `/setup-matt-pocock-skills` once per repo |
 | `claude-obsidian` | Obsidian + Claude AI second brain (Karpathy LLM Wiki pattern) — persistent, compounding knowledge base; hybrid BM25+cosine retrieval; methodology modes (LYT/PARA/Zettelkasten); `/wiki` to start |
-| `higgsfield` | AI image/video/audio — **CLI-first:** 30+ models, Marketing Studio, Soul ID, virality scoring; browser OAuth; 4 skills: `/higgsfield:generate`, `/higgsfield:soul-id`, `/higgsfield:product-photoshoot`, `/higgsfield:marketplace-cards` |
+| `higgsfield` | AI image/video/audio — **CLI-first:** 30+ models, Marketing Studio, Soul ID, virality scoring; browser OAuth. Plugin install pending Claude Code support for `./` source type — use CLI (`higgsfield generate create ...`) directly until resolved |
 | `caveman` | Token compression — 75% reduction on responses, 46% on memory files; terse commits/reviews; session tracking |
 | `context-mode` | Context window optimization — 98% reduction via sandboxing (315 KB → 5.4 KB); session continuity via SQLite FTS5; output compression ~65-75% |
 | `claude-mem` | Persistent memory across sessions — captures tool usage observations, generates semantic summaries, [web viewer](http://localhost:37777) |

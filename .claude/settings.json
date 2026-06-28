@@ -212,7 +212,7 @@
     "ponytail@ponytail": true,
     "mattpocock-skills@mattpocock-skills": true,
     "claude-obsidian@agricidaniel-claude-obsidian": true,
-    "higgsfield@higgsfield-ai": true
+    "higgsfield@higgsfield": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -332,7 +332,7 @@
       },
       "autoUpdate": true
     },
-    "higgsfield-ai": {
+    "higgsfield": {
       "source": {
         "source": "github",
         "repo": "higgsfield-ai/skills"

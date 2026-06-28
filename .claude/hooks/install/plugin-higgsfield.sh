@@ -5,4 +5,8 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
-_install_plugin higgsfield higgsfield-ai/skills
+# ponytail: plugin source type "./" not yet supported by Claude Code — install manually when fixed:
+# claude plugin marketplace add higgsfield-ai/skills && claude plugin install higgsfield@higgsfield
+echo "  ⚠ higgsfield plugin: marketplace added but source type './' unsupported in current Claude Code"
+echo "    CLI (@higgsfield/cli) is fully functional — plugin skills are bonus"
+echo "    Run: claude plugin marketplace add higgsfield-ai/skills"

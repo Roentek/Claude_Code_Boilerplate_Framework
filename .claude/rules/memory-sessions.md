@@ -283,3 +283,8 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-06-28 (auto-drafted — review before next session)
 - Added to both files:\n- Activation guide entry for `obsidian-vault` (user-scope MCP, no key needed, registration command)\n- 5 permissions: `search_notes`, `read_note`, `read_multiple_notes`, `create_note`, `update_note`","background_tasks":[],"session_crons":[]}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-06-28 (auto-drafted — review before next session)
+- Will self-resolve when Higgsfield updates their plugin.json to a standard source type.\n\n**MCP** â€” already working (browser OAuth, unchanged).\n\n**Keys fixed:** `higgsfield@higgsfield-ai` â†’ `higgsfield@higgsfield` in `enabledPlugins` and `extraKnownMarketplaces`.","background_tasks":[],"session_crons":[]}
