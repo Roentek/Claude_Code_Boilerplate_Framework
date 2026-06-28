@@ -4,6 +4,16 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-28 — Higgsfield CLI + plugin integrated (CLI-first over existing MCP-only)
+- **Decision:** Added `@higgsfield/cli` (npm global) + `higgsfield@higgsfield-ai` plugin from `higgsfield-ai/skills` marketplace alongside the existing `higgsfield` MCP. Pattern: CLI-first, MCP fallback.
+- **Why:** Higgsfield was already wired as MCP-only but the CLI and skills plugin were never integrated. CLI costs zero context tokens per call; MCP loads all tool schemas every turn. Skills plugin provides 4 slash commands for guided workflows.
+- **Skills:** `/higgsfield:generate`, `/higgsfield:soul-id`, `/higgsfield:product-photoshoot`, `/higgsfield:marketplace-cards`
+- **Auth:** `higgsfield auth login` (browser OAuth, one-time) — same credentials shared with MCP.
+- **Integration:** `cli-higgsfield.sh` + `plugin-higgsfield.sh` in `.claude/hooks/install/`; both wired into `setup.sh` (step 7f for plugin, CLI tools section); `@higgsfield/cli` in `update-all.sh` NPM_GLOBALS; `higgsfield@higgsfield-ai` in `enabledPlugins`; `higgsfield-ai` marketplace in `extraKnownMarketplaces`; Bash/PowerShell permissions added; 4 Skill permissions in `settings.local.json.example`.
+- **Source:** CLI: https://github.com/higgsfield-ai/cli | Skills: https://github.com/higgsfield-ai/skills (MIT)
+
+---
+
 ## 2026-06-27 — Obsidian vault integrated as dual-layer knowledge base in repo
 
 - **Decision:** Added `vault/` to repo root as a single Obsidian vault with two layers: `vault/wiki/` (gittracked, shared boilerplate knowledge) and `vault/private/` (gitignored, per-user sessions/projects/agents). MCPVault (`@bitbonsai/mcpvault`) registered at user scope for filesystem MCP access without requiring Obsidian app.

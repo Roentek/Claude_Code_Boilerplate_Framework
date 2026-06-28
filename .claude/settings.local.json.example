@@ -19,7 +19,8 @@
     "monet-mcp":            "MONET_API_KEY — monet.design/mcp → Get API Key.",
     "stitch":               "STITCH_API_KEY — stitch.withgoogle.com → Settings → API Key.",
     "21st-dev-magic":       "TWENTYFIRST_DEV_API_KEY — 21st.dev/magic/console → API Keys. Free tier includes Inspiration Search + SVG Icon Search. Magic Generate requires Pro ($20/mo).",
-    "higgsfield":           "NO KEY NEEDED — browser OAuth on first use at higgsfield.ai. The MCP server connects to https://mcp.higgsfield.ai/mcp automatically.",
+    "higgsfield":           "NO KEY NEEDED — CLI-first: run `higgsfield auth login` (browser OAuth, one-time). CLI (@higgsfield/cli) is primary; MCP (https://mcp.higgsfield.ai/mcp) is fallback. Skills: /higgsfield:generate, /higgsfield:soul-id, /higgsfield:product-photoshoot, /higgsfield:marketplace-cards",
+    "higgsfield@higgsfield-ai": "NO KEY NEEDED — plugin from higgsfield-ai/skills marketplace. Install auto-runs via setup.sh. Requires CLI auth first: higgsfield auth login",
     "playwright-mcp":       "NO KEY NEEDED — activates automatically. CLI (node tools/playwright.js) is always the primary tool; use this MCP only for interactive/multi-step sessions.",
     "firecrawl-mcp":        "FIRECRAWL_API_KEY — firecrawl.dev/app/api-keys → Create API Key (free tier available). CLI (firecrawl) is always the primary tool; use this MCP only for batch scraping or schema extraction.",
     "notebooklm-mcp":       "NO KEY NEEDED (uses cookie auth via nlm login). CLI (nlm) is always the primary tool; use this MCP only for complex multi-source research workflows.",
@@ -636,6 +637,12 @@
       "mcp__openspace__fix_skill",
       "mcp__openspace__upload_skill",
 
+      "mcp__obsidian-vault__search_notes",
+      "mcp__obsidian-vault__read_note",
+      "mcp__obsidian-vault__read_multiple_notes",
+      "mcp__obsidian-vault__create_note",
+      "mcp__obsidian-vault__update_note",
+
       "Skill(update-config)",
       "Skill(keybindings-help)",
       "Skill(simplify)",
@@ -722,6 +729,10 @@
       "Skill(handoff)",
       "Skill(teach)",
       "Skill(ask-matt)",
+      "Skill(higgsfield:generate)",
+      "Skill(higgsfield:soul-id)",
+      "Skill(higgsfield:product-photoshoot)",
+      "Skill(higgsfield:marketplace-cards)",
 
       "WebFetch(domain:docs.n8n.io)",
       "WebFetch(domain:docs.trigger.dev)",
@@ -746,12 +757,7 @@
       "WebFetch(domain:open-space.cloud)",
       "WebFetch(domain:context7.com)",
       "WebFetch(domain:notebooklm.google.com)",
-      "WebFetch(domain:monet.design)",
-      "mcp__obsidian-vault__search_notes",
-      "mcp__obsidian-vault__read_note",
-      "mcp__obsidian-vault__read_multiple_notes",
-      "mcp__obsidian-vault__create_note",
-      "mcp__obsidian-vault__update_note"
+      "WebFetch(domain:monet.design)"
     ]
   }
 }

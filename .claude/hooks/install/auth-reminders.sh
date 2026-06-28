@@ -21,9 +21,11 @@ cat <<'AUTH'
   Canva MCP
     No keys needed. Browser OAuth opens automatically on first use.
 
-  Higgsfield MCP
-    npx mcp-remote https://mcp.higgsfield.ai/mcp
-    Sign in once — mcp-remote caches the token automatically.
+  Higgsfield CLI + MCP
+    higgsfield auth login
+    (browser opens — sign in to your Higgsfield account; token cached)
+    Required by: /higgsfield:generate, /higgsfield:soul-id, /higgsfield:product-photoshoot, /higgsfield:marketplace-cards
+    MCP fallback: npx mcp-remote https://mcp.higgsfield.ai/mcp (same credentials)
 
   GitHub CLI  →  gh auth login
     Required by: github@claude-plugins-official plugin.

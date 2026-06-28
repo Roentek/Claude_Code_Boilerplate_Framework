@@ -58,6 +58,7 @@ NPM_GLOBALS=(
   "codeburn"
   "designlang"
   "@felores/kie-cli"
+  "@higgsfield/cli"
 )
 
 if command -v npm &>/dev/null; then

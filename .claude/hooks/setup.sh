@@ -60,6 +60,7 @@ _run plugin-claude-video.sh
 _run plugin-ponytail.sh
 _run plugin-mattpocock-skills.sh
 _run plugin-claude-obsidian.sh
+_run plugin-higgsfield.sh
 echo ""
 echo "  Marketplace sources pre-configured in .claude/settings.json → extraKnownMarketplaces"
 
@@ -118,6 +119,7 @@ _run cli-notebooklm.sh
 _run cli-codeburn.sh
 _run cli-browser-harness.sh
 _run cli-kie.sh
+_run cli-higgsfield.sh
 
 # ── Authentication reminders ─────────────────────────────────
 _run auth-reminders.sh

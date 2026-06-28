@@ -36,7 +36,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Obsidian wiki / AI second brain (persistent cross-project knowledge base) | `/wiki` skill → `claude-obsidian` plugin | Vault lives at `vault/` in repo root — `wiki/` gittracked (shared), `private/` gitignored (per-user). MCPVault gives Claude filesystem access without Obsidian running. Karpathy LLM Wiki pattern; hybrid BM25+cosine retrieval; methodology modes |
 | UI component search | `monet-mcp` tools | Search landing page components, get React/TS code |
 | UI component inspiration / SVG logos | `21st-dev-magic` tools | Search UI components, SVG brand logos, generate variants |
-| AI image/video (cinematic, managed) | `higgsfield` MCP | No API key — browser OAuth; cinematic video, media library |
+| AI image/video (cinematic, managed) | `/higgsfield:generate` skill → `higgsfield` CLI (primary) → `higgsfield` MCP (fallback) | Browser OAuth, no API key; cinematic video, product photos, Soul ID, marketing studio — **CLI first** |
 | AI image/video/audio (specific model) | `/kie-ai` skill → `kie-cli` CLI (primary) → `kie-ai` MCP (fallback) | Midjourney, Sora, ElevenLabs, Kling, Suno, etc. CLI = zero context tokens; auto-switches to MCP if needed |
 | Self-evolving AI skills / collective intelligence | `/openspace` skill → `openspace` CLI | Skills that auto-fix, auto-improve, auto-learn; 46% token reduction; cloud skill sharing — **CLI first; MCP backup** |
 | AI spend tracking / token cost analysis | `/codeburn` skill → `codeburn` CLI | Token + dollar breakdown by task, model, tool, project across 31 AI tools — `codeburn` for TUI dashboard, `codeburn status` for one-liner |
@@ -162,6 +162,7 @@ bash .claude/hooks/setup.sh
 # Step 7d-pre: Bun runtime (required by claude-mem worker for web viewer + MCP search; also 3-5x faster context-mode sandbox); Windows: powershell -c "irm bun.sh/install.ps1 | iex"; Unix: curl -fsSL https://bun.sh/install | bash
 # Step 7d:  Claude-Mem plugin (persistent memory across sessions; context survives session end/reconnect; web viewer at http://localhost:37777; requires Bun)
 # Step 7e:  claude-obsidian plugin (Obsidian AI second brain — Karpathy LLM Wiki pattern; run /wiki to scaffold vault after install)
+# Step 7f:  higgsfield plugin (CLI + plugin from higgsfield-ai/skills; installs @higgsfield/cli globally + higgsfield@higgsfield-ai plugin; auth: higgsfield auth login)
 # Step 8:   Project skills with cross-platform path detection (Windows $USERPROFILE fallback, Unix-style path conversion); creates destination directory; verifies each copy succeeded
 # Step 9:   npm install (all package.json deps: react, react-dom, @types/react, @splinetool/react-spline, @splinetool/runtime, Playwright) + Playwright Chromium browser
 # Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli, codeburn, browser-harness, designlang, kie-cli (@felores/kie-cli)
@@ -298,6 +299,7 @@ vault/                        ← Obsidian wiki vault (dual-layer)
 | `ponytail` | YAGNI/minimal-code discipline — always-on; -54% LOC, -22% tokens, -20% cost; `/ponytail [lite\|full\|ultra\|off]`, `/ponytail-review`, `/ponytail-audit` |
 | `mattpocock-skills` | Real-engineering skills: grilling sessions, TDD, PRDs, issue decomposition, architecture improvement, domain modeling — run `/setup-matt-pocock-skills` once per repo |
 | `claude-obsidian` | Obsidian + Claude AI second brain (Karpathy LLM Wiki pattern) — persistent, compounding knowledge base; hybrid BM25+cosine retrieval; methodology modes (LYT/PARA/Zettelkasten); `/wiki` to start |
+| `higgsfield` | AI image/video/audio — **CLI-first:** 30+ models, Marketing Studio, Soul ID, virality scoring; browser OAuth; 4 skills: `/higgsfield:generate`, `/higgsfield:soul-id`, `/higgsfield:product-photoshoot`, `/higgsfield:marketplace-cards` |
 | `caveman` | Token compression — 75% reduction on responses, 46% on memory files; terse commits/reviews; session tracking |
 | `context-mode` | Context window optimization — 98% reduction via sandboxing (315 KB → 5.4 KB); session continuity via SQLite FTS5; output compression ~65-75% |
 | `claude-mem` | Persistent memory across sessions — captures tool usage observations, generates semantic summaries, [web viewer](http://localhost:37777) |
@@ -361,6 +363,10 @@ vault/                        ← Obsidian wiki vault (dual-layer)
 | `/create-actor` | Guided Actor scaffolding — from apify-actor-commands pack |
 | `/caveman` | Activate 75% token reduction (lite/full/ultra modes) — telegraphic responses without context loss |
 | `/kie-ai` | AI media generation — 29 models (Midjourney, Veo3, Suno, ElevenLabs, Kling, Flux, etc.); CLI-first (`kie-cli`), auto-falls back to MCP; async task polling |
+| `/higgsfield:generate` | Image/video generation across 30+ models (Nano Banana 2, Seedance 2.0, Kling 3.0, Veo 3.1, GPT Image 2…), Marketing Studio for branded ads, Virality Predictor — CLI-first |
+| `/higgsfield:soul-id` | Train a Soul Character — reusable face-faithful identity model; returns `reference_id` for use in generate |
+| `/higgsfield:product-photoshoot` | Brand-quality product imagery — 10 modes (studio, lifestyle, Pinterest, hero, virtual try-on…) |
+| `/higgsfield:marketplace-cards` | Marketplace product cards — compliant main image, secondary images, A+ style modules |
 | `/codeburn` | AI spend analytics — token + dollar breakdown by task/model/tool/project across 31 AI tools; `codeburn` opens TUI dashboard, `codeburn status` for one-liner |
 | `/caveman-stats` | Show actual session token usage, savings, and USD costs from JSONL logs |
 | `/caveman-compress` | Shrink memory files (memory-*.md, CLAUDE.md) by ~46% — preserves code/URLs/paths exactly |
@@ -429,7 +435,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `alpaca-mcp` | Algorithmic trading (paper mode) |
 | `canva-dev` | Canva app SDK and CLI docs |
 | `kie-ai` | Multi-provider AI media — Midjourney, Sora, ElevenLabs, Kling, Suno, etc. **CLI-first:** use `kie-cli` (zero context tokens); MCP is fallback. Auto-switches on failure. |
-| `higgsfield` | Cinematic AI video/images — browser OAuth, no API key |
+| `higgsfield` | Cinematic AI video/images — **CLI-first:** `higgsfield` CLI (primary); MCP fallback at `mcp.higgsfield.ai`. Browser OAuth, no API key. 4 skills: `/higgsfield:generate`, `/higgsfield:soul-id`, `/higgsfield:product-photoshoot`, `/higgsfield:marketplace-cards` |
 | `context7` | Live SDK/library documentation lookup — fetch on demand instead of loading static reference files |
 | `monet-mcp` | Landing page UI components — search + retrieve React/TS code |
 | `stitch` | Extract design DNA from screens (fonts, colors, layouts) |

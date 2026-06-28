@@ -46,6 +46,7 @@
       "Bash(graphify-mcp *)",
       "Bash(ffmpeg *)",
       "Bash(yt-dlp *)",
+      "Bash(higgsfield *)",
       "Bash(openspace-dashboard *)",
       "Bash(bash .claude/hooks/setup.sh)",
       "Bash(echo \"exit: $?\")",
@@ -76,6 +77,7 @@
       "PowerShell(kie-cli *)",
       "PowerShell(graphify *)",
       "PowerShell(yt-dlp *)",
+      "PowerShell(higgsfield *)",
       "PowerShell(openspace-dashboard *)",
       "PowerShell(npm install *)",
       "PowerShell(Get-Process *)",
@@ -209,7 +211,8 @@
     "watch@claude-video": true,
     "ponytail@ponytail": true,
     "mattpocock-skills@mattpocock-skills": true,
-    "claude-obsidian@agricidaniel-claude-obsidian": true
+    "claude-obsidian@agricidaniel-claude-obsidian": true,
+    "higgsfield@higgsfield-ai": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -326,6 +329,13 @@
       "source": {
         "source": "github",
         "repo": "AgriciDaniel/claude-obsidian"
+      },
+      "autoUpdate": true
+    },
+    "higgsfield-ai": {
+      "source": {
+        "source": "github",
+        "repo": "higgsfield-ai/skills"
       },
       "autoUpdate": true
     }
