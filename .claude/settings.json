@@ -208,7 +208,8 @@
     "designlang@design-extract": true,
     "watch@claude-video": true,
     "ponytail@ponytail": true,
-    "mattpocock-skills@mattpocock-skills": true
+    "mattpocock-skills@mattpocock-skills": true,
+    "claude-obsidian@agricidaniel-claude-obsidian": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -320,6 +321,13 @@
         "source": "git",
         "url": "https://github.com/Manavarya09/design-extract.git"
       }
+    },
+    "agricidaniel-claude-obsidian": {
+      "source": {
+        "source": "github",
+        "repo": "AgriciDaniel/claude-obsidian"
+      },
+      "autoUpdate": true
     }
   }
 }

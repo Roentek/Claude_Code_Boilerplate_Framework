@@ -33,6 +33,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Generate Actor output schemas | `/apify-generate-output-schema` skill | Auto-generate `dataset_schema.json`, `output_schema.json`, `key_value_store_schema.json` from Actor source |
 | Vector search / RAG | `pinecone-mcp` tools | Upsert, search, rerank records |
 | Graph-based RAG / knowledge extraction | `/lightrag` skill → `tools/lightrag-plus/` | Knowledge graph RAG, entity-relationship Q&A, multimodal docs — Web UI + REST API |
+| Obsidian wiki / AI second brain (persistent cross-project knowledge base) | `/wiki` skill → `claude-obsidian` plugin | Karpathy LLM Wiki pattern — ingest sources, query vault, auto-organize; hybrid BM25+cosine retrieval; methodology modes (LYT/PARA/Zettelkasten) |
 | UI component search | `monet-mcp` tools | Search landing page components, get React/TS code |
 | UI component inspiration / SVG logos | `21st-dev-magic` tools | Search UI components, SVG brand logos, generate variants |
 | AI image/video (cinematic, managed) | `higgsfield` MCP | No API key — browser OAuth; cinematic video, media library |
@@ -160,6 +161,7 @@ bash .claude/hooks/setup.sh
 # Step 7c:  Context Mode plugin (98% context reduction via sandboxing; statusline shows session/total savings + efficiency %); auto-installs better-sqlite3 with NODE_TLS_REJECT_UNAUTHORIZED=0 (corporate SSL proxy fix) for FTS5 session continuity
 # Step 7d-pre: Bun runtime (required by claude-mem worker for web viewer + MCP search; also 3-5x faster context-mode sandbox); Windows: powershell -c "irm bun.sh/install.ps1 | iex"; Unix: curl -fsSL https://bun.sh/install | bash
 # Step 7d:  Claude-Mem plugin (persistent memory across sessions; context survives session end/reconnect; web viewer at http://localhost:37777; requires Bun)
+# Step 7e:  claude-obsidian plugin (Obsidian AI second brain — Karpathy LLM Wiki pattern; run /wiki to scaffold vault after install)
 # Step 8:   Project skills with cross-platform path detection (Windows $USERPROFILE fallback, Unix-style path conversion); creates destination directory; verifies each copy succeeded
 # Step 9:   npm install (all package.json deps: react, react-dom, @types/react, @splinetool/react-spline, @splinetool/runtime, Playwright) + Playwright Chromium browser
 # Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli, codeburn, browser-harness, designlang, kie-cli (@felores/kie-cli)
@@ -289,6 +291,7 @@ docs/                         ← Project-level documentation
 | `claude-video` | Watch + analyze video — `/watch <url> <question>`; extracts frames + transcript; YouTube, TikTok, Vimeo, 500+ sites; needs ffmpeg + yt-dlp |
 | `ponytail` | YAGNI/minimal-code discipline — always-on; -54% LOC, -22% tokens, -20% cost; `/ponytail [lite\|full\|ultra\|off]`, `/ponytail-review`, `/ponytail-audit` |
 | `mattpocock-skills` | Real-engineering skills: grilling sessions, TDD, PRDs, issue decomposition, architecture improvement, domain modeling — run `/setup-matt-pocock-skills` once per repo |
+| `claude-obsidian` | Obsidian + Claude AI second brain (Karpathy LLM Wiki pattern) — persistent, compounding knowledge base; hybrid BM25+cosine retrieval; methodology modes (LYT/PARA/Zettelkasten); `/wiki` to start |
 | `caveman` | Token compression — 75% reduction on responses, 46% on memory files; terse commits/reviews; session tracking |
 | `context-mode` | Context window optimization — 98% reduction via sandboxing (315 KB → 5.4 KB); session continuity via SQLite FTS5; output compression ~65-75% |
 | `claude-mem` | Persistent memory across sessions — captures tool usage observations, generates semantic summaries, [web viewer](http://localhost:37777) |
@@ -330,6 +333,17 @@ docs/                         ← Project-level documentation
 | `/three-brain` | Task needs deep code review or rescue (→ Codex) OR multimodal/large-context analysis (→ Gemini). Requires both CLIs installed (`codex-cli` + `gemini-cli`) |
 | `/autoresearch` | Autonomous ML research — modify GPT training code, run 5-min experiments, keep improvements (~12 exp/hour, ~100 overnight) |
 | `/lightrag` | Graph-based RAG — knowledge extraction, entity-relationship Q&A, multimodal docs (PDFs, images), Web UI + REST API |
+| `/wiki` | Scaffold vault, check status, route to sub-skills — first command to run in any vault |
+| `/wiki-ingest` | Ingest source files from `.raw/` into the wiki knowledge base |
+| `/wiki-query` | Answer questions from vault content |
+| `/wiki-lint` | Health check — catch orphans, gaps, broken links |
+| `/wiki-cli` | Obsidian CLI transport wrapper — default vault mutation path on desktop |
+| `/wiki-retrieve` | Hybrid contextual + BM25 + cosine-rerank retrieval (opt-in via `bash bin/setup-retrieve.sh`) |
+| `/wiki-mode` | Methodology modes (LYT / PARA / Zettelkasten / Generic) — set via `bash bin/setup-mode.sh` |
+| `/wiki-fold` | DragonScale Memory extension — log folds, deterministic addresses, semantic tiling |
+| `/save` | File current conversation as a structured wiki note |
+| `/canvas` | Visual layer — add images, PDFs, notes to Obsidian canvas |
+| `/think` | 10-principle thinking loop (OBSERVE-OBSERVE-LISTEN-THINK-CONNECT-FEEL-ACCEPT-CREATE-GROW) |
 | `/openspace` | Self-evolving skill system — skills auto-fix, auto-improve, auto-learn; 46% token reduction; cloud skill sharing |
 | `/skill-discovery` | **Run first** before any non-trivial task — searches local + cloud skills to decide: follow existing skill, delegate, or proceed manually |
 | `/delegate-task` | After `/skill-discovery` when task is complex and an OpenSpace agent should own it — auto skill evolution + upload |

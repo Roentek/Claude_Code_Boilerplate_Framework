@@ -4,6 +4,15 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-27 — claude-obsidian plugin integrated (Obsidian + Claude AI second brain)
+- **Decision:** Added `claude-obsidian@agricidaniel-claude-obsidian` (AgriciDaniel/claude-obsidian v1.9.2) as a Claude plugin. No CLI tool, no MCP server — plugin-only install.
+- **Why:** Implements Karpathy's LLM Wiki pattern — persistent, compounding knowledge base across sessions. Fills the gap between claude-mem (passive observations) and LightRAG (code/doc graph RAG) by providing a human-curated Obsidian vault with hybrid retrieval (+32pp top-1 vs baseline). Methodology modes (LYT/PARA/Zettelkasten/Generic) give structured organization no other Claude+Obsidian tool offers.
+- **Skills:** `/wiki` (scaffold/route), `/wiki-ingest`, `/wiki-query`, `/wiki-lint`, `/wiki-cli`, `/wiki-retrieve` (opt-in BM25+cosine), `/wiki-mode`, `/wiki-fold` (DragonScale), `/save`, `/canvas`, `/think`.
+- **Integration:** `plugin-claude-obsidian.sh`; `setup.sh` after mattpocock-skills; `claude-obsidian@agricidaniel-claude-obsidian: true` in `enabledPlugins`; `agricidaniel-claude-obsidian` in `extraKnownMarketplaces`; activation guide in `settings.local.json.example`; routing table + plugins table + 12-row skills section in `CLAUDE.md`.
+- **First-run:** Run `/wiki` to scaffold vault. `bash bin/setup-retrieve.sh` for hybrid retrieval. `bash bin/setup-mode.sh` for methodology mode.
+- **Optional dep:** Obsidian app for vault viewing. Transport fallback chain: Obsidian CLI → mcp-obsidian → mcpvault → filesystem.
+- **Source:** https://github.com/AgriciDaniel/claude-obsidian (MIT)
+
 ## 2026-06-27 — grill-me-codex skills integrated (3 skills from chaseai-yt/grill-me-codex)
 - **Decision:** Added `grill-me-codex`, `grill-with-docs-codex`, and `codex-review` as project skills at `.claude/skills/`. No new plugin or CLI install — codex-cli (`@openai/codex@latest`) already installed via `cli-codex.sh`.
 - **Why:** Closes the two core AI coding failure modes: (1) building the wrong thing (`grill-me` interview), (2) a plan that sounds right but breaks (Codex adversarial review). Cross-model review (Claude + Codex) avoids echo chamber. Builds on Matt Pocock's `grill-me`/`grill-with-docs` (MIT) with Act 2 (iterative Codex review loop) added by Chase AI.

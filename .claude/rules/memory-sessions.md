@@ -268,3 +268,8 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-06-27 (auto-drafted — review before next session)
 - 3 rows added to the Project Skills table after `/watch`.","background_tasks":[],"session_crons":[]}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-06-27 (auto-drafted — review before next session)
+- The settings.json changes are in place â€” the install will work after restart.\n\n**Summary of changes:**\n\n| File | Change |\n|------|--------|\n| `.claude/hooks/install/plugin-claude-obsidian.sh` | New install script |\n| `.claude/hooks/setup.sh` | `_run plugin-claude-obsidian.sh` after mattpocock-skills |\n| `.claude/settings.json` | `claude-obsidian@agricidaniel-claude-obsidian: true` in `enabledPlugins`; `agricidaniel-claude-obsidian` in `extraKnownMarketplaces` |\n| `.claude/settings.local.json.example` | Activation guide added |\n| `CLAUDE.md` | Routing table row + Plugins table row + 12-row skills section + step 7e comment |\n| `.claude/rules/memory-decisions.md` | Decision logged |\n\n**After restart:**\n```bash\n# Plugin auto-installs via setup.sh, or manually:\nclaude plugin install claude-obsidian@agricidaniel-claude-obsidian\n\n# Then scaffold a vault:\n/wiki\n```\n\n**Skills added:** `/wiki`, `/wiki-ingest`, `/wiki-query`, `/wiki-lint`, `/wiki-cli`, `/wiki-retrieve`, `/wiki-mode`, `/wiki-fold`, `/save`, `/canvas`, `/think`","background_tasks":[],"session_crons":[]}

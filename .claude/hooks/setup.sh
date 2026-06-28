@@ -59,6 +59,7 @@ _run plugin-cli-anything.sh
 _run plugin-claude-video.sh
 _run plugin-ponytail.sh
 _run plugin-mattpocock-skills.sh
+_run plugin-claude-obsidian.sh
 echo ""
 echo "  Marketplace sources pre-configured in .claude/settings.json → extraKnownMarketplaces"
 
