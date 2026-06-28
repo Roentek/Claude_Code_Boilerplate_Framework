@@ -258,3 +258,13 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-06-27 (auto-drafted — review before next session)
 - {"session_id":"e1821470-e7b7-429b-ba21-8a8efc747242","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\e1821470-e7b7-429b-ba21-8a8efc747242.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"**Section C â€” Domain docs**\n\nSkills like `/improve-codebase-architecture`, `/diagnosing-bugs`, and `/tdd` read `CONTEXT.md` for the project's domain language, and `docs/adr/` for past architectural decisions.\n\nNo `CONTEXT.md` or `docs/adr/` found â€” they'll be created empty as placeholders (you fill them over time as you use those skills).\n\nLayout options:\n1.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-06-27 (auto-drafted — review before next session)
+- Summary:\n\n**3 skills integrated from `chaseai-yt/grill-me-codex`:**\n\n| Skill | Use When |\n|-------|----------|\n| `/grill-me-codex` | High-stakes planning from scratch â€” grill (Act 1) + Codex adversarial review (Act 2) |\n| `/grill-with-docs-codex` | Same but challenges plan against `CONTEXT.md`/ADRs, updates them inline |\n| `/codex-review` | Already have a plan â€” skip grill, go straight to Codex review loop |\n\n**Files changed:**\n- `.claude/skills/grill-me-codex/SKILL.md` â€” new\n- `.claude/skills/grill-with-docs-codex/SKILL.md` â€” new\n- `.claude/skills/codex-review/SKILL.md` â€” new\n- `.claude/hooks/install/auth-reminders.sh` â€” added `codex login` step\n- `CLAUDE.md` â€” 3 rows added to skills table\n- `.claude/rules/memory-decisions.md` â€” decision logged\n\n**No new install script needed** â€” `skills-project.sh` auto-copies all `.claude/skills/` on fresh clones.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-06-27 (auto-drafted — review before next session)
+- 3 rows added to the Project Skills table after `/watch`.","background_tasks":[],"session_crons":[]}

@@ -357,6 +357,9 @@ docs/                         ← Project-level documentation
 | `/setup-matt-pocock-skills` | **Run once per repo first** — configures issue tracker (GitHub/Linear/local) + triage labels for all other mattpocock skills |
 | `/grill-with-docs` | Starting any non-trivial feature — grilling session that builds domain model, updates `CONTEXT.md` + ADRs inline; eliminates agent misalignment |
 | `/grill-me` | Non-code planning/design — relentless interview until every branch of the decision tree is resolved |
+| `/grill-me-codex` | High-stakes planning (auth, schema, concurrency, migrations, payments) — grill session (Act 1) + OpenAI Codex adversarial plan review (Act 2); two models harden the plan before any code |
+| `/grill-with-docs-codex` | Same as `/grill-me-codex` but challenges plan against `CONTEXT.md`/ADRs and updates them inline; use in projects with established terminology/ADRs |
+| `/codex-review` | Already have a plan — skip the grill, go straight to Codex adversarial review loop; `VERDICT:APPROVED`/`VERDICT:REVISE` bounded by `MAX_ROUNDS` (default 5) |
 | `/tdd` | Red-green-refactor TDD loop — write failing test first, then fix; one vertical slice at a time |
 | `/to-prd` | Turn current conversation into a PRD and publish to issue tracker |
 | `/to-issues` | Break a plan/spec/PRD into independently-grabbable vertical-slice issues |

@@ -35,6 +35,11 @@ cat <<'AUTH'
   Gemini Plugin  →  add GEMINI_API_KEY to settings.local.json
     Free key: https://aistudio.google.com/apikey
 
+  Codex CLI  →  codex login
+    One-time browser auth (ChatGPT account fine; Free/Plus/Pro/Max all work).
+    Required by: /grill-me-codex, /grill-with-docs-codex, /codex-review.
+    Also: codex --version must be ≥ 0.130 (npm install -g @openai/codex@latest).
+
   Codex Plugin  →  /codex:setup (checks readiness in Claude Code)
     Requires OPENAI_API_KEY in settings.local.json.
 

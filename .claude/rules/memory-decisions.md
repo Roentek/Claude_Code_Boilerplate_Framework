@@ -4,6 +4,14 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-27 — grill-me-codex skills integrated (3 skills from chaseai-yt/grill-me-codex)
+- **Decision:** Added `grill-me-codex`, `grill-with-docs-codex`, and `codex-review` as project skills at `.claude/skills/`. No new plugin or CLI install — codex-cli (`@openai/codex@latest`) already installed via `cli-codex.sh`.
+- **Why:** Closes the two core AI coding failure modes: (1) building the wrong thing (`grill-me` interview), (2) a plan that sounds right but breaks (Codex adversarial review). Cross-model review (Claude + Codex) avoids echo chamber. Builds on Matt Pocock's `grill-me`/`grill-with-docs` (MIT) with Act 2 (iterative Codex review loop) added by Chase AI.
+- **Integration:** 3 SKILL.md files in `.claude/skills/`; `skills-project.sh` auto-copies on fresh clones; `auth-reminders.sh` updated with `codex login` step; CLAUDE.md skills table updated.
+- **Auth required:** `codex login` once (ChatGPT account fine); `codex --version` must be ≥ 0.130. Do NOT pin `-m` — ChatGPT-account auth rejects `gpt-5.x-codex` variants.
+- **Safety note:** `codex exec resume` rejects `-s read-only`; skills force `-c sandbox_mode="read-only"` on all resume calls so Codex never writes files.
+- **Source:** https://github.com/chaseai-yt/grill-me-codex (MIT)
+
 ## 2026-06-26 — mattpocock-skills plugin integrated for real-engineering workflows
 - **Decision:** Added `mattpocock-skills@mattpocock-skills` (mattpocock/skills) as a Claude plugin via `plugin-mattpocock-skills.sh`.
 - **Why:** Provides 16 composable engineering skills designed to fix core AI agent failure modes — misalignment (`/grill-with-docs`), ball-of-mud architecture (`/improve-codebase-architecture`), broken code (`/tdd`, `/diagnosing-bugs`), verbosity (`/domain-modeling` + `CONTEXT.md`). Skills are small, model-agnostic, and hackable. Install via `npx skills@latest add mattpocock/skills`.
