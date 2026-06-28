@@ -1,229 +1,181 @@
 ---
 name: notebooklm
-description: Google NotebookLM integration - create notebooks, add sources, generate AI content (podcasts, videos, briefings), query notebooks, and manage research workflows
+description: Google NotebookLM integration - create notebooks, add sources, generate AI content (podcasts, quizzes, mind maps, briefings, slides), query notebooks, run research agents, and manage research workflows
 ---
 
 # NotebookLM CLI + MCP
 
-Programmatic access to Google NotebookLM via CLI (`nlm`) and MCP server (`notebooklm-mcp`).
+Programmatic access to Google NotebookLM via CLI (`notebooklm`) and MCP server (`notebooklm-mcp`).
+Source: https://github.com/teng-lin/notebooklm-py
 
 ## When to Use
 
-- **Research & discovery**: Create notebooks, start web/Drive research, import sources
+- **Research & discovery**: Create notebooks, run web/Drive research agents, import sources
 - **AI analysis**: Query notebooks, get summaries, configure chat personas
-- **Content generation**: Create podcasts, videos, briefings, flashcards, infographics, slides
-- **Management**: Share notebooks, sync Drive sources, batch operations
+- **Content generation**: Podcasts, videos, quizzes, mind maps, briefings, flashcards, infographics, slides
+- **Management**: Share notebooks, source labels, sync Drive sources
 
 ## CLI First (Always Primary)
 
-Use `nlm` CLI commands via Bash tool for all operations. The MCP server (`notebooklm-mcp`) is a backup for multi-step interactive flows only.
+Use `notebooklm` CLI commands via Bash tool for all operations.
 
 ```bash
-# List notebooks
-nlm notebook list
+# Auth
+notebooklm login                                        # browser sign-in (one-time)
+notebooklm auth check --test --json                     # verify auth
+notebooklm doctor --fix                                 # diagnose + auto-fix issues
 
-# Create notebook
-nlm notebook create "AI Strategy Research"
+# Notebooks
+notebooklm list
+notebooklm create "Research Project" --use              # create + set active
+notebooklm use <id>                                     # set active notebook
+notebooklm rename "New Title"
+notebooklm summary --topics
 
-# Add sources
-nlm source add <notebook-id> --url "https://example.com/article"
-nlm source add <notebook-id> --text "Meeting notes content here"
-nlm source add <notebook-id> --drive "<google-drive-file-id>"
+# Sources
+notebooklm source add --url "https://example.com"
+notebooklm source add --file /path/to/doc.pdf
+notebooklm source add --text "Pasted content here"
+notebooklm source add --youtube "https://youtube.com/watch?v=..."
+notebooklm source list
+notebooklm source delete <source-id>
 
-# Query notebook
-nlm notebook query <notebook-id> "What are the key findings?"
+# Chat
+notebooklm chat ask "What are the key findings?"
+notebooklm chat ask "Summarize this" --save-to-notes    # persist answer as note
 
-# Generate audio podcast
-nlm audio create <notebook-id> --confirm
+# Content generation
+notebooklm audio create                                 # podcast
+notebooklm audio status <task-id>
+notebooklm audio download <task-id> --output podcast.mp3
 
-# Check generation status
-nlm audio status <notebook-id> <artifact-id>
+notebooklm video create
+notebooklm video status <task-id>
+notebooklm video download <task-id> --output video.mp4
 
-# Download audio file
-nlm download audio <notebook-id> <artifact-id>
+notebooklm quiz create --difficulty medium
+notebooklm quiz download <task-id> --output quiz.json --format json
 
-# Share notebook
-nlm share public <notebook-id>
+notebooklm mind-map create
+notebooklm mind-map download <task-id> --output mindmap.json
 
-# Web research (discover sources)
-nlm research start <notebook-id> "enterprise AI ROI metrics"
+notebooklm briefing create
+notebooklm flashcards create
+notebooklm infographic create --orientation landscape
+notebooklm slides create
+
+# Notes
+notebooklm note list
+notebooklm note create "My insight"
+notebooklm note delete <note-id>
+
+# Research agents
+notebooklm research add-web "enterprise AI adoption 2025"
+notebooklm research add-web "cloud costs" --mode deep
+notebooklm research add-drive "product roadmap"
+
+# Sharing
+notebooklm share public                                 # make public
+notebooklm share invite user@example.com --role viewer
+
+# Profiles (multiple Google accounts)
+notebooklm profile create work
+notebooklm profile switch work
+notebooklm profile list
+
+# MCP auto-config (run once)
+notebooklm mcp install claude-code
 ```
 
 ## MCP Tools (Backup Only)
 
-Only use MCP tools when the CLI cannot handle the task (rare). The MCP server provides 35 tools but uses significant context window space.
-
-Common MCP tools:
-- `notebook_list`, `notebook_create`, `notebook_delete`
+Only use when CLI cannot handle the task. Common MCP tools via `notebooklm-mcp`:
+- `notebook_list`, `notebook_create`, `notebook_delete`, `notebook_query`
 - `source_add`, `source_list`, `source_delete`, `source_sync_drive`
-- `notebook_query` (persists to web UI chat history)
-- `studio_create` (audio, video, briefing, flashcards, infographics, slides)
-- `download_artifact` (get URLs for generated content)
+- `studio_create` (audio, video, quiz, mind_map, briefing, flashcards, infographic, slides)
+- `download_artifact`, `export_artifact`
 - `notebook_share_public`, `notebook_share_invite`
-- `research_start` (web/Drive discovery)
+- `research_start` (web + Drive discovery)
+- `note`, `label`, `tag`, `batch`, `pipeline`
 
 ## Authentication
 
-**Required before first use:**
-
+**First use:**
 ```bash
-nlm login
+uv tool install "notebooklm-py[browser]"
+notebooklm login                    # browser opens, Chromium downloads ~170MB first time
+notebooklm auth check --test --json # expect {"status": "ok"}
 ```
 
-This launches a browser, you log in to Google, and cookies are extracted automatically. Authentication persists for ~2-4 weeks and auto-refreshes.
-
-**Manual mode** (if auto-login fails):
+**Headless (CI/server):**
 ```bash
-nlm login --manual --file cookies.txt
+notebooklm login --master-token --account you@gmail.com
 ```
 
-**Check auth status:**
-```bash
-nlm login --check
-```
-
-**Multiple Google accounts** (profiles):
-```bash
-nlm login --profile work
-nlm login --profile personal
-nlm login switch <profile>
-nlm login profile list
-```
+**Auth expires:** `notebooklm auth refresh` or `notebooklm login` again.
 
 ## Common Workflows
 
 ### Research Notebook from Web Sources
 
 ```bash
-# 1. Create notebook
-nlm notebook create "Cloud Marketplace Trends"
-
-# 2. Start research (discovers sources)
-nlm research start <notebook-id> "cloud marketplace growth 2025" --depth deep
-
-# 3. Query the research
-nlm notebook query <notebook-id> "What are the top 3 trends?"
-
-# 4. Generate podcast overview
-nlm audio create <notebook-id> --format "deep dive" --confirm
-
-# 5. Check status until complete
-nlm audio status <notebook-id> <artifact-id>
-
-# 6. Download audio file
-nlm download audio <notebook-id> <artifact-id>
-```
-
-### Import Google Drive Documents
-
-```bash
-# 1. Search Drive for documents
-nlm research start <notebook-id> --drive-query "product roadmap" --max-results 10
-
-# 2. Add specific Drive file
-nlm source add <notebook-id> --drive "<file-id>"
-
-# 3. Sync Drive sources (check for updates)
-nlm source sync <notebook-id>
+notebooklm create "Cloud Trends 2025" --use
+notebooklm research add-web "cloud marketplace growth 2025" --mode deep
+notebooklm chat ask "What are the top 3 trends?"
+notebooklm audio create
+notebooklm audio status <task-id>          # poll until done
+notebooklm audio download <task-id> --output podcast.mp3
 ```
 
 ### Generate Multiple Content Types
 
 ```bash
-# Audio podcast (deep dive style)
-nlm audio create <notebook-id> --format "deep dive" --confirm
-
-# Video explainer (classic visual style)
-nlm video create <notebook-id> --style classic --confirm
-
-# Briefing doc
-nlm studio create <notebook-id> --type briefing --confirm
-
-# Flashcards (medium difficulty)
-nlm studio create <notebook-id> --type flashcards --difficulty medium --confirm
-
-# Infographic (landscape, professional style)
-nlm studio create <notebook-id> --type infographic --orientation landscape --style professional --confirm
-
-# Slide deck presentation
-nlm studio create <notebook-id> --type slides --confirm
+# All generation is async — create → status → download
+notebooklm audio create && notebooklm audio status <id> && notebooklm audio download <id>
+notebooklm quiz create --difficulty hard && ...
+notebooklm mind-map create && ...
+notebooklm slides create && ...
 ```
 
-## Rate Limits
-
-- **Free tier**: ~50 queries/day
-- **Generation**: Audio/video creation may take several minutes — poll status before downloading
-
-## Troubleshooting
-
-### Authentication Expired
-
-Cookies expire every 2-4 weeks. Re-authenticate:
+### Import from Google Drive
 
 ```bash
-nlm login
-```
-
-### Upgrade CLI
-
-```bash
-uv tool upgrade notebooklm-mcp-cli
-```
-
-After upgrading, restart Claude Code to reconnect to the updated MCP server.
-
-### Check Installation
-
-```bash
-# Verify CLI is installed
-nlm --version
-
-# Verify MCP server is available
-uvx --from notebooklm-mcp-cli notebooklm-mcp --version
-```
-
-## Context Window Warning
-
-The MCP server provides **35 tools**. Disable it when not using NotebookLM to preserve context:
-
-```bash
-# In Claude Code chat
-@notebooklm-mcp  # Toggle on/off
+notebooklm research add-drive "product roadmap" --max-results 10
+notebooklm source add --drive "<file-id>"
 ```
 
 ## Decision Matrix: CLI vs MCP
 
 | Task | Use |
 |------|-----|
-| List notebooks | CLI: `nlm notebook list` |
-| Create notebook | CLI: `nlm notebook create` |
-| Add single source | CLI: `nlm source add` |
-| Query notebook | CLI: `nlm notebook query` |
-| Generate content | CLI: `nlm audio/video/studio create` |
-| Download artifacts | CLI: `nlm download` |
-| Share notebook | CLI: `nlm share public/invite` |
-| Multi-step interactive flow | MCP (rare) |
-| Batch operations on many notebooks | MCP: `batch` tool |
+| All single operations | CLI |
+| Batch ops across many notebooks | MCP: `batch` tool |
+| Pipeline (create→add→generate) | MCP: `pipeline` tool |
 | Cross-notebook queries | MCP: `cross_notebook_query` |
+| Structured output needed in-context | MCP |
 
-**Default to CLI for everything.** MCP is backup only.
+**Default: CLI for everything.** MCP is backup only.
 
 ## Installation
 
-Already configured in this project. On fresh clones, `setup.sh` installs via:
+Already configured. On fresh clones, `setup.sh` installs via:
 
 ```bash
-uv tool install notebooklm-mcp-cli
+uv tool install "notebooklm-py[browser]"
 ```
 
-This provides both `nlm` (CLI) and `notebooklm-mcp` (MCP server).
+Upgrade: `uv tool upgrade notebooklm-py`
+
+## Troubleshooting
+
+```bash
+notebooklm doctor --fix      # auto-detect + fix common issues
+notebooklm auth check --test # test auth
+notebooklm --version         # check version
+```
 
 ## Documentation
 
-- **CLI Guide**: https://github.com/jacob-bd/notebooklm-mcp-cli/blob/main/docs/CLI_GUIDE.md
-- **MCP Guide**: https://github.com/jacob-bd/notebooklm-mcp-cli/blob/main/docs/MCP_GUIDE.md
-- **Authentication**: https://github.com/jacob-bd/notebooklm-mcp-cli/blob/main/docs/AUTHENTICATION.md
-
-## Source
-
-https://github.com/jacob-bd/notebooklm-mcp-cli
+- CLI Reference: https://github.com/teng-lin/notebooklm-py/blob/main/docs/cli-reference.md
+- MCP Guide: https://github.com/teng-lin/notebooklm-py/blob/main/docs/mcp-guide.md
+- Python API: https://github.com/teng-lin/notebooklm-py/blob/main/docs/python-api.md

@@ -6,9 +6,10 @@ cat <<'AUTH'
 ── Authentication Reminders ─────────────────────────────
   These require a one-time manual step before first use:
 
-  NotebookLM  →  nlm login
-    (browser opens — sign in to Google; cookies auto-extracted)
-    OR: nlm login --manual (import from file)
+  NotebookLM  →  notebooklm login
+    (browser opens — sign in to Google; Chromium auto-downloaded ~170MB on first run)
+    Check: notebooklm auth check --test --json
+    Headless: notebooklm login --master-token --account you@gmail.com
 
   Trigger.dev  →  npx trigger.dev@latest login
     (browser opens — authenticates the trigger MCP server)

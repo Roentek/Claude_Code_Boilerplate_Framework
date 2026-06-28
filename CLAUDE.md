@@ -21,7 +21,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | MCP server integration | `.mcp.json` + `.claude/settings.local.json` | Copy `settings.local.json.example` → `settings.local.json`, fill keys, restart |
 | Supabase local dev (migrations, local stack, type gen, edge functions) | `supabase` CLI (primary) → `supabase-mcp` (in-context queries) | `supabase login` once; `supabase start` needs Docker; CLI-first for migrations + type gen |
 | Claude API / SDK app | `/claude-api` skill | Scaffolds Anthropic SDK boilerplate |
-| NotebookLM research / podcasts | `/notebooklm` skill → `nlm` CLI | Create notebooks, add sources, generate podcasts/videos/briefings — CLI first; `notebooklm-mcp` as backup |
+| NotebookLM research / podcasts | `/notebooklm` skill → `notebooklm` CLI | Create notebooks, add sources, generate podcasts/videos/quizzes/mind maps/slides — CLI first; `notebooklm-mcp` as backup |
 | n8n workflow | `n8n-mcp` tools | Search nodes, validate, build via MCP |
 | Voice AI (Vapi) | `vapi-mcp` tools | Create assistants, calls, phone numbers |
 | Browser automation (real Chrome, CDP) | `/browser-harness` skill → `browser-harness` CLI | Direct CDP control of your real Chrome — coordinate clicks, screenshots, JS eval; `--doctor` for setup; cloud via `browser-harness auth login` |
@@ -89,13 +89,14 @@ supabase functions deploy <function-name>                          # deploy edge
 supabase stop                                                      # stop local stack
 
 # NotebookLM — authenticate and create research notebook
-nlm login
-nlm notebook create "Research Project"
-nlm source add <notebook-id> --url "https://example.com"
-nlm audio create <notebook-id> --confirm
+notebooklm login
+notebooklm create "Research Project" --use
+notebooklm source add --url "https://example.com"
+notebooklm chat ask "Summarize this"
+notebooklm audio create && notebooklm audio status <task-id>
 
 # Upgrade NotebookLM CLI
-uv tool upgrade notebooklm-mcp-cli
+uv tool upgrade notebooklm-py
 
 # AutoResearch — autonomous ML experiments
 cd tools/autoresearch
@@ -165,7 +166,7 @@ bash .claude/hooks/setup.sh
 # Step 7f:  higgsfield plugin (CLI + plugin from higgsfield-ai/skills; installs @higgsfield/cli globally + higgsfield@higgsfield-ai plugin; auth: higgsfield auth login)
 # Step 8:   Project skills with cross-platform path detection (Windows $USERPROFILE fallback, Unix-style path conversion); creates destination directory; verifies each copy succeeded
 # Step 9:   npm install (all package.json deps: react, react-dom, @types/react, @splinetool/react-spline, @splinetool/runtime, Playwright) + Playwright Chromium browser
-# Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-mcp-cli, codeburn, browser-harness, designlang, kie-cli (@felores/kie-cli)
+# Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-py[browser], codeburn, browser-harness, designlang, kie-cli (@felores/kie-cli)
 # Step 11:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
 # Step 12:  lightrag dependencies in tools/lightrag-plus/ (via uv sync); auto-creates tools/lightrag-plus/.env from .env.example if missing (so EMBEDDING_BINDING_HOST is set on first boot); auto-runs provision.py if .env exists (idempotent — skips if no credentials)
 # Step 12a: Ollama install + llama3.2 pull (local LLM for LightRAG; Windows: shows winget command, Unix: auto-installs)
@@ -333,7 +334,7 @@ vault/                        ← Obsidian wiki vault (dual-layer)
 | `/design-md` | Load a ready-made brand DESIGN.md for 73 brands via `npx getdesign@latest add <brand>` |
 | `/taste-skill` | Anti-slop frontend enforcement — bans generic patterns, enforces Bento 2.0 |
 | `/firecrawl` | Scrape pages, search, crawl sites, map URLs via Firecrawl CLI |
-| `/notebooklm` | Google NotebookLM — create notebooks, add sources, generate podcasts/videos/briefings via `nlm` CLI |
+| `/notebooklm` | Google NotebookLM — create notebooks, add sources, generate podcasts/videos/quizzes/mind maps/slides via `notebooklm` CLI; research agents (web + Drive) |
 | `/browser-harness` | Real Chrome CDP automation — coordinate clicks, screenshots, JS eval, drag-drop, iframes, downloads; `browser-harness --doctor` for setup |
 | `/playwright` | Browser automation — screenshots, scraping, PDFs, link extraction via Playwright CLI |
 | `/compact-memory` | When `memory-sessions.md` exceeds ~200 lines, monthly, or before a major new project phase. Compresses sessions, prunes decisions, syncs facts to MCP graph |
@@ -428,7 +429,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `pinecone-mcp` | Vector search / RAG |
 | `n8n-mcp` | n8n workflow automation |
 | `vapi-mcp` | Voice AI — assistants, calls, phone numbers |
-| `notebooklm-mcp` | Google NotebookLM — notebooks, AI queries, podcasts/videos (backup — prefer `nlm` CLI) |
+| `notebooklm-mcp` | Google NotebookLM — notebooks, AI queries, podcasts/videos/quizzes/mind maps (backup — prefer `notebooklm` CLI) |
 | `openspace` | Self-evolving skills — execute tasks, search/fix/upload skills, auto skill evolution (FIX/DERIVED/CAPTURED). **Windows:** Uses `python -m openspace.mcp_server` command with `PYTHONUTF8=1` (fixes Unicode checkmark encoding). |
 | `apify` | Large-scale web scraping via Apify marketplace — 130+ Actors covering Instagram, TikTok, LinkedIn, Google, Reddit, Amazon, etc. Use with `/apify-ultimate-scraper` skill for guided workflows (lead generation, brand monitoring, competitor analysis, influencer vetting, trend research, SEO intelligence, review analysis, recruitment, real estate, e-commerce price monitoring, contact enrichment, RAG data feeds) |
 | `zep-mcp` | Zep long-term memory documentation |

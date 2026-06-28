@@ -4,6 +4,14 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-28 — notebooklm-py replaces notebooklm-mcp-cli (CLI: notebooklm, MCP: notebooklm-mcp)
+- **Decision:** Replaced `notebooklm-mcp-cli` (jacob-bd, CLI: `nlm`) with `notebooklm-py[browser,mcp]` (teng-lin/notebooklm-py, CLI: `notebooklm`). Same pattern: CLI-first, MCP fallback via `notebooklm-mcp`.
+- **Why:** `notebooklm-py` is dramatically more capable — quizzes, mind maps, research agents (web + Drive, fast/deep), source labels, sharing controls, multi-profile auth, headless token auth. Old `nlm` only covered notebooks/sources/basic generation.
+- **Auth:** `notebooklm login` (browser, Chromium ~170MB first run). Headless: `notebooklm login --master-token --account you@gmail.com`. Multi-account via `notebooklm profile`.
+- **MCP:** `.mcp.json` updated from `notebooklm-mcp-cli` → `notebooklm-py[mcp]` (same `uvx` pattern). Auto-config: `notebooklm mcp install claude-code`.
+- **Files changed:** `cli-notebooklm.sh`, `.mcp.json`, `.claude/skills/notebooklm/SKILL.md`, `auth-reminders.sh`, `CLAUDE.md` (5 locations).
+- **Source:** https://github.com/teng-lin/notebooklm-py (MIT)
+
 ## 2026-06-28 — Higgsfield CLI + plugin integrated (CLI-first over existing MCP-only)
 - **Decision:** Added `@higgsfield/cli` (npm global) + `higgsfield@higgsfield-ai` plugin from `higgsfield-ai/skills` marketplace alongside the existing `higgsfield` MCP. Pattern: CLI-first, MCP fallback.
 - **Why:** Higgsfield was already wired as MCP-only but the CLI and skills plugin were never integrated. CLI costs zero context tokens per call; MCP loads all tool schemas every turn. Skills plugin provides 4 slash commands for guided workflows.

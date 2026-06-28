@@ -174,7 +174,7 @@
     },    
     "notebooklm-mcp": {
       "command": "uvx",
-      "args": ["--from", "notebooklm-mcp-cli", "notebooklm-mcp"]
+      "args": ["--from", "notebooklm-py", "notebooklm-mcp"]
     },
     "openspace": {
       "command": "python",
