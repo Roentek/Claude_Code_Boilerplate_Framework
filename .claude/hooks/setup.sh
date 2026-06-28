@@ -143,6 +143,12 @@ echo ""
 echo "── Graphify (Codebase Knowledge Graph) ─────────────────"
 _run tool-graphify.sh
 
+echo ""
+echo "── Obsidian (App + Vault + MCP) ────────────────────────"
+_run sys-obsidian.sh
+_run tool-vault.sh
+_run mcp-vault.sh
+
 # ── Git pre-commit hook ──────────────────────────────────────
 echo ""
 echo "── Git Pre-Commit Hook ──────────────────────────────────"

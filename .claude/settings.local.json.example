@@ -34,6 +34,7 @@
     "ponytail@ponytail":                  "NO KEY NEEDED — always-on YAGNI/minimal-code discipline. Measured: -54% LOC, -22% tokens, -20% cost, -27% time. Commands: /ponytail [lite|full|ultra|off] (set level), /ponytail-review (diff audit), /ponytail-audit (repo audit), /ponytail-debt (deferred shortcuts ledger), /ponytail-gain (benchmark scoreboard). Set PONYTAIL_DEFAULT_MODE=full in .env to persist level.",
     "mattpocock-skills@mattpocock-skills": "NO KEY NEEDED — run /setup-matt-pocock-skills once per repo to configure issue tracker (GitHub/Linear/local) + triage labels. Engineering skills: /grill-with-docs (domain model + grilling), /tdd (red-green-refactor), /to-prd (PRD from conversation), /to-issues (vertical-slice issue decomp), /triage (issue state machine), /improve-codebase-architecture (architecture HTML report), /prototype, /diagnosing-bugs, /domain-modeling, /codebase-design. Productivity: /grill-me, /handoff, /teach, /grilling, /writing-great-skills.",
     "graphify-mcp":                      "GRAPHIFY_API_KEY (optional) — only needed for HTTP MCP server auth mode. Local stdio mode (default) needs no key. Run /graphify . in Claude Code to build graphify-out/graph.json first; MCP server serves that graph. Install: uv tool install 'graphifyy[mcp]', then: graphify install.",
+    "obsidian-vault":                    "NO KEY NEEDED — MCPVault filesystem MCP registered at user scope (available across all projects). Registered via: claude mcp add obsidian-vault -s user -- npx -y @bitbonsai/mcpvault@latest <vault-path>. setup.sh Step 14 (mcp-vault.sh) auto-registers on fresh clone. Tools: search_notes, read_note, create_note, update_note, read_multiple_notes. Vault path: vault/ in project root.",
     "watch@claude-video":                "NO KEY NEEDED for captioned videos. Optional: GROQ_API_KEY (console.groq.com → API Keys) for Whisper transcription; OPENAI_API_KEY as fallback. Keys go in ~/.config/watch/.env (auto-scaffolded on first /watch run). Requires ffmpeg + yt-dlp binaries (Windows: winget install ffmpeg + pip install yt-dlp).",
     "claude-obsidian@agricidaniel-claude-obsidian": "NO KEY NEEDED — Obsidian + Claude AI second brain (Karpathy LLM Wiki pattern). Run /wiki to scaffold vault. bash bin/setup-retrieve.sh for hybrid BM25+cosine retrieval (+32pp top-1). bash bin/setup-mode.sh for methodology mode (LYT / PARA / Zettelkasten / Generic). Skills: /wiki, /wiki-ingest, /wiki-query, /wiki-lint, /wiki-cli, /wiki-retrieve, /wiki-mode, /wiki-fold, /save, /canvas, /think. Optional: Obsidian app for vault viewing; plugin falls back to filesystem without Obsidian CLI.",
 
@@ -745,7 +746,12 @@
       "WebFetch(domain:open-space.cloud)",
       "WebFetch(domain:context7.com)",
       "WebFetch(domain:notebooklm.google.com)",
-      "WebFetch(domain:monet.design)"
+      "WebFetch(domain:monet.design)",
+      "mcp__obsidian-vault__search_notes",
+      "mcp__obsidian-vault__read_note",
+      "mcp__obsidian-vault__read_multiple_notes",
+      "mcp__obsidian-vault__create_note",
+      "mcp__obsidian-vault__update_note"
     ]
   }
 }

@@ -33,7 +33,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Generate Actor output schemas | `/apify-generate-output-schema` skill | Auto-generate `dataset_schema.json`, `output_schema.json`, `key_value_store_schema.json` from Actor source |
 | Vector search / RAG | `pinecone-mcp` tools | Upsert, search, rerank records |
 | Graph-based RAG / knowledge extraction | `/lightrag` skill → `tools/lightrag-plus/` | Knowledge graph RAG, entity-relationship Q&A, multimodal docs — Web UI + REST API |
-| Obsidian wiki / AI second brain (persistent cross-project knowledge base) | `/wiki` skill → `claude-obsidian` plugin | Karpathy LLM Wiki pattern — ingest sources, query vault, auto-organize; hybrid BM25+cosine retrieval; methodology modes (LYT/PARA/Zettelkasten) |
+| Obsidian wiki / AI second brain (persistent cross-project knowledge base) | `/wiki` skill → `claude-obsidian` plugin | Vault lives at `vault/` in repo root — `wiki/` gittracked (shared), `private/` gitignored (per-user). MCPVault gives Claude filesystem access without Obsidian running. Karpathy LLM Wiki pattern; hybrid BM25+cosine retrieval; methodology modes |
 | UI component search | `monet-mcp` tools | Search landing page components, get React/TS code |
 | UI component inspiration / SVG logos | `21st-dev-magic` tools | Search UI components, SVG brand logos, generate variants |
 | AI image/video (cinematic, managed) | `higgsfield` MCP | No API key — browser OAuth; cinematic video, media library |
@@ -169,6 +169,7 @@ bash .claude/hooks/setup.sh
 # Step 12:  lightrag dependencies in tools/lightrag-plus/ (via uv sync); auto-creates tools/lightrag-plus/.env from .env.example if missing (so EMBEDDING_BINDING_HOST is set on first boot); auto-runs provision.py if .env exists (idempotent — skips if no credentials)
 # Step 12a: Ollama install + llama3.2 pull (local LLM for LightRAG; Windows: shows winget command, Unix: auto-installs)
 # Step 13:  openspace submodule initialization + uv pip install -e ".[<platform>]" (windows/linux/macos extras; avoids uv sync cross-version pyatspi resolution failure) + dashboard frontend npm install + .env port alignment (3889 → 3789 to match package.json)
+# Step 14:  Obsidian app (winget/brew/flatpak — skips if already installed), vault/ scaffold (private/ dirs + git init — skips if vault already exists), MCPVault MCP registered at user scope (filesystem-based, no Obsidian app required for Claude access)
 
 # 3. Configure MCP credentials
 cp .claude/settings.local.json.example .claude/settings.local.json
@@ -268,6 +269,11 @@ workflows/                    ← Markdown SOPs defining automation tasks
 src/trigger/                  ← Trigger.dev TypeScript task files
 brand_assets/                 ← Logos, color guides, design tokens
 docs/                         ← Project-level documentation
+vault/                        ← Obsidian wiki vault (dual-layer)
+  wiki/                       ← SHARED: gittracked — boilerplate architecture, integrations, ADRs
+  private/                    ← USER: gitignored — sessions, projects, agent logs (per-user)
+  .raw/                       ← gitignored — source drops for ingestion
+  CLAUDE.md                   ← vault schema and cross-project referencing rules
 .tmp/                         ← Scratch space — disposable
 ```
 
@@ -407,6 +413,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | Server | Use For |
 | ------ | ------- |
 | `memory-shrunk` | **Replaces `memory`** — Caveman-compressed knowledge graph; ~50% metadata reduction on tool descriptions |
+| `obsidian-vault` | Filesystem access to `vault/` — `search_notes`, `read_note`, `create_note`, `update_note`; registered at user scope via `mcp-vault.sh`; no Obsidian app required |
 | `supabase-mcp` | Postgres database + Supabase platform — in-context queries/migrations; **CLI-first:** prefer `supabase` CLI for local dev, migrations, type gen, edge functions |
 | `openrouter-mcp` | Multi-model LLM routing, benchmarking |
 | `tavily-mcp` | Web search and content extraction |

@@ -4,6 +4,17 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-27 — Obsidian vault integrated as dual-layer knowledge base in repo
+
+- **Decision:** Added `vault/` to repo root as a single Obsidian vault with two layers: `vault/wiki/` (gittracked, shared boilerplate knowledge) and `vault/private/` (gitignored, per-user sessions/projects/agents). MCPVault (`@bitbonsai/mcpvault`) registered at user scope for filesystem MCP access without requiring Obsidian app.
+- **Why:** Dual-layer solves the fork dilemma: shared architectural knowledge travels with the repo (onboarding), while each user's private context stays local (privacy). Single vault = single Obsidian graph view, cross-linking between layers, one open-in-Obsidian action.
+- **Mode:** B (GitHub/Repository) + C (Business/Project) hybrid — modules/, integrations/, decisions/, flows/, dependencies/ for repo knowledge; private/projects/ for user's downstream work.
+- **MCP choice:** Option B (MCPVault filesystem) over Option A (REST API) — no Obsidian app dependency, no TLS bypass needed, works headless/CI, better for boilerplate new users who may not have Obsidian running.
+- **Install scripts:** `sys-obsidian.sh` (app install), `tool-vault.sh` (scaffold private/ dirs + git init), `mcp-vault.sh` (register MCPVault user-scope); all wired into `setup.sh` Step 14.
+- **Vault structure:** `wiki/` (index, log, hot, overview, modules/, integrations/, decisions/, flows/, dependencies/), `private/` (sessions/, projects/, agents/, hot.md), `_templates/` (module, integration, decision, flow, project), `.obsidian/snippets/vault-colors.css`.
+- **Cross-project referencing:** Any downstream project can add `vault/CLAUDE.md` pattern to its own CLAUDE.md to read `hot.md` → `index.md` → domain pages without loading the whole vault.
+- **Gitignore:** `vault/.gitignore` ignores `private/`, `.raw/`, `workspace.json` — shared knowledge travels, personal context stays.
+
 ## 2026-06-27 — claude-obsidian plugin integrated (Obsidian + Claude AI second brain)
 - **Decision:** Added `claude-obsidian@agricidaniel-claude-obsidian` (AgriciDaniel/claude-obsidian v1.9.2) as a Claude plugin. No CLI tool, no MCP server — plugin-only install.
 - **Why:** Implements Karpathy's LLM Wiki pattern — persistent, compounding knowledge base across sessions. Fills the gap between claude-mem (passive observations) and LightRAG (code/doc graph RAG) by providing a human-curated Obsidian vault with hybrid retrieval (+32pp top-1 vs baseline). Methodology modes (LYT/PARA/Zettelkasten/Generic) give structured organization no other Claude+Obsidian tool offers.
@@ -209,18 +220,6 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
-<!-- Example entry format:
-## 2026-04-06 — Use Trigger.dev for background jobs
-- **Decision:** All async/scheduled work runs as Trigger.dev tasks, not cron scripts
-- **Why:** Checkpointing, retry logic, and observability built-in; no infra to manage
-- **Implication:** New background tasks must follow the orchestrator+processor pattern
-
-## 2026-04-06 — Supabase as primary database
-- **Decision:** Postgres via Supabase for all persistent storage
-- **Why:** OAuth auth, RLS, and real-time subscriptions needed; team already has access
-- **Implication:** All schema changes go through Supabase migrations, not raw SQL
--->
-
 ---
 
 ## 2026-05-05 — Apify agent skills integrated (5 skills from apify/agent-skills marketplace)
@@ -396,33 +395,6 @@ Architectural and technical decisions made during sessions — with date and rat
 
 
 ## 2026-05-07 — memory-shrunk Windows fix: use cmd /c npx as upstream command
-- **Decision:** Changed `memory-shrunk` upstream args in `.mcp.json` from `[“npx”, “-y”, “@modelcontextprotocol/server-memory”]` to `[“cmd”, “/c”, “npx”, “-y”, “@modelcontextprotocol/server-memory”]`.
+- **Decision:** Changed `memory-shrunk` upstream args in `.mcp.json` from `["npx", "-y", "@modelcontextprotocol/server-memory"]` to `["cmd", "/c", "npx", "-y", "@modelcontextprotocol/server-memory"]`.
 - **Why:** `caveman-shrink` calls `spawn(args[0], args.slice(1))` without `shell: true`. On Windows, `npx` is `npx.cmd` — a CMD script — which Node.js `spawn` cannot resolve without shell mode, causing `ENOENT`. Using `cmd /c npx ...` works because `cmd.exe` is a real executable, and it passes stdin through to npx correctly.
 - **How to apply:** Any `caveman-shrink` wrapper in `.mcp.json` on Windows must use `cmd /c npx` instead of bare `npx` as the upstream command.
-
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-06-26 — edit or delete below -->
-- `./CLAUDE.md` (Project Root) â€” 494 lines\n\n**Score: 86/100 (Grade: B)**\n\n| Criterion | Score | Notes |\n|-----------|-------|-------|\n| Commands/workflows | 17/20 | Comprehensive bash blocks; missing `graphify .` build step and new skill invocation examples |\n| Architecture clarity | 18/20 | WAT framework, project tree, install/ scripts well documented |\n| Non-obvious patterns | 13/15 | MCP gotchas, TLS proxy, LightRAG embedding bug covered; `designlang --ignore-scripts` missing from Troubleshooting |\n| Conciseness | 12/15 | LightRAG section (50 lines) and OpenSpace tests (15 lines) are dense but justified; some skill \"Use When\" cells still read as descriptions |\n| Currency | 13/15 | lightrag-plus/ path, claude-video/ponytail fixed this session; several skills table \"Use When\" cells are capability descriptions not trigger conditions |\n| Actionability | 13/15 | All commands copy-pasteable; `/three-brain` missing install hint; `graphify .` one-time build step not in Key Commands |\n\n**Issues:**\n\n1.
-- `~/.claude/CLAUDE.md` (Global Defaults)\n\n**Score: 93/100 (Grade: A)**\n\n| Criterion | Score | Notes |\n|-----------|-------|-------|\n| Commands/workflows | 18/20 | No commands section â€” correct for a global defaults file |\n| Architecture clarity | 19/20 | Clear sections: Communication, Platform, Python, Git, Code Style |\n| Non-obvious patterns | 14/15 | uv run pytest Windows file lock, MCP env var gotcha, Git Bash crash all present |\n| Conciseness | 15/15 | Tight, no bloat |\n| Currency | 14/15 | Current; no stale references found |\n| Actionability | 13/15 | All rules executable; minor: `setx` command not shown inline for MCP gotcha |\n\n**Issues:** No significant issues.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-06-26 — edit or delete below -->
-- Summary of all changes:\n\n**Files created/modified:**\n\n| File | Change |\n|------|--------|\n| `.claude/hooks/install/plugin-mattpocock-skills.sh` | New install script |\n| `.claude/hooks/setup.sh` | `_run plugin-mattpocock-skills.sh` after ponytail |\n| `.claude/settings.json` | `mattpocock-skills@mattpocock-skills: true` in `enabledPlugins`; marketplace in `extraKnownMarketplaces` |\n| `.claude/settings.local.json.example` | Activation guide + 16 Skill permissions |\n| `CLAUDE.md` | Plugins table row + 16-row Skills section + setup comment |\n| `.claude/rules/memory-decisions.md` | Decision logged |\n\n**Install:** `npx skills@latest add mattpocock/skills` (or `setup.sh` on fresh clone)\n\n**First-run required:** `/setup-matt-pocock-skills` once per repo â€” configures issue tracker + triage labels before other skills work.\n\n**Key skills added:** `/grill-with-docs`, `/tdd`, `/to-prd`, `/to-issues`, `/triage`, `/improve-codebase-architecture`, `/prototype`, `/diagnosing-bugs`, `/domain-modeling`, `/codebase-design`, `/grill-me`, `/handoff`, `/ask-matt`","background_tasks":[],"session_crons":[]}
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-06-27 — edit or delete below -->
-- {"session_id":"e1821470-e7b7-429b-ba21-8a8efc747242","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\e1821470-e7b7-429b-ba21-8a8efc747242.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"**Section C â€” Domain docs**\n\nSkills like `/improve-codebase-architecture`, `/diagnosing-bugs`, and `/tdd` read `CONTEXT.md` for the project's domain language, and `docs/adr/` for past architectural decisions.\n\nNo `CONTEXT.md` or `docs/adr/` found â€” they'll be created empty as placeholders (you fill them over time as you use those skills).\n\nLayout options:\n1.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-06-27 — edit or delete below -->
-- Four files written:\n\n- `CLAUDE.md` â€” `## Agent skills` block appended\n- `docs/agents/issue-tracker.md` â€” GitHub Issues, no PR triage\n- `docs/agents/triage-labels.md` â€” default 5-label vocabulary\n- `docs/agents/domain.md` â€” single-context, `CONTEXT.md` + `docs/adr/` at root\n\nSkills now fully configured: `/triage`, `/to-issues`, `/to-prd`, `/grill-with-docs`, `/improve-codebase-architecture`, `/diagnosing-bugs`, `/tdd`, `/domain-modeling` all read from `docs/agents/`.
-
-
-<!-- DRAFT: review and edit before treating as permanent -->
-<!-- Drafted 2026-06-27 — edit or delete below -->
-- {"session_id":"e1821470-e7b7-429b-ba21-8a8efc747242","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\e1821470-e7b7-429b-ba21-8a8efc747242.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"```\nfeat(skills): integrate mattpocock-skills + per-repo agent config\n\n35 engineering skills installed (mattpocock/skills); docs/agents/\nscaffolded for issue tracker, triage labels, and domain docs so\n/triage, /to-issues, /to-prd, and architecture skills know where\nto read/write without human re-briefing each session.\n\n- GitHub Issues as tracker, PRs not a triage surface\n- Default 5-label triage vocabulary\n- Single-context domain layout (CONTEXT.md + docs/adr/)\n```","background_tasks":[],"session_crons":[]}
