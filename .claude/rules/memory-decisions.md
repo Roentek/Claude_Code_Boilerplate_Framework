@@ -4,6 +4,15 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-28 — Vercel CLI + MCP integrated (CLI-first pattern)
+- **Decision:** Added `vercel` npm CLI as primary + `vercel-mcp` (remote HTTP at `https://vercel.com/api/mcp`) as MCP fallback.
+- **Why:** Vercel CLI covers 90% of deployment workflows (deploy, preview, env vars, domains, logs) with zero token overhead. `vercel-mcp` is a remote HTTP MCP server (not stdio) — used for structured in-session queries or agentic pipelines that need persisted tool state.
+- **Pattern:** `vercel deploy/dev/ls/env/domains/logs` (CLI-first); MCP fallback for structured in-session ops.
+- **Auth:** `vercel login` (browser OAuth, one-time). MCP token: `vercel.com/account/tokens` → `VERCEL_TOKEN` in `settings.local.json`.
+- **MCP format:** Remote HTTP (`url` + `headers`) — differs from stdio pattern used by all other MCP servers in this project.
+- **Files:** `cli-vercel.sh`, `setup.sh`, `update-all.sh` (NPM_GLOBALS), `.mcp.json` (`vercel-mcp`), `settings.json` (permissions + enabledMcpjsonServers), `auth-reminders.sh`, `.claude/skills/vercel/SKILL.md`, `CLAUDE.md` (routing + skills + MCP tables).
+- **Source:** https://github.com/vercel/vercel | MCP: https://vercel.com/api/mcp
+
 ## 2026-06-28 — gw (Google Workspace CLI) integrated as CLI-first layer over google-workspace-mcp
 - **Decision:** Added `google-workspace-cli` (PyPI, CLI: `gw`) as CLI-first layer. `google-workspace-mcp` remains active as MCP fallback.
 - **Why:** `google-workspace-mcp` already handles complex Docs/Sheets/Forms ops. `gw` adds a zero-token CLI path for the 90% case: send mail, read threads, upload/share Drive files, manage Calendar events. Built specifically for Claude Code agent integration (`--json` throughout, `--account` for multi-account).

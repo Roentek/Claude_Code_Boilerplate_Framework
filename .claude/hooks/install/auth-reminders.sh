@@ -34,6 +34,11 @@ cat <<'AUTH'
     Multi-account: gw auth login again for each account; switch with gw auth switch.
     MCP fallback: google-workspace-mcp (same OAuth credentials via settings.local.json).
 
+  Vercel CLI  →  vercel login
+    Browser OAuth — links CLI to your Vercel account.
+    Required by: /vercel skill (deploy, preview, env vars, domains, logs).
+    Token for vercel-mcp: vercel.com/account/tokens → add VERCEL_TOKEN to settings.local.json
+
   GitHub CLI  →  gh auth login
     Required by: github@claude-plugins-official plugin.
 

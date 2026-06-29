@@ -45,6 +45,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Extract design tokens from any website | `/extract-design` skill → `designlang` CLI + plugin | DTCG tokens, Tailwind config, shadcn theme, Figma vars, CSS vars, WCAG scores — 13 slash commands (/extract /site /grade /battle /remix /pack /theme-swap /brand /pair /studio /verify /fidelity /gallery) |
 | Query codebase as knowledge graph | `/graphify` skill → `graphify` CLI + `graphify-mcp` | AST-parse 25+ languages → queryable graph; answers "what calls X?", "what depends on Y?"; run `/graphify .` once per repo to build; MCP for persistent tool access |
 | GitHub operations (issues, PRs, releases, repos) | `gh` CLI (primary) → `github` plugin MCP (fallback) | `gh issue list`, `gh pr create`, `gh repo clone`, `gh release create` — CLI-first; plugin MCP for reading private repo content in-context |
+| Deploy to Vercel / manage projects | `/vercel` skill → `vercel` CLI (primary) → `vercel-mcp` (fallback) | Deploy, preview, env vars, domains, logs — `vercel login` once; MCP needs `VERCEL_TOKEN` |
 | Watch / analyze video content | `/watch` plugin → `claude-video` | Analyze YouTube, TikTok, Vimeo, local video — extracts frames + transcript; `/watch <url> <question>`; needs ffmpeg + yt-dlp |
 | Process / manipulate video files (trim, transcode, thumbnail, extract audio, concat) | `node tools/ffmpeg.js` | All output JSON; requires system ffmpeg (auto-installed via `sys-ffmpeg.sh`); see `/ffmpeg` skill |
 | Validate / stress-test an idea before building | `/roast` skill | 5-persona adversarial council attacks from every angle → GO / RESHAPE / KILL verdict + cheapest 48-hour test. **Auto-invoke** when user says "I'm thinking of building X", "what do you think of this idea", "should I build this", or "pressure-test this" — run *before* any significant build starts |
@@ -368,6 +369,7 @@ vault/                        ← Obsidian wiki vault (dual-layer)
 | `/kie-ai` | AI media generation — 29 models (Midjourney, Veo3, Suno, ElevenLabs, Kling, Flux, etc.); CLI-first (`kie-cli`), auto-falls back to MCP; async task polling |
 | `/llmfit` | Hardware-aware LLM model selection — `llmfit fit/recommend/search/diff/plan/download/run/bench --json`; CLI-first, `llmfit-mcp` fallback; no API key required |
 | `/gw` | Google Workspace CLI — `gw mail/drive/cal` with `--json`; CLI-first (`gw auth login` once); falls back to `google-workspace-mcp` for Docs/Sheets/Forms/bulk ops |
+| `/vercel` | Vercel deployments — `vercel deploy/dev/ls/env/domains/logs`; CLI-first (`vercel login` once); `vercel-mcp` fallback for structured in-session queries |
 | `/higgsfield:generate` | Image/video generation across 30+ models (Nano Banana 2, Seedance 2.0, Kling 3.0, Veo 3.1, GPT Image 2…), Marketing Studio for branded ads, Virality Predictor — CLI-first |
 | `/higgsfield:soul-id` | Train a Soul Character — reusable face-faithful identity model; returns `reference_id` for use in generate |
 | `/higgsfield:product-photoshoot` | Brand-quality product imagery — 10 modes (studio, lifestyle, Pinterest, hero, virtual try-on…) |
@@ -450,6 +452,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `designlang-mcp` | Expose extracted design tokens via MCP after running `designlang <url>` — no API key; reads `./design-extract-output/` |
 | `graphify-mcp` | Query codebase knowledge graph — `query_graph`, `get_node`, `get_neighbors`, `shortest_path`, `list_prs`, `get_pr_impact`; requires `graphify-out/graph.json` (build with `/graphify .`); optional `GRAPHIFY_API_KEY` for HTTP auth |
 | `llmfit-mcp` | Hardware-aware LLM model scoring via MCP stdio (`llmfit serve --mcp`) — backup for `llmfit` CLI; no API key; optional `LOCALMAXXING_API_KEY` for community benchmarks |
+| `vercel-mcp` | Vercel deployments + project management — **CLI-first:** prefer `vercel` CLI; MCP for structured in-session queries. Remote HTTP server. Requires `VERCEL_TOKEN` |
 
 > **Setup:** Copy [`.claude/settings.local.json.example`](.claude/settings.local.json.example) → `.claude/settings.local.json`. The `__activation_guide` inside lists where to get each credential.
 

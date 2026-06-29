@@ -202,6 +202,12 @@
       "command": "llmfit",
       "args": ["serve", "--mcp"]
     },
+    "vercel-mcp": {
+      "url": "https://vercel.com/api/mcp",
+      "headers": {
+        "Authorization": "Bearer ${VERCEL_TOKEN}"
+      }
+    },
     "memory-shrunk": {
       "command": "npx",
       "args": [
