@@ -4,6 +4,15 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-28 — gw (Google Workspace CLI) integrated as CLI-first layer over google-workspace-mcp
+- **Decision:** Added `google-workspace-cli` (PyPI, CLI: `gw`) as CLI-first layer. `google-workspace-mcp` remains active as MCP fallback.
+- **Why:** `google-workspace-mcp` already handles complex Docs/Sheets/Forms ops. `gw` adds a zero-token CLI path for the 90% case: send mail, read threads, upload/share Drive files, manage Calendar events. Built specifically for Claude Code agent integration (`--json` throughout, `--account` for multi-account).
+- **Pattern:** `gw mail/drive/cal --json` (CLI-first); MCP fallback for Docs/Sheets editing, Forms, Tasks, Contacts, Chat, bulk ops.
+- **Auth:** `gw auth login` (browser OAuth, one-time per account). Multi-account: run again per account, switch with `gw auth switch`.
+- **Files:** `cli-gw.sh`, `setup.sh`, `settings.json` (permissions), `auth-reminders.sh`, `.claude/skills/gw/SKILL.md`, `CLAUDE.md` (routing + skills + MCP tables).
+- **Update:** `uv tool upgrade --all` covers `google-workspace-cli` automatically.
+- **Source:** https://github.com/googleworkspace/cli (PyPI: google-workspace-cli v0.1.1)
+
 ## 2026-06-28 — llmfit integrated (CLI-first + MCP fallback)
 - **Decision:** Added `llmfit` (PyPI, `uv tool install llmfit`) as primary CLI + `llmfit-mcp` (stdio via `llmfit serve --mcp`) as MCP fallback.
 - **Why:** Right-sizes LLM models to hardware — detects GPU/CPU/RAM, scores models for fit/speed/quality, downloads GGUF, runs inference, benchmarks providers. Complements LightRAG + Ollama setup — tells you which models actually fit your hardware before downloading.

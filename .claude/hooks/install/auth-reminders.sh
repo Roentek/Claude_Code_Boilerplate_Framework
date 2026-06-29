@@ -28,6 +28,12 @@ cat <<'AUTH'
     Required by: /higgsfield:generate, /higgsfield:soul-id, /higgsfield:product-photoshoot, /higgsfield:marketplace-cards
     MCP fallback: npx mcp-remote https://mcp.higgsfield.ai/mcp (same credentials)
 
+  Google Workspace CLI  →  gw auth login
+    Browser OAuth — links gw CLI to your Google account.
+    Required by: /gw skill (Gmail, Drive, Calendar via CLI).
+    Multi-account: gw auth login again for each account; switch with gw auth switch.
+    MCP fallback: google-workspace-mcp (same OAuth credentials via settings.local.json).
+
   GitHub CLI  →  gh auth login
     Required by: github@claude-plugins-official plugin.
 

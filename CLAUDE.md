@@ -22,6 +22,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Supabase local dev (migrations, local stack, type gen, edge functions) | `supabase` CLI (primary) → `supabase-mcp` (in-context queries) | `supabase login` once; `supabase start` needs Docker; CLI-first for migrations + type gen |
 | Claude API / SDK app | `/claude-api` skill | Scaffolds Anthropic SDK boilerplate |
 | NotebookLM research / podcasts | `/notebooklm` skill → `notebooklm` CLI | Create notebooks, add sources, generate podcasts/videos/quizzes/mind maps/slides — CLI first; `notebooklm-mcp` as backup |
+| Gmail / Drive / Calendar (CLI) | `/gw` skill → `gw` CLI (primary) → `google-workspace-mcp` (fallback) | Send mail, read threads, upload/share Drive files, manage events — **CLI first**; `gw auth login` once; MCP for Docs/Sheets/Forms/bulk ops |
 | n8n workflow | `n8n-mcp` tools | Search nodes, validate, build via MCP |
 | Voice AI (Vapi) | `vapi-mcp` tools | Create assistants, calls, phone numbers |
 | Browser automation (real Chrome, CDP) | `/browser-harness` skill → `browser-harness` CLI | Direct CDP control of your real Chrome — coordinate clicks, screenshots, JS eval; `--doctor` for setup; cloud via `browser-harness auth login` |
@@ -366,6 +367,7 @@ vault/                        ← Obsidian wiki vault (dual-layer)
 | `/caveman` | Activate 75% token reduction (lite/full/ultra modes) — telegraphic responses without context loss |
 | `/kie-ai` | AI media generation — 29 models (Midjourney, Veo3, Suno, ElevenLabs, Kling, Flux, etc.); CLI-first (`kie-cli`), auto-falls back to MCP; async task polling |
 | `/llmfit` | Hardware-aware LLM model selection — `llmfit fit/recommend/search/diff/plan/download/run/bench --json`; CLI-first, `llmfit-mcp` fallback; no API key required |
+| `/gw` | Google Workspace CLI — `gw mail/drive/cal` with `--json`; CLI-first (`gw auth login` once); falls back to `google-workspace-mcp` for Docs/Sheets/Forms/bulk ops |
 | `/higgsfield:generate` | Image/video generation across 30+ models (Nano Banana 2, Seedance 2.0, Kling 3.0, Veo 3.1, GPT Image 2…), Marketing Studio for branded ads, Virality Predictor — CLI-first |
 | `/higgsfield:soul-id` | Train a Soul Character — reusable face-faithful identity model; returns `reference_id` for use in generate |
 | `/higgsfield:product-photoshoot` | Brand-quality product imagery — 10 modes (studio, lifestyle, Pinterest, hero, virtual try-on…) |
@@ -426,7 +428,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `supabase-mcp` | Postgres database + Supabase platform — in-context queries/migrations; **CLI-first:** prefer `supabase` CLI for local dev, migrations, type gen, edge functions |
 | `openrouter-mcp` | Multi-model LLM routing, benchmarking |
 | `tavily-mcp` | Web search and content extraction |
-| `google-workspace-mcp` | Gmail, Drive, Sheets, Docs, Calendar, Forms |
+| `google-workspace-mcp` | Gmail, Drive, Sheets, Docs, Calendar, Forms — **CLI-first:** prefer `gw` CLI for mail/drive/cal; MCP for Docs/Sheets editing, Forms, Tasks, Contacts, Chat, bulk ops |
 | `trigger` | Deploy, trigger, and monitor Trigger.dev tasks |
 | `pinecone-mcp` | Vector search / RAG |
 | `n8n-mcp` | n8n workflow automation |
