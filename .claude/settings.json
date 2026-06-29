@@ -47,6 +47,7 @@
       "Bash(ffmpeg *)",
       "Bash(yt-dlp *)",
       "Bash(higgsfield *)",
+      "Bash(llmfit *)",
       "Bash(openspace-dashboard *)",
       "Bash(bash .claude/hooks/setup.sh)",
       "Bash(echo \"exit: $?\")",
@@ -78,6 +79,7 @@
       "PowerShell(graphify *)",
       "PowerShell(yt-dlp *)",
       "PowerShell(higgsfield *)",
+      "PowerShell(llmfit *)",
       "PowerShell(openspace-dashboard *)",
       "PowerShell(npm install *)",
       "PowerShell(Get-Process *)",
@@ -114,7 +116,8 @@
     "notebooklm-mcp",
     "openspace",
     "designlang-mcp",
-    "graphify-mcp"
+    "graphify-mcp",
+    "llmfit-mcp"
   ],
   "hooks": {
     "SessionStart": [

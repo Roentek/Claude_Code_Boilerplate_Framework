@@ -60,6 +60,7 @@ NPM_GLOBALS=(
   "@felores/kie-cli"
   "@higgsfield/cli"
 )
+# llmfit is a uv tool — auto-updated by `uv tool upgrade --all` below
 
 if command -v npm &>/dev/null; then
   for pkg in "${NPM_GLOBALS[@]}"; do

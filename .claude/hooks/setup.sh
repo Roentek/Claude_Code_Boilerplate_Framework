@@ -120,6 +120,7 @@ _run cli-codeburn.sh
 _run cli-browser-harness.sh
 _run cli-kie.sh
 _run cli-higgsfield.sh
+_run cli-llmfit.sh
 
 # ── Authentication reminders ─────────────────────────────────
 _run auth-reminders.sh

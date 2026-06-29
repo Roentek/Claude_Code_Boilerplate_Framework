@@ -198,6 +198,10 @@
         "GRAPHIFY_API_KEY": "${GRAPHIFY_API_KEY}"
       }
     },
+    "llmfit-mcp": {
+      "command": "llmfit",
+      "args": ["serve", "--mcp"]
+    },
     "memory-shrunk": {
       "command": "npx",
       "args": [

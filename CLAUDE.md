@@ -38,6 +38,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | UI component inspiration / SVG logos | `21st-dev-magic` tools | Search UI components, SVG brand logos, generate variants |
 | AI image/video (cinematic, managed) | `/higgsfield:generate` skill → `higgsfield` CLI (primary) → `higgsfield` MCP (fallback) | Browser OAuth, no API key; cinematic video, product photos, Soul ID, marketing studio — **CLI first** |
 | AI image/video/audio (specific model) | `/kie-ai` skill → `kie-cli` CLI (primary) → `kie-ai` MCP (fallback) | Midjourney, Sora, ElevenLabs, Kling, Suno, etc. CLI = zero context tokens; auto-switches to MCP if needed |
+| Right-size LLM to hardware / model recommendations | `/llmfit` skill → `llmfit` CLI (primary) → `llmfit-mcp` (fallback) | Detects GPU/CPU/RAM, scores models for fit/speed/quality, downloads GGUF, runs inference — **CLI first** |
 | Self-evolving AI skills / collective intelligence | `/openspace` skill → `openspace` CLI | Skills that auto-fix, auto-improve, auto-learn; 46% token reduction; cloud skill sharing — **CLI first; MCP backup** |
 | AI spend tracking / token cost analysis | `/codeburn` skill → `codeburn` CLI | Token + dollar breakdown by task, model, tool, project across 31 AI tools — `codeburn` for TUI dashboard, `codeburn status` for one-liner |
 | Extract design tokens from any website | `/extract-design` skill → `designlang` CLI + plugin | DTCG tokens, Tailwind config, shadcn theme, Figma vars, CSS vars, WCAG scores — 13 slash commands (/extract /site /grade /battle /remix /pack /theme-swap /brand /pair /studio /verify /fidelity /gallery) |
@@ -364,6 +365,7 @@ vault/                        ← Obsidian wiki vault (dual-layer)
 | `/create-actor` | Guided Actor scaffolding — from apify-actor-commands pack |
 | `/caveman` | Activate 75% token reduction (lite/full/ultra modes) — telegraphic responses without context loss |
 | `/kie-ai` | AI media generation — 29 models (Midjourney, Veo3, Suno, ElevenLabs, Kling, Flux, etc.); CLI-first (`kie-cli`), auto-falls back to MCP; async task polling |
+| `/llmfit` | Hardware-aware LLM model selection — `llmfit fit/recommend/search/diff/plan/download/run/bench --json`; CLI-first, `llmfit-mcp` fallback; no API key required |
 | `/higgsfield:generate` | Image/video generation across 30+ models (Nano Banana 2, Seedance 2.0, Kling 3.0, Veo 3.1, GPT Image 2…), Marketing Studio for branded ads, Virality Predictor — CLI-first |
 | `/higgsfield:soul-id` | Train a Soul Character — reusable face-faithful identity model; returns `reference_id` for use in generate |
 | `/higgsfield:product-photoshoot` | Brand-quality product imagery — 10 modes (studio, lifestyle, Pinterest, hero, virtual try-on…) |
@@ -445,6 +447,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `firecrawl-mcp` | Batch scraping / schema-driven extraction (backup — prefer `firecrawl` CLI) |
 | `designlang-mcp` | Expose extracted design tokens via MCP after running `designlang <url>` — no API key; reads `./design-extract-output/` |
 | `graphify-mcp` | Query codebase knowledge graph — `query_graph`, `get_node`, `get_neighbors`, `shortest_path`, `list_prs`, `get_pr_impact`; requires `graphify-out/graph.json` (build with `/graphify .`); optional `GRAPHIFY_API_KEY` for HTTP auth |
+| `llmfit-mcp` | Hardware-aware LLM model scoring via MCP stdio (`llmfit serve --mcp`) — backup for `llmfit` CLI; no API key; optional `LOCALMAXXING_API_KEY` for community benchmarks |
 
 > **Setup:** Copy [`.claude/settings.local.json.example`](.claude/settings.local.json.example) → `.claude/settings.local.json`. The `__activation_guide` inside lists where to get each credential.
 

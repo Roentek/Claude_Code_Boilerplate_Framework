@@ -4,6 +4,14 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-28 — llmfit integrated (CLI-first + MCP fallback)
+- **Decision:** Added `llmfit` (PyPI, `uv tool install llmfit`) as primary CLI + `llmfit-mcp` (stdio via `llmfit serve --mcp`) as MCP fallback.
+- **Why:** Right-sizes LLM models to hardware — detects GPU/CPU/RAM, scores models for fit/speed/quality, downloads GGUF, runs inference, benchmarks providers. Complements LightRAG + Ollama setup — tells you which models actually fit your hardware before downloading.
+- **Pattern:** CLI-first (zero context tokens, `--json` flag for agent integration); MCP fallback for structured in-session results. No API key required; optional `LOCALMAXXING_API_KEY` for community benchmarks.
+- **Files:** `cli-llmfit.sh`, `setup.sh` (CLI tools section), `.mcp.json` (`llmfit-mcp`), `settings.json` (permissions + `enabledMcpjsonServers`), `.claude/skills/llmfit/SKILL.md`, `CLAUDE.md` (routing + skills + MCP tables).
+- **Update:** `uv tool upgrade --all` covers llmfit automatically — no NPM_GLOBALS entry needed.
+- **Source:** https://github.com/AlexsJones/llmfit (PyPI: llmfit v0.9.34)
+
 ## 2026-06-28 — notebooklm-py replaces notebooklm-mcp-cli (CLI: notebooklm, MCP: notebooklm-mcp)
 - **Decision:** Replaced `notebooklm-mcp-cli` (jacob-bd, CLI: `nlm`) with `notebooklm-py[browser,mcp]` (teng-lin/notebooklm-py, CLI: `notebooklm`). Same pattern: CLI-first, MCP fallback via `notebooklm-mcp`.
 - **Why:** `notebooklm-py` is dramatically more capable — quizzes, mind maps, research agents (web + Drive, fast/deep), source labels, sharing controls, multi-profile auth, headless token auth. Old `nlm` only covered notebooks/sources/basic generation.
