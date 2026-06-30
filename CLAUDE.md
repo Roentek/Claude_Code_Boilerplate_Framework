@@ -42,7 +42,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Right-size LLM to hardware / model recommendations | `/llmfit` skill → `llmfit` CLI (primary) → `llmfit-mcp` (fallback) | Detects GPU/CPU/RAM, scores models for fit/speed/quality, downloads GGUF, runs inference — **CLI first** |
 | Self-evolving AI skills / collective intelligence | `/openspace` skill → `openspace` CLI | Skills that auto-fix, auto-improve, auto-learn; 46% token reduction; cloud skill sharing — **CLI first; MCP backup** |
 | AI spend tracking / token cost analysis | `/codeburn` skill → `codeburn` CLI | Token + dollar breakdown by task, model, tool, project across 31 AI tools — `codeburn` for TUI dashboard, `codeburn status` for one-liner |
-| Extract design tokens from any website | `/extract-design` skill → `designlang` CLI + plugin | DTCG tokens, Tailwind config, shadcn theme, Figma vars, CSS vars, WCAG scores — 13 slash commands (/extract /site /grade /battle /remix /pack /theme-swap /brand /pair /studio /verify /fidelity /gallery) |
+| Extract design tokens from any website | `/extract-design` skill → `designlang` CLI + `designlang-mcp` | DTCG tokens, Tailwind config, shadcn theme, Figma vars, CSS vars, WCAG scores — plugin disabled (source repo deleted); CLI + MCP still active |
 | Query codebase as knowledge graph | `/graphify` skill → `graphify` CLI + `graphify-mcp` | AST-parse 25+ languages → queryable graph; answers "what calls X?", "what depends on Y?"; run `/graphify .` once per repo to build; MCP for persistent tool access |
 | GitHub operations (issues, PRs, releases, repos) | `gh` CLI (primary) → `github` plugin MCP (fallback) | `gh issue list`, `gh pr create`, `gh repo clone`, `gh release create` — CLI-first; plugin MCP for reading private repo content in-context |
 | Deploy to Vercel / manage projects | `/vercel` skill → `vercel` CLI (primary) → `vercel-mcp` (fallback) | Deploy, preview, env vars, domains, logs — `vercel login` once; MCP needs `VERCEL_TOKEN` |
@@ -222,7 +222,7 @@ CLAUDE.md                     ← You are here (routing only)
     install/                  ← Modular install scripts — one per plugin/CLI/tool/skill; run standalone or via setup.sh
       lib.sh                  ← Shared helpers (_timeout, _is_windows, _user_home, _install_plugin, _install_skill)
       sys-*.sh                ← System prerequisites (python, node, uvx, bun, env, npm-deps, pre-commit, github-cli)
-      plugin-*.sh             ← Claude plugins (ui-ux-pro-max, impeccable, caveman, context-mode, claude-mem, designlang, claude-video…)
+      plugin-*.sh             ← Claude plugins (ui-ux-pro-max, impeccable, caveman, context-mode, claude-mem, claude-video…)
       skill-apify-*.sh        ← Apify marketplace skills (ultimate-scraper, actor-development, actorization…)
       skills-project.sh       ← Copies .claude/skills/* → ~/.claude/skills/
       cli-*.sh                ← Global CLI tools (firecrawl, codex, gemini, notebooklm, codeburn, browser-harness, kie…)
@@ -310,7 +310,7 @@ vault/                        ← Obsidian wiki vault (dual-layer)
 | `context-mode` | Context window optimization — 98% reduction via sandboxing (315 KB → 5.4 KB); session continuity via SQLite FTS5; output compression ~65-75% |
 | `claude-mem` | Persistent memory across sessions — captures tool usage observations, generates semantic summaries, [web viewer](http://localhost:37777) |
 
-> Disabled Claude *plugins* (MCP servers for pinecone/supabase are still active — see MCP Servers table): `pinecone`, `supabase`, `plugin-dev` — enable in [`.claude/settings.json`](.claude/settings.json) → `enabledPlugins`.
+> Disabled Claude *plugins* (MCP servers for pinecone/supabase are still active — see MCP Servers table): `pinecone`, `supabase`, `plugin-dev`, `designlang` (source repo deleted — CLI + MCP still active) — enable in [`.claude/settings.json`](.claude/settings.json) → `enabledPlugins`.
 
 ---
 
@@ -334,7 +334,7 @@ vault/                        ← Obsidian wiki vault (dual-layer)
 | ------- | -------- |
 | `/site-teardown [url]` | User provides a URL and asks to clone, match, or understand a site's structure/design before building |
 | `/skillui` | Prepping to match an existing site's design in a build session — extracts tokens into SKILL.md/DESIGN.md for session use. Use *before* writing any UI code that should match an existing site |
-| `/extract-design` | When the extracted tokens/configs are themselves the deliverable (DTCG, Tailwind, shadcn, Figma vars, CSS vars, WCAG report). 13 plugin commands for export formats |
+| `/extract-design` | When the extracted tokens/configs are themselves the deliverable (DTCG, Tailwind, shadcn, Figma vars, CSS vars, WCAG report). Plugin disabled (source repo deleted) — use CLI + `designlang-mcp` |
 | `/21st-magic` | UI component search, generation, refinement, and SVG logo lookup via `21st-dev-magic` MCP — inspiration + logo search free; builder + refiner require Pro |
 | `/webgpu-threejs-tsl` | WebGPU + Three.js TSL — renderer, node materials, compute shaders |
 | `/design-md` | Load a ready-made brand DESIGN.md for 73 brands via `npx getdesign@latest add <brand>` |

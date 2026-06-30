@@ -217,7 +217,7 @@
     "context-mode@context-mode": true,
     "claude-mem@claude-mem": true,
     "claude-mem@thedotmack": true,
-    "designlang@design-extract": true,
+    "designlang@design-extract": false,
     "watch@claude-video": true,
     "ponytail@ponytail": true,
     "mattpocock-skills@mattpocock-skills": true,
@@ -301,13 +301,6 @@
       },
       "autoUpdate": true
     },
-    "design-extract": {
-      "source": {
-        "source": "github",
-        "repo": "Manavarya09/design-extract"
-      },
-      "autoUpdate": true
-    },
     "claude-video": {
       "source": {
         "source": "github",
@@ -328,12 +321,6 @@
         "repo": "mattpocock/skills"
       },
       "autoUpdate": true
-    },
-    "designlang": {
-      "source": {
-        "source": "git",
-        "url": "https://github.com/Manavarya09/design-extract.git"
-      }
     },
     "agricidaniel-claude-obsidian": {
       "source": {
