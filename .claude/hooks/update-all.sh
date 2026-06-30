@@ -60,6 +60,7 @@ NPM_GLOBALS=(
   "@felores/kie-cli"
   "@higgsfield/cli"
   "vercel"
+  "@21st-dev/cli"
 )
 # llmfit is a uv tool — auto-updated by `uv tool upgrade --all` below
 

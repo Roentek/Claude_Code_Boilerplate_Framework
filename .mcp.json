@@ -147,7 +147,7 @@
       "command": "npx",
       "args": ["-y", "@21st-dev/magic@latest"],
       "env": {
-        "API_KEY": "${TWENTYFIRST_DEV_API_KEY}"
+        "API_KEY": "${TWENTYFIRST_DEV_MAGIC_API_KEY}"
       }
     },
     "playwright-mcp": {

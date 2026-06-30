@@ -57,8 +57,18 @@ cat <<'AUTH'
   Codex Plugin  →  /codex:setup (checks readiness in Claude Code)
     Requires OPENAI_API_KEY in settings.local.json.
 
+  21st.dev Magic MCP  →  add TWENTYFIRST_DEV_MAGIC_API_KEY to settings.local.json
+    Get key: https://21st.dev/magic/console → API Keys
+    Free tier: Inspiration Search + Logo Search.
+    Pro ($20/mo): Component Builder + Refiner.
+    MCP (21st-dev-magic) already wired — restart Claude Code after adding key.
+
+  21st.dev Studio CLI  →  add TWENTYFIRST_DEV_CLI_API_KEY to settings.local.json
+    Get key: https://21st.dev/studio → Settings → API Keys
+    Used by: @21st-dev/cli for publishing components to the 21st.dev registry.
+
   All other MCP servers (supabase, openrouter, kie-ai, tavily,
-  pinecone, vapi, n8n, apify, monet, stitch, 21st-dev, firecrawl)
+  pinecone, vapi, n8n, apify, monet, stitch, firecrawl)
   require API keys in .claude/settings.local.json → env block.
   See .claude/settings.local.json.example → __activation_guide.
 

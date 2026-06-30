@@ -36,7 +36,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Graph-based RAG / knowledge extraction | `/lightrag` skill → `tools/lightrag-plus/` | Knowledge graph RAG, entity-relationship Q&A, multimodal docs — Web UI + REST API |
 | Obsidian wiki / AI second brain (persistent cross-project knowledge base) | `/wiki` skill → `claude-obsidian` plugin | Vault lives at `vault/` in repo root — `wiki/` gittracked (shared), `private/` gitignored (per-user). MCPVault gives Claude filesystem access without Obsidian running. Karpathy LLM Wiki pattern; hybrid BM25+cosine retrieval; methodology modes |
 | UI component search | `monet-mcp` tools | Search landing page components, get React/TS code |
-| UI component inspiration / SVG logos | `21st-dev-magic` tools | Search UI components, SVG brand logos, generate variants |
+| UI component inspiration / SVG logos | `/21st-magic` skill → `21st-dev-magic` MCP | Search UI components, SVG brand logos, generate variants — requires `TWENTYFIRST_DEV_MAGIC_API_KEY` |
 | AI image/video (cinematic, managed) | `/higgsfield:generate` skill → `higgsfield` CLI (primary) → `higgsfield` MCP (fallback) | Browser OAuth, no API key; cinematic video, product photos, Soul ID, marketing studio — **CLI first** |
 | AI image/video/audio (specific model) | `/kie-ai` skill → `kie-cli` CLI (primary) → `kie-ai` MCP (fallback) | Midjourney, Sora, ElevenLabs, Kling, Suno, etc. CLI = zero context tokens; auto-switches to MCP if needed |
 | Right-size LLM to hardware / model recommendations | `/llmfit` skill → `llmfit` CLI (primary) → `llmfit-mcp` (fallback) | Detects GPU/CPU/RAM, scores models for fit/speed/quality, downloads GGUF, runs inference — **CLI first** |
@@ -333,6 +333,7 @@ vault/                        ← Obsidian wiki vault (dual-layer)
 | `/site-teardown [url]` | User provides a URL and asks to clone, match, or understand a site's structure/design before building |
 | `/skillui` | Prepping to match an existing site's design in a build session — extracts tokens into SKILL.md/DESIGN.md for session use. Use *before* writing any UI code that should match an existing site |
 | `/extract-design` | When the extracted tokens/configs are themselves the deliverable (DTCG, Tailwind, shadcn, Figma vars, CSS vars, WCAG report). 13 plugin commands for export formats |
+| `/21st-magic` | UI component search, generation, refinement, and SVG logo lookup via `21st-dev-magic` MCP — inspiration + logo search free; builder + refiner require Pro |
 | `/webgpu-threejs-tsl` | WebGPU + Three.js TSL — renderer, node materials, compute shaders |
 | `/design-md` | Load a ready-made brand DESIGN.md for 73 brands via `npx getdesign@latest add <brand>` |
 | `/taste-skill` | Anti-slop frontend enforcement — bans generic patterns, enforces Bento 2.0 |
@@ -446,7 +447,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `context7` | Live SDK/library documentation lookup — fetch on demand instead of loading static reference files |
 | `monet-mcp` | Landing page UI components — search + retrieve React/TS code |
 | `stitch` | Extract design DNA from screens (fonts, colors, layouts) |
-| `21st-dev-magic` | UI component search + SVG brand logos |
+| `21st-dev-magic` | UI component search + SVG brand logos — **MCP-first**: 4 tools (inspiration, builder, refiner, logo_search); `/21st-magic` skill; requires `TWENTYFIRST_DEV_MAGIC_API_KEY` |
 | `playwright-mcp` | Interactive browser sessions (backup — prefer `node tools/playwright.js`) |
 | `firecrawl-mcp` | Batch scraping / schema-driven extraction (backup — prefer `firecrawl` CLI) |
 | `designlang-mcp` | Expose extracted design tokens via MCP after running `designlang <url>` — no API key; reads `./design-extract-output/` |
