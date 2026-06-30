@@ -51,6 +51,7 @@
       "Bash(gw *)",
       "Bash(vercel *)",
       "Bash(alpaca *)",
+      "Bash(stripe *)",
       "Bash(openspace-dashboard *)",
       "Bash(bash .claude/hooks/setup.sh)",
       "Bash(echo \"exit: $?\")",
@@ -86,6 +87,7 @@
       "PowerShell(gw *)",
       "PowerShell(vercel *)",
       "PowerShell(alpaca *)",
+      "PowerShell(stripe *)",
       "PowerShell(openspace-dashboard *)",
       "PowerShell(npm install *)",
       "PowerShell(Get-Process *)",
@@ -124,7 +126,8 @@
     "designlang-mcp",
     "graphify-mcp",
     "llmfit-mcp",
-    "vercel-mcp"
+    "vercel-mcp",
+    "stripe-mcp"
   ],
   "hooks": {
     "SessionStart": [
@@ -222,7 +225,8 @@
     "ponytail@ponytail": true,
     "mattpocock-skills@mattpocock-skills": true,
     "claude-obsidian@agricidaniel-claude-obsidian": true,
-    "higgsfield@higgsfield": true
+    "higgsfield@higgsfield": true,
+    "stripe@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {

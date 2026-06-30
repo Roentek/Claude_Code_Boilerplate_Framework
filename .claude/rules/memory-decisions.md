@@ -4,6 +4,15 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-30 — Stripe CLI + MCP integrated (CLI-first pattern)
+- **Decision:** Added `stripe` CLI (Go binary, platform-native install) as primary + `stripe-mcp` (`@stripe/mcp` via npx) as MCP fallback.
+- **Why:** Stripe CLI covers the core dev workflow — webhook forwarding (`stripe listen`), test event firing (`stripe trigger`), live API log streaming (`stripe logs tail`), resource CRUD — with zero token overhead. `stripe-mcp` is fallback for structured in-session queries and chaining results into Trigger.dev / n8n automations.
+- **Pattern:** CLI-first (`stripe login` browser OAuth, one-time); `STRIPE_SECRET_KEY` only needed for MCP fallback.
+- **Install:** Platform-native Go binary — `winget install Stripe.StripeCLI` (Windows), `brew install stripe/stripe-cli/stripe` (macOS), apt repo (Linux). Not npm — no NPM_GLOBALS entry.
+- **Update:** Platform-aware section in `update-all.sh` (section 6 between Ollama and npm project deps).
+- **Files:** `cli-stripe.sh`, `setup.sh` (CLI tools section), `.mcp.json` (`stripe-mcp`), `settings.json` (permissions + enabledMcpjsonServers), `auth-reminders.sh`, `.env.example` (3 vars), `settings.local.json.example` (activation guide), `.claude/skills/stripe/SKILL.md`, `CLAUDE.md` (routing + skills + MCP tables).
+- **Source:** https://github.com/stripe/stripe-cli | MCP: `@stripe/mcp`
+
 ## 2026-06-29 — Alpaca CLI integrated (CLI-first over existing MCP)
 - **Decision:** Added `alpaca` CLI (`go install github.com/alpacahq/cli/cmd/alpaca@latest` / `brew install alpacahq/tap/cli`) as CLI-first layer over the existing `alpaca` MCP server (`alpaca-mcp-server` via uvx).
 - **Why:** Alpaca MCP was already wired in `.mcp.json` but had no CLI, no install script, no skill, no permissions, and no routing entry. CLI is specifically designed for AI agents (no confirmation prompts, JSON/CSV output, `--output json` flag, pipes cleanly to jq). Zero token overhead vs MCP protocol overhead on every call.

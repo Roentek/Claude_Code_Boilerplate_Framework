@@ -75,6 +75,12 @@ cat <<'AUTH'
     CLI defaults to PAPER mode — set ALPACA_LIVE_TRADE=true for live.
     Check: alpaca doctor
 
+  Stripe CLI  →  stripe login
+    Browser OAuth — links CLI to your Stripe account (test mode by default).
+    Required by: /stripe skill (listen, trigger, logs, customers, charges, subscriptions).
+    MCP fallback (stripe-mcp): add STRIPE_SECRET_KEY to settings.local.json → env block.
+    Get key: dashboard.stripe.com → Developers → API Keys → Secret key (sk_test_xxx).
+
   All other MCP servers (supabase, openrouter, kie-ai, tavily,
   pinecone, vapi, n8n, apify, monet, stitch, firecrawl)
   require API keys in .claude/settings.local.json → env block.

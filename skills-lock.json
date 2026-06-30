@@ -151,6 +151,21 @@
       "skillPath": "skills/misc/setup-pre-commit/SKILL.md",
       "computedHash": "f9aeedf0a1f560ec465c3939c54434c2d949ac8b958a0493db52216f688a0366"
     },
+    "stripe-best-practices": {
+      "source": "docs.stripe.com",
+      "sourceType": "well-known",
+      "computedHash": "4aecf9b7d63a5f63ecbd1fdcb6077e0923a675befa6e9b7aa5d1e51ff28d9dae"
+    },
+    "stripe-directory": {
+      "source": "docs.stripe.com",
+      "sourceType": "well-known",
+      "computedHash": "58d8c458beaa92877ed2f0a622af65a0a91e2804efcc4188ac87a35780015361"
+    },
+    "stripe-projects": {
+      "source": "docs.stripe.com",
+      "sourceType": "well-known",
+      "computedHash": "56cec649e6e1ad41c44b0aeaffee90c84579b025fc13a787051abdec3bbe81d4"
+    },
     "tdd": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -186,6 +201,11 @@
       "sourceType": "github",
       "skillPath": "skills/deprecated/ubiquitous-language/SKILL.md",
       "computedHash": "c8968b02b83c365bc81d85cc17fb4c8854b80f5b6dece322164fff5b00142231"
+    },
+    "upgrade-stripe": {
+      "source": "docs.stripe.com",
+      "sourceType": "well-known",
+      "computedHash": "46bb3c16878f93b953ed901b950686d64f04f90c67400bf31e1a0d7790d889df"
     },
     "writing-beats": {
       "source": "mattpocock/skills",

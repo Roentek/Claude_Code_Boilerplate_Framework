@@ -208,6 +208,13 @@
         "Authorization": "Bearer ${VERCEL_TOKEN}"
       }
     },
+    "stripe-mcp": {
+      "command": "npx",
+      "args": ["-y", "@stripe/mcp@latest"],
+      "env": {
+        "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}"
+      }
+    },
     "memory-shrunk": {
       "command": "npx",
       "args": [

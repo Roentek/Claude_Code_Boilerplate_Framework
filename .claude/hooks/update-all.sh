@@ -217,7 +217,30 @@ else
   _skip "Ollama (not installed — run setup.sh to install)"
 fi
 
-# ── 6. npm project dependencies ──────────────────────────────
+# ── 7. Stripe CLI ─────────────────────────────────────────────
+echo ""
+echo "── Stripe CLI ───────────────────────────────────────────"
+if command -v stripe &>/dev/null; then
+  if _is_windows; then
+    _skip "stripe (Windows: winget upgrade Stripe.StripeCLI)"
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
+    if command -v brew &>/dev/null && brew upgrade stripe >/dev/null 2>&1; then
+      _ok "stripe (brew)"
+    else
+      _skip "stripe (already at latest or brew unavailable)"
+    fi
+  else
+    if sudo apt-get install -y stripe >/dev/null 2>&1; then
+      _ok "stripe (apt)"
+    else
+      _skip "stripe (apt update failed)"
+    fi
+  fi
+else
+  _skip "stripe (not installed — run: bash .claude/hooks/install/cli-stripe.sh)"
+fi
+
+# ── 8. npm project dependencies ──────────────────────────────
 echo ""
 echo "── npm project deps ─────────────────────────────────────"
 if [ -f "$ROOT/package.json" ] && command -v npm &>/dev/null; then
@@ -231,7 +254,7 @@ else
   _skip "npm project deps (no package.json or npm not found)"
 fi
 
-# ── 7. git submodules ─────────────────────────────────────────
+# ── 9. git submodules ─────────────────────────────────────────
 echo ""
 echo "── git submodules ───────────────────────────────────────"
 if git -C "$ROOT" submodule status >/dev/null 2>&1 && \
@@ -246,7 +269,7 @@ else
   _skip "git submodules (none configured)"
 fi
 
-# ── 8. LightRAG import verification ──────────────────────────
+# ── 10. LightRAG import verification ──────────────────────────
 echo ""
 echo "── LightRAG verification ────────────────────────────────"
 if [ -d "$ROOT/tools/lightrag-plus/.venv" ]; then
@@ -260,7 +283,7 @@ else
   _skip "LightRAG venv (not found)"
 fi
 
-# ── 9. Alpaca CLI ─────────────────────────────────────────────
+# ── 11. Alpaca CLI ─────────────────────────────────────────────
 echo ""
 echo "── Alpaca CLI ───────────────────────────────────────────"
 if command -v alpaca &>/dev/null; then

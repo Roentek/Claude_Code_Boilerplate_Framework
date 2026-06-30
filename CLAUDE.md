@@ -47,6 +47,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | GitHub operations (issues, PRs, releases, repos) | `gh` CLI (primary) → `github` plugin MCP (fallback) | `gh issue list`, `gh pr create`, `gh repo clone`, `gh release create` — CLI-first; plugin MCP for reading private repo content in-context |
 | Deploy to Vercel / manage projects | `/vercel` skill → `vercel` CLI (primary) → `vercel-mcp` (fallback) | Deploy, preview, env vars, domains, logs — `vercel login` once; MCP needs `VERCEL_TOKEN` |
 | Algorithmic trading / market data | `/alpaca` skill → `alpaca` CLI (primary) → `alpaca` MCP (fallback) | Trade stocks/crypto, query live data, manage positions — **CLI first** (`alpaca order/position/data`); `alpaca profile login` once; paper mode by default — set `ALPACA_LIVE_TRADE=true` for live |
+| Stripe payments / webhooks / billing | `/stripe` skill → `stripe` CLI (primary) → `stripe-mcp` (fallback) | Webhooks: `stripe listen --forward-to localhost:3000/webhook`; test events: `stripe trigger payment_intent.succeeded`; `stripe login` once |
 | Watch / analyze video content | `/watch` plugin → `claude-video` | Analyze YouTube, TikTok, Vimeo, local video — extracts frames + transcript; `/watch <url> <question>`; needs ffmpeg + yt-dlp |
 | Process / manipulate video files (trim, transcode, thumbnail, extract audio, concat) | `node tools/ffmpeg.js` | All output JSON; requires system ffmpeg (auto-installed via `sys-ffmpeg.sh`); see `/ffmpeg` skill |
 | Validate / stress-test an idea before building | `/roast` skill | 5-persona adversarial council attacks from every angle → GO / RESHAPE / KILL verdict + cheapest 48-hour test. **Auto-invoke** when user says "I'm thinking of building X", "what do you think of this idea", "should I build this", or "pressure-test this" — run *before* any significant build starts |
@@ -306,6 +307,7 @@ vault/                        ← Obsidian wiki vault (dual-layer)
 | `mattpocock-skills` | Real-engineering skills: grilling sessions, TDD, PRDs, issue decomposition, architecture improvement, domain modeling — run `/setup-matt-pocock-skills` once per repo |
 | `claude-obsidian` | Obsidian + Claude AI second brain (Karpathy LLM Wiki pattern) — persistent, compounding knowledge base; hybrid BM25+cosine retrieval; methodology modes (LYT/PARA/Zettelkasten); `/wiki` to start |
 | `higgsfield` | AI image/video/audio — **CLI-first:** 30+ models, Marketing Studio, Soul ID, virality scoring; browser OAuth. Plugin install pending Claude Code support for `./` source type — use CLI (`higgsfield generate create ...`) directly until resolved |
+| `stripe` | Stripe payments, Connect, billing, subscriptions — official Claude plugin; 4 skills auto-load: `stripe-best-practices`, `stripe-directory`, `stripe-projects`, `upgrade-stripe` |
 | `caveman` | Token compression — 75% reduction on responses, 46% on memory files; terse commits/reviews; session tracking |
 | `context-mode` | Context window optimization — 98% reduction via sandboxing (315 KB → 5.4 KB); session continuity via SQLite FTS5; output compression ~65-75% |
 | `claude-mem` | Persistent memory across sessions — captures tool usage observations, generates semantic summaries, [web viewer](http://localhost:37777) |
@@ -374,6 +376,11 @@ vault/                        ← Obsidian wiki vault (dual-layer)
 | `/gw` | Google Workspace CLI — `gw mail/drive/cal` with `--json`; CLI-first (`gw auth login` once); falls back to `google-workspace-mcp` for Docs/Sheets/Forms/bulk ops |
 | `/vercel` | Vercel deployments — `vercel deploy/dev/ls/env/domains/logs`; CLI-first (`vercel login` once); `vercel-mcp` fallback for structured in-session queries |
 | `/alpaca` | Algorithmic trading + market data — `alpaca order/position/data/watchlist`; CLI-first (`alpaca profile login` once); `alpaca` MCP fallback for structured in-session reads; paper mode by default |
+| `/stripe` | Stripe payments + webhooks — `stripe listen/trigger/logs/customers/charges/subscriptions`; CLI-first (`stripe login` once); `stripe-mcp` fallback for structured in-session reads |
+| `/stripe-best-practices` | Stripe integration decisions — API selection (Checkout Sessions vs PaymentIntents), Connect setup, billing/subscriptions, Treasury, security (restricted keys, webhooks, OAuth); auto-triggers on any Stripe integration task |
+| `/stripe-directory` | Find Stripe partners / service providers for a workflow, industry, or capability — also use when needing to programmatically purchase a service |
+| `/stripe-projects` | Provision infrastructure via Stripe Projects — databases, auth, caching, LLM providers, email, storage; triggers on "I need a database / API key / set up X" |
+| `/upgrade-stripe` | Guide for upgrading Stripe API versions and SDKs |
 | `/higgsfield:generate` | Image/video generation across 30+ models (Nano Banana 2, Seedance 2.0, Kling 3.0, Veo 3.1, GPT Image 2…), Marketing Studio for branded ads, Virality Predictor — CLI-first |
 | `/higgsfield:soul-id` | Train a Soul Character — reusable face-faithful identity model; returns `reference_id` for use in generate |
 | `/higgsfield:product-photoshoot` | Brand-quality product imagery — 10 modes (studio, lifestyle, Pinterest, hero, virtual try-on…) |
@@ -444,6 +451,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `apify` | Large-scale web scraping via Apify marketplace — 130+ Actors covering Instagram, TikTok, LinkedIn, Google, Reddit, Amazon, etc. Use with `/apify-ultimate-scraper` skill for guided workflows (lead generation, brand monitoring, competitor analysis, influencer vetting, trend research, SEO intelligence, review analysis, recruitment, real estate, e-commerce price monitoring, contact enrichment, RAG data feeds) |
 | `zep-mcp` | Zep long-term memory documentation |
 | `alpaca` | Algorithmic trading + market data — **CLI-first:** prefer `alpaca` CLI (`alpaca order/position/data`); MCP for structured in-session reads. Paper mode by default (`ALPACA_LIVE_TRADE=true` for live). Free paper keys at alpaca.markets. |
+| `stripe-mcp` | Stripe payments, customers, subscriptions, webhooks — **CLI-first:** prefer `stripe` CLI (`stripe listen/trigger/logs`); MCP for structured in-session queries. Requires `STRIPE_SECRET_KEY` |
 | `canva-dev` | Canva app SDK and CLI docs |
 | `kie-ai` | Multi-provider AI media — Midjourney, Sora, ElevenLabs, Kling, Suno, etc. **CLI-first:** use `kie-cli` (zero context tokens); MCP is fallback. Auto-switches on failure. |
 | `higgsfield` | Cinematic AI video/images — **CLI-first:** `higgsfield` CLI (primary); MCP fallback at `mcp.higgsfield.ai`. Browser OAuth, no API key. 4 skills: `/higgsfield:generate`, `/higgsfield:soul-id`, `/higgsfield:product-photoshoot`, `/higgsfield:marketplace-cards` |
