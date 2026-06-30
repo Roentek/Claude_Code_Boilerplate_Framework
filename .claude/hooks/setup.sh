@@ -124,6 +124,7 @@ _run cli-llmfit.sh
 _run cli-gw.sh
 _run cli-vercel.sh
 _run cli-21st-magic.sh
+_run cli-alpaca.sh
 
 # ── Authentication reminders ─────────────────────────────────
 _run auth-reminders.sh

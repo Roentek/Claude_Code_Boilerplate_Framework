@@ -4,6 +4,23 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-06-29 — Alpaca CLI integrated (CLI-first over existing MCP)
+- **Decision:** Added `alpaca` CLI (`go install github.com/alpacahq/cli/cmd/alpaca@latest` / `brew install alpacahq/tap/cli`) as CLI-first layer over the existing `alpaca` MCP server (`alpaca-mcp-server` via uvx).
+- **Why:** Alpaca MCP was already wired in `.mcp.json` but had no CLI, no install script, no skill, no permissions, and no routing entry. CLI is specifically designed for AI agents (no confirmation prompts, JSON/CSV output, `--output json` flag, pipes cleanly to jq). Zero token overhead vs MCP protocol overhead on every call.
+- **Pattern:** CLI-first (`alpaca order/position/data`) for order placement and data queries; MCP fallback for structured in-session reads when chaining tool calls. Paper mode by default — `ALPACA_LIVE_TRADE=true` required for live.
+- **Install:** Go binary — `go install github.com/alpacahq/cli/cmd/alpaca@latest` (cross-platform) or `brew install alpacahq/tap/cli` (macOS). Has built-in `alpaca update` self-update. No npm/uv.
+- **Auth:** `alpaca profile login` (OAuth, paper only) OR `ALPACA_API_KEY` + `ALPACA_SECRET_KEY` env vars. Free paper keys at alpaca.markets.
+- **Files:** `cli-alpaca.sh`, `setup.sh` (Global CLI Tools), `update-all.sh` (section 9), `settings.json` (Bash/PowerShell permissions), `auth-reminders.sh`, `.claude/skills/alpaca/SKILL.md`, `CLAUDE.md` (routing + skills + MCP tables).
+- **Source:** https://github.com/alpacahq/cli
+
+## 2026-06-29 — 21st.dev Magic integrated (MCP-first + CLI setup helper)
+- **Decision:** Added `@21st-dev/cli` (npm global, setup helper) + `/21st-magic` skill; `21st-dev-magic` MCP was already in `.mcp.json` with `TWENTYFIRST_DEV_API_KEY`.
+- **Why:** MCP was wired but had no skill, no CLI install, no NPM_GLOBALS entry, and was missing from `.env.example`. Now fully integrated following project patterns.
+- **Pattern:** MCP-first (no standalone CLI for component ops — `@21st-dev/cli` only configures the MCP for Cursor/Windsurf/Cline, not needed for Claude Code). 4 MCP tools: `21st_magic_component_inspiration`, `21st_magic_component_builder`, `21st_magic_component_refiner`, `logo_search`.
+- **Tiers:** Free — inspiration search + SVG logo lookup. Pro ($20/mo) — component builder + refiner.
+- **Files:** `cli-21st-magic.sh`, `setup.sh`, `update-all.sh` (NPM_GLOBALS), `.claude/skills/21st-magic/SKILL.md`, `CLAUDE.md` (routing + skills + MCP tables), `auth-reminders.sh`, `.env.example`.
+- **Source:** https://github.com/21st-dev/magic-mcp | API key: https://21st.dev/magic/console
+
 ## 2026-06-28 — Vercel CLI + MCP integrated (CLI-first pattern)
 - **Decision:** Added `vercel` npm CLI as primary + `vercel-mcp` (remote HTTP at `https://vercel.com/api/mcp`) as MCP fallback.
 - **Why:** Vercel CLI covers 90% of deployment workflows (deploy, preview, env vars, domains, logs) with zero token overhead. `vercel-mcp` is a remote HTTP MCP server (not stdio) — used for structured in-session queries or agentic pipelines that need persisted tool state.

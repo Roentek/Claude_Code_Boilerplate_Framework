@@ -67,6 +67,14 @@ cat <<'AUTH'
     Get key: https://21st.dev/studio → Settings → API Keys
     Used by: @21st-dev/cli for publishing components to the 21st.dev registry.
 
+  Alpaca CLI + MCP
+    alpaca profile login       (OAuth, paper trading only)
+    OR set env vars:  ALPACA_API_KEY + ALPACA_SECRET_KEY
+    Paper keys (free, no real money): alpaca.markets → Paper Trading → API Keys
+    Add keys to .claude/settings.local.json → env block for MCP.
+    CLI defaults to PAPER mode — set ALPACA_LIVE_TRADE=true for live.
+    Check: alpaca doctor
+
   All other MCP servers (supabase, openrouter, kie-ai, tavily,
   pinecone, vapi, n8n, apify, monet, stitch, firecrawl)
   require API keys in .claude/settings.local.json → env block.

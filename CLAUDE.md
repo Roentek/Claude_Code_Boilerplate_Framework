@@ -46,6 +46,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | Query codebase as knowledge graph | `/graphify` skill → `graphify` CLI + `graphify-mcp` | AST-parse 25+ languages → queryable graph; answers "what calls X?", "what depends on Y?"; run `/graphify .` once per repo to build; MCP for persistent tool access |
 | GitHub operations (issues, PRs, releases, repos) | `gh` CLI (primary) → `github` plugin MCP (fallback) | `gh issue list`, `gh pr create`, `gh repo clone`, `gh release create` — CLI-first; plugin MCP for reading private repo content in-context |
 | Deploy to Vercel / manage projects | `/vercel` skill → `vercel` CLI (primary) → `vercel-mcp` (fallback) | Deploy, preview, env vars, domains, logs — `vercel login` once; MCP needs `VERCEL_TOKEN` |
+| Algorithmic trading / market data | `/alpaca` skill → `alpaca` CLI (primary) → `alpaca` MCP (fallback) | Trade stocks/crypto, query live data, manage positions — **CLI first** (`alpaca order/position/data`); `alpaca profile login` once; paper mode by default — set `ALPACA_LIVE_TRADE=true` for live |
 | Watch / analyze video content | `/watch` plugin → `claude-video` | Analyze YouTube, TikTok, Vimeo, local video — extracts frames + transcript; `/watch <url> <question>`; needs ffmpeg + yt-dlp |
 | Process / manipulate video files (trim, transcode, thumbnail, extract audio, concat) | `node tools/ffmpeg.js` | All output JSON; requires system ffmpeg (auto-installed via `sys-ffmpeg.sh`); see `/ffmpeg` skill |
 | Validate / stress-test an idea before building | `/roast` skill | 5-persona adversarial council attacks from every angle → GO / RESHAPE / KILL verdict + cheapest 48-hour test. **Auto-invoke** when user says "I'm thinking of building X", "what do you think of this idea", "should I build this", or "pressure-test this" — run *before* any significant build starts |
@@ -170,6 +171,7 @@ bash .claude/hooks/setup.sh
 # Step 8:   Project skills with cross-platform path detection (Windows $USERPROFILE fallback, Unix-style path conversion); creates destination directory; verifies each copy succeeded
 # Step 9:   npm install (all package.json deps: react, react-dom, @types/react, @splinetool/react-spline, @splinetool/runtime, Playwright) + Playwright Chromium browser
 # Step 10:  skillui, firecrawl-cli, codex-cli, gemini-cli, notebooklm-py[browser], codeburn, browser-harness, designlang, kie-cli (@felores/kie-cli)
+# Step 11:  alpaca CLI (go install or brew — see cli-alpaca.sh; auth: alpaca profile login or env vars)
 # Step 11:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
 # Step 12:  lightrag dependencies in tools/lightrag-plus/ (via uv sync); auto-creates tools/lightrag-plus/.env from .env.example if missing (so EMBEDDING_BINDING_HOST is set on first boot); auto-runs provision.py if .env exists (idempotent — skips if no credentials)
 # Step 12a: Ollama install + llama3.2 pull (local LLM for LightRAG; Windows: shows winget command, Unix: auto-installs)
@@ -371,6 +373,7 @@ vault/                        ← Obsidian wiki vault (dual-layer)
 | `/llmfit` | Hardware-aware LLM model selection — `llmfit fit/recommend/search/diff/plan/download/run/bench --json`; CLI-first, `llmfit-mcp` fallback; no API key required |
 | `/gw` | Google Workspace CLI — `gw mail/drive/cal` with `--json`; CLI-first (`gw auth login` once); falls back to `google-workspace-mcp` for Docs/Sheets/Forms/bulk ops |
 | `/vercel` | Vercel deployments — `vercel deploy/dev/ls/env/domains/logs`; CLI-first (`vercel login` once); `vercel-mcp` fallback for structured in-session queries |
+| `/alpaca` | Algorithmic trading + market data — `alpaca order/position/data/watchlist`; CLI-first (`alpaca profile login` once); `alpaca` MCP fallback for structured in-session reads; paper mode by default |
 | `/higgsfield:generate` | Image/video generation across 30+ models (Nano Banana 2, Seedance 2.0, Kling 3.0, Veo 3.1, GPT Image 2…), Marketing Studio for branded ads, Virality Predictor — CLI-first |
 | `/higgsfield:soul-id` | Train a Soul Character — reusable face-faithful identity model; returns `reference_id` for use in generate |
 | `/higgsfield:product-photoshoot` | Brand-quality product imagery — 10 modes (studio, lifestyle, Pinterest, hero, virtual try-on…) |
@@ -440,7 +443,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `openspace` | Self-evolving skills — execute tasks, search/fix/upload skills, auto skill evolution (FIX/DERIVED/CAPTURED). **Windows:** Uses `python -m openspace.mcp_server` command with `PYTHONUTF8=1` (fixes Unicode checkmark encoding). |
 | `apify` | Large-scale web scraping via Apify marketplace — 130+ Actors covering Instagram, TikTok, LinkedIn, Google, Reddit, Amazon, etc. Use with `/apify-ultimate-scraper` skill for guided workflows (lead generation, brand monitoring, competitor analysis, influencer vetting, trend research, SEO intelligence, review analysis, recruitment, real estate, e-commerce price monitoring, contact enrichment, RAG data feeds) |
 | `zep-mcp` | Zep long-term memory documentation |
-| `alpaca-mcp` | Algorithmic trading (paper mode) |
+| `alpaca` | Algorithmic trading + market data — **CLI-first:** prefer `alpaca` CLI (`alpaca order/position/data`); MCP for structured in-session reads. Paper mode by default (`ALPACA_LIVE_TRADE=true` for live). Free paper keys at alpaca.markets. |
 | `canva-dev` | Canva app SDK and CLI docs |
 | `kie-ai` | Multi-provider AI media — Midjourney, Sora, ElevenLabs, Kling, Suno, etc. **CLI-first:** use `kie-cli` (zero context tokens); MCP is fallback. Auto-switches on failure. |
 | `higgsfield` | Cinematic AI video/images — **CLI-first:** `higgsfield` CLI (primary); MCP fallback at `mcp.higgsfield.ai`. Browser OAuth, no API key. 4 skills: `/higgsfield:generate`, `/higgsfield:soul-id`, `/higgsfield:product-photoshoot`, `/higgsfield:marketplace-cards` |

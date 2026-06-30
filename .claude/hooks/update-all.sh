@@ -260,6 +260,20 @@ else
   _skip "LightRAG venv (not found)"
 fi
 
+# ── 9. Alpaca CLI ─────────────────────────────────────────────
+echo ""
+echo "── Alpaca CLI ───────────────────────────────────────────"
+if command -v alpaca &>/dev/null; then
+  # CLI has built-in self-update
+  if alpaca update >/dev/null 2>&1; then
+    _ok "alpaca CLI self-updated"
+  else
+    _skip "alpaca CLI (already at latest or update failed)"
+  fi
+else
+  _skip "alpaca CLI (not installed — run: bash .claude/hooks/install/cli-alpaca.sh)"
+fi
+
 # ── Summary ───────────────────────────────────────────────────
 echo ""
 echo "══════════════════════════════════════════════════════════"

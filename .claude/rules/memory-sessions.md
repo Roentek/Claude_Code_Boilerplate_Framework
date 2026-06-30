@@ -288,3 +288,8 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-06-28 (auto-drafted — review before next session)
 - Will self-resolve when Higgsfield updates their plugin.json to a standard source type.\n\n**MCP** â€” already working (browser OAuth, unchanged).\n\n**Keys fixed:** `higgsfield@higgsfield-ai` â†’ `higgsfield@higgsfield` in `enabledPlugins` and `extraKnownMarketplaces`.","background_tasks":[],"session_crons":[]}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-06-29 (auto-drafted — review before next session)
+- Summary of what was added:\n\n**Created:**\n- `.claude/hooks/install/cli-21st-magic.sh` â€” installs `@21st-dev/cli` globally\n- `.claude/skills/21st-magic/SKILL.md` â€” `/21st-magic` slash command (installed to `~/.claude/skills/`)\n\n**Updated:**\n- `update-all.sh` â€” `@21st-dev/cli` added to `NPM_GLOBALS`\n- `setup.sh` â€” `_run cli-21st-magic.sh` wired after `cli-vercel.sh`\n- `.env.example` â€” `TWENTYFIRST_DEV_API_KEY` documented\n- `CLAUDE.md` â€” routing table, skills table, MCP table all updated\n- `auth-reminders.sh` â€” 21st.dev API key reminder added\n- `memory-decisions.md` â€” decision logged\n\n**Already existed (no change needed):**\n- `21st-dev-magic` in `.mcp.json` with `${TWENTYFIRST_DEV_API_KEY}`\n- `TWENTYFIRST_DEV_API_KEY` in `settings.local.json` (key already set)\n- MCP permissions in `settings.json` and `settings.local.json.example`\n\nNote: `@21st-dev/cli` is setup-only (configures MCP for Cursor/Windsurf).
