@@ -60,10 +60,18 @@ if [ -d "$FRONTEND" ] && command -v npm &>/dev/null; then
     if [ ! -d "$FRONTEND/node_modules" ]; then
       echo "  Installing OpenSpace frontend deps (~30MB)..."
       (cd "$FRONTEND" && npm install) \
-        && echo "  ✓ Frontend ready — F5 → 'OpenSpace Frontend' in VSCode" \
         || echo "  ⚠ Frontend npm install failed — run: cd tools/openspace/frontend && npm install"
     else
       echo "  ✓ Frontend dependencies already installed"
+    fi
+    # Build static assets so the backend at port 3789 can serve them immediately
+    if [ ! -d "$FRONTEND/dist" ]; then
+      echo "  Building OpenSpace frontend (first-time build)..."
+      (cd "$FRONTEND" && npm run build) \
+        && echo "  ✓ Frontend built — http://127.0.0.1:3789/dashboard ready after backend start" \
+        || echo "  ⚠ Frontend build failed — run: cd tools/openspace/frontend && npm run build"
+    else
+      echo "  ✓ Frontend already built (dist/ exists)"
     fi
   else
     echo "  ⚠ Frontend requires Node.js ≥ 20 (found v$NODE_MAJOR)"

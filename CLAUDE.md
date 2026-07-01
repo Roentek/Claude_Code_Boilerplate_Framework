@@ -176,7 +176,7 @@ bash .claude/hooks/setup.sh
 # Step 11:  autoresearch dependencies in tools/autoresearch/ (via uv sync)
 # Step 12:  lightrag dependencies in tools/lightrag-plus/ (via uv sync); auto-creates tools/lightrag-plus/.env from .env.example if missing (so EMBEDDING_BINDING_HOST is set on first boot); auto-runs provision.py if .env exists (idempotent — skips if no credentials)
 # Step 12a: Ollama install + llama3.2 pull (local LLM for LightRAG; Windows: shows winget command, Unix: auto-installs)
-# Step 13:  openspace submodule initialization + uv pip install -e ".[<platform>]" (windows/linux/macos extras; avoids uv sync cross-version pyatspi resolution failure) + dashboard frontend npm install + .env port alignment (3889 → 3789 to match package.json)
+# Step 13:  openspace submodule initialization + uv pip install -e ".[<platform>]" (windows/linux/macos extras; avoids uv sync cross-version pyatspi resolution failure) + dashboard frontend npm install + npm run build (builds dist/ so backend at port 3789 serves full UI immediately on fresh clone) + .env port alignment (3889 → 3789 to match package.json)
 # Step 14:  Obsidian app (winget/brew/flatpak — skips if already installed), vault/ scaffold (private/ dirs + git init — skips if vault already exists), MCPVault MCP registered at user scope (filesystem-based, no Obsidian app required for Claude access)
 
 # 3. Configure MCP credentials
