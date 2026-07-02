@@ -308,3 +308,29 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-06-30 (auto-drafted — review before next session)
 - {"session_id":"d607d7fa-da57-4ea8-987e-63648d2a27ea","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\d607d7fa-da57-4ea8-987e-63648d2a27ea.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework\\tools\\openspace\\frontend","prompt_id":"5b258067-8654-40ed-a9c7-10980c3ecc4a","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Frontend built (`dist/` created).
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-07-01 (auto-drafted — review before next session)
+- 0 global (lean, as designed).\n\n**What was built/changed:**\n- `tools/seed_openspace_skills.py` â€” new seeder, **outside** the submodule (so it doesn't block `openspace-sync.sh` and is parent-repo tracked).
+- Native paths fixed it (verified: runtime registry discovers 133).\n\n**Toggle (baked in):**\n- Lean: `python tools/seed_openspace_skills.py` â†’ repo + showcase.\n- Global: `--include-global` â†’ adds global-only skills, dedups against repo by name (repo wins).
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-07-01 (auto-drafted — review before next session)
+- Also fixed the stale `seed_skills.py` path in `.env`/`.env.example` comments â†’ `tools/seed_openspace_skills.py`.\n\nFresh clones now get durable repo+showcase runtime discovery automatically.\n\nGo ahead and restart Claude Code for the OS env var to reach the OpenSpace MCP process.","background_tasks":[],"session_crons":[]}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-07-01 (auto-drafted — review before next session)
+- {"session_id":"e7ce2084-c518-4451-a77e-04e4fa958321","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\e7ce2084-c518-4451-a77e-04e4fa958321.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework\\tools\\openspace\\frontend","prompt_id":"09a54409-a41b-49b3-b334-68cec1c89947","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"#1 fixed â€” patched outside submodule, verified.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-07-01 (auto-drafted — review before next session)
+- Done â€” #1 fixed via external patch, submodule clean.","background_tasks":[],"session_crons":[]}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-07-01 (auto-drafted — review before next session)
+- {"session_id":"e7ce2084-c518-4451-a77e-04e4fa958321","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\e7ce2084-c518-4451-a77e-04e4fa958321.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","prompt_id":"780d56cb-0b03-45b2-be44-0080d2c625e0","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Done.\n\n- `tools/seed_openspace_skills.py` â†’ `tools/openspace_overrides/seed_openspace_skills.py`, path constants fixed for new depth, re-verified (133 skills, 74 local + 59 showcase).\n- All refs updated: `.env`, `.env.example`, `sys-env.sh`, `CLAUDE.md` (Key Commands, project structure, Troubleshooting).

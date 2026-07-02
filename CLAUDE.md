@@ -122,6 +122,12 @@ openspace --query "Create a monitoring dashboard for Docker containers"
 openspace-download-skill <skill_id>      # Download from cloud
 openspace-upload-skill /path/to/skill/dir # Upload to cloud (requires OPENSPACE_API_KEY)
 
+# Seed local skills into the dashboard tree (SQLite) without a task run
+# Lean default = repo .claude/skills + tools/openspace/showcase/skills. Seeder lives in tools/openspace_overrides/ (OUTSIDE the submodule).
+tools/openspace/.venv/Scripts/python.exe tools/openspace_overrides/seed_openspace_skills.py
+tools/openspace/.venv/Scripts/python.exe tools/openspace_overrides/seed_openspace_skills.py --include-global  # + global-only ~/.claude/skills (dedups vs repo by name)
+# Runtime discovery dir is OPENSPACE_HOST_SKILL_DIRS (NATIVE paths — /c/... git-bash paths fail on Windows Python)
+
 # MCP (backup — use when CLI output insufficient or need structured results)
 # Search: mcp__openspace__search_skills (no CLI equivalent)
 # Use mcp__openspace__* tools via ToolSearch when CLI doesn't meet needs
@@ -264,6 +270,9 @@ tools/                        ← Deterministic execution scripts (Python/Node)
     start_server.bat          ← Windows quick launcher
     .venv/                    ← Virtual environment (gitignored)
     rag_storage/              ← Knowledge graph data (gitignored, auto-created)
+  openspace_overrides/        ← ALL non-submodule OpenSpace wrappers/patches live here (survives `git submodule update --remote`)
+    seed_openspace_skills.py  ← Seeds local skills into the OpenSpace dashboard tree (repo + showcase; --include-global optional)
+    dashboard_server_patched.py ← Runtime monkeypatch entrypoint for openspace.dashboard_server (fixes bugs w/o editing the submodule)
   openspace/                  ← Self-evolving skill system (git submodule — auto-syncs with upstream)
     openspace/                ← Core Python package
     pyproject.toml            ← Dependencies (litellm, anthropic, openai, etc.)
@@ -573,6 +582,7 @@ Tier 2 tests (`TestOpenSpaceInit`) read LLM key from `tools/openspace/.env` or O
 | `uv sync` fails with `UnknownIssuer` / `invalid peer certificate` | Corporate proxy intercepts TLS. Fix: `UV_NATIVE_TLS=true uv sync` — uses Windows cert store. Already baked into `update-all.sh`. |
 | LightRAG uploads fail: `httpx.ReadTimeout` during entity extraction | Ollama LLM exceeds default timeout on large chunks. Fix: increase `LLM_TIMEOUT` in `tools/lightrag-plus/.env` — set `1800` (30 min) for slow hardware. Both `asyncio.wait_for` and httpx client use this value. `--timeout` CLI arg only affects gunicorn, not uvicorn — do NOT use it. |
 | `designlang` postinstall fails with Playwright/SSL error | Corporate proxy blocks Playwright browser download. Fix: `npm install -g designlang --ignore-scripts` — CLI works fully without the Playwright browser |
+| OpenSpace skills not discovered on Windows | `OPENSPACE_HOST_SKILL_DIRS` uses git-bash paths (`/c/Users/...`). Windows-native Python can't resolve them (`Path("/c/..").exists()` is False). Fix: use NATIVE paths (`C:/GIT/.../.claude/skills`) in `.env` AND `setx`. Seed the tree with `tools/openspace_overrides/seed_openspace_skills.py` |
 
 ---
 

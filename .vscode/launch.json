@@ -77,7 +77,7 @@
       "name": "OpenSpace Backend Server",
       "type": "debugpy",
       "request": "launch",
-      "module": "openspace.dashboard_server",
+      "program": "${workspaceFolder}/tools/openspace_overrides/dashboard_server_patched.py",
       "args": [
         "--host", "127.0.0.1",
         "--port", "7788"
