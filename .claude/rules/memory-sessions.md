@@ -334,3 +334,8 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-07-01 (auto-drafted — review before next session)
 - {"session_id":"e7ce2084-c518-4451-a77e-04e4fa958321","transcript_path":"C:\\Users\\MorarMonil\\.claude\\projects\\C--GIT-Claude-Code-Boilerplate-Framework\\e7ce2084-c518-4451-a77e-04e4fa958321.jsonl","cwd":"C:\\GIT\\Claude_Code_Boilerplate_Framework","prompt_id":"780d56cb-0b03-45b2-be44-0080d2c625e0","permission_mode":"bypassPermissions","effort":{"level":"medium"},"hook_event_name":"Stop","stop_hook_active":false,"last_assistant_message":"Done.\n\n- `tools/seed_openspace_skills.py` â†’ `tools/openspace_overrides/seed_openspace_skills.py`, path constants fixed for new depth, re-verified (133 skills, 74 local + 59 showcase).\n- All refs updated: `.env`, `.env.example`, `sys-env.sh`, `CLAUDE.md` (Key Commands, project structure, Troubleshooting).
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-07-01 (auto-drafted — review before next session)
+- Fixed via external monkeypatch\nwrapper (tools/openspace_overrides/) instead of editing the submodule,\nso openspace-sync.sh can still auto-pull upstream.
