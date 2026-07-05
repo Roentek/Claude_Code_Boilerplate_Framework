@@ -333,10 +333,10 @@ If you cloned OpenSpace before the submodule setup was added, see [`.claude/docs
 │   │   ├── pyproject.toml           # Dependencies (PyTorch, etc.)
 │   │   ├── uv.lock                  # Dependency lockfile
 │   │   └── README.md                # Full autoresearch documentation
-│   ├── lightrag/                    # LightRAG Enhanced (graph-based RAG with multimodal + multi-backend support)
-│   │   ├── src/                     # Enhanced implementation
+│   ├── lightrag-plus/                # LightRAG Plus (graph-based RAG with multimodal + multi-backend support)
+│   │   ├── src/                     # Plus implementation
 │   │   │   ├── config.py            # Environment config + feature flags
-│   │   │   ├── lightrag_enhanced.py # Main wrapper class
+│   │   │   ├── lightrag_plus.py     # Main wrapper class
 │   │   │   ├── embedders/           # OpenAI (text-only) + Gemini (multimodal) embeddings
 │   │   │   ├── adapters/            # Supabase + Pinecone vector mirrors (optional)
 │   │   │   └── ingestors/           # Multimodal preprocessing (images, video, audio)
@@ -347,14 +347,20 @@ If you cloned OpenSpace before the submodule setup was added, see [`.claude/docs
 │   │   ├── setup_backends.py        # Backend connection validation script
 │   │   ├── pyproject.toml           # Dependencies (lightrag-hku + server deps)
 │   │   ├── uv.lock                  # Dependency lockfile
-│   │   ├── README.md                # Full LightRAG Enhanced documentation
+│   │   ├── README.md                # Full LightRAG Plus documentation
 │   │   ├── .env                     # Server config + API keys (gitignored)
 │   │   ├── .env.example             # Configuration template with all options
 │   │   ├── .gitignore               # Excludes .env, logs, rag_storage, build artifacts
-│   │   ├── test_lightrag.py         # Test script: insert/query example
+│   │   ├── tests/                   # Integration tests (35 tests, 7 backend scenarios)
+│   │   │   ├── conftest.py          # SSL + env fixtures
+│   │   │   ├── test_integration.py  # Parametrized backend tests
+│   │   │   └── fixtures/            # Sample media files
 │   │   ├── start_server.bat         # Windows quick launcher
 │   │   ├── .venv/                   # Virtual environment (gitignored, recreated by uv sync)
 │   │   └── rag_storage/             # Knowledge graph data (gitignored, auto-created on first use)
+│   ├── openspace_overrides/          # Non-submodule OpenSpace wrappers/patches (survives submodule sync)
+│   │   ├── seed_openspace_skills.py # Seeds local skills into the OpenSpace dashboard tree
+│   │   └── dashboard_server_patched.py # Runtime monkeypatch fixing dashboard active-skill count bug
 │   └── openspace/                   # Self-evolving skill system (git submodule → HKUDS/OpenSpace)
 │       ├── openspace/               # Core Python package (grounding, skill_engine, cloud, agents)
 │       ├── pyproject.toml           # Dependencies (litellm, anthropic, openai, mcp, etc.)
@@ -935,8 +941,8 @@ PORT=9621
    - Loads environment from `tools/lightrag-plus/.env`
    - UTF-8 encoding enabled (fixes Windows Unicode issues)
 
-2. **LightRAG Test Script**
-   - Runs `test_lightrag.py` (insert/query example)
+2. **LightRAG Integration Tests**
+   - Runs `pytest tests/test_integration.py -v --tb=short` (35 tests, 7 backend scenarios)
    - Uses same `.env` configuration
    - Good for testing API integration
 
@@ -961,26 +967,15 @@ PORT=9621
 
 ### Testing the Setup
 
-Run the test script to verify everything works:
+Run the integration test suite to verify everything works (Windows: sync once, then run pytest directly to avoid repeat-run file locks):
 
 ```bash
 cd tools/lightrag-plus
-uv run python test_lightrag.py
+UV_NATIVE_TLS=true uv sync --all-extras
+.venv\Scripts\python.exe -m pytest tests/test_integration.py -v
 ```
 
-Expected output:
-
-```text
-[1/4] Initializing LightRAG...
-[2/4] Initializing storage...
-[3/4] Inserting test document...
-      Document inserted successfully!
-[4/4] Querying: 'What is LightRAG?'
-================================================================================
-QUERY RESULT:
-================================================================================
-LightRAG is a graph-based Retrieval-Augmented Generation system...
-```
+35 tests across 7 backend scenarios — all should pass with valid `.env` credentials.
 
 ### Features
 

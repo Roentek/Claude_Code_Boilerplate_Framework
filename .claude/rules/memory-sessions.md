@@ -339,3 +339,8 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-07-01 (auto-drafted — review before next session)
 - Fixed via external monkeypatch\nwrapper (tools/openspace_overrides/) instead of editing the submodule,\nso openspace-sync.sh can still auto-pull upstream.
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-07-05 (auto-drafted — review before next session)
+- Fixed in README.md: tree path (`lightrag-plus/`, `lightrag_plus.py`, added `tests/`), VSCode config name/description, test-run instructions (pytest not dead script), and added `openspace_overrides/` to the tree.","background_tasks":[],"session_crons":[]}
