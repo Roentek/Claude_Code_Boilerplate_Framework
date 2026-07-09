@@ -121,10 +121,10 @@ if command -v uv &>/dev/null; then
     # release); use uv pip install -e . which skips lockfile resolution entirely.
     echo "  $tool_name..."
     if [ "$tool_name" = "openspace" ]; then
-      if (cd "$tool_dir" && uv pip install -e . >/dev/null 2>&1); then
-        _ok "venv: $tool_name"
+      if (cd "$tool_dir" && uv pip install -e . >/dev/null 2>&1 && uv pip install fastembed >/dev/null 2>&1); then
+        _ok "venv: $tool_name (+ fastembed local embedding fallback)"
       else
-        _warn "venv: $tool_name (uv pip install -e . failed)"
+        _warn "venv: $tool_name (uv pip install -e . or fastembed failed)"
       fi
       continue
     fi

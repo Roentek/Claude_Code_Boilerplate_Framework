@@ -33,6 +33,12 @@ if command -v uv &>/dev/null; then
   else
     echo "⚠ OpenSpace install failed — run: cd tools/openspace && uv pip install -e '.[$OS_EXTRA]'"
   fi
+  # Local embedding fallback (BAAI/bge-small-en-v1.5) — always installed so
+  # semantic tool search works even without EMBEDDING_* remote API configured.
+  echo "  Installing fastembed (local embedding fallback)..."
+  (cd "$DIR" && uv pip install fastembed 2>&1 | tail -3) \
+    && echo "✓ fastembed installed (local BAAI/bge-small-en-v1.5 available)" \
+    || echo "⚠ fastembed install failed — run: cd tools/openspace && uv pip install fastembed"
 else
   # Fallback to system pip
   for _py in python3 py python; do command -v "$_py" &>/dev/null && { PY="$_py"; break; }; done
@@ -40,6 +46,10 @@ else
     (cd "$DIR" && $PY -m pip install -e . --quiet 2>&1) \
       && echo "✓ OpenSpace installed via pip (install uv for platform extras)" \
       || echo "⚠ pip install failed — run: cd tools/openspace && pip install -e ."
+    echo "  Installing fastembed (local embedding fallback)..."
+    (cd "$DIR" && $PY -m pip install fastembed --quiet 2>&1) \
+      && echo "✓ fastembed installed (local BAAI/bge-small-en-v1.5 available)" \
+      || echo "⚠ fastembed install failed — run: cd tools/openspace && pip install fastembed"
   else
     echo "⚠ uv and Python not found — install uv: https://docs.astral.sh/uv/"
     exit 1
