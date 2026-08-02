@@ -27,13 +27,13 @@ if [ -f "$ROOT/.env" ]; then
   else
     REPO_NATIVE="$ROOT"
   fi
-  SKILL_DIRS_VALUE="$REPO_NATIVE/.claude/skills,$REPO_NATIVE/tools/openspace/showcase/skills"
+  SKILL_DIRS_VALUE="$REPO_NATIVE/.claude/skills"
 
   # Only rewrite the untouched placeholder — never clobber a customized value.
   if grep -q "OPENSPACE_HOST_SKILL_DIRS=~/\.claude/skills" "$ROOT/.env" 2>/dev/null; then
     sed "s|OPENSPACE_HOST_SKILL_DIRS=~/\.claude/skills|OPENSPACE_HOST_SKILL_DIRS=$SKILL_DIRS_VALUE|g" \
       "$ROOT/.env" > "$ROOT/.env.tmp" && mv "$ROOT/.env.tmp" "$ROOT/.env"
-    echo "✓ OpenSpace runtime skill dirs (repo + showcase): $SKILL_DIRS_VALUE"
+    echo "✓ OpenSpace runtime skill dirs (repo): $SKILL_DIRS_VALUE"
 
     # .mcp.json forwards ${OPENSPACE_HOST_SKILL_DIRS} from the OS environment, not .env —
     # persist to OS env so the MCP server process actually receives it (Windows only).

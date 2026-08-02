@@ -33,7 +33,7 @@ class TestImports:
     """All public entry-point modules must import without error."""
 
     def test_tool_layer(self):
-        from openspace.tool_layer import OpenSpace, OpenSpaceConfig
+        from openspace.application import OpenSpace, OpenSpaceConfig
         assert OpenSpace is not None
         assert OpenSpaceConfig is not None
 
@@ -55,18 +55,18 @@ class TestImports:
         assert RecordingManager is not None
 
     def test_cloud_auth(self):
-        from openspace.cloud.auth import get_openspace_auth
-        assert callable(get_openspace_auth)
+        from openspace.cloud.auth_flow import cloud_auth_flow
+        assert callable(cloud_auth_flow)
 
     def test_cloud_search(self):
         from openspace.cloud.search import hybrid_search_skills
         assert callable(hybrid_search_skills)
 
     def test_mcp_server_module(self):
-        import openspace.mcp_server  # noqa: F401
+        import openspace.entrypoints.mcp.server  # noqa: F401
 
     def test_cli_main(self):
-        import openspace.__main__  # noqa: F401
+        import openspace.entrypoints.cli.main  # noqa: F401
 
     def test_cli_download(self):
         import openspace.cloud.cli.download_skill  # noqa: F401
@@ -82,32 +82,32 @@ class TestConfig:
     """OpenSpaceConfig validation and field defaults."""
 
     def test_default_model_set(self):
-        from openspace.tool_layer import OpenSpaceConfig
+        from openspace.application import OpenSpaceConfig
         cfg = OpenSpaceConfig()
         assert cfg.llm_model and isinstance(cfg.llm_model, str)
 
     def test_default_iterations_positive(self):
-        from openspace.tool_layer import OpenSpaceConfig
+        from openspace.application import OpenSpaceConfig
         cfg = OpenSpaceConfig()
         assert cfg.grounding_max_iterations > 0
 
     def test_default_timeout_positive(self):
-        from openspace.tool_layer import OpenSpaceConfig
+        from openspace.application import OpenSpaceConfig
         cfg = OpenSpaceConfig()
         assert cfg.llm_timeout > 0
 
     def test_default_evolution_concurrent_positive(self):
-        from openspace.tool_layer import OpenSpaceConfig
+        from openspace.application import OpenSpaceConfig
         cfg = OpenSpaceConfig()
         assert cfg.evolution_max_concurrent >= 1
 
     def test_model_required_raises(self):
-        from openspace.tool_layer import OpenSpaceConfig
+        from openspace.application import OpenSpaceConfig
         with pytest.raises(Exception):
             OpenSpaceConfig(llm_model="")
 
     def test_custom_backend_scope(self):
-        from openspace.tool_layer import OpenSpaceConfig
+        from openspace.application import OpenSpaceConfig
         cfg = OpenSpaceConfig(
             llm_model="openai/gpt-4o-mini",
             backend_scope=["shell"],
@@ -119,7 +119,7 @@ class TestConfig:
         assert cfg.grounding_max_iterations == 3
 
     def test_repr_not_initialized(self):
-        from openspace.tool_layer import OpenSpace
+        from openspace.application import OpenSpace
         r = repr(OpenSpace())
         assert "OpenSpace" in r
         assert "not initialized" in r or "initialized" in r  # either is fine
@@ -280,15 +280,13 @@ class TestSkillStore:
 class TestCloudAuthNoKey:
     """Cloud auth error path — no API key needed for the error case."""
 
-    def test_get_openspace_auth_returns_empty_when_no_key(self, monkeypatch):
-        """With no OPENSPACE_API_KEY set, auth_headers should be empty."""
+    def test_read_cloud_credentials_empty_when_no_file(self, monkeypatch, tmp_path):
+        """With no credentials file present, read_cloud_credentials returns empty."""
         monkeypatch.delenv("OPENSPACE_API_KEY", raising=False)
-        from openspace.cloud.auth import get_openspace_auth
-        auth_headers, api_base = get_openspace_auth()
-        assert isinstance(auth_headers, dict)
-        assert isinstance(api_base, str)
-        # Empty headers signal "no credentials"
-        assert not auth_headers
+        from openspace.cloud.credentials import read_cloud_credentials
+        creds = read_cloud_credentials(tmp_path / "nonexistent.env")
+        assert isinstance(creds, dict)
+        assert not creds
 
     def test_openspace_client_raises_without_auth(self):
         """OpenSpaceClient(auth_headers={}, ...) must raise CloudError."""
@@ -306,7 +304,7 @@ class TestOpenSpaceInit:
     """OpenSpace.initialize() with shell-only backend — no task execution, no token burn."""
 
     async def test_init_shell_only(self):
-        from openspace.tool_layer import OpenSpace, OpenSpaceConfig
+        from openspace.application import OpenSpace, OpenSpaceConfig
         cfg = OpenSpaceConfig(
             llm_model=pick_llm_model(),
             backend_scope=["shell"],
@@ -317,7 +315,7 @@ class TestOpenSpaceInit:
             assert os_instance.is_initialized()
 
     async def test_list_backends_after_init(self):
-        from openspace.tool_layer import OpenSpace, OpenSpaceConfig
+        from openspace.application import OpenSpace, OpenSpaceConfig
         cfg = OpenSpaceConfig(
             llm_model=pick_llm_model(),
             backend_scope=["shell"],
@@ -331,7 +329,7 @@ class TestOpenSpaceInit:
 
     async def test_double_initialize_is_idempotent(self):
         """Calling initialize() twice must warn but not raise."""
-        from openspace.tool_layer import OpenSpace, OpenSpaceConfig
+        from openspace.application import OpenSpace, OpenSpaceConfig
         cfg = OpenSpaceConfig(
             llm_model=pick_llm_model(),
             backend_scope=["shell"],
@@ -344,7 +342,7 @@ class TestOpenSpaceInit:
         await os_instance.cleanup()
 
     async def test_cleanup_after_init(self):
-        from openspace.tool_layer import OpenSpace, OpenSpaceConfig
+        from openspace.application import OpenSpace, OpenSpaceConfig
         cfg = OpenSpaceConfig(
             llm_model=pick_llm_model(),
             backend_scope=["shell"],
@@ -357,7 +355,7 @@ class TestOpenSpaceInit:
 
     async def test_execute_before_init_raises(self):
         """execute() without initialize() must raise RuntimeError."""
-        from openspace.tool_layer import OpenSpace, OpenSpaceConfig
+        from openspace.application import OpenSpace, OpenSpaceConfig
         cfg = OpenSpaceConfig(llm_model=pick_llm_model(), enable_recording=False)
         os_instance = OpenSpace(cfg)
         with pytest.raises(RuntimeError, match="(?i)not initialized|initialize"):
@@ -365,7 +363,7 @@ class TestOpenSpaceInit:
 
     async def test_init_with_skill_dirs(self, fixture_skills_root):
         """initialize() with custom skill dirs should discover fixture skills."""
-        from openspace.tool_layer import OpenSpace, OpenSpaceConfig
+        from openspace.application import OpenSpace, OpenSpaceConfig
         cfg = OpenSpaceConfig(
             llm_model=pick_llm_model(),
             backend_scope=["shell"],
@@ -388,11 +386,10 @@ class TestOpenSpaceInit:
 class TestCloudRegistry:
     """Cloud skill registry operations."""
 
-    def test_get_openspace_auth_returns_headers(self):
-        from openspace.cloud.auth import get_openspace_auth
-        auth_headers, api_base = get_openspace_auth()
-        assert auth_headers  # non-empty when key is set
-        assert api_base.startswith("http")
+    def test_read_cloud_credentials_returns_key(self):
+        from openspace.cloud.credentials import read_cloud_credentials
+        creds = read_cloud_credentials()
+        assert creds  # non-empty when key is set
 
     async def test_hybrid_search_returns_list(self):
         from openspace.cloud.search import hybrid_search_skills

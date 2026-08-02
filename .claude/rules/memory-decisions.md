@@ -4,6 +4,21 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-08-02 — OpenSpace submodule synced through upstream history rewrite + full package restructure
+- **Decision:** Hard-reset `tools/openspace` submodule to `origin/main` (unrelated-histories, `--ff-only` pull failed) and updated every internal reference to the new module layout upstream shipped alongside the rewrite.
+- **Why:** HKUDS/OpenSpace force-rewrote its `main` branch history (81 local commits vs 15 remote, no common ancestor) and simultaneously restructured the package: `openspace.mcp_server` → `openspace.entrypoints.mcp.server`, `openspace.dashboard_server` → `openspace.entrypoints.dashboard.server`, `openspace.tool_layer` → `openspace.application`, `openspace.__main__` → `openspace.entrypoints.cli.main`, `openspace.cloud.auth.get_openspace_auth` removed entirely (replaced by `openspace.cloud.credentials.read_cloud_credentials` + `openspace.cloud.auth_flow.cloud_auth_flow` agent-key flow). The `showcase/` directory (bundled example skills) was also removed upstream.
+- **Fixed:**
+  - `.mcp.json` — `openspace` MCP server args updated to `-m openspace.entrypoints.mcp.server`
+  - `tools/openspace_overrides/dashboard_server_patched.py` — imports `openspace.entrypoints.dashboard.server` now; `_build_skill_stats` bug (active count = total count) still present upstream, patch still needed
+  - `tests/openspace/test_integration.py` — all broken imports fixed; `TestCloudAuthNoKey`/`TestCloudRegistry` rewritten against `read_cloud_credentials` (old `get_openspace_auth` has no direct equivalent); 35/35 tier-1 pass
+  - `.env` + `.env.example` comment + `sys-env.sh` — dropped `tools/openspace/showcase/skills` from `OPENSPACE_HOST_SKILL_DIRS` (dir no longer exists upstream); OS env var updated via `setx`
+  - `CLAUDE.md` + `README.md` — `python -m openspace.mcp_server` references updated
+  - `.vscode/launch.json` — no change needed (points at the wrapper script by path, not module string)
+  - `tools/openspace_overrides/seed_openspace_skills.py` — no code change needed; `_source_dirs` already skips non-existent dirs gracefully, so showcase silently drops out (74 local skills seed correctly, was 74 local + 59 showcase)
+- **Hardened `openspace-sync.sh`:** `git pull --ff-only` failure now falls back to `git reset --hard origin/main` instead of silently exiting 1. Rationale: the submodule carries no local edits by convention ([[openspace-overrides-pattern]] — all wrappers live in `tools/openspace_overrides/`), so a hard reset to upstream is always safe and matches the hook's actual intent ("stay current with upstream"). Prints a warning to re-check module paths after any reset, since upstream restructures happen without notice.
+- **Not fixed (out of scope, no functional impact found):** `python -m openspace` (no `__main__.py` in new layout) was already stale in README before this session — the actual working entrypoint is the `openspace` console script installed via `uv pip install -e .` or `.venv/Scripts/python.exe -m openspace.entrypoints.cli.main`.
+- **Verified working:** MCP server module imports, dashboard server module imports + patch applies, `seed_openspace_skills.py` runs end-to-end (74 skills synced, idempotent), full tier-1 test suite (35 passed, 9 deselected as Tier 2/3).
+
 ## 2026-07-01 — tools/openspace_overrides/ is the fixed home for all non-submodule OpenSpace code
 - **Decision:** All wrappers, monkeypatches, and standalone scripts that touch OpenSpace but must NOT live in the `tools/openspace` submodule now live under `tools/openspace_overrides/`. Moved `seed_openspace_skills.py` there from `tools/`; `dashboard_server_patched.py` (new) lives there too.
 - **Why:** Editing anything inside `tools/openspace` dirties the submodule's git tree, which makes `openspace-sync.sh` refuse to auto-pull upstream (it skips on uncommitted changes). A single dedicated folder outside the submodule keeps every future OpenSpace-adjacent fix from accidentally landing inside it, and gives one place to look for "code we wrote about OpenSpace but didn't write into OpenSpace."

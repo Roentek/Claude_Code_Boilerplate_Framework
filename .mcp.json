@@ -178,7 +178,7 @@
     },
     "openspace": {
       "command": "python",
-      "args": ["-m", "openspace.mcp_server"],
+      "args": ["-m", "openspace.entrypoints.mcp.server"],
       "toolTimeout": 600,
       "env": {
         "OPENSPACE_HOST_SKILL_DIRS": "${OPENSPACE_HOST_SKILL_DIRS}",

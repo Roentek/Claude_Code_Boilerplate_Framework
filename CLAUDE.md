@@ -272,7 +272,7 @@ tools/                        ← Deterministic execution scripts (Python/Node)
     rag_storage/              ← Knowledge graph data (gitignored, auto-created)
   openspace_overrides/        ← ALL non-submodule OpenSpace wrappers/patches live here (survives `git submodule update --remote`)
     seed_openspace_skills.py  ← Seeds local skills into the OpenSpace dashboard tree (repo + showcase; --include-global optional)
-    dashboard_server_patched.py ← Runtime monkeypatch entrypoint for openspace.dashboard_server (fixes bugs w/o editing the submodule)
+    dashboard_server_patched.py ← Runtime monkeypatch entrypoint for openspace.entrypoints.dashboard.server (fixes bugs w/o editing the submodule)
   openspace/                  ← Self-evolving skill system (git submodule — auto-syncs with upstream)
     openspace/                ← Core Python package
     pyproject.toml            ← Dependencies (litellm, anthropic, openai, etc.)
@@ -456,7 +456,7 @@ Defined in [`.mcp.json`](.mcp.json). Add credentials to [`.env`](.env.example).
 | `n8n-mcp` | n8n workflow automation |
 | `vapi-mcp` | Voice AI — assistants, calls, phone numbers |
 | `notebooklm-mcp` | Google NotebookLM — notebooks, AI queries, podcasts/videos/quizzes/mind maps (backup — prefer `notebooklm` CLI) |
-| `openspace` | Self-evolving skills — execute tasks, search/fix/upload skills, auto skill evolution (FIX/DERIVED/CAPTURED). **Windows:** Uses `python -m openspace.mcp_server` command with `PYTHONUTF8=1` (fixes Unicode checkmark encoding). |
+| `openspace` | Self-evolving skills — execute tasks, search/fix/upload skills, auto skill evolution (FIX/DERIVED/CAPTURED). **Windows:** Uses `python -m openspace.entrypoints.mcp.server` command with `PYTHONUTF8=1` (fixes Unicode checkmark encoding). |
 | `apify` | Large-scale web scraping via Apify marketplace — 130+ Actors covering Instagram, TikTok, LinkedIn, Google, Reddit, Amazon, etc. Use with `/apify-ultimate-scraper` skill for guided workflows (lead generation, brand monitoring, competitor analysis, influencer vetting, trend research, SEO intelligence, review analysis, recruitment, real estate, e-commerce price monitoring, contact enrichment, RAG data feeds) |
 | `zep-mcp` | Zep long-term memory documentation |
 | `alpaca` | Algorithmic trading + market data — **CLI-first:** prefer `alpaca` CLI (`alpaca order/position/data`); MCP for structured in-session reads. Paper mode by default (`ALPACA_LIVE_TRADE=true` for live). Free paper keys at alpaca.markets. |

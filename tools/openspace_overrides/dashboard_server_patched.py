@@ -1,15 +1,15 @@
 """Runtime patch for tools/openspace (git submodule) — kept OUTSIDE the submodule
 so `git submodule update --remote` never conflicts with local edits.
 
-Bug: openspace.dashboard_server._build_skill_stats always calls
+Bug: openspace.entrypoints.dashboard.server._build_skill_stats always calls
 store.get_stats(active_only=False), so "total_skills" (meant to be the
 active-only count) is identical to "total_skills_all" on every /skills/stats
 response and the dashboard overview. This patches the function to compute the
 active count from the already-loaded skill list instead.
 
-Run this in place of `python -m openspace.dashboard_server`.
+Run this in place of `python -m openspace.entrypoints.dashboard.server`.
 """
-from openspace import dashboard_server as _server
+from openspace.entrypoints.dashboard import server as _server
 
 
 def _build_skill_stats_fixed(store, skills):

@@ -344,3 +344,8 @@ Summary of substantive work completed each session — what was built, what was 
 <!-- DRAFT: review and edit before treating as permanent -->
 ## 2026-07-05 (auto-drafted — review before next session)
 - Fixed in README.md: tree path (`lightrag-plus/`, `lightrag_plus.py`, added `tests/`), VSCode config name/description, test-run instructions (pytest not dead script), and added `openspace_overrides/` to the tree.","background_tasks":[],"session_crons":[]}
+
+
+<!-- DRAFT: review and edit before treating as permanent -->
+## 2026-08-02 (auto-drafted — review before next session)
+- Fixed `.mcp.json`, `dashboard_server_patched.py`, `tests/openspace/test_integration.py` (35/35 pass), `.env`/`sys-env.sh` (dropped dead showcase path), `CLAUDE.md`/`README.md` refs, and hardened `openspace-sync.sh` to auto hard-reset instead of silently failing on future history rewrites.

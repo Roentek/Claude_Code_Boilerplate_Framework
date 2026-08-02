@@ -48,14 +48,22 @@ fi
 # Pull latest changes
 echo "📥 Syncing OpenSpace submodule with upstream..."
 git checkout "$UPSTREAM_BRANCH" --quiet
-git pull --ff-only origin "$UPSTREAM_BRANCH" --quiet
-
-if [ $? -eq 0 ]; then
+if git pull --ff-only origin "$UPSTREAM_BRANCH" --quiet; then
   echo "✓ OpenSpace submodule updated to latest"
-  cd "$PROJECT_ROOT" || exit 1
-  git add "$OPENSPACE_DIR"
-  echo "  (Submodule pointer updated in parent repo — commit when ready)"
 else
-  echo "✗ Failed to sync OpenSpace submodule"
-  exit 1
+  # Upstream sometimes rewrites history (force-push/reset) — ff-only pull then
+  # fails as "unrelated histories". Submodule has no local edits by convention
+  # (see tools/openspace_overrides/), so it's safe to hard-reset to upstream.
+  echo "⚠ Fast-forward failed (upstream likely rewrote history) — hard-resetting to origin/$UPSTREAM_BRANCH"
+  git reset --hard "origin/$UPSTREAM_BRANCH" --quiet
+  if [ $? -ne 0 ]; then
+    echo "✗ Failed to sync OpenSpace submodule"
+    exit 1
+  fi
+  echo "✓ OpenSpace submodule reset to latest"
+  echo "  ⚠ Upstream module layout may have changed — check .mcp.json, tools/openspace_overrides/, tests/openspace/ still import correctly"
 fi
+
+cd "$PROJECT_ROOT" || exit 1
+git add "$OPENSPACE_DIR"
+echo "  (Submodule pointer updated in parent repo — commit when ready)"
