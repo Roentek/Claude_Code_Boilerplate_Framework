@@ -39,6 +39,7 @@ Defines **how we work**, not what we're building. If a rule doesn't change behav
 | UI component inspiration / SVG logos | `/21st-magic` skill → `21st-dev-magic` MCP | Search UI components, SVG brand logos, generate variants — requires `TWENTYFIRST_DEV_MAGIC_API_KEY` |
 | AI image/video (cinematic, managed) | `/higgsfield:generate` skill → `higgsfield` CLI (primary) → `higgsfield` MCP (fallback) | Browser OAuth, no API key; cinematic video, product photos, Soul ID, marketing studio — **CLI first** |
 | AI image/video/audio (specific model) | `/kie-ai` skill → `kie-cli` CLI (primary) → `kie-ai` MCP (fallback) | Midjourney, Sora, ElevenLabs, Kling, Suno, etc. CLI = zero context tokens; auto-switches to MCP if needed |
+| Generate image/video, model-agnostic (cost-routed) | `/generate` skill → `generations/` folder | Auto-picks cheapest capable model (Nano Banana 2 Lite / Kling 3.0) or advanced tier (GPT Image 2 / Veo 3.1 / Seedance 2.0 Fast) per task; runs on `kie-cli`; saves flat to `generations/` with sidecar `.json` log + gallery at `localhost:3737` |
 | Right-size LLM to hardware / model recommendations | `/llmfit` skill → `llmfit` CLI (primary) → `llmfit-mcp` (fallback) | Detects GPU/CPU/RAM, scores models for fit/speed/quality, downloads GGUF, runs inference — **CLI first** |
 | Self-evolving AI skills / collective intelligence | `/openspace` skill → `openspace` CLI | Skills that auto-fix, auto-improve, auto-learn; 46% token reduction; cloud skill sharing — **CLI first; MCP backup** |
 | AI spend tracking / token cost analysis | `/codeburn` skill → `codeburn` CLI | Token + dollar breakdown by task, model, tool, project across 31 AI tools — `codeburn` for TUI dashboard, `codeburn status` for one-liner |
@@ -82,6 +83,9 @@ node tools/ffmpeg.js thumbnail input.mp4 --at 00:00:10 --width 1280
 node tools/ffmpeg.js extract-audio input.mp4 --format mp3
 node tools/ffmpeg.js transcode input.avi --format mp4 --resolution 1280x720
 node tools/ffmpeg.js concat a.mp4 b.mp4 --output merged.mp4
+
+# /generate — AI image/video generation (Kie AI), output gallery
+node generations/gallery-server.mjs                # → http://localhost:3737 (or VS Code Run & Debug → "Generate Gallery")
 
 # Supabase CLI — local dev, migrations, type generation
 supabase login                                                     # one-time browser OAuth
@@ -286,6 +290,13 @@ workflows/                    ← Markdown SOPs defining automation tasks
 src/trigger/                  ← Trigger.dev TypeScript task files
 brand_assets/                 ← Logos, color guides, design tokens
 docs/                         ← Project-level documentation
+generations/                   ← Media library for /generate — flat output + gallery
+  README.md                    ← Layout, gallery server usage, sidecar log format
+  gallery.html                 ← Gallery page (served, not opened as file://)
+  gallery-server.mjs           ← Zero-dep Node server: GET /api/media + static file serving (localhost:3737)
+  styles.json                  ← Reusable style presets (name, prompt, refs) — editable via gallery Styles panel
+  refs/                        ← Reference images (logos, faces, style shots) passed into API calls
+  {name}.{ext} + {name}.json   ← Generated media, flat, no subfolders — each with a sidecar log
 vault/                        ← Obsidian wiki vault (dual-layer)
   wiki/                       ← SHARED: gittracked — boilerplate architecture, integrations, ADRs
   private/                    ← USER: gitignored — sessions, projects, agent logs (per-user)
@@ -381,6 +392,7 @@ vault/                        ← Obsidian wiki vault (dual-layer)
 | `/create-actor` | Guided Actor scaffolding — from apify-actor-commands pack |
 | `/caveman` | Activate 75% token reduction (lite/full/ultra modes) — telegraphic responses without context loss |
 | `/kie-ai` | AI media generation — 29 models (Midjourney, Veo3, Suno, ElevenLabs, Kling, Flux, etc.); CLI-first (`kie-cli`), auto-falls back to MCP; async task polling |
+| `/generate` | Model-agnostic image/video generation — routes to cheapest capable model (Nano Banana 2 Lite / Kling 3.0) or advanced tier (GPT Image 2 text-in-image, Veo 3.1 hero video, Seedance 2.0 Fast reference animation) per `.claude/skills/generate/models/*.md` recipes; runs on `kie-cli` (fal.ai/WaveSpeed documented as unwired future fallbacks); quotes cost and waits for approval before paid video runs; saves flat to `generations/` with sidecar `.json` log; gallery via `node generations/gallery-server.mjs` → `localhost:3737` |
 | `/llmfit` | Hardware-aware LLM model selection — `llmfit fit/recommend/search/diff/plan/download/run/bench --json`; CLI-first, `llmfit-mcp` fallback; no API key required |
 | `/gw` | Google Workspace CLI — `gw mail/drive/cal` with `--json`; CLI-first (`gw auth login` once); falls back to `google-workspace-mcp` for Docs/Sheets/Forms/bulk ops |
 | `/vercel` | Vercel deployments — `vercel deploy/dev/ls/env/domains/logs`; CLI-first (`vercel login` once); `vercel-mcp` fallback for structured in-session queries |

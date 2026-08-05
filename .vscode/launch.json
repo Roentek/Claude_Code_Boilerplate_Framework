@@ -118,6 +118,22 @@
       }
     },
     {
+      "name": "Generate Gallery",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/generations/gallery-server.mjs",
+      "console": "integratedTerminal",
+      "presentation": {
+        "group": "generate",
+        "order": 1
+      },
+      "serverReadyAction": {
+        "pattern": "Generate gallery: (http://\\S+)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      }
+    },
+    {
       "name": "Claude-Mem Web Viewer (Edge)",
       "type": "msedge",
       "request": "launch",

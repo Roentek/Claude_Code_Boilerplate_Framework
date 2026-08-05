@@ -4,6 +4,14 @@ Architectural and technical decisions made during sessions — with date and rat
 
 ---
 
+## 2026-08-05 — `/generate` skill + `generations/` media library added
+- **Decision:** New project skill `.claude/skills/generate/` (SKILL.md + `models/*.md` recipe files for Nano Banana 2 Lite, GPT Image 2, Kling 3.0, Veo 3.1, Seedance 2.0 Fast) plus a `generations/` folder at repo root as the flat output + gallery layer.
+- **Why:** `/kie-ai` already wired the provider CLI/MCP but had no cost-tiered routing layer, no fixed output convention, and no local review UI. `/generate` sits on top: picks cheap vs advanced tier per task, always via `kie-cli` (fal.ai/WaveSpeed documented as future fallbacks only, not wired), and writes every result flat into `generations/` with a `{basename}.json` sidecar log so the gallery can show prompt/model/params without a separate DB.
+- **Layout:** `generations/README.md`, `gallery.html` (served, not `file://`), `gallery-server.mjs` (zero-dep Node server, `GET /api/media`, port 3737), `styles.json` (reusable prompt+ref presets), `refs/` (reference images for logos/faces/style, never described in text).
+- **Rules baked into SKILL.md:** quote cost + wait for explicit approval before any paid video run; draft cheap tier first, only rerun advanced tier on a favorite; never describe a logo/face in text — always pass the real file from `refs/`; one generation at a time to avoid rate limits; stop and confirm count/cost before any bulk request (e.g. "generate 100 images").
+- **Launch:** `node generations/gallery-server.mjs` or VS Code Run & Debug → **Generate Gallery** (added to `.vscode/launch.json`).
+- **Files touched:** `CLAUDE.md` (routing table, Key Commands, project structure, skills table), `README.md` (project structure tree, Project Skills table).
+
 ## 2026-08-02 — OpenSpace submodule synced through upstream history rewrite + full package restructure
 - **Decision:** Hard-reset `tools/openspace` submodule to `origin/main` (unrelated-histories, `--ff-only` pull failed) and updated every internal reference to the new module layout upstream shipped alongside the rewrite.
 - **Why:** HKUDS/OpenSpace force-rewrote its `main` branch history (81 local commits vs 15 remote, no common ancestor) and simultaneously restructured the package: `openspace.mcp_server` → `openspace.entrypoints.mcp.server`, `openspace.dashboard_server` → `openspace.entrypoints.dashboard.server`, `openspace.tool_layer` → `openspace.application`, `openspace.__main__` → `openspace.entrypoints.cli.main`, `openspace.cloud.auth.get_openspace_auth` removed entirely (replaced by `openspace.cloud.credentials.read_cloud_credentials` + `openspace.cloud.auth_flow.cloud_auth_flow` agent-key flow). The `showcase/` directory (bundled example skills) was also removed upstream.

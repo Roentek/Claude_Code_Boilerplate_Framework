@@ -318,10 +318,18 @@ If you cloned OpenSpace before the submodule setup was added, see [`.claude/docs
 │       ├── lightrag/SKILL.md        # Graph-based RAG: knowledge extraction, entity-relationship Q&A, multimodal docs
 │       ├── openspace/SKILL.md       # Self-evolving skill system: auto-fix, auto-improve, auto-learn, cloud sharing
 │       ├── delegate-task/SKILL.md   # OpenSpace host skill: delegate tasks to grounding agent with auto evolution
-│       └── skill-discovery/SKILL.md # OpenSpace host skill: search local + cloud skills before starting work
+│       ├── skill-discovery/SKILL.md # OpenSpace host skill: search local + cloud skills before starting work
+│       └── generate/                # AI image/video generation via Kie AI (SKILL.md + models/ recipe files)
 │
 ├── brand_assets/                    # Logos, color guides, design tokens
 ├── docs/                            # Project-level documentation
+├── generations/                     # Media library for /generate — flat output + gallery
+│   ├── README.md                    # Layout, gallery server usage, sidecar log format
+│   ├── gallery.html                  # Gallery page (served, not opened as file://)
+│   ├── gallery-server.mjs            # Zero-dep Node server: GET /api/media + static file serving
+│   ├── styles.json                   # Reusable style presets (name, prompt, refs)
+│   ├── refs/                         # Reference images (logos, faces, style shots) passed into API calls
+│   └── {name}.{ext} + {name}.json    # Generated media, flat, no subfolders — each with a sidecar log
 ├── src/
 │   └── trigger/                     # Trigger.dev TypeScript task files
 ├── tools/
@@ -624,6 +632,7 @@ Source files live in `.claude/skills/<name>/SKILL.md`. `setup.sh` installs them 
 | `/grill-me-codex` | Two-act plan hardening. Act 1: Claude interviews you relentlessly until the decision tree is fully resolved. Act 2: OpenAI Codex adversarially reviews the locked plan in a read-only sandbox (`VERDICT:APPROVED`/`VERDICT:REVISE`), Claude revises and re-submits to the SAME Codex session until approved or `MAX_ROUNDS` (default 5) is hit, then you sign off before any code. Use for high-stakes work: auth, schema, concurrency, migrations, payments. Requires `codex login` (ChatGPT account fine) and `codex --version ≥ 0.130`. Source: [chaseai-yt/grill-me-codex](https://github.com/chaseai-yt/grill-me-codex). |
 | `/grill-with-docs-codex` | Same two-act flow as `/grill-me-codex` but Act 1 challenges your plan against `CONTEXT.md`/ADRs, sharpens fuzzy terminology against the glossary, and updates docs inline as decisions crystallise. Use in projects with established domain terminology. Source: [chaseai-yt/grill-me-codex](https://github.com/chaseai-yt/grill-me-codex). |
 | `/codex-review` | Skip the grill — go straight to the Codex adversarial review loop. Claude drafts or loads an existing plan into `PLAN.md`, Codex reviews in a read-only sandbox, Claude revises and re-submits until `VERDICT:APPROVED` or cap. Use when you already have a clear plan and want only the cross-model stress-test. Source: [chaseai-yt/grill-me-codex](https://github.com/chaseai-yt/grill-me-codex). |
+| `/generate` | AI image/video generation. Routes each request to the cheapest capable model — Nano Banana 2 Lite (image drafts), Kling 3.0 (video default) — or an advanced model when the task needs it: GPT Image 2 (text-in-image), Veo 3.1 (hero-quality video), Seedance 2.0 Fast (animate reference images). `kie-cli` is the primary execution path (`kie-ai` MCP as fallback); requires `KIE_AI_API_KEY`. Quotes cost and waits for approval before any paid video run. Saves every output flat to `generations/` with a sidecar `.json` log; reference images live in `generations/refs/`; reusable style presets in `generations/styles.json`. Gallery: `node generations/gallery-server.mjs` → `http://localhost:3737` (or VS Code Run & Debug → **Generate Gallery**). fal.ai and WaveSpeed AI are documented as future fallback providers but not yet wired. |
 
 ### Apify Agent Skills (`.agents/skills/`)
 
